@@ -15,21 +15,6 @@ module BST () where
 data Nat = Z | S Nat | MinusInf | PlusInf
   deriving (Eq, Show)
 
-type family (m::Nat) :+ (n::Nat) :: Nat
-type instance 'Z        :+ n          = n
-type instance 'S m      :+ 'Z         = 'S m
-type instance 'S m      :+ 'S n       = 'S(m :+ n)
-type instance 'Z        :+ 'MinusInf  = 'MinusInf
-type instance 'S _      :+ 'MinusInf  = 'MinusInf
-type instance 'Z        :+ 'PlusInf   = 'PlusInf
-type instance 'S _      :+ 'PlusInf   = 'PlusInf
-type instance 'MinusInf :+ 'Z         = 'MinusInf
-type instance 'MinusInf :+ 'S _       = 'MinusInf
-type instance 'PlusInf  :+ 'Z         = 'PlusInf
-type instance 'PlusInf  :+ 'S _       = 'PlusInf
-type instance 'MinusInf :+ 'MinusInf  = 'MinusInf
-type instance 'PlusInf  :+ 'PlusInf   = 'PlusInf
-
 -- we don't only want to know the MaxnDif but also that they are different
 type family MaxnDif (m :: Nat) (n :: Nat) :: Nat
 type instance MaxnDif 'Z        ('S n)    = 'S n
