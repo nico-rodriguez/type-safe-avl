@@ -14,8 +14,6 @@
 
 module BST () where
 
--- Maybe it's cleaner to separate the Nats that are the keys from the Nats
--- that are bounds.
 data Nat = Z | S Nat
   deriving (Eq, Ord, Show)
 
@@ -33,12 +31,6 @@ instance Ord BNat where
   compare PlusInf   _         = GT
   compare _         PlusInf   = LT
   compare (Val m)   (Val n)   = compare m n   -- use Ord instance of Nat
-
-type family Nat2BNat (n :: Nat) :: BNat
-type instance Nat2BNat 'Z     = 'Val 'Z
--- type instance Nat2BNat ('S n) = 'Val ('S m)
---   where
---     'Val m = Nat2BNat n
 
 -- we don't only want to know the MaxnDif but also that they are different
 type family MaxnDif (m :: BNat) (n :: BNat) :: BNat
@@ -66,23 +58,12 @@ deSingletonNat :: SingletonNat n -> Nat
 deSingletonNat Zy     = Z
 deSingletonNat (Sy n) = S (deSingletonNat n)
 
-type family DeSingletonNat n :: Nat
-type instance DeSingletonNat (SingletonNat 'Z) = 'Z
-type instance DeSingletonNat (SingletonNat ('S n)) =
-  'S (DeSingletonNat (SingletonNat n))
-
 data SingletonBNat :: BNat -> * where
   Natty     :: SingletonNat n -> SingletonBNat ('Val n)
   MinusInfy :: SingletonBNat 'MinusInf
   PlusInfy  :: SingletonBNat 'PlusInf
 deriving instance Eq (SingletonBNat a)
 deriving instance Show (SingletonBNat a)
-
-type family DeSingletonBNat n :: BNat
-type instance DeSingletonBNat (SingletonBNat ('Val n)) =
-  'Val (DeSingletonNat (SingletonNat n))
-type instance DeSingletonBNat (SingletonBNat 'MinusInf) = 'MinusInf
-type instance DeSingletonBNat (SingletonBNat 'PlusInf) = 'PlusInf
 
 deSingletonBNat :: SingletonBNat n -> BNat
 deSingletonBNat MinusInfy = MinusInf
