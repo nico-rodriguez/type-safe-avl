@@ -14,6 +14,8 @@
 
 module BST () where
 
+import Prelude hiding (max)
+
 data Nat = Z | S Nat
   deriving (Eq, Ord, Show)
 
@@ -79,6 +81,10 @@ data BST :: BNat -> BNat -> * where
     BST lb1 n -> SingletonBNat n -> BST n up2 -> BST lb1 up2
 deriving instance Show (BST l r)
 
+isEmpety :: BST lb up -> Bool
+isEmpety (EmptyBST _ _) = True
+isEmpety _              = False
+
 -- Insert a BNat (TODO change to only Nat) into a BST.
 insert :: (MaxnDif lb n ~ n, MaxnDif n up ~ up) =>
   SingletonBNat n -> BST lb up -> BST lb up
@@ -88,3 +94,21 @@ insert n (RootBST l m r) = case compare (deSingletonBNat n) (deSingletonBNat m) 
   -- LT -> RootBST (insert n l) m r
   EQ -> RootBST l m r
   -- GT -> RootBST l m (insert n r)
+
+-- TODO Check the non-emptyness of the tree through it's type
+max :: BST lb up -> BNat
+max (RootBST l m r) = if isEmpety r
+                      then deSingletonBNat m
+                      else max r
+
+delete :: (MaxnDif lb n ~ n, MaxnDif n up ~ up) =>
+  SingletonBNat n -> BST lb up -> BST lb up
+-- insert :: SingletonBNat n -> BST lb up -> BST lb up
+delete n (EmptyBST lb up) = EmptyBST lb up
+delete n (RootBST l m r) = case compare (deSingletonBNat n) (deSingletonBNat m) of
+  LT -> RootBST (delete n l) m r
+  EQ -> RootBST l1 m1 r
+          where
+            m1 = max l
+            l1 = delete m1 l
+  GT -> RootBST l m (delete n r)
