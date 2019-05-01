@@ -12,7 +12,8 @@
 
 {-# LANGUAGE TypeOperators #-}
 
-module BST () where
+module BST (Nat(..), SingletonNat(..), BNat(..), SingletonBNat(..),
+  BST(..), insert) where
 
 import Prelude hiding (max)
 
@@ -85,10 +86,16 @@ isEmpety :: BST lb up -> Bool
 isEmpety (EmptyBST _ _) = True
 isEmpety _              = False
 
+member :: BST lb up -> BNat -> Bool
+member (EmptyBST _ _)   _ = False
+member (RootBST l m r)  x = case compare (deSingletonBNat m) x of
+  LT -> member r x
+  EQ -> True
+  GT -> member l x
+
 -- Insert a BNat (TODO change to only Nat) into a BST.
 insert :: (MaxnDif lb n ~ n, MaxnDif n up ~ up) =>
   SingletonBNat n -> BST lb up -> BST lb up
--- insert :: SingletonBNat n -> BST lb up -> BST lb up
 insert n (EmptyBST lb up) = RootBST (EmptyBST lb n) n (EmptyBST n up)
 insert n (RootBST l m r) = case compare (deSingletonBNat n) (deSingletonBNat m) of
   -- LT -> RootBST (insert n l) m r
@@ -97,18 +104,33 @@ insert n (RootBST l m r) = case compare (deSingletonBNat n) (deSingletonBNat m) 
 
 -- TODO Check the non-emptyness of the tree through it's type
 max :: BST lb up -> BNat
-max (RootBST l m r) = if isEmpety r
+max (RootBST _ m r) = if isEmpety r
                       then deSingletonBNat m
                       else max r
 
 delete :: (MaxnDif lb n ~ n, MaxnDif n up ~ up) =>
   SingletonBNat n -> BST lb up -> BST lb up
--- insert :: SingletonBNat n -> BST lb up -> BST lb up
-delete n (EmptyBST lb up) = EmptyBST lb up
-delete n (RootBST l m r) = case compare (deSingletonBNat n) (deSingletonBNat m) of
-  LT -> RootBST (delete n l) m r
-  EQ -> RootBST l1 m1 r
-          where
-            m1 = max l
-            l1 = delete m1 l
-  GT -> RootBST l m (delete n r)
+delete _ (EmptyBST lb up) = EmptyBST lb up
+-- delete n (RootBST l m r) = case compare (deSingletonBNat n) (deSingletonBNat m) of
+  -- LT -> RootBST (delete n l) m r
+  -- EQ -> RootBST l1 m1 r
+  --         where
+  --           m1 = max l
+  --           l1 = delete m1 l
+  -- GT -> RootBST l m (delete n r)
+
+preorder :: BST lb up -> [BNat]
+preorder (EmptyBST _ _)  = []
+preorder (RootBST l m r) = (deSingletonBNat m : inorder l) ++ inorder r
+
+inorder :: BST lb up -> [BNat]
+inorder (EmptyBST _ _)  = []
+inorder (RootBST l m r) = inorder l ++ [deSingletonBNat m] ++ inorder r
+
+outorder :: BST lb up -> [BNat]
+outorder (EmptyBST _ _)  = []
+outorder (RootBST l m r) = inorder r ++ [deSingletonBNat m] ++ inorder l
+
+postorder :: BST lb up -> [BNat]
+postorder (EmptyBST _ _)  = []
+postorder (RootBST l m r) = inorder l ++ inorder r ++ [deSingletonBNat m]
