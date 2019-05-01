@@ -1,8 +1,12 @@
 {-# LANGUAGE DataKinds #-}
 
+{-# LANGUAGE FlexibleInstances #-}
+
 {-# LANGUAGE GADTs #-}
 
 {-# LANGUAGE KindSignatures #-}
+
+{-# LANGUAGE MultiParamTypeClasses #-}
 
 {-# LANGUAGE PolyKinds #-}
 
@@ -35,21 +39,16 @@ instance Ord BNat where
   compare _         PlusInf   = LT
   compare (Val m)   (Val n)   = compare m n   -- use Ord instance of Nat
 
+class LeN (m :: Nat) (n :: Nat) where
+instance            LeN 'Z     n      where
+instance LeN m n => LeN ('S m) ('S n) where
+
 -- we don't only want to know the MaxnDif but also that they are different
-type family MaxnDif (m :: BNat) (n :: BNat) :: BNat
-type instance MaxnDif ('Val 'Z)     ('Val ('S n)) = 'Val ('S n)
-type instance MaxnDif ('Val ('S m)) ('Val 'Z)     = 'Val ('S m)
-type instance MaxnDif ('Val ('S m)) ('Val ('S n)) = MaxnDif ('Val m) ('Val n)
-type instance MaxnDif 'MinusInf     ('Val 'Z)     = 'Val 'Z
-type instance MaxnDif 'MinusInf     ('Val ('S n)) = 'Val ('S n)
-type instance MaxnDif 'MinusInf     'PlusInf      = 'PlusInf
-type instance MaxnDif ('Val 'Z)     'MinusInf     = 'Val 'Z
-type instance MaxnDif ('Val ('S n)) 'MinusInf     = 'Val ('S n)
-type instance MaxnDif 'PlusInf      'MinusInf     = 'PlusInf
-type instance MaxnDif 'PlusInf      ('Val 'Z)     = 'PlusInf
-type instance MaxnDif 'PlusInf      ('Val ('S n)) = 'PlusInf
-type instance MaxnDif ('Val 'Z)     'PlusInf      = 'PlusInf
-type instance MaxnDif ('Val ('S _)) 'PlusInf      = 'PlusInf
+class LeB (m :: BNat) (n :: BNat) where
+instance            LeB 'MinusInf ('Val y) where
+instance            LeB 'MinusInf 'PlusInf where
+instance LeN x y => LeB ('Val x)  ('Val y) where
+instance            LeB ('Val x)  'PlusInf where
 
 data SingletonNat :: Nat -> * where
   Zy :: SingletonNat 'Z
@@ -76,10 +75,10 @@ deSingletonBNat PlusInfy  = PlusInf
 -- Binary Search Tree.
 -- TODO only accept Nats in the nodes, but accept BNats as the tree's bounds.
 data BST :: BNat -> BNat -> * where
-  EmptyBST :: (MaxnDif lb up ~ up) =>
+  EmptyBST :: (LeB lb up) =>
     SingletonBNat lb -> SingletonBNat up -> BST lb up
-  RootBST  :: (MaxnDif lb1 n ~ n, MaxnDif n up2 ~ up2) =>
-    BST lb1 n -> SingletonBNat n -> BST n up2 -> BST lb1 up2
+  RootBST  :: (LeB lb n, LeB n up) =>
+    BST lb n -> SingletonBNat n -> BST n up -> BST lb up
 deriving instance Show (BST l r)
 
 isEmpety :: BST lb up -> Bool
@@ -94,11 +93,11 @@ member (RootBST l m r)  x = case compare (deSingletonBNat m) x of
   GT -> member l x
 
 -- Insert a BNat (TODO change to only Nat) into a BST.
-insert :: (MaxnDif lb n ~ n, MaxnDif n up ~ up) =>
+insert :: (LeB lb n, LeB n up) =>
   SingletonBNat n -> BST lb up -> BST lb up
 insert n (EmptyBST lb up) = RootBST (EmptyBST lb n) n (EmptyBST n up)
 insert n (RootBST l m r) = case compare (deSingletonBNat n) (deSingletonBNat m) of
-  -- LT -> RootBST (insert n l) m r
+  LT -> RootBST (insert n l) m r
   EQ -> RootBST l m r
   -- GT -> RootBST l m (insert n r)
 
@@ -108,7 +107,7 @@ max (RootBST _ m r) = if isEmpety r
                       then deSingletonBNat m
                       else max r
 
-delete :: (MaxnDif lb n ~ n, MaxnDif n up ~ up) =>
+delete :: (LeB lb n, LeB n up) =>
   SingletonBNat n -> BST lb up -> BST lb up
 delete _ (EmptyBST lb up) = EmptyBST lb up
 -- delete n (RootBST l m r) = case compare (deSingletonBNat n) (deSingletonBNat m) of
