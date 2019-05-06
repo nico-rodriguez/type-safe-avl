@@ -20,8 +20,8 @@
 
 {-# LANGUAGE TypeOperators #-}
 
-module BST (Nat(..), Bound(..), BST(..),
-  isEmpty, member, insert, delete, preorder, inorder, postorder, outorder) where
+module BST (Nat(..), Natty(..), Bound(..), BST(..),
+  isEmpty, member, insert, preorder, inorder, postorder, outorder) where
 
 import Prelude hiding (max)
 
@@ -98,23 +98,23 @@ insert n (RootBST l m r) = case owoto n m of
   GE -> RootBST l m (insert n r)
 
 -- TODO Check the non-emptyness of the tree through it's type
-max :: BST lb up -> Natty n
-max (RootBST _ m r) = if isEmpty r
-                      then m
-                      else max r
-
-delete :: (LeB lb (Val n), LeB (Val n) up, LeB lb' up') =>
-  Natty n -> BST lb up -> BST lb' up'
-delete _ EmptyBST = EmptyBST
-delete n (RootBST l m r) = case owoto n m of
-  LE -> RootBST (delete n l) m r
-  EE -> case isEmpty l of
-          True  -> r
-          False -> RootBST l1 m1 r
-            where
-              m1 = max l
-              l1 = delete m1 l
-  GE -> RootBST l m (delete n r)
+-- max :: BST lb up -> Natty n
+-- max (RootBST _ m r) = if isEmpty r
+--                       then m
+--                       else max r
+--
+-- delete :: (LeB lb (Val n), LeB (Val n) up, LeB lb' up') =>
+--   Natty n -> BST lb up -> BST lb' up'
+-- delete _ EmptyBST = EmptyBST
+-- delete n (RootBST l m r) = case owoto n m of
+--   LE -> RootBST (delete n l) m r
+--   EE -> case isEmpty l of
+--           True  -> r
+--           False -> RootBST l1 m1 r
+--             where
+--               m1 = max l
+--               l1 = delete m1 l
+--   GE -> RootBST l m (delete n r)
 
 preorder :: BST lb up -> [Nat]
 preorder EmptyBST         = []
