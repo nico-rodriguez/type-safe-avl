@@ -1,5 +1,7 @@
 {-# LANGUAGE DataKinds #-}
 
+{-# LANGUAGE FlexibleContexts #-}
+
 {-# LANGUAGE FlexibleInstances #-}
 
 {-# LANGUAGE GADTs #-}
@@ -10,126 +12,122 @@
 
 {-# LANGUAGE PolyKinds #-}
 
+{-# LANGUAGE ScopedTypeVariables #-}
+
 {-# LANGUAGE StandaloneDeriving #-}
 
 {-# LANGUAGE TypeFamilies #-}
 
 {-# LANGUAGE TypeOperators #-}
 
-module BST (Nat(..), SingletonNat(..), BNat(..), SingletonBNat(..),
-  BST(..), insert) where
+module BST (Nat(..), Bound(..), BST(..),
+  isEmpty, member, insert, delete, preorder, inorder, postorder, outorder) where
 
 import Prelude hiding (max)
 
+-- Natural Numbers.
 data Nat = Z | S Nat
   deriving (Eq, Ord, Show)
 
-data BNat :: * where
-  Val       :: Nat -> BNat
-  MinusInf  :: BNat
-  PlusInf   :: BNat
-  deriving (Eq, Show)
+-- Singleton for Natural Numbers.
+data Natty :: Nat -> * where
+  Zy :: Natty 'Z
+  Sy :: Natty n -> Natty ('S n)
+deriving instance Eq (Natty n)
+deriving instance Show (Natty n)
 
-instance Ord BNat where
-  compare MinusInf  MinusInf  = EQ
-  compare MinusInf  _         = LT
-  compare _         MinusInf  = GT
-  compare PlusInf   PlusInf   = EQ
-  compare PlusInf   _         = GT
-  compare _         PlusInf   = LT
-  compare (Val m)   (Val n)   = compare m n   -- use Ord instance of Nat
+natty2Nat :: Natty n -> Nat
+natty2Nat Zy      = Z
+natty2Nat (Sy n)  = S m
+  where
+    m = natty2Nat n
 
+-- Type class for ordering Natural Numbers
 class LeN (m :: Nat) (n :: Nat) where
 instance            LeN 'Z     n      where
 instance LeN m n => LeN ('S m) ('S n) where
 
--- we don't only want to know the MaxnDif but also that they are different
-class LeB (m :: BNat) (n :: BNat) where
-instance            LeB 'MinusInf ('Val y) where
-instance            LeB 'MinusInf 'PlusInf where
-instance LeN x y => LeB ('Val x)  ('Val y) where
-instance            LeB ('Val x)  'PlusInf where
+data OWOTO :: Nat -> Nat -> * where
+  LE :: LeN x y => OWOTO x y
+  GE :: LeN y x => OWOTO x y
+  EE ::            OWOTO x x
 
-data SingletonNat :: Nat -> * where
-  Zy :: SingletonNat 'Z
-  Sy :: SingletonNat n -> SingletonNat ('S n)
-deriving instance Eq (SingletonNat a)
-deriving instance Show (SingletonNat a)
+owoto :: Natty m -> Natty n -> OWOTO m n
+owoto Zy      _       = LE
+owoto (Sy _)  Zy      = GE
+owoto (Sy m)  (Sy n)  = case owoto m n of
+  LE -> LE
+  GE -> GE
+  EE -> EE
 
-deSingletonNat :: SingletonNat n -> Nat
-deSingletonNat Zy     = Z
-deSingletonNat (Sy n) = S (deSingletonNat n)
+-- Natural Numbers with infinite bounds: Bot is -Inf and Top is +Inf.
+data Bound x = Bot | Val x | Top
+  deriving (Eq, Ord, Show)
 
-data SingletonBNat :: BNat -> * where
-  Natty     :: SingletonNat n -> SingletonBNat ('Val n)
-  MinusInfy :: SingletonBNat 'MinusInf
-  PlusInfy  :: SingletonBNat 'PlusInf
-deriving instance Eq (SingletonBNat a)
-deriving instance Show (SingletonBNat a)
+-- Type class for ordering Bounded Natural Numbers.
+class LeB (m :: Bound Nat) (n :: Bound Nat) where
+instance            LeB 'Bot      ('Val y)  where
+instance            LeB 'Bot      'Top      where
+instance LeN x y => LeB ('Val x)  ('Val y)  where
+instance            LeB ('Val x)  'Top      where
 
-deSingletonBNat :: SingletonBNat n -> BNat
-deSingletonBNat MinusInfy = MinusInf
-deSingletonBNat (Natty n) = Val $ deSingletonNat n
-deSingletonBNat PlusInfy  = PlusInf
-
--- Binary Search Tree.
--- TODO only accept Nats in the nodes, but accept BNats as the tree's bounds.
-data BST :: BNat -> BNat -> * where
-  EmptyBST :: (LeB lb up) =>
-    SingletonBNat lb -> SingletonBNat up -> BST lb up
-  RootBST  :: (LeB lb n, LeB n up) =>
-    BST lb n -> SingletonBNat n -> BST n up -> BST lb up
+-- Binary Search Tree of Singleton Natural Numbers.
+data BST :: Bound Nat -> Bound Nat -> * where
+  EmptyBST :: (LeB lb up) => BST lb up
+  RootBST  :: (LeB lb ('Val n), LeB ('Val n) up) =>
+    BST lb ('Val n) -> Natty n -> BST ('Val n) up -> BST lb up
 deriving instance Show (BST l r)
 
-isEmpety :: BST lb up -> Bool
-isEmpety (EmptyBST _ _) = True
-isEmpety _              = False
+isEmpty :: BST lb up -> Bool
+isEmpty EmptyBST = True
+isEmpty _        = False
 
-member :: BST lb up -> BNat -> Bool
-member (EmptyBST _ _)   _ = False
-member (RootBST l m r)  x = case compare (deSingletonBNat m) x of
-  LT -> member r x
-  EQ -> True
-  GT -> member l x
+member :: BST lb up -> Natty n -> Bool
+member EmptyBST         _ = False
+member (RootBST l m r)  x = case owoto m x of
+  LE -> member r x
+  EE -> True
+  GE -> member l x
 
--- Insert a BNat (TODO change to only Nat) into a BST.
-insert :: (LeB lb n, LeB n up) =>
-  SingletonBNat n -> BST lb up -> BST lb up
-insert n (EmptyBST lb up) = RootBST (EmptyBST lb n) n (EmptyBST n up)
-insert n (RootBST l m r) = case compare (deSingletonBNat n) (deSingletonBNat m) of
-  LT -> RootBST (insert n l) m r
-  EQ -> RootBST l m r
-  -- GT -> RootBST l m (insert n r)
+-- Insert a Singleton Nat (Natty) into a BST.
+insert :: (LeB lb ('Val n), LeB ('Val n) up) => Natty n -> BST lb up -> BST lb up
+insert n EmptyBST = RootBST EmptyBST n EmptyBST
+insert n (RootBST l m r) = case owoto n m of
+  LE -> RootBST (insert n l) m r
+  EE -> RootBST l m r
+  GE -> RootBST l m (insert n r)
 
 -- TODO Check the non-emptyness of the tree through it's type
-max :: BST lb up -> BNat
-max (RootBST _ m r) = if isEmpety r
-                      then deSingletonBNat m
+max :: BST lb up -> Natty n
+max (RootBST _ m r) = if isEmpty r
+                      then m
                       else max r
 
-delete :: (LeB lb n, LeB n up) =>
-  SingletonBNat n -> BST lb up -> BST lb up
-delete _ (EmptyBST lb up) = EmptyBST lb up
--- delete n (RootBST l m r) = case compare (deSingletonBNat n) (deSingletonBNat m) of
-  -- LT -> RootBST (delete n l) m r
-  -- EQ -> RootBST l1 m1 r
-  --         where
-  --           m1 = max l
-  --           l1 = delete m1 l
-  -- GT -> RootBST l m (delete n r)
+delete :: (LeB lb (Val n), LeB (Val n) up, LeB lb' up') =>
+  Natty n -> BST lb up -> BST lb' up'
+delete _ EmptyBST = EmptyBST
+delete n (RootBST l m r) = case owoto n m of
+  LE -> RootBST (delete n l) m r
+  EE -> case isEmpty l of
+          True  -> r
+          False -> RootBST l1 m1 r
+            where
+              m1 = max l
+              l1 = delete m1 l
+  GE -> RootBST l m (delete n r)
 
-preorder :: BST lb up -> [BNat]
-preorder (EmptyBST _ _)  = []
-preorder (RootBST l m r) = (deSingletonBNat m : inorder l) ++ inorder r
+preorder :: BST lb up -> [Nat]
+preorder EmptyBST         = []
+preorder (RootBST l m r)  = (natty2Nat m : preorder l) ++ preorder r
 
-inorder :: BST lb up -> [BNat]
-inorder (EmptyBST _ _)  = []
-inorder (RootBST l m r) = inorder l ++ [deSingletonBNat m] ++ inorder r
+inorder :: BST lb up -> [Nat]
+inorder EmptyBST        = []
+inorder (RootBST l m r) = inorder l ++ [natty2Nat m] ++ inorder r
 
-outorder :: BST lb up -> [BNat]
-outorder (EmptyBST _ _)  = []
-outorder (RootBST l m r) = inorder r ++ [deSingletonBNat m] ++ inorder l
+outorder :: BST lb up -> [Nat]
+outorder EmptyBST        = []
+outorder (RootBST l m r) = outorder r ++ [natty2Nat m] ++ outorder l
 
-postorder :: BST lb up -> [BNat]
-postorder (EmptyBST _ _)  = []
-postorder (RootBST l m r) = inorder l ++ inorder r ++ [deSingletonBNat m]
+postorder :: BST lb up -> [Nat]
+postorder EmptyBST        = []
+postorder (RootBST l m r) = postorder l ++ postorder r ++ [natty2Nat m]
