@@ -43,17 +43,18 @@ natty2Nat (Sy n)  = S m
     m = natty2Nat n
 
 -- Type class for ordering Natural Numbers
-class LeN (m :: Nat) (n :: Nat) where
-instance            LeN 'Z     n      where
-instance LeN m n => LeN ('S m) ('S n) where
+class LtN (m :: Nat) (n :: Nat) where
+instance            LtN 'Z     ('S n) where
+instance LtN m n => LtN ('S m) ('S n) where
 
 data OWOTO :: Nat -> Nat -> * where
-  LE :: LeN x y => OWOTO x y
-  GE :: LeN y x => OWOTO x y
+  LE :: LtN x y => OWOTO x y
+  GE :: LtN y x => OWOTO x y
   EE ::            OWOTO x x
 
 owoto :: Natty m -> Natty n -> OWOTO m n
-owoto Zy      _       = LE
+owoto Zy      Zy      = EE
+owoto Zy      (Sy _)  = LE
 owoto (Sy _)  Zy      = GE
 owoto (Sy m)  (Sy n)  = case owoto m n of
   LE -> LE
@@ -65,16 +66,16 @@ data Bound x = Bot | Val x | Top
   deriving (Eq, Ord, Show)
 
 -- Type class for ordering Bounded Natural Numbers.
-class LeB (m :: Bound Nat) (n :: Bound Nat) where
-instance            LeB 'Bot      ('Val y)  where
-instance            LeB 'Bot      'Top      where
-instance LeN x y => LeB ('Val x)  ('Val y)  where
-instance            LeB ('Val x)  'Top      where
+class LtB (m :: Bound Nat) (n :: Bound Nat) where
+instance            LtB 'Bot      ('Val y)  where
+instance            LtB 'Bot      'Top      where
+instance LtN x y => LtB ('Val x)  ('Val y)  where
+instance            LtB ('Val x)  'Top      where
 
 -- Binary Search Tree of Singleton Natural Numbers.
 data BST :: Bound Nat -> Bound Nat -> * where
-  EmptyBST :: (LeB lb up) => BST lb up
-  RootBST  :: (LeB lb ('Val n), LeB ('Val n) up) =>
+  EmptyBST :: (LtB lb up) => BST lb up
+  RootBST  :: (LtB lb ('Val n), LtB ('Val n) up) =>
     BST lb ('Val n) -> Natty n -> BST ('Val n) up -> BST lb up
 deriving instance Show (BST l r)
 
@@ -90,7 +91,7 @@ member (RootBST l m r)  x = case owoto m x of
   GE -> member l x
 
 -- Insert a Singleton Nat (Natty) into a BST.
-insert :: (LeB lb ('Val n), LeB ('Val n) up) => Natty n -> BST lb up -> BST lb up
+insert :: (LtB lb ('Val n), LtB ('Val n) up) => Natty n -> BST lb up -> BST lb up
 insert n EmptyBST = RootBST EmptyBST n EmptyBST
 insert n (RootBST l m r) = case owoto n m of
   LE -> RootBST (insert n l) m r
@@ -98,12 +99,15 @@ insert n (RootBST l m r) = case owoto n m of
   GE -> RootBST l m (insert n r)
 
 -- TODO Check the non-emptyness of the tree through it's type
+-- Can't return a Singleton Nat (who is n?). This can be fixed by changing the
+-- semantic of the bounds: lb is the minumum element and up is the maximum.
+-- In that case, n is up.
 -- max :: BST lb up -> Natty n
 -- max (RootBST _ m r) = if isEmpty r
 --                       then m
 --                       else max r
 --
--- delete :: (LeB lb (Val n), LeB (Val n) up, LeB lb' up') =>
+-- delete :: (LtB lb (Val n), LtB (Val n) up, LtB lb' up') =>
 --   Natty n -> BST lb up -> BST lb' up'
 -- delete _ EmptyBST = EmptyBST
 -- delete n (RootBST l m r) = case owoto n m of
