@@ -12,6 +12,8 @@
 
 {-# LANGUAGE PolyKinds #-}
 
+{-# LANGUAGE RankNTypes #-}
+
 {-# LANGUAGE ScopedTypeVariables #-}
 
 {-# LANGUAGE StandaloneDeriving #-}
@@ -20,14 +22,22 @@
 
 {-# LANGUAGE TypeOperators #-}
 
-module BST (Nat(..), Natty(..), Bound(..), BST(..),
-  isEmpty, member, insert, preorder, inorder, postorder, outorder) where
+{-# LANGUAGE UndecidableInstances #-}
 
-import Prelude hiding (max)
+module BST (Nat(..), Natty(..), BST(..)) where--,
+  --isEmpty, member, insert, preorder, inorder, postorder, outorder) where
+
+import Data.Type.Bool
+import Data.Type.Equality
+import Prelude hiding (min)
 
 -- Natural Numbers.
 data Nat = Z | S Nat
   deriving (Eq, Ord, Show)
+
+type family (m :: Nat) :+ (n :: Nat) :: Nat where
+  'Z   :+ n = n
+  'S m :+ n = 'S (m :+ n)
 
 -- Singleton for Natural Numbers.
 data Natty :: Nat -> * where
@@ -61,77 +71,112 @@ owoto (Sy m)  (Sy n)  = case owoto m n of
   GE -> GE
   EE -> EE
 
--- Natural Numbers with infinite bounds: Bot is -Inf and Top is +Inf.
-data Bound x = Bot | Val x | Top
-  deriving (Eq, Ord, Show)
-
--- Type class for ordering Bounded Natural Numbers.
-class LtB (m :: Bound Nat) (n :: Bound Nat) where
-instance            LtB 'Bot      ('Val y)  where
-instance            LtB 'Bot      'Top      where
-instance LtN x y => LtB ('Val x)  ('Val y)  where
-instance            LtB ('Val x)  'Top      where
-
 -- Binary Search Tree of Singleton Natural Numbers.
-data BST :: Bound Nat -> Bound Nat -> * where
-  EmptyBST :: (LtB lb up) => BST lb up
-  RootBST  :: (LtB lb ('Val n), LtB ('Val n) up) =>
-    BST lb ('Val n) -> Natty n -> BST ('Val n) up -> BST lb up
-deriving instance Show (BST l r)
+data BST :: [Nat] -> * where
+  EmptyBST :: BST '[]
+  RootBST  :: BST l1 -> Natty n -> BST l2 -> BST (Join l1 n l2)
+deriving instance Show (BST l)
 
-isEmpty :: BST lb up -> Bool
+-- Emptiness can be check with types.
+isEmpty :: BST l -> Bool
 isEmpty EmptyBST = True
 isEmpty _        = False
 
-member :: BST lb up -> Natty n -> Bool
+-- Member can be check with types.
+member :: BST l -> Natty n -> Bool
 member EmptyBST         _ = False
 member (RootBST l m r)  x = case owoto m x of
   LE -> member r x
   EE -> True
   GE -> member l x
 
+type family Join (e1 :: [Nat]) (n :: Nat) (e2 :: [Nat]) :: [Nat] where
+  Join '[] n ys = (n:ys)
+  Join (x:xs) n ys = x:Join xs n ys
+
+type family Compare (m :: Nat) (n :: Nat) :: Ordering where
+  Compare 'Z      'Z      = 'EQ
+  Compare ('S m)  ('S n)  = Compare m n
+  Compare ('S m)  'Z      = 'GT
+  Compare 'Z      ('S n)  = 'LT
+
+type family Member (n :: Nat) (l :: [Nat]) :: Bool where
+  Member n (x:xs) =
+    If (Compare n x == 'LT)
+      'False
+      (If (Compare n x == 'GT)
+        (Member n xs)
+        'True   -- Compare n x == 'EQ
+      )
+
+type family Insert (n :: Nat) (l :: [Nat]) :: [Nat] where
+  Insert n '[] = '[n]
+  Insert n (x:xs) =
+    If (Compare n x == 'GT)
+      (x:Insert n xs)
+      (If (Compare n x == 'LT)
+        (n:x:xs)
+        (x:xs)  -- Compare n x == 'EQ
+      )
+
+type family Delete (n :: Nat) (l :: [Nat]) :: [Nat] where
+  Delete n '[] = '[]
+  Delete n (x:xs) =
+    If (Compare n x == 'EQ)
+      xs
+      (If (Compare n x == 'GT)
+        (x:Delete n xs)
+        (x:xs)  -- Compare n x == 'LT
+      )
+
+insertLT :: (Join l m r ~ p, Insert n p ~ Join (Insert n l) m r) =>
+  Natty n -> BST l -> Natty m -> BST r -> BST p -> t -> t
+insertLT Zy     left node right previousBST newBST = newBST
+insertLT (Sy n) left node right previousBST newBST = newBST
+
+insertEQ :: Natty n -> BST l -> Natty n -> BST r -> BST p ->
+  ((p ~ Insert n p) => t) -> t
+insertEQ Zy left Zy right previousBST newBST = newBST
+insertEQ (Sy n) left (Sy m) right previousBST newBST
+  = insertEQ n left m right previousBST newBST
+
 -- Insert a Singleton Nat (Natty) into a BST.
-insert :: (LtB lb ('Val n), LtB ('Val n) up) => Natty n -> BST lb up -> BST lb up
+insert :: Natty n -> BST l -> BST (Insert n l)
 insert n EmptyBST = RootBST EmptyBST n EmptyBST
 insert n (RootBST l m r) = case owoto n m of
-  LE -> RootBST (insert n l) m r
-  EE -> RootBST l m r
+  LE -> insertLT n l m r (RootBST l m r) (RootBST (insert n l) m r)
+  EE -> insertEQ n l m r (RootBST l m r) (RootBST l m r)
   GE -> RootBST l m (insert n r)
 
--- TODO Check the non-emptyness of the tree through it's type
--- Can't return a Singleton Nat (who is n?). This can be fixed by changing the
--- semantic of the bounds: lb is the minumum element and up is the maximum.
--- In that case, n is up.
--- max :: BST lb up -> Natty n
--- max (RootBST _ m r) = if isEmpty r
---                       then m
---                       else max r
---
--- delete :: (LtB lb (Val n), LtB (Val n) up, LtB lb' up') =>
---   Natty n -> BST lb up -> BST lb' up'
--- delete _ EmptyBST = EmptyBST
--- delete n (RootBST l m r) = case owoto n m of
---   LE -> RootBST (delete n l) m r
---   EE -> case isEmpty l of
---           True  -> r
---           False -> RootBST l1 m1 r
---             where
---               m1 = max l
---               l1 = delete m1 l
---   GE -> RootBST l m (delete n r)
+min :: BST (n:ns) -> Natty n
+min (RootBST l m _) = if isEmpty l
+                      then m
+                      else min l
 
-preorder :: BST lb up -> [Nat]
+delete :: Natty n -> BST l -> BST (Delete n l)
+delete _ EmptyBST = EmptyBST
+delete n (RootBST l m r) = case owoto n m of
+  LE -> RootBST (delete n l) m r
+  EE -> case isEmpty r of
+          True  -> l
+          False -> RootBST l m1 r1
+            where
+              m1 = min r
+              r1 = delete m1 r
+  GE -> RootBST l m (delete n r)
+
+preorder :: BST l -> [Nat]
 preorder EmptyBST         = []
 preorder (RootBST l m r)  = (natty2Nat m : preorder l) ++ preorder r
 
-inorder :: BST lb up -> [Nat]
+inorder :: BST l -> [Nat]
 inorder EmptyBST        = []
 inorder (RootBST l m r) = inorder l ++ [natty2Nat m] ++ inorder r
 
-outorder :: BST lb up -> [Nat]
+outorder :: BST l -> [Nat]
 outorder EmptyBST        = []
 outorder (RootBST l m r) = outorder r ++ [natty2Nat m] ++ outorder l
 
-postorder :: BST lb up -> [Nat]
+postorder :: BST l -> [Nat]
 postorder EmptyBST        = []
 postorder (RootBST l m r) = postorder l ++ postorder r ++ [natty2Nat m]
