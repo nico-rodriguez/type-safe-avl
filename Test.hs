@@ -40,3 +40,5 @@ t2 = RootBST EmptyBST sbn2 EmptyBST
 t3 = insert sbn6 t2
 
 t4 = insert sbn0 t3
+
+t5 = insert sbn1 t4

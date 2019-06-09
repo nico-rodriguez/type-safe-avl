@@ -12,6 +12,8 @@
 
 {-# LANGUAGE PolyKinds #-}
 
+{-# LANGUAGE RankNTypes #-}
+
 {-# LANGUAGE ScopedTypeVariables #-}
 
 {-# LANGUAGE StandaloneDeriving #-}
@@ -32,6 +34,10 @@ import Prelude hiding (min)
 -- Natural Numbers.
 data Nat = Z | S Nat
   deriving (Eq, Ord, Show)
+
+type family (m :: Nat) :+ (n :: Nat) :: Nat where
+  'Z   :+ n = n
+  'S m :+ n = 'S (m :+ n)
 
 -- Singleton for Natural Numbers.
 data Natty :: Nat -> * where
