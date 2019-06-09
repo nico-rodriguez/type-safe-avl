@@ -25,12 +25,18 @@ sbn5 = Sy (Sy (Sy (Sy (Sy Zy))))
 sbn6 :: Natty ('S ('S ('S ('S ('S ('S 'Z))))))
 sbn6 = Sy (Sy (Sy (Sy (Sy (Sy Zy)))))
 
-e :: BST 'Bot 'Top
+e :: BST '[]
 e = EmptyBST
 
-t3 :: BST 'Bot 'Top
+-- t3 :: BST '[]
 -- t3 = RootBST (EmptyBST MinusInfy sbn3) sbn3 (EmptyBST sbn3 PlusInfy)
-t3 = insert sbn3 e
+-- t3 = insert sbn3 e
 
-t2 :: BST 'Bot 'Top
+t2 :: BST (Join '[] ('S ('S 'Z)) '[])
+-- t2 :: BST '['S ('S 'Z)]
 t2 = RootBST EmptyBST sbn2 EmptyBST
+
+-- t3 :: BST '['S ('S 'Z), 'S ('S ('S ('S ('S ('S 'Z)))))]
+t3 = insert sbn6 t2
+
+t4 = insert sbn0 t3
