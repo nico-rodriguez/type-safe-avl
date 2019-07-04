@@ -1,5 +1,5 @@
 {-# LANGUAGE  DataKinds, GADTs, KindSignatures, MultiParamTypeClasses,
-              StandaloneDeriving, TypeFamilies, TypeOperators, UndecidableInstances #-}
+              TypeFamilies, TypeOperators, UndecidableInstances #-}
 
 module BST where
 
@@ -16,7 +16,15 @@ data Tree :: * where
 data BST :: Tree -> * where
   EmptyBST :: BST 'EmptyTree
   ForkBST  :: BST l -> Natty n -> BST r -> BST ('ForkTree l n r)
-deriving instance Show (BST t)
+  -- deriving instance Show (BST t)
+
+instance Show (BST t) where
+  show EmptyBST         = "E"
+  show (ForkBST l n r)  = "F " ++ go l ++ " " ++ show n ++ " " ++ go r
+    where
+      go :: BST t' -> String
+      go EmptyBST         = "E"
+      go (ForkBST l' n' r')  = "(" ++ go l' ++ " " ++ show n' ++ " " ++ go r' ++ ")"
 
 type family Insert (n :: Nat) (t :: Tree) :: Tree where
   Insert n 'EmptyTree         = 'ForkTree 'EmptyTree n 'EmptyTree

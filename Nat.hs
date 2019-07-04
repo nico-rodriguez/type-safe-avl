@@ -21,7 +21,16 @@ data Natty :: Nat -> * where
   Zy :: Natty 'Z
   Sy :: Natty n -> Natty ('S n)
 deriving instance Eq (Natty n)
-deriving instance Show (Natty n)
+
+natty2Int :: Natty n -> Int
+natty2Int n = natty2IntAc n 0
+
+natty2IntAc :: Natty n -> Int -> Int
+natty2IntAc Zy     ac = ac
+natty2IntAc (Sy n) ac = natty2IntAc n (ac+1)
+
+instance Show (Natty n) where
+  show n = show $ natty2Int n
 
 data OWOTO :: Nat -> Nat -> * where
   LE :: (Compare x y ~ 'LT)  => OWOTO x y
