@@ -63,7 +63,7 @@ data IET :: Tree -> * where
   NE  :: (t ~ 'ForkTree l m r)  => IET t
 
 isEmpty :: BST t -> IET t
-isEmpty EmptyBST        = E
+isEmpty EmptyBST  = E
 isEmpty ForkBST{} = NE
 
 type family Max (t :: Tree) :: Nat where
@@ -73,7 +73,7 @@ type family Max (t :: Tree) :: Nat where
       (Max r)
     )
 
-max :: (n ~ Max t) => BST t -> Natty n
+max :: (t ~ 'ForkTree l m r, n ~ Max t) => BST t -> Natty n
 max (ForkBST _ n r) = case isEmpty r of
   E -> n
   NE -> max r

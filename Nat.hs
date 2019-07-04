@@ -23,15 +23,10 @@ data Natty :: Nat -> * where
 deriving instance Eq (Natty n)
 deriving instance Show (Natty n)
 
--- Type class for ordering Natural Numbers
-class LtN (m :: Nat) (n :: Nat) where
-instance            LtN 'Z     ('S n) where
-instance LtN m n => LtN ('S m) ('S n) where
-
 data OWOTO :: Nat -> Nat -> * where
-  LE :: (LtN x y, Compare x y ~ 'LT)  => OWOTO x y
+  LE :: (Compare x y ~ 'LT)  => OWOTO x y
   EE :: (Compare x x ~ 'EQ)           => OWOTO x x
-  GE :: (LtN y x, Compare x y ~ 'GT)  => OWOTO x y
+  GE :: (Compare x y ~ 'GT)  => OWOTO x y
 
 owoto :: Natty m -> Natty n -> OWOTO m n
 owoto Zy      Zy      = EE
