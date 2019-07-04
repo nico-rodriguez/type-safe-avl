@@ -52,7 +52,7 @@ t3 :: BST
            ('ForkTree 'EmptyTree ('S ('S ('S ('S ('S ('S 'Z)))))) 'EmptyTree))
 t3 = insert sbn6 t2
 
--- [1,2,4,6]
+-- [2,3,4,6]
 t4 :: BST
         ('ForkTree
            ('ForkTree
@@ -63,7 +63,7 @@ t4 :: BST
            ('ForkTree 'EmptyTree ('S ('S ('S ('S ('S ('S 'Z)))))) 'EmptyTree))
 t4 = insert sbn3 t3
 
--- [1,2,4,5,6]
+-- [2,3,4,5,6]
 t5 :: BST
         ('ForkTree
            ('ForkTree
@@ -77,7 +77,7 @@ t5 :: BST
               'EmptyTree))
 t5 = insert sbn5 t4
 
--- [0,1,2,4,5,6]
+-- [0,2,3,4,5,6]
 t6 :: BST
         ('ForkTree
            ('ForkTree
@@ -91,7 +91,7 @@ t6 :: BST
               'EmptyTree))
 t6 = insert sbn0 t5
 
--- [0,1,2,4,5,6,7]
+-- [0,2,3,4,5,6,7]
 t7 :: BST
         ('ForkTree
            ('ForkTree
