@@ -1,112 +1,109 @@
-{-# LANGUAGE DataKinds #-}
+{-# LANGUAGE  DataKinds, GADTs, KindSignatures, MultiParamTypeClasses,
+              StandaloneDeriving, TypeFamilies, TypeOperators, UndecidableInstances #-}
 
-{-# LANGUAGE FlexibleContexts #-}
-
-{-# LANGUAGE FlexibleInstances #-}
-
-{-# LANGUAGE GADTs #-}
-
-{-# LANGUAGE KindSignatures #-}
-
-{-# LANGUAGE MultiParamTypeClasses #-}
-
-{-# LANGUAGE PolyKinds #-}
-
-{-# LANGUAGE RankNTypes #-}
-
-{-# LANGUAGE ScopedTypeVariables #-}
-
-{-# LANGUAGE StandaloneDeriving #-}
-
-{-# LANGUAGE TypeFamilies #-}
-
-{-# LANGUAGE TypeOperators #-}
-
-{-# LANGUAGE UndecidableInstances #-}
-
-module BST (Nat(..), Natty(..), BST(..), Join, insert) where--,
-  --isEmpty, member, insert, preorder, inorder, postorder, outorder) where
+module BST where
 
 import Data.Type.Bool
 import Data.Type.Equality
-import Prelude hiding (min)
+import Prelude hiding (max)
 
--- Natural Numbers.
-data Nat = Z | S Nat
-  deriving (Eq, Ord, Show)
+import Nat
 
-type family (m :: Nat) :+ (n :: Nat) :: Nat where
-  'Z   :+ n = n
-  'S m :+ n = 'S (m :+ n)
+data Tree :: * where
+  EmptyTree :: Tree
+  ForkTree  :: Tree -> Nat -> Tree -> Tree
 
--- Singleton for Natural Numbers.
-data Natty :: Nat -> * where
-  Zy :: Natty 'Z
-  Sy :: Natty n -> Natty ('S n)
-deriving instance Eq (Natty n)
-deriving instance Show (Natty n)
+data BST :: Tree -> * where
+  EmptyBST :: BST 'EmptyTree
+  ForkBST  :: BST l -> Natty n -> BST r -> BST ('ForkTree l n r)
+deriving instance Show (BST t)
 
--- Type class for ordering Natural Numbers
-class LtN (m :: Nat) (n :: Nat) where
-instance            LtN 'Z     ('S n) where
-instance LtN m n => LtN ('S m) ('S n) where
-
-data OWOTO :: Nat -> Nat -> * where
-  LE :: (LtN x y, Compare x y ~ 'LT)  => OWOTO x y
-  EE :: (Compare x x ~ 'EQ)           => OWOTO x x
-  GE :: (LtN y x, Compare x y ~ 'GT)  => OWOTO x y
-
-owoto :: Natty m -> Natty n -> OWOTO m n
-owoto Zy      Zy      = EE
-owoto Zy      (Sy _)  = LE
-owoto (Sy _)  Zy      = GE
-owoto (Sy m)  (Sy n)  = case owoto m n of
-  LE -> LE
-  GE -> GE
-  EE -> EE
-
--- Binary Search Tree of Singleton Natural Numbers.
-data BST :: [Nat] -> * where
-  EmptyBST :: BST '[]
-  RootBST  :: BST l1 -> Natty n -> BST l2 -> BST (Join l1 n l2)
-deriving instance Show (BST l)
-
-type family Join (e1 :: [Nat]) (n :: Nat) (e2 :: [Nat]) :: [Nat] where
-  Join '[] n ys = (n:ys)
-  Join (x:xs) n ys = x:Join xs n ys
-
-type family Compare (m :: Nat) (n :: Nat) :: Ordering where
-  Compare 'Z      'Z      = 'EQ
-  Compare ('S m)  ('S n)  = Compare m n
-  Compare ('S m)  'Z      = 'GT
-  Compare 'Z      ('S n)  = 'LT
-
-type family Insert (n :: Nat) (l :: [Nat]) :: [Nat] where
-  Insert n '[] = '[n]
-  Insert n (x:xs) =
-    If (Compare n x == 'GT)
-      (x:Insert n xs)
-      (If (Compare n x == 'LT)
-        (n:x:xs)
-        (x:xs)  -- Compare n x == 'EQ
+type family Insert (n :: Nat) (t :: Tree) :: Tree where
+  Insert n 'EmptyTree         = 'ForkTree 'EmptyTree n 'EmptyTree
+  Insert n ('ForkTree l m r)  =
+    (If (Compare n m == 'EQ)
+      ('ForkTree l m r)
+      (If (Compare n m == 'LT)
+        ('ForkTree (Insert n l) m r)
+        ('ForkTree l m (Insert n r))
       )
+    )
 
-joinInsertLT :: (Compare n m ~ 'LT) => Natty n -> BST l -> Natty m -> BST r ->
-  Join (Insert n l) m r :~: Insert n (Join l m r)
-joinInsertLT n EmptyBST m r = Refl
+insert :: Natty n -> BST t -> BST (Insert n t)
+insert n EmptyBST         = ForkBST EmptyBST n EmptyBST
+insert n (ForkBST l m r)  = case owoto n m of
+  EE -> ForkBST l m r
+  LE -> ForkBST (insert n l) m r
+  GE -> ForkBST l m (insert n r)
 
-joinInsertEQ :: (Compare n m ~ 'EQ) => Natty n -> BST l -> Natty m -> BST r ->
-  Insert n (Join l m r) :~: Join l m r
-joinInsertEQ n EmptyBST m r = Refl
+type family Member (n :: Nat) (t :: Tree) :: Bool where
+  Member n 'EmptyTree         = 'False
+  Member n ('ForkTree l m r)  =
+    (If (Compare n m == 'EQ)
+      'True
+      (If (Compare n m == 'LT)
+        (Member n l)
+        (Member n r)
+      )
+    )
 
-joinInsertGT :: (Compare n m ~ 'GT) => Natty n -> BST l -> Natty m -> BST r ->
-  Join l m (Insert n r) :~: Insert n (Join l m r)
-joinInsertGT n EmptyBST m r = Refl
+member :: Natty n -> BST t -> Bool
+member _ EmptyBST         = False
+member n (ForkBST l m r)  = case owoto n m of
+  EE -> True
+  LE -> member n l
+  GE -> member n r
 
--- Insert a Singleton Nat (Natty) into a BST.
-insert :: Natty n -> BST l -> BST (Insert n l)
-insert n EmptyBST = RootBST EmptyBST n EmptyBST
-insert n (RootBST l m r) = case owoto n m of
-  LE -> gcastWith (joinInsertLT n l m r) (RootBST (insert n l) m r)
-  EE -> gcastWith (joinInsertEQ n l m r) (RootBST l m r)
-  GE -> gcastWith (joinInsertGT n l m r) (RootBST l m (insert n r))
+type family IsEmpty (t :: Tree) :: Bool where
+  IsEmpty 'EmptyTree        = 'True
+  IsEmpty ('ForkTree l m r) = 'False
+
+data IET :: Tree -> * where
+  E   :: (t ~ 'EmptyTree)       => IET t
+  NE  :: (t ~ 'ForkTree l m r)  => IET t
+
+isEmpty :: BST t -> IET t
+isEmpty EmptyBST        = E
+isEmpty ForkBST{} = NE
+
+type family Max (t :: Tree) :: Nat where
+  Max ('ForkTree l m r) =
+    (If (IsEmpty r == 'True)
+      m
+      (Max r)
+    )
+
+max :: (n ~ Max t) => BST t -> Natty n
+max (ForkBST _ n r) = case isEmpty r of
+  E -> n
+  NE -> max r
+
+type family Delete (n :: Nat) (t :: Tree) :: Tree where
+  Delete n 'EmptyTree         = 'EmptyTree
+  Delete n ('ForkTree l m r)  =
+    (If (Compare n m == 'EQ)
+      (If (IsEmpty l == 'True)
+        r
+        (If (IsEmpty r == 'True)
+          l
+          ('ForkTree (Delete (Max l) l) (Max l) r)
+        )
+      )
+      (If (Compare n m == 'LT)
+        ('ForkTree (Delete n l) m r)
+        ('ForkTree l m (Delete n r))
+      )
+    )
+
+delete :: Natty n -> BST t -> BST (Delete n t)
+delete _ EmptyBST         = EmptyBST
+delete n (ForkBST l m r)  = case owoto n m of
+  EE -> case isEmpty l of
+    E -> r
+    NE -> case isEmpty r of
+      E -> l
+      NE -> ForkBST (delete maxL l) maxL r
+        where
+          maxL = max l
+  LE -> ForkBST (delete n l) m r
+  GE -> ForkBST l m (delete n r)

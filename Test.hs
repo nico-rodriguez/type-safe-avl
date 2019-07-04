@@ -3,6 +3,7 @@
 module Test where
 
 import BST
+import Nat
 
 sbn0 :: Natty 'Z
 sbn0 = Zy
@@ -25,20 +26,50 @@ sbn5 = Sy (Sy (Sy (Sy (Sy Zy))))
 sbn6 :: Natty ('S ('S ('S ('S ('S ('S 'Z))))))
 sbn6 = Sy (Sy (Sy (Sy (Sy (Sy Zy)))))
 
-e :: BST '[]
+e :: BST 'EmptyTree
 e = EmptyBST
 
--- t3 :: BST '[]
--- t3 = RootBST (EmptyBST MinusInfy sbn3) sbn3 (EmptyBST sbn3 PlusInfy)
--- t3 = insert sbn3 e
+t2 :: BST ('ForkTree 'EmptyTree ('S ('S 'Z)) 'EmptyTree)
+t2 = ForkBST EmptyBST sbn2 EmptyBST
 
-t2 :: BST (Join '[] ('S ('S 'Z)) '[])
--- t2 :: BST '['S ('S 'Z)]
-t2 = RootBST EmptyBST sbn2 EmptyBST
-
--- t3 :: BST '['S ('S 'Z), 'S ('S ('S ('S ('S ('S 'Z)))))]
+t3 :: BST
+        ('ForkTree
+           'EmptyTree
+           ('S ('S 'Z))
+           ('ForkTree 'EmptyTree ('S ('S ('S ('S ('S ('S 'Z)))))) 'EmptyTree))
 t3 = insert sbn6 t2
 
+t4 :: BST
+        ('ForkTree
+           ('ForkTree 'EmptyTree 'Z 'EmptyTree)
+           ('S ('S 'Z))
+           ('ForkTree 'EmptyTree ('S ('S ('S ('S ('S ('S 'Z)))))) 'EmptyTree))
 t4 = insert sbn0 t3
 
+t5 :: BST
+        ('ForkTree
+           ('ForkTree 'EmptyTree 'Z ('ForkTree 'EmptyTree ('S 'Z) 'EmptyTree))
+           ('S ('S 'Z))
+           ('ForkTree 'EmptyTree ('S ('S ('S ('S ('S ('S 'Z)))))) 'EmptyTree))
 t5 = insert sbn1 t4
+
+t6 :: BST
+        ('ForkTree
+           ('ForkTree 'EmptyTree 'Z 'EmptyTree)
+           ('S ('S 'Z))
+           ('ForkTree 'EmptyTree ('S ('S ('S ('S ('S ('S 'Z)))))) 'EmptyTree))
+t6 = delete sbn1 t4
+
+t7 :: BST
+        ('ForkTree
+           ('ForkTree 'EmptyTree 'Z 'EmptyTree)
+           ('S ('S 'Z))
+           ('ForkTree 'EmptyTree ('S ('S ('S ('S ('S ('S 'Z)))))) 'EmptyTree))
+t7 = delete sbn1 t5
+
+t8 :: BST
+        ('ForkTree
+           ('ForkTree 'EmptyTree 'Z 'EmptyTree)
+           ('S 'Z)
+           ('ForkTree 'EmptyTree ('S ('S ('S ('S ('S ('S 'Z)))))) 'EmptyTree))
+t8 = delete sbn2 t5
