@@ -115,10 +115,3 @@ delete n (ForkBST l m r)  = case owoto n m of
           maxL = max l
   LE -> ForkBST (delete n l) m r
   GE -> ForkBST l m (delete n r)
-
-search :: Natty n -> BST t -> Bool
-search _ EmptyBST         = False
-search n (ForkBST l m r)  = case owoto n m of
-  EE -> True
-  LE -> search n l
-  GE -> search n r
