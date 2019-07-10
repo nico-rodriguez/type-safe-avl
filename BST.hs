@@ -67,8 +67,8 @@ type family IsEmpty (t :: Tree) :: Bool where
   IsEmpty ('ForkTree l m r) = 'False
 
 data IET :: Tree -> * where
-  E   :: (t ~ 'EmptyTree)       => IET t
-  NE  :: (t ~ 'ForkTree l m r)  => IET t
+  E   :: IET 'EmptyTree
+  NE  :: IET ('ForkTree l m r)
 
 isEmpty :: BST t -> IET t
 isEmpty EmptyBST  = E
@@ -81,7 +81,7 @@ type family Max (t :: Tree) :: Nat where
       (Max r)
     )
 
-max :: (t ~ 'ForkTree l m r, n ~ Max t) => BST t -> Natty n
+max :: BST ('ForkTree l m r) -> Natty (Max ('ForkTree l m r))
 max (ForkBST _ n r) = case isEmpty r of
   E -> n
   NE -> max r
