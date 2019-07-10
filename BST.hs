@@ -1,5 +1,12 @@
-{-# LANGUAGE  DataKinds, GADTs, KindSignatures, MultiParamTypeClasses,
-              TypeFamilies, TypeOperators, UndecidableInstances #-}
+{-# LANGUAGE DataKinds #-}
+
+{-# LANGUAGE GADTs #-}
+
+{-# LANGUAGE TypeFamilies #-}
+
+{-# LANGUAGE TypeOperators #-}
+
+{-# LANGUAGE UndecidableInstances #-}
 
 module BST where
 

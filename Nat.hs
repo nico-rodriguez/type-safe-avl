@@ -2,10 +2,6 @@
 
 {-# LANGUAGE GADTs #-}
 
-{-# LANGUAGE KindSignatures #-}
-
-{-# LANGUAGE MultiParamTypeClasses #-}
-
 {-# LANGUAGE StandaloneDeriving #-}
 
 {-# LANGUAGE TypeFamilies #-}
