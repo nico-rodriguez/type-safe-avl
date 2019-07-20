@@ -8,13 +8,14 @@
 
 {-# LANGUAGE UndecidableInstances #-}
 
-module BST where
+module BSTNat where
 
+import Compare (Compare)
 import Data.Type.Bool
 import Data.Type.Equality
+import Nat
 import Prelude hiding (max)
 
-import Nat
 
 data Tree :: * where
   EmptyTree :: Tree

@@ -2,7 +2,7 @@
 
 module Test where
 
-import BST
+import BSTNat
 import Nat
 
 sbn0 :: Natty 'Z
