@@ -58,16 +58,17 @@ type family IsBST (t :: Tree a) :: Bool where
 
 data BST :: Tree a -> * where
   EmptyBST :: BST 'EmptyTree
-  ForkBST  :: (Show (s n), LtN l n ~ 'True, GtN n r ~ 'True) =>
+  -- ForkBST  :: (Show (s n), LtN l n ~ 'True, GtN n r ~ 'True) =>
+  ForkBST  :: (LtN l n ~ 'True, GtN n r ~ 'True) =>
     BST l -> s n -> BST r -> BST ('ForkTree l n r)
 
-instance Show (BST t) where
-  show EmptyBST         = "E"
-  show (ForkBST l sn r) = "F " ++ go l ++ " " ++ show sn ++ " " ++ go r
-    where
-      go :: BST t' -> String
-      go EmptyBST         = "E"
-      go (ForkBST l' sn' r')  = "(" ++ go l' ++ " " ++ show sn' ++ " " ++ go r' ++ ")"
+-- instance Show (BST t) where
+--   show EmptyBST         = "E"
+--   show (ForkBST l sn r) = "F " ++ go l ++ " " ++ show sn ++ " " ++ go r
+--     where
+--       go :: BST t' -> String
+--       go EmptyBST         = "E"
+--       go (ForkBST l' sn' r')  = "(" ++ go l' ++ " " ++ show sn' ++ " " ++ go r' ++ ")"
 
 type family Insert (x :: a) (t :: Tree a) :: Tree a where
   Insert x 'EmptyTree         = 'ForkTree 'EmptyTree x 'EmptyTree
@@ -122,7 +123,7 @@ type family Max (t :: Tree a) :: a where
       (Max r)
     )
 
-max :: BST ('ForkTree l m r) ->  s (Max ('ForkTree l m r))
+max :: BST ('ForkTree l n r) ->  s (Max ('ForkTree l n r))
 max (ForkBST _ n r) = case isEmpty r of
   E -> n
   NE -> max r
