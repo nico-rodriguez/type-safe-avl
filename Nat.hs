@@ -8,7 +8,6 @@
 module Nat where
 
 import Compare (Compare)
-import Data.Type.Equality
 
 -- Natural Numbers.
 data Nat = Z | S Nat
