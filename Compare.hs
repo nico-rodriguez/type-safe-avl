@@ -6,9 +6,6 @@
 
 module Compare where
 
-import Data.Proxy
-import Data.Type.Equality
-
 type family Compare (a :: k) (b :: k) :: Ordering
 
 data OWOTO :: a -> b -> * where
