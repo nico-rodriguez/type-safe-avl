@@ -9,12 +9,12 @@
 
 module BSTGeneral where
 
-import Compare (Compare)
+-- import Compare (Compare)
 import Compare
-import Data.Proxy
+-- import Data.Proxy
 import Data.Type.Bool
 import Data.Type.Equality
-import Prelude hiding (max)
+-- import Prelude hiding (max)
 -- import Nat
 
 data Tree a :: * where
@@ -81,13 +81,57 @@ type family Insert (x :: a) (t :: Tree a) :: Tree a where
       )
     )
 
-insertLeftProof :: (Compare x n ~ 'LT, LtN t n ~ 'True) =>
-  s1 x -> BST t -> s2 n -> LtN (Insert x t) n :~: 'True
-insertLeftProof _ _ _ = undefined
+ltnSubTree :: BST t -> s n -> LtN t n :~: 'True
+ltnSubTree EmptyBST         _ = Refl
+ltnSubTree (ForkBST l n1 r) n = gcastWith (ltnNode n1 n) (gcastWith (ltnSubTree r n) (gcastWith (ltnSubTree l n) Refl))
 
-inserRightProof :: (Compare x n ~ 'GT, GtN n t ~ 'True) =>
+ltnLeft :: BST l -> s n -> LtN l n :~: 'True
+ltnLeft l n = case isEmpty l of
+  E -> Refl
+  NE -> gcastWith (ltnSubTree l n) Refl
+
+ltnNode :: s1 n1 -> s2 n -> Compare n1 n :~: 'LT
+ltnNode n1 n = case owoto n1 n of
+  LE -> Refl
+
+ltnRight :: BST r -> s n -> LtN r n :~: 'True
+ltnRight r n = case isEmpty r of
+  E -> Refl
+  NE -> gcastWith (ltnSubTree r n) Refl
+
+insertLeftProof :: (Compare x n ~ 'LT) =>
+  s1 x -> BST t -> s2 n -> LtN (Insert x t) n :~: 'True
+insertLeftProof _ EmptyBST         _ = Refl
+insertLeftProof x (ForkBST l n1 r) n = case owoto x n1 of
+  EE -> gcastWith (ltnRight r n) (gcastWith (ltnLeft l n) Refl)
+  LE -> gcastWith (ltnNode n1 n) (gcastWith (ltnRight r n) (gcastWith (insertLeftProof x l n) Refl))
+  GE -> gcastWith (ltnNode n1 n) (gcastWith (ltnLeft l n) (gcastWith (insertLeftProof x r n) Refl))
+
+gtnSubTree :: BST t -> s n -> GtN n t :~: 'True
+gtnSubTree EmptyBST         _ = Refl
+gtnSubTree (ForkBST l n1 r) n = gcastWith (gtnNode n1 n) (gcastWith (gtnSubTree r n) (gcastWith (gtnSubTree l n) Refl))
+
+gtnLeft :: BST l -> s n -> GtN n l :~: 'True
+gtnLeft l n = case isEmpty l of
+  E -> Refl
+  NE -> gcastWith (gtnSubTree l n) Refl
+
+gtnNode :: s1 n1 -> s2 n -> Compare n1 n :~: 'GT
+gtnNode n1 n = case owoto n1 n of
+  GE -> Refl
+
+gtnRight :: BST r -> s n -> GtN n r :~: 'True
+gtnRight r n = case isEmpty r of
+  E -> Refl
+  NE -> gcastWith (gtnSubTree r n) Refl
+
+insertRightProof :: (Compare x n ~ 'GT) =>
   s1 x -> BST t -> s2 n -> GtN n (Insert x t) :~: 'True
-inserRightProof _ _ _ = undefined
+insertRightProof _ EmptyBST         _ = Refl
+insertRightProof x (ForkBST l n1 r) n = case owoto x n1 of
+  EE -> gcastWith (gtnRight r n) (gcastWith (gtnLeft l n) Refl)
+  LE -> gcastWith (gtnNode n1 n) (gcastWith (gtnRight r n) (gcastWith (insertRightProof x l n) Refl))
+  GE -> gcastWith (gtnNode n1 n) (gcastWith (gtnLeft l n) (gcastWith (insertRightProof x r n) Refl))
 
 insert :: (Show (s x)) =>
   s x -> BST t -> BST (Insert x t)
@@ -95,7 +139,7 @@ insert x EmptyBST         = ForkBST EmptyBST x EmptyBST
 insert x (ForkBST l n r)  = case owoto x n of
   EE -> ForkBST l n r
   LE -> gcastWith (insertLeftProof x l n) (ForkBST (insert x l) n r)
-  GE -> gcastWith (inserRightProof x r n) (ForkBST l n (insert x r))
+  GE -> gcastWith (insertRightProof x r n) (ForkBST l n (insert x r))
 
 member :: s x -> BST t -> Bool
 member _ EmptyBST         = False
@@ -123,10 +167,10 @@ type family Max (t :: Tree a) :: a where
       (Max r)
     )
 
-max :: BST ('ForkTree l n r) ->  s (Max ('ForkTree l n r))
-max (ForkBST _ n r) = case isEmpty r of
-  E -> n
-  NE -> max r
+-- max :: BST ('ForkTree l n r) ->  s (Max ('ForkTree l n r))
+-- max (ForkBST _ n r) = case isEmpty r of
+--   E -> n
+--   NE -> max r
 
 type family Delete (x :: a) (t :: Tree a) :: Tree a where
   Delete x 'EmptyTree         = 'EmptyTree
@@ -161,18 +205,18 @@ deleteRightProof :: (Compare x n ~ 'GT) =>
   s1 x -> BST t -> s2 n -> GtN n (Delete x t) :~: 'True
 deleteRightProof _ _ _ = undefined
 
-delete :: s x -> BST t -> BST (Delete x t)
-delete _ EmptyBST         = EmptyBST
-delete x (ForkBST l n r)  = case owoto x n of
-  EE -> case isEmpty l of
-    E -> r
-    NE -> case isEmpty r of
-      E -> l
-      NE -> gcastWith (deleteProof' maxL (ForkBST l n r)) (gcastWith (deleteProof maxL l) (ForkBST (delete maxL l) maxL r))
-        where
-          maxL = max l
-  LE -> gcastWith (deleteLeftProof x l n) (ForkBST (delete x l) n r)
-  GE -> gcastWith (deleteRightProof x r n) (ForkBST l n (delete x r))
+-- delete :: s x -> BST t -> BST (Delete x t)
+-- delete _ EmptyBST         = EmptyBST
+-- delete x (ForkBST l n r)  = case owoto x n of
+--   EE -> case isEmpty l of
+--     E -> r
+--     NE -> case isEmpty r of
+--       E -> l
+--       NE -> gcastWith (deleteProof' maxL (ForkBST l n r)) (gcastWith (deleteProof maxL l) (ForkBST (delete maxL l) maxL r))
+--         where
+--           maxL = max l
+--   LE -> gcastWith (deleteLeftProof x l n) (ForkBST (delete x l) n r)
+--   GE -> gcastWith (deleteRightProof x r n) (ForkBST l n (delete x r))
 
 -- sbn0 :: Natty 'Z
 -- sbn0 = Zy
