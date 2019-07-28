@@ -81,11 +81,11 @@ type family Insert (x :: a) (t :: Tree a) :: Tree a where
       )
     )
 
-insertLeftProof :: (Compare x n ~ 'LT) =>
+insertLeftProof :: (Compare x n ~ 'LT, LtN t n ~ 'True) =>
   s1 x -> BST t -> s2 n -> LtN (Insert x t) n :~: 'True
 insertLeftProof _ _ _ = undefined
 
-inserRightProof :: (Compare x n ~ 'GT) =>
+inserRightProof :: (Compare x n ~ 'GT, GtN n t ~ 'True) =>
   s1 x -> BST t -> s2 n -> GtN n (Insert x t) :~: 'True
 inserRightProof _ _ _ = undefined
 
