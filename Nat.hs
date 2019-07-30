@@ -7,7 +7,7 @@
 
 module Nat where
 
-import Compare (Compare)
+import Compare (Compare, OWOTO(..), Owoto(..))
 
 -- Natural Numbers.
 data Nat = Z | S Nat
@@ -29,16 +29,19 @@ natty2IntAc (Sy n) ac = natty2IntAc n (ac+1)
 instance Show (Natty n) where
   show n = show $ natty2Int n
 
-data OWOTO :: Nat -> Nat -> * where
-  LE :: (Compare x y ~ 'LT) => OWOTO x y
-  EE :: (Compare x x ~ 'EQ) => OWOTO x x
-  GE :: (Compare x y ~ 'GT) => OWOTO x y
+-- data OWOTO :: Nat -> Nat -> * where
+--   LE :: (Compare x y ~ 'LT) => OWOTO x y
+--   EE :: (Compare x x ~ 'EQ) => OWOTO x x
+--   GE :: (Compare x y ~ 'GT) => OWOTO x y
 
-owoto :: Natty m -> Natty n -> OWOTO m n
-owoto Zy      Zy      = EE
-owoto Zy      (Sy _)  = LE
-owoto (Sy _)  Zy      = GE
-owoto (Sy m)  (Sy n)  = case owoto m n of
+instance Owoto Natty where
+  -- owoto = owotoNat
+
+owotoNat :: Natty m -> Natty n -> OWOTO m n
+owotoNat Zy      Zy      = EE
+owotoNat Zy      (Sy _)  = LE
+owotoNat (Sy _)  Zy      = GE
+owotoNat (Sy m)  (Sy n)  = case owotoNat m n of
   LE -> LE
   GE -> GE
   EE -> EE
