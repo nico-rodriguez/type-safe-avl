@@ -41,7 +41,6 @@ data BST :: Tree -> * where
   EmptyBST :: BST 'EmptyTree
   ForkBST  :: (LtN l n ~ 'True, GtN n r ~ 'True) =>
     BST l -> Natty n -> BST r -> BST ('ForkTree l n r)
-  -- deriving instance Show (BST t)
 
 instance Show (BST t) where
   show EmptyBST         = "E"
