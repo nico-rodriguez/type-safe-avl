@@ -1,19 +1,15 @@
 {-# LANGUAGE DataKinds #-}
-
 {-# LANGUAGE GADTs #-}
-
 {-# LANGUAGE TypeFamilies #-}
-
 {-# LANGUAGE TypeOperators #-}
-
 {-# LANGUAGE UndecidableInstances #-}
 
-module BSTNat where
+module BSTNatTypeFamilies.BSTNat where
 
 import Compare (Compare, OWOTO(..))
 import Data.Type.Bool
 import Data.Type.Equality
-import Nat
+import Data.Nat
 import Prelude hiding (max)
 
 

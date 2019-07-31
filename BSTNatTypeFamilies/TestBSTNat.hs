@@ -1,9 +1,9 @@
 {-# LANGUAGE DataKinds #-}
 
-module Test where
+module BSTNatTypeFamilies.Test where
 
-import BSTNat
-import Nat
+import BSTNatTypeFamilies.BSTNat
+import Data.Nat
 
 sbn0 :: Natty 'Z
 sbn0 = Zy

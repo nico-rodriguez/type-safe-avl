@@ -1,14 +1,10 @@
 {-# LANGUAGE DataKinds #-}
-
 {-# LANGUAGE GADTs #-}
-
 {-# LANGUAGE TypeFamilies #-}
-
 {-# LANGUAGE TypeOperators #-}
-
 {-# LANGUAGE UndecidableInstances #-}
 
-module Chr where
+module Data.Chr where
 
 import Compare
 import Data.Type.Bool
@@ -92,6 +88,9 @@ data SChar :: Chr -> * where
 
 instance Show (SChar c) where
   showsPrec d c = showParen (d > 10) $ showString "SChar " . shows (toChar c)
+
+owotoChr :: SChar c1 -> SChar c2 -> OWOTO c1 c2
+owotoChr = undefined
 
 fromBinDigit :: Bool -> Int
 fromBinDigit b = if b then 1 else 0

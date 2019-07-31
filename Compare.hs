@@ -15,6 +15,3 @@ data OWOTO :: a -> b -> * where
 
 owoto :: s1 a -> s2 b -> OWOTO a b
 owoto = undefined
-
-class Owoto s where
-  -- owoto :: s a -> s b -> OWOTO a b

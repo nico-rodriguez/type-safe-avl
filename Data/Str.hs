@@ -4,13 +4,12 @@
 {-# LANGUAGE TypeOperators #-}
 {-# LANGUAGE UndecidableInstances #-}
 
-module Str where
+module Data.Str where
 
-import Chr
+import Compare
+import Data.Chr
 import Data.Type.Bool
 import Data.Type.Equality
-
--- newtype Str = String [Chr]
 
 data Str :: [Chr] -> * where
   EmptyStr :: Str '[]
@@ -28,17 +27,18 @@ type family CompareStr (a :: [Chr]) (b :: [Chr]) :: Ordering where
         'GT
       )
     )
+type instance Compare (a :: [Chr]) (b :: [Chr]) = CompareStr a b
 
-data OWOTO :: [Chr] -> [Chr] -> * where
-  LE :: (CompareStr x y ~ 'LT) => OWOTO x y
-  EE :: (CompareStr x x ~ 'EQ) => OWOTO x x
-  GE :: (CompareStr x y ~ 'GT) => OWOTO x y
+-- data OWOTO :: [Chr] -> [Chr] -> * where
+--   LE :: (CompareStr x y ~ 'LT) => OWOTO x y
+--   EE :: (CompareStr x x ~ 'EQ) => OWOTO x x
+--   GE :: (CompareStr x y ~ 'GT) => OWOTO x y
 
-owoto :: Str m -> Str n -> OWOTO m n
-owoto EmptyStr    EmptyStr    = EE
-owoto EmptyStr    (SStr d ds) = LE
-owoto (SStr c cs) EmptyStr    = GE
-owoto (SStr c cs) (SStr d ds) = case owoto c d of
+owotoStr :: Str m -> Str n -> OWOTO m n
+owotoStr EmptyStr    EmptyStr    = EE
+owotoStr EmptyStr    (SStr d ds) = LE
+owotoStr (SStr c cs) EmptyStr    = GE
+owotoStr (SStr c cs) (SStr d ds) = case owotoChr c d of
   LE -> LE
   GE -> GE
   EE -> EE

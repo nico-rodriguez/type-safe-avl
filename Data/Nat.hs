@@ -5,9 +5,9 @@
 {-# LANGUAGE StandaloneDeriving #-}
 {-# LANGUAGE TypeFamilies #-}
 
-module Nat where
+module Data.Nat where
 
-import Compare (Compare, OWOTO(..), Owoto(..))
+import Compare (Compare, OWOTO(..))
 
 -- Natural Numbers.
 data Nat = Z | S Nat
@@ -28,14 +28,6 @@ natty2IntAc (Sy n) ac = natty2IntAc n (ac+1)
 
 instance Show (Natty n) where
   show n = show $ natty2Int n
-
--- data OWOTO :: Nat -> Nat -> * where
---   LE :: (Compare x y ~ 'LT) => OWOTO x y
---   EE :: (Compare x x ~ 'EQ) => OWOTO x x
---   GE :: (Compare x y ~ 'GT) => OWOTO x y
-
-instance Owoto Natty where
-  -- owoto = owotoNat
 
 owotoNat :: Natty m -> Natty n -> OWOTO m n
 owotoNat Zy      Zy      = EE
