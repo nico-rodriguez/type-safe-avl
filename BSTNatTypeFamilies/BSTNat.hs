@@ -25,17 +25,17 @@ type family LtN (l :: Tree) (x :: Nat) :: Bool where
       'False
     )
 
-type family GtN (x :: Nat) (r :: Tree) :: Bool where
-  GtN x 'EmptyTree        = 'True
-  GtN x ('ForkTree l n r) =
-    (If (Compare n x == 'GT && GtN x l == 'True && GtN x r == 'True)
+type family GtN (r :: Tree) (x :: Nat) :: Bool where
+  GtN 'EmptyTree        x = 'True
+  GtN ('ForkTree l n r) x =
+    (If (Compare n x == 'GT && GtN l x == 'True && GtN r x == 'True)
       'True
       'False
     )
 
 data BST :: Tree -> * where
   EmptyBST :: BST 'EmptyTree
-  ForkBST  :: (LtN l n ~ 'True, GtN n r ~ 'True) =>
+  ForkBST  :: (LtN l n ~ 'True, GtN r n ~ 'True) =>
     BST l -> Natty n -> BST r -> BST ('ForkTree l n r)
 
 instance Show (BST t) where
@@ -97,13 +97,13 @@ insertLeftProof x (ForkBST l n1 r) n = case owotoNat x n1 of
 
 -- | If GtN (ForkBST l n1 r) n :~: 'True, then
 -- | GtN l n :~: 'True AND GtN r n :~: 'True
-gtnSubTree :: BST t -> Natty n -> GtN n t :~: 'True
+gtnSubTree :: BST t -> Natty n -> GtN t n :~: 'True
 gtnSubTree EmptyBST         _ = Refl
 gtnSubTree (ForkBST l n1 r) n = gcastWith (gtnNode n1 n) (gcastWith (gtnSubTree r n) (gcastWith (gtnSubTree l n) Refl))
 
 -- | If GtN (ForkBST l n1 r) n :~: 'True, then
 -- | GtN l n :~: 'True
-gtnLeft :: BST l -> Natty n -> GtN n l :~: 'True
+gtnLeft :: BST l -> Natty n -> GtN l n :~: 'True
 gtnLeft l n = case isEmpty l of
   E -> Refl
   NE -> gcastWith (gtnSubTree l n) Refl
@@ -118,7 +118,7 @@ gtnNode n1 n = case owotoNat n1 n of
 
 -- | If GtN (ForkBST l n1 r) n :~: 'True, then
 -- | GtN r n :~: 'True
-gtnRight :: BST r -> Natty n -> GtN n r :~: 'True
+gtnRight :: BST r -> Natty n -> GtN r n :~: 'True
 gtnRight r n = case isEmpty r of
   E -> Refl
   NE -> gcastWith (gtnSubTree r n) Refl
@@ -126,7 +126,7 @@ gtnRight r n = case isEmpty r of
 -- | If Compare x n :~: 'GT AND (ForkBST _ n t), then
 -- | GtN n (Insert x t) :~: 'True
 insertRightProof :: (Compare x n ~ 'GT) =>
-  Natty x -> BST t -> Natty n -> GtN n (Insert x t) :~: 'True
+  Natty x -> BST t -> Natty n -> GtN (Insert x t) n :~: 'True
 insertRightProof _ EmptyBST         _ = Refl
 insertRightProof x (ForkBST l n1 r) n = case owotoNat x n1 of
   EE -> gcastWith (gtnRight r n) (gcastWith (gtnLeft l n) Refl)
@@ -224,7 +224,7 @@ maxRightProof x (ForkBST _ _ r) = case isEmpty r of
 -- | If x ~ Max l AND t ~ 'ForkTree l n r, then
 -- | GtN x r :~: 'True
 deleteProof' :: (x ~ Max l, t ~ 'ForkTree l n r) =>
-  Natty x -> BST t -> GtN x r :~: 'True
+  Natty x -> BST t -> GtN r x :~: 'True
 deleteProof' x (ForkBST _ _ r) = gcastWith (gtnRight r x) Refl
 
 -- | If Compare x n :~: 'LT AND (ForkTree t n _), then
@@ -244,7 +244,7 @@ deleteLeftProof x (ForkBST l n1 r) n = case owotoNat x n1 of
 -- | If Compare x n :~: 'GT AND (ForkTree _ n t), then
 -- | GtN n (Delete x t) :~: 'True
 deleteRightProof :: (Compare x n ~ 'GT) =>
-  Natty x -> BST t -> Natty n -> GtN n (Delete x t) :~: 'True
+  Natty x -> BST t -> Natty n -> GtN (Delete x t) n :~: 'True
 deleteRightProof _ EmptyBST         _ = Refl
 deleteRightProof x (ForkBST l n1 r) n = case owotoNat x n1 of
   EE -> case isEmpty l of
