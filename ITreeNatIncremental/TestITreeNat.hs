@@ -2,7 +2,7 @@
 
 module ITreeNatIncremental.Test where
 
-import ITreeNatIncremental.BSTNat
+import ITreeNatIncremental.ITreeNat
 import Data.Nat
 
 sbn0 :: Natty 'Z
