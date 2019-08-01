@@ -105,3 +105,56 @@ t7 :: BST
               ('ForkTree
                  'EmptyTree ('S ('S ('S ('S ('S ('S ('S 'Z))))))) 'EmptyTree)))
 t7 = insert sbn7 t6
+
+t8 :: BST
+        ('ForkTree
+           ('ForkTree
+              ('ForkTree 'EmptyTree 'Z 'EmptyTree)
+              ('S ('S 'Z))
+              ('ForkTree 'EmptyTree ('S ('S ('S 'Z))) 'EmptyTree))
+           ('S ('S ('S ('S 'Z))))
+           ('ForkTree
+              ('ForkTree 'EmptyTree ('S ('S ('S ('S ('S 'Z))))) 'EmptyTree)
+              ('S ('S ('S ('S ('S ('S 'Z))))))
+              ('ForkTree
+                 'EmptyTree ('S ('S ('S ('S ('S ('S ('S 'Z))))))) 'EmptyTree)))
+t8 = insert sbn7 t7
+
+t9 :: BST
+        ('ForkTree
+           ('ForkTree
+              ('ForkTree 'EmptyTree 'Z 'EmptyTree)
+              ('S ('S 'Z))
+              ('ForkTree 'EmptyTree ('S ('S ('S 'Z))) 'EmptyTree))
+           ('S ('S ('S ('S 'Z))))
+           ('ForkTree
+              ('ForkTree 'EmptyTree ('S ('S ('S ('S ('S 'Z))))) 'EmptyTree)
+              ('S ('S ('S ('S ('S ('S 'Z))))))
+              'EmptyTree))
+t9 = delete sbn7 t7
+
+t10 :: BST
+         ('ForkTree
+            ('ForkTree
+               ('ForkTree 'EmptyTree 'Z 'EmptyTree) ('S ('S 'Z)) 'EmptyTree)
+            ('S ('S ('S 'Z)))
+            ('ForkTree
+               ('ForkTree 'EmptyTree ('S ('S ('S ('S ('S 'Z))))) 'EmptyTree)
+               ('S ('S ('S ('S ('S ('S 'Z))))))
+               ('ForkTree
+                  'EmptyTree ('S ('S ('S ('S ('S ('S ('S 'Z))))))) 'EmptyTree)))
+t10 = delete sbn4 t7
+
+t11 :: BST
+         ('ForkTree
+            ('ForkTree
+               ('ForkTree 'EmptyTree 'Z 'EmptyTree)
+               ('S ('S 'Z))
+               ('ForkTree 'EmptyTree ('S ('S ('S 'Z))) 'EmptyTree))
+            ('S ('S ('S ('S 'Z))))
+            ('ForkTree
+               ('ForkTree 'EmptyTree ('S ('S ('S ('S ('S 'Z))))) 'EmptyTree)
+               ('S ('S ('S ('S ('S ('S 'Z))))))
+               ('ForkTree
+                  'EmptyTree ('S ('S ('S ('S ('S ('S ('S 'Z))))))) 'EmptyTree)))
+t11 = delete sbn1 t7
