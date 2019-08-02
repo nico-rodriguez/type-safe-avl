@@ -90,6 +90,115 @@ proofGTN t@(ForkITree l n1 r) n = case proofGTN r n of
       GE -> case proofBST t of
         PF{} -> PGTN t n
 
+type family MaxNat (n1 :: Nat) (n2 :: Nat) :: Nat where
+  MaxNat n1 n2 =
+    (If (Compare n1 n2 == 'EQ)
+      n1
+      (If (Compare n1 n2 == 'LT)
+        n2
+        n1
+      )
+    )
+  -- MaxNat 'Z      'Z      = 'Z
+  -- MaxNat 'Z      ('S n2) = 'S n2
+  -- MaxNat ('S n1) 'Z      = 'S n1
+  -- MaxNat ('S n1) ('S n2) = 'S (MaxNat n1 n2)
+
+type family Height (t :: Tree) :: Nat where
+  Height 'EmptyTree        = 'Z
+  Height ('ForkTree l n r) = 'S (MaxNat (Height l) (Height r))
+
+data ProofHeight :: Tree -> Nat -> *  where
+  PH :: (Height t ~ h) => ITree t -> Natty h -> ProofHeight t h
+
+proofHeight :: (Height t ~ h) =>
+  ITree t -> ProofHeight t h
+proofHeight EmptyITree        = PH EmptyITree Zy
+proofHeight t@(ForkITree l _ r) = let
+  PH _ hl = proofHeight l
+  PH _ hr = proofHeight r
+  in case owotoNat hl hr of
+    EE -> PH t (Sy hr)
+    LE -> PH t (Sy hr)
+    GE -> PH t (Sy hl)
+
+class BalancedHeights (h1 :: Nat) (h2 :: Nat) where
+instance BalancedHeights 'Z      'Z      where
+instance BalancedHeights 'Z      ('S 'Z) where
+instance BalancedHeights ('S 'Z) 'Z      where
+instance BalancedHeights h1 h2 =>
+  BalancedHeights ('S h1) ('S h2)
+
+data ProofBalancedHeights :: Nat -> Nat -> * where
+  PBH  :: (BalancedHeights h1 h2) =>
+    Natty h1 -> Natty h2 -> ProofBalancedHeights h1 h2
+  NPBH :: ProofBalancedHeights h1 h2  -- | For completion only
+
+proofBalancedHeights :: Natty h1 -> Natty h2 -> ProofBalancedHeights h1 h2
+proofBalancedHeights Zy      Zy      = PBH Zy Zy
+proofBalancedHeights Zy      (Sy Zy) = PBH Zy (Sy Zy)
+proofBalancedHeights (Sy Zy) Zy      = PBH (Sy Zy) Zy
+proofBalancedHeights (Sy h1) (Sy h2) = case proofBalancedHeights h1 h2 of
+  PBH h1' h2' -> PBH (Sy h1') (Sy h2')
+  NPBH        -> NPBH
+proofBalancedHeights Zy          (Sy (Sy _)) = NPBH
+proofBalancedHeights (Sy (Sy _)) Zy          = NPBH
+
+class IsBBT (t :: Tree) where
+instance IsBBT 'EmptyTree where
+instance (IsBBT l, IsBBT r, BalancedHeights (Height l) (Height r)) =>
+  IsBBT ('ForkTree l n r) where
+
+data BBT :: Tree -> * where
+  BBT :: (IsBBT t) => ITree t -> BBT t
+
+data ProofBBT :: Tree -> * where
+  PBE :: ProofBBT 'EmptyTree
+  PBF :: (IsBBT l, IsBBT r, BalancedHeights (Height l) (Height r)) =>
+    ProofBBT l -> Natty n -> ProofBBT r -> ProofBBT ('ForkTree l n r)
+
+proofBBT :: ITree t -> ProofBBT t
+proofBBT EmptyITree        = PBE
+proofBBT (ForkITree l n r) = case proofSubTreeBBT l of
+  STBBT _ -> case proofSubTreeBBT r of
+    -- STBBT _ -> case proofBalancedHeightsBBTs l r of
+    --   BHBBT _ _ -> PBF (proofBBT l) n (proofBBT r)
+    STBBT _ -> case proofHeight l of
+      PH _ hl -> case proofHeight r of
+        PH _ hr -> case proofBalancedHeights hl hr of
+          PBH _ _ -> PBF (proofBBT l) n (proofBBT r)
+          NPBH    -> undefined
+
+data SubTreeBBT :: Tree -> * where
+  STBBT :: (IsBBT t) =>
+    ITree t -> SubTreeBBT t
+
+proofSubTreeBBT :: ITree t -> SubTreeBBT t
+-- proofSubTreeBBT = undefined
+proofSubTreeBBT EmptyITree        = STBBT EmptyITree
+proofSubTreeBBT (ForkITree l n r) = case proofSubTreeBBT l of
+  STBBT _ -> case proofSubTreeBBT r of
+    STBBT _ -> case proofHeight l of
+      PH _ hl -> case proofHeight r of
+        PH _ hr -> case proofBalancedHeights hl hr of
+          PBH _ _ -> STBBT (ForkITree l n r)
+          NPBH    -> undefined
+
+-- data BalancedHeightsBBTs :: Nat -> Nat -> * where
+--   BHBBT :: (BalancedHeights h1 h2) =>
+--     Natty h1 -> Natty h2 -> BalancedHeightsBBTs h1 h2
+--
+-- proofBalancedHeightsBBTs :: ITree t1 -> ITree t2 -> BalancedHeightsBBTs (Height t1) (Height t2)
+-- proofBalancedHeightsBBTs EmptyITree EmptyITree = BHBBT Zy Zy
+-- proofBalancedHeightsBBTs EmptyITree t2@(ForkITree EmptyITree _ EmptyITree) = BHBBT Zy (Sy Zy)
+-- proofBalancedHeightsBBTs t1@(ForkITree EmptyITree _ EmptyITree) EmptyITree = BHBBT (Sy Zy) Zy
+-- proofBalancedHeightsBBTs t1 t2 = undefined
+-- proofBalancedHeightsBBTs t1@(ForkITree l1 _ r1) t2@(ForkITree l2 _ r2) = case proofBalancedHeightsBBTs l1 l2 of
+  -- BHBBT hl1 hl2 -> case owotoNat hl1 hl2 of
+  --   EE -> BHBBT (Sy hl1) (Sy hl2)
+    -- otherwise -> expression
+  -- _         -> BHBBT t1 t2
+
 type family Insert (x :: Nat) (t :: Tree) :: Tree where
   Insert x 'EmptyTree         = 'ForkTree 'EmptyTree x 'EmptyTree
   Insert x ('ForkTree l n r)  =
@@ -114,6 +223,13 @@ insertBST x (BST t) = let
   in case proofBST t' of
     PE   -> undefined -- | Impossible case since t' = insert x t
     PF{} -> BST t'
+
+insertBBT :: Natty x -> BBT t -> BBT (Insert x t)
+insertBBT x (BBT t) = let
+  t' = insert x t
+  in case proofBBT t' of
+    PBE   -> undefined -- | Impossible case since t' = insert x t
+    PBF{} -> BBT t'
 
 type family Member (x :: Nat) (t :: Tree) :: Bool where
   Member x 'EmptyTree         = 'False
@@ -193,3 +309,10 @@ deleteBST x (BST t) = let
   in case proofBST t' of
     PE   -> BST EmptyITree
     PF{} -> BST t'
+
+deleteBBT :: Natty x -> BBT t -> BBT (Delete x t)
+deleteBBT x (BBT t) = let
+  t' = delete x t
+  in case proofBBT t' of
+    PBE   -> BBT EmptyITree
+    PBF{} -> BBT t'
