@@ -167,7 +167,7 @@ proofBBT (ForkITree l n r) = case proofSubTreeBBT l of
       PH _ hl -> case proofHeight r of
         PH _ hr -> case proofBalancedHeights hl hr of
           PBH _ _ -> PBF (proofBBT l) n (proofBBT r)
-          NPBH    -> undefined
+          NPBH    -> undefined  -- | Unbalanced tree
 
 data SubTreeBBT :: Tree -> * where
   STBBT :: (IsBBT t) =>
@@ -181,7 +181,7 @@ proofSubTreeBBT (ForkITree l n r) = case proofSubTreeBBT l of
       PH _ hl -> case proofHeight r of
         PH _ hr -> case proofBalancedHeights hl hr of
           PBH _ _ -> STBBT (ForkITree l n r)
-          NPBH    -> undefined
+          NPBH    -> undefined  -- | Unbalanced tree
 
 type family Insert (x :: Nat) (t :: Tree) :: Tree where
   Insert x 'EmptyTree         = 'ForkTree 'EmptyTree x 'EmptyTree
