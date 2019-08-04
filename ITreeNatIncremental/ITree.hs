@@ -8,7 +8,7 @@
 {-# LANGUAGE TypeOperators #-}
 {-# LANGUAGE UndecidableInstances #-}
 
-module BSTNatGADT.BSTNat where
+module ITreeNatIncremental.ITree where
 
 import Compare (Compare, OWOTO(..))
 import Data.Type.Bool
@@ -16,47 +16,21 @@ import Data.Type.Equality
 import Data.Nat
 import Prelude hiding (max)
 
-
 data Tree :: * where
   EmptyTree :: Tree
   ForkTree  :: Tree -> Nat -> Tree -> Tree
 
-class IsBST (t :: Tree) where
-instance IsBST 'EmptyTree where
-instance (IsBST l, IsBST r, LtN l n, GtN r n) =>
-  IsBST ('ForkTree l n r) where
+data ITree :: Tree -> * where
+  EmptyITree :: ITree 'EmptyTree
+  ForkITree  :: ITree l -> Natty n -> ITree r -> ITree ('ForkTree l n r)
 
-class LtN (t :: Tree) (x :: Nat) where
-instance LtN 'EmptyTree x where
-instance (LtN l x, Compare n x ~ 'LT, LtN r x) =>
-  LtN ('ForkTree l n r) x
-
-class GtN (t :: Tree) (x :: Nat) where
-instance GtN 'EmptyTree x where
-instance (GtN l x, Compare n x ~ 'GT, GtN r x) =>
-  GtN ('ForkTree l n r) x
-
-data ProofBST :: Tree -> * where
-  PE :: ProofBST 'EmptyTree
-  PF :: (LtN l n, GtN r n) =>
-    ProofBST l -> Natty n -> ProofBST r -> ProofBST ('ForkTree l n r)
-
-proofBST :: BST t -> ProofBST t
-proofBST EmptyBST        = PE
-proofBST (ForkBST l n r) = PF (proofBST l) n (proofBST r)
-
-data BST :: Tree -> * where
-  EmptyBST :: BST 'EmptyTree
-  ForkBST  :: (LtN l n, GtN r n) =>
-    BST l -> Natty n -> BST r -> BST ('ForkTree l n r)
-
-instance Show (BST t) where
-  show EmptyBST         = "E"
-  show (ForkBST l n r)  = "F " ++ go l ++ " " ++ show n ++ " " ++ go r
+instance Show (ITree t) where
+  show EmptyITree         = "E"
+  show (ForkITree l n r)  = "F " ++ go l ++ " " ++ show n ++ " " ++ go r
     where
-      go :: BST t' -> String
-      go EmptyBST         = "E"
-      go (ForkBST l' n' r')  = "(" ++ go l' ++ " " ++ show n' ++ " " ++ go r' ++ ")"
+      go :: ITree t' -> String
+      go EmptyITree         = "E"
+      go (ForkITree l' n' r')  = "(" ++ go l' ++ " " ++ show n' ++ " " ++ go r' ++ ")"
 
 type family Insert (x :: Nat) (t :: Tree) :: Tree where
   Insert x 'EmptyTree         = 'ForkTree 'EmptyTree x 'EmptyTree
@@ -69,12 +43,12 @@ type family Insert (x :: Nat) (t :: Tree) :: Tree where
       )
     )
 
-insert :: Natty n -> BST t -> ProofBST t -> BST (Insert n t)
-insert x EmptyBST        _ = ForkBST EmptyBST x EmptyBST
-insert x (ForkBST l n r) (PF pl pn pr) = case owotoNat x n of
-  EE -> ForkBST l n r
-  LE -> ForkBST (insert x l pl) n r
-  GE -> ForkBST l n (insert x r pr)
+insert :: Natty x -> ITree t -> ITree (Insert x t)
+insert x EmptyITree         = ForkITree EmptyITree x EmptyITree
+insert x (ForkITree l n r)  = case owotoNat x n of
+  EE -> ForkITree l n r
+  LE -> ForkITree (insert x l) n r
+  GE -> ForkITree l n (insert x r)
 
 type family Member (x :: Nat) (t :: Tree) :: Bool where
   Member x 'EmptyTree         = 'False
@@ -87,9 +61,9 @@ type family Member (x :: Nat) (t :: Tree) :: Bool where
       )
     )
 
-member :: Natty n -> BST t -> Bool
-member _ EmptyBST         = False
-member x (ForkBST l n r)  = case owotoNat x n of
+member :: Natty x -> ITree t -> Bool
+member _ EmptyITree         = False
+member x (ForkITree l n r)  = case owotoNat x n of
   EE -> True
   LE -> member x l
   GE -> member x r
@@ -102,9 +76,9 @@ data IET :: Tree -> * where
   E   :: IET 'EmptyTree
   NE  :: IET ('ForkTree l n r)
 
-isEmpty :: BST t -> IET t
-isEmpty EmptyBST  = E
-isEmpty ForkBST{} = NE
+isEmpty :: ITree t -> IET t
+isEmpty EmptyITree  = E
+isEmpty ForkITree{} = NE
 
 type family Max (t :: Tree) :: Nat where
   Max ('ForkTree l n r) =
@@ -113,8 +87,8 @@ type family Max (t :: Tree) :: Nat where
       (Max r)
     )
 
-max :: BST ('ForkTree l n r) -> Natty (Max ('ForkTree l n r))
-max (ForkBST _ n r) = case isEmpty r of
+max :: ITree ('ForkTree l n r) -> Natty (Max ('ForkTree l n r))
+max (ForkITree _ n r) = case isEmpty r of
   E -> n
   NE -> max r
 
@@ -135,15 +109,15 @@ type family Delete (x :: Nat) (t :: Tree) :: Tree where
       )
     )
 
-delete :: Natty x -> BST t -> BST (Delete x t)
-delete _ EmptyBST         = EmptyBST
-delete x (ForkBST l n r)  = case owotoNat x n of
+delete :: Natty x -> ITree t -> ITree (Delete x t)
+delete _ EmptyITree         = EmptyITree
+delete x (ForkITree l n r)  = case owotoNat x n of
   EE -> case isEmpty l of
     E -> r
     NE -> case isEmpty r of
       E -> l
-      NE -> ForkBST (delete maxL l) maxL r
+      NE -> ForkITree (delete maxL l) maxL r
         where
           maxL = max l
-  LE -> ForkBST (delete x l) n r
-  GE -> ForkBST l n (delete x r)
+  LE -> ForkITree (delete x l) n r
+  GE -> ForkITree l n (delete x r)
