@@ -13,6 +13,13 @@ import Compare (Compare, OWOTO(..))
 data Nat = Z | S Nat
   deriving (Eq, Ord, Show)
 
+type family Succ (n :: Nat) :: Nat where
+  Succ 'Z     = 'S 'Z
+  Succ ('S n) = n
+
+type family Pred (n :: Nat) :: Nat where
+  Pred ('S n) = n
+
 -- Singleton for Natural Numbers.
 data Natty :: Nat -> * where
   Zy :: Natty 'Z
