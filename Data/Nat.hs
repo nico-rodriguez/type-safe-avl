@@ -2,12 +2,13 @@
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE GADTs #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE StandaloneDeriving #-}
 {-# LANGUAGE TypeFamilies #-}
 
 module Data.Nat where
 
-import Compare (Compare, OWOTO(..))
+import Compare (Compare)
 
 -- Natural Numbers.
 data Nat = Z | S Nat
@@ -36,6 +37,11 @@ natty2IntAc (Sy n) ac = natty2IntAc n (ac+1)
 instance Show (Natty n) where
   show n = show $ natty2Int n
 
+data OWOTO :: Nat -> Nat -> * where
+  LE :: (Compare x y ~ 'LT, LtN x y, LeN x y) => OWOTO x y
+  EE :: (Compare x x ~ 'EQ, LeN x x) => OWOTO x x
+  GE :: (Compare x y ~ 'GT, LtN y x, LeN y x) => OWOTO x y
+
 owotoNat :: Natty m -> Natty n -> OWOTO m n
 owotoNat Zy      Zy      = EE
 owotoNat Zy      (Sy _)  = LE
@@ -51,3 +57,14 @@ type family CompareNat (m :: Nat) (n :: Nat) :: Ordering where
   CompareNat ('S m)  'Z      = 'GT
   CompareNat 'Z      ('S n)  = 'LT
 type instance Compare (a :: Nat) (b :: Nat) = CompareNat a b
+
+class LeN (n1 :: Nat) (n2 :: Nat) where
+instance LeN 'Z      'Z      where
+instance LeN 'Z      ('S n2) where
+instance LeN n1 n2 =>
+  LeN ('S n1) ('S n2) where
+
+class LtN (n1 :: Nat) (n2 :: Nat) where
+instance LtN 'Z      ('S n2) where
+instance LtN n1 n2 =>
+  LtN ('S n1) ('S n2) where
