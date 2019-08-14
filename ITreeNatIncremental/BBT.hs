@@ -10,7 +10,7 @@
 
 module ITreeNatIncremental.BBT where
 
-import Compare (Compare, OWOTO(..))
+import Compare (Compare)
 import Data.Type.Bool
 import Data.Type.Equality
 import Data.Nat
