@@ -35,6 +35,60 @@ instance Show (IAATree t) where
       go EmptyIAATree         = "E"
       go (ForkIAATree l' n' lv' r')  = "(F " ++ go l' ++ " " ++ show n' ++ " " ++ show lv' ++ " " ++ go r' ++ ")"
 
+class TLtN (t :: AATree) (x :: Nat) where
+instance TLtN 'EmptyAATree x where
+instance (TLtN l x, Compare n x ~ 'LT, TLtN r x) =>
+  TLtN ('ForkAATree l n lv r) x
+
+class TGtN (t :: AATree) (x :: Nat) where
+instance TGtN 'EmptyAATree x where
+instance (TGtN l x, Compare n x ~ 'GT, TGtN r x) =>
+  TGtN ('ForkAATree l n lv r) x
+
+class IsBST (t :: AATree) where
+instance IsBST 'EmptyAATree where
+instance (IsBST l, IsBST r, TLtN l n, TGtN r n) =>
+  IsBST ('ForkAATree l n lv r) where
+
+data ProofBST :: AATree -> * where
+  PE :: ProofBST 'EmptyAATree
+  PF :: (IsBST l, IsBST r, TLtN l n, TGtN r n, IsBST ('ForkAATree l n lv r)) =>
+    ProofBST l -> Natty n -> Natty lv -> ProofBST r -> ProofBST ('ForkAATree l n lv r)
+
+proofBST :: IAATree t -> ProofBST t
+proofBST EmptyIAATree        = PE
+proofBST (ForkIAATree l n lv r) = case proofGTN r n of
+  PGTN _ _ -> case proofLTN l n of
+    PLTN _ _ -> PF (proofBST l) n lv (proofBST r)
+
+data LTN :: AATree -> Nat -> * where
+  PLTN :: (TLtN t n, IsBST t) =>
+    IAATree t -> Natty n -> LTN t n
+
+proofLTN :: IAATree t -> Natty n -> LTN t n
+proofLTN EmptyIAATree         n = PLTN EmptyIAATree n
+proofLTN t@(ForkIAATree l n1 lv r) n = case proofLTN l n of
+  PLTN _ _ -> case proofLTN r n of
+    PLTN _ _ -> case owotoNat n1 n of
+      EE -> undefined -- | Impossible case since we want to prove LtN t n
+      LE -> case proofBST t of
+        PF{} -> PLTN t n
+      GE -> undefined -- | Impossible case since we want to prove LtN t n
+
+data GTN :: AATree -> Nat -> * where
+  PGTN :: (TGtN t n, IsBST t) =>
+    IAATree t -> Natty n -> GTN t n
+
+proofGTN :: IAATree t -> Natty n -> GTN t n
+proofGTN EmptyIAATree           n = PGTN EmptyIAATree n
+proofGTN t@(ForkIAATree l n1 lv r) n = case proofGTN r n of
+  PGTN _ _ -> case proofGTN l n of
+    PGTN _ _ -> case owotoNat n1 n of
+      EE -> undefined -- | Impossible case since we want to prove GtN t n
+      LE -> undefined -- | Impossible case since we want to prove GtN t n
+      GE -> case proofBST t of
+        PF{} -> PGTN t n
+
 class IsAA (t :: AATree) where
 instance IsAA 'EmptyAATree where
 instance (IsAA l, IsAA r, IsAA1 ('ForkAATree l n lv r), IsAA2 ('ForkAATree l n lv r),
@@ -115,7 +169,7 @@ proofIsAA (ForkIAATree l@(ForkIAATree _ _ llv _) _ (Sy lv) r@(ForkIAATree _ _ rl
     GE -> undefined -- | Impossible case because it violates IsAA1
 
 data BBT :: AATree -> * where
-  BBT :: (IsAA t) => IAATree t -> BBT t
+  BBT :: (IsBST t, IsAA t) => IAATree t -> BBT t
 
 instance Show (BBT t) where
   show (BBT t) = "BBT $ " ++ show t
@@ -180,4 +234,5 @@ insertBBT x (BBT t) = let
   t' = insert x t
   in case proofIsAA t' of
     PAAE -> undefined -- | Impossible case since t' has at least x
-    PAAF _ -> BBT t'
+    PAAF _ -> case proofBST t' of
+      PF{} -> BBT t'
