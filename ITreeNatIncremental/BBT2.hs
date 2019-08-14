@@ -143,10 +143,7 @@ skew :: IAATree t -> IAATree (Skew t)
 skew EmptyIAATree = EmptyIAATree
 skew t@(ForkIAATree EmptyIAATree _ _ _) = t
 skew t@(ForkIAATree (ForkIAATree ll ln llv lr) n lv r) = case owotoNat llv lv of
-  EE -> let
-    t' = ForkIAATree ll ln lv (ForkIAATree lr n lv r)
-    in case proofIsAA t' of
-      PAAF _ -> t'
+  EE -> ForkIAATree ll ln lv (ForkIAATree lr n lv r)
   LE -> t
   GE -> t
 
@@ -178,9 +175,9 @@ insert x (ForkIAATree l n lv r)  = case owotoNat x n of
   LE -> split $ skew $ ForkIAATree (insert x l) n lv r
   GE -> split $ skew $ ForkIAATree l n lv (insert x r)
 
-insertBBT :: Natty x -> BBT t -> BBT (Split (Skew (Insert x t)))
+insertBBT :: Natty x -> BBT t -> BBT (Insert x t)
 insertBBT x (BBT t) = let
-  t' = split $ skew $ insert x t
+  t' = insert x t
   in case proofIsAA t' of
     PAAE -> undefined -- | Impossible case since t' has at least x
     PAAF _ -> BBT t'
