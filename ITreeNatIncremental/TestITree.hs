@@ -298,6 +298,30 @@ t11 = deleteBST sbn1 t7
 be :: BBT 'EmptyAATree
 be = BBT EmptyIAATree
 
+bt :: BBT
+        ('ForkAATree
+           ('ForkAATree
+              ('ForkAATree 'EmptyAATree 'Z 'Z 'EmptyAATree)
+              ('S 'Z)
+              ('S 'Z)
+              ('ForkAATree 'EmptyAATree ('S ('S 'Z)) 'Z 'EmptyAATree))
+           ('S ('S ('S 'Z)))
+           ('S ('S 'Z))
+           ('ForkAATree
+              ('ForkAATree 'EmptyAATree ('S ('S ('S ('S 'Z)))) 'Z 'EmptyAATree)
+              ('S ('S ('S ('S ('S 'Z)))))
+              ('S 'Z)
+              ('ForkAATree
+                 'EmptyAATree
+                 ('S ('S ('S ('S ('S ('S 'Z))))))
+                 'Z
+                 ('ForkAATree
+                    'EmptyAATree
+                    ('S ('S ('S ('S ('S ('S ('S 'Z)))))))
+                    'Z
+                    'EmptyAATree))))
+bt = insertBBT sbn7 $ insertBBT sbn6 $ insertBBT sbn5 $ insertBBT sbn4 $ insertBBT sbn3 $ insertBBT sbn2 $ insertBBT sbn1 $ insertBBT sbn0 be
+
 -- [4]
 bt1 :: BBT ('ForkAATree 'EmptyAATree ('S ('S ('S ('S 'Z)))) 'Z 'EmptyAATree)
 bt1 = insertBBT sbn4 be
