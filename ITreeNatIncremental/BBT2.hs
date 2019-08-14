@@ -134,7 +134,7 @@ type family Insert (x :: Nat) (t :: AATree) :: AATree where
 type family Skew (t :: AATree) :: AATree where
   Skew ('ForkAATree ('ForkAATree ll ln llv lr) n lv r) =
     (If (Compare llv lv == 'EQ)
-      ('ForkAATree ll ln lv ('ForkAATree lr n lv lr))
+      ('ForkAATree ll ln lv ('ForkAATree lr n lv r))
       ('ForkAATree ('ForkAATree ll ln llv lr) n lv r)
     )
   Skew t = t
@@ -142,9 +142,9 @@ type family Skew (t :: AATree) :: AATree where
 skew :: IAATree t -> IAATree (Skew t)
 skew EmptyIAATree = EmptyIAATree
 skew t@(ForkIAATree EmptyIAATree _ _ _) = t
-skew t@(ForkIAATree (ForkIAATree ll ln llv lr) n lv _) = case owotoNat llv lv of
+skew t@(ForkIAATree (ForkIAATree ll ln llv lr) n lv r) = case owotoNat llv lv of
   EE -> let
-    t' = ForkIAATree ll ln lv (ForkIAATree lr n lv lr)
+    t' = ForkIAATree ll ln lv (ForkIAATree lr n lv r)
     in case proofIsAA t' of
       PAAF _ -> t'
   LE -> t
@@ -153,7 +153,7 @@ skew t@(ForkIAATree (ForkIAATree ll ln llv lr) n lv _) = case owotoNat llv lv of
 type family Split (t :: AATree) :: AATree where
   Split ('ForkAATree l n lv ('ForkAATree rl rn rlv ('ForkAATree rrl rrn rrlv rrr))) =
     (If (Compare lv rlv == 'EQ && Compare rlv rrlv == 'EQ)
-      ('ForkAATree ('ForkAATree l n lv rl) rn ('S lv) ('ForkAATree rrl rrn lv rrl))
+      ('ForkAATree ('ForkAATree l n lv rl) rn ('S lv) ('ForkAATree rrl rrn lv rrr))
       ('ForkAATree l n lv ('ForkAATree rl rn rlv ('ForkAATree rrl rrn rrlv rrr)))
     )
   Split t = t
@@ -162,10 +162,10 @@ split :: IAATree t -> IAATree (Split t)
 split EmptyIAATree = EmptyIAATree
 split t@(ForkIAATree _ _ _ EmptyIAATree) = t
 split t@(ForkIAATree _ _ _ (ForkIAATree _ _ _ EmptyIAATree)) = t
-split t@(ForkIAATree l n lv (ForkIAATree rl rn rlv (ForkIAATree rrl rrn rrlv _))) =
+split t@(ForkIAATree l n lv (ForkIAATree rl rn rlv (ForkIAATree rrl rrn rrlv rrr))) =
   case owotoNat lv rlv of
     EE -> case owotoNat rlv rrlv of
-      EE -> ForkIAATree (ForkIAATree l n lv rl) rn (Sy lv) (ForkIAATree rrl rrn lv rrl)
+      EE -> ForkIAATree (ForkIAATree l n lv rl) rn (Sy lv) (ForkIAATree rrl rrn lv rrr)
       LE -> t
       GE -> t
     LE -> t

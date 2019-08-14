@@ -354,31 +354,31 @@ bt5 = insertBBT sbn5 bt4
 -- [0,2,3,4,5,6]
 bt6 :: BBT
          ('ForkAATree
-            ('ForkAATree
-               'EmptyAATree
-               'Z
-               'Z
-               ('ForkAATree 'EmptyAATree ('S ('S 'Z)) 'Z 'EmptyAATree))
-            ('S ('S ('S ('S 'Z))))
+            ('ForkAATree 'EmptyAATree 'Z 'Z 'EmptyAATree)
+            ('S ('S 'Z))
             ('S 'Z)
             ('ForkAATree
-               'EmptyAATree
-               ('S ('S ('S ('S ('S 'Z)))))
-               'Z
+               ('ForkAATree 'EmptyAATree ('S ('S ('S 'Z))) 'Z 'EmptyAATree)
+               ('S ('S ('S ('S 'Z))))
+               ('S 'Z)
                ('ForkAATree
-                  'EmptyAATree ('S ('S ('S ('S ('S ('S 'Z)))))) 'Z 'EmptyAATree)))
+                  'EmptyAATree
+                  ('S ('S ('S ('S ('S 'Z)))))
+                  'Z
+                  ('ForkAATree
+                     'EmptyAATree ('S ('S ('S ('S ('S ('S 'Z)))))) 'Z 'EmptyAATree))))
 bt6 = insertBBT sbn0 bt5
 
 -- [0,2,3,4,5,6,7]
 bt7 :: BBT
          ('ForkAATree
             ('ForkAATree
-               'EmptyAATree
-               'Z
-               'Z
-               ('ForkAATree 'EmptyAATree ('S ('S 'Z)) 'Z 'EmptyAATree))
+               ('ForkAATree 'EmptyAATree 'Z 'Z 'EmptyAATree)
+               ('S ('S 'Z))
+               ('S 'Z)
+               ('ForkAATree 'EmptyAATree ('S ('S ('S 'Z))) 'Z 'EmptyAATree))
             ('S ('S ('S ('S 'Z))))
-            ('S 'Z)
+            ('S ('S 'Z))
             ('ForkAATree
                ('ForkAATree
                   'EmptyAATree ('S ('S ('S ('S ('S 'Z))))) 'Z 'EmptyAATree)
@@ -394,12 +394,12 @@ bt7 = insertBBT sbn7 bt6
 bt8 :: BBT
          ('ForkAATree
             ('ForkAATree
-               'EmptyAATree
-               'Z
-               'Z
-               ('ForkAATree 'EmptyAATree ('S ('S 'Z)) 'Z 'EmptyAATree))
+               ('ForkAATree 'EmptyAATree 'Z 'Z 'EmptyAATree)
+               ('S ('S 'Z))
+               ('S 'Z)
+               ('ForkAATree 'EmptyAATree ('S ('S ('S 'Z))) 'Z 'EmptyAATree))
             ('S ('S ('S ('S 'Z))))
-            ('S 'Z)
+            ('S ('S 'Z))
             ('ForkAATree
                ('ForkAATree
                   'EmptyAATree ('S ('S ('S ('S ('S 'Z))))) 'Z 'EmptyAATree)
