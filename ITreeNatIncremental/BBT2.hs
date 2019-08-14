@@ -33,7 +33,7 @@ instance Show (IAATree t) where
     where
       go :: IAATree t' -> String
       go EmptyIAATree         = "E"
-      go (ForkIAATree l' n' lv' r')  = "(" ++ go l' ++ " " ++ show n' ++ " " ++ show lv' ++ " " ++ go r' ++ ")"
+      go (ForkIAATree l' n' lv' r')  = "(F " ++ go l' ++ " " ++ show n' ++ " " ++ show lv' ++ " " ++ go r' ++ ")"
 
 class IsAA (t :: AATree) where
 instance IsAA 'EmptyAATree where

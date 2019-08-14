@@ -56,7 +56,7 @@ instance Show (BST t) where
     where
       go :: BST t' -> String
       go EmptyBST         = "E"
-      go (ForkBST l' n' r')  = "(" ++ go l' ++ " " ++ show n' ++ " " ++ go r' ++ ")"
+      go (ForkBST l' n' r')  = "(F " ++ go l' ++ " " ++ show n' ++ " " ++ go r' ++ ")"
 
 type family Insert (x :: Nat) (t :: Tree) :: Tree where
   Insert x 'EmptyTree         = 'ForkTree 'EmptyTree x 'EmptyTree

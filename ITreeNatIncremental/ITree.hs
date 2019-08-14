@@ -30,7 +30,7 @@ instance Show (ITree t) where
     where
       go :: ITree t' -> String
       go EmptyITree         = "E"
-      go (ForkITree l' n' r')  = "(" ++ go l' ++ " " ++ show n' ++ " " ++ go r' ++ ")"
+      go (ForkITree l' n' r')  = "(F " ++ go l' ++ " " ++ show n' ++ " " ++ go r' ++ ")"
 
 type family Insert (x :: Nat) (t :: Tree) :: Tree where
   Insert x 'EmptyTree         = 'ForkTree 'EmptyTree x 'EmptyTree

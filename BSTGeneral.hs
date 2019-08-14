@@ -67,7 +67,7 @@ data BST :: Tree a -> * where
 --     where
 --       go :: BST t' -> String
 --       go EmptyBST         = "E"
---       go (ForkBST l' sn' r')  = "(" ++ go l' ++ " " ++ show sn' ++ " " ++ go r' ++ ")"
+--       go (ForkBST l' sn' r')  = "(F " ++ go l' ++ " " ++ show sn' ++ " " ++ go r' ++ ")"
 
 type family Insert (x :: a) (t :: Tree a) :: Tree a where
   Insert x 'EmptyTree         = 'ForkTree 'EmptyTree x 'EmptyTree
