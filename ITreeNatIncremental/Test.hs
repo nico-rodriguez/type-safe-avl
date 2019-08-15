@@ -4,7 +4,7 @@ module ITreeNatIncremental.Test where
 
 import ITreeNatIncremental.ITree
 import ITreeNatIncremental.BST
-import ITreeNatIncremental.BBT
+import ITreeNatIncremental.BBST
 import Data.Nat
 
 sbn0 :: Natty 'Z
