@@ -16,6 +16,7 @@ data Tree :: * where
   EmptyTree :: Tree
   ForkTree  :: Tree -> Nat -> Tree -> Tree
 
+-- | Check if all elements of the tree are strictly less than x
 type family LtN (l :: Tree) (x :: Nat) :: Bool where
   LtN 'EmptyTree        x = 'True
   LtN ('ForkTree l n r) x =
@@ -24,6 +25,7 @@ type family LtN (l :: Tree) (x :: Nat) :: Bool where
       'False
     )
 
+-- | Check if all elements of the tree are strictly greater than x
 type family GtN (r :: Tree) (x :: Nat) :: Bool where
   GtN 'EmptyTree        x = 'True
   GtN ('ForkTree l n r) x =
@@ -55,6 +57,8 @@ type family Insert (x :: Nat) (t :: Tree) :: Tree where
         ('ForkTree l n (Insert x r))
       )
     )
+
+-- | Proofs for insert. Prove that insertion preserves the invariants of BST.
 
 -- | If LtN (ForkBST l n1 r) n :~: 'True, then
 -- | LtN l n :~: 'True AND LtN r n :~: 'True
@@ -139,17 +143,6 @@ insert x (ForkBST l n r)  = case owotoNat x n of
   LE -> gcastWith (insertLeftProof x l n) (ForkBST (insert x l) n r)
   GE -> gcastWith (insertRightProof x r n) (ForkBST l n (insert x r))
 
-type family Member (x :: Nat) (t :: Tree) :: Bool where
-  Member x 'EmptyTree         = 'False
-  Member x ('ForkTree l n r)  =
-    (If (Compare x n == 'EQ)
-      'True
-      (If (Compare x n == 'LT)
-        (Member x l)
-        (Member x r)
-      )
-    )
-
 member :: Natty n -> BST t -> Bool
 member _ EmptyBST         = False
 member x (ForkBST l n r)  = case owotoNat x n of
@@ -197,6 +190,8 @@ type family Delete (x :: Nat) (t :: Tree) :: Tree where
         ('ForkTree l n (Delete x r))
       )
     )
+
+-- | Proofs for delete. Prove that deletion preserves the invariants of BST.
 
 -- | If x ~ Max t, then
 -- | LtN (Delete x t) x :~: 'True
