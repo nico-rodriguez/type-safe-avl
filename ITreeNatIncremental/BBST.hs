@@ -190,11 +190,11 @@ proofIsAA (ForkIAATree EmptyIAATree _ (Sy _) _) = undefined
 proofIsAA (ForkIAATree ForkIAATree{} _ Zy _) = undefined
 proofIsAA (ForkIAATree ForkIAATree{} _ (Sy _) EmptyIAATree) = undefined
 
-data BBT :: AATree -> * where
-  BBT :: (IsBST t, IsAA t) => IAATree t -> BBT t
+data BBST :: AATree -> * where
+  BBST :: (IsBST t, IsAA t) => IAATree t -> BBST t
 
-instance Show (BBT t) where
-  show (BBT t) = "BBT $ " ++ show t
+instance Show (BBST t) where
+  show (BBST t) = "BBST $ " ++ show t
 
 type family Insert (x :: Nat) (t :: AATree) :: AATree where
   Insert x 'EmptyAATree = 'ForkAATree 'EmptyAATree x 'Z 'EmptyAATree
@@ -251,10 +251,10 @@ insert x (ForkIAATree l n lv r)  = case owotoNat x n of
   LE -> split $ skew $ ForkIAATree (insert x l) n lv r
   GE -> split $ skew $ ForkIAATree l n lv (insert x r)
 
-insertBBT :: Natty x -> BBT t -> BBT (Insert x t)
-insertBBT x (BBT t) = let
+insertBBST :: Natty x -> BBST t -> BBST (Insert x t)
+insertBBST x (BBST t) = let
   t' = insert x t
   in case proofIsAA t' of
     PAAE -> undefined -- | Impossible case since t' has at least x
     PAAF _ -> case proofBST t' of
-      PF{} -> BBT t'
+      PF{} -> BBST t'
