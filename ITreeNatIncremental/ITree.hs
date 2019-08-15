@@ -10,7 +10,6 @@
 
 module ITreeNatIncremental.ITree where
 
-import Compare (Compare)
 import Data.Type.Bool
 import Data.Type.Equality
 import Data.Nat

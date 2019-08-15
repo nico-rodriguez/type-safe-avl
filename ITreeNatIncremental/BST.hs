@@ -10,8 +10,7 @@
 
 module ITreeNatIncremental.BST where
 
-import Compare (Compare)
-import Data.Nat (Nat, Natty, owotoNat, OWOTO (..))
+import Data.Nat (Nat, Natty, owotoNat, OWOTO (..), Compare)
 import ITreeNatIncremental.ITree
 
 class IsBST (t :: Tree) where

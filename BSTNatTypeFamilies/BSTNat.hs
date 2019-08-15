@@ -6,10 +6,9 @@
 
 module BSTNatTypeFamilies.BSTNat where
 
-import Compare (Compare, OWOTO(..))
 import Data.Type.Bool
 import Data.Type.Equality
-import Data.Nat
+import Data.Nat (Nat, Compare, Natty, OWOTO(..), owotoNat)
 import Prelude hiding (max)
 
 

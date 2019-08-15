@@ -10,147 +10,228 @@
 
 module ITreeNatIncremental.BBT where
 
-import Compare (Compare)
 import Data.Type.Bool
 import Data.Type.Equality
 import Data.Nat
-import ITreeNatIncremental.ITree
 
-class IsBBT (t :: Tree) where
-instance IsBBT 'EmptyTree where
-instance (IsBBT l, IsBBT r, BalancedHeights (Height l) (Height r)) =>
-  IsBBT ('ForkTree l n r) where
+data AATree :: * where
+  EmptyAATree :: AATree
+  ForkAATree  :: AATree -- | left sub tree
+    -> Nat              -- | key
+    -> Nat              -- | level
+    -> AATree           -- | right sub tree
+    -> AATree
 
-type family BalancedHeightsTF (h1 :: Nat) (h2 :: Nat) :: Bool where
-  BalancedHeightsTF 'Z      'Z      = 'True
-  BalancedHeightsTF ('S 'Z) 'Z      = 'True
-  BalancedHeightsTF 'Z      ('S 'Z) = 'True
-  BalancedHeightsTF ('S h1) ('S h2) = BalancedHeightsTF h1 h2
-  BalancedHeightsTF h1      h2      = 'False
+data IAATree :: AATree -> * where
+  EmptyIAATree :: IAATree 'EmptyAATree
+  ForkIAATree  :: IAATree l -> Natty n -> Natty lv -> IAATree r -> IAATree ('ForkAATree l n lv r)
 
-type family RebalanceTree (t :: Tree) :: Tree where
-  RebalanceTree 'EmptyTree        = 'EmptyTree
-  RebalanceTree ('ForkTree l n ('ForkTree rl rn rr)) =
-    (If (BalancedHeightsTF (Height l) (Height ('ForkTree rl rn rr)) == 'True)
-      ('ForkTree l n ('ForkTree rl rn rr))  -- | No rebalancing needed
-      (If (Compare (Height rl) (Height rr) == 'LT)
-        ('ForkTree ('ForkTree l n rl) rn rr)  -- | Simple left rotation
-        (RightLeftRotation ('ForkTree l n ('ForkTree rl rn rr)))  -- | Right-left rotation
-      )
-    )
-  RebalanceTree ('ForkTree ('ForkTree ll ln lr) n r) =
-    (If (BalancedHeightsTF (Height ('ForkTree ll ln lr)) (Height r) == 'True)
-      ('ForkTree ('ForkTree ll ln lr) n r)  -- | No rebalancing needed
-      (If (Compare (Height ll) (Height lr) == 'GT)
-        ('ForkTree ll ln ('ForkTree lr n r))  -- | Simple right rotation
-        (LeftRightRotation ('ForkTree ('ForkTree ll ln lr) n r))  -- | Left-right rotation
-      )
-    )
-  RebalanceTree ('ForkTree l n r) = ('ForkTree l n r)
+instance Show (IAATree t) where
+  show EmptyIAATree         = "E"
+  show (ForkIAATree l n lv r)  = "F " ++ go l ++ " " ++ show n ++ " " ++ show lv ++ " " ++ go r
+    where
+      go :: IAATree t' -> String
+      go EmptyIAATree         = "E"
+      go (ForkIAATree l' n' lv' r')  = "(F " ++ go l' ++ " " ++ show n' ++ " " ++ show lv' ++ " " ++ go r' ++ ")"
 
-type family RightLeftRotation (t :: Tree) :: Tree where
-  RightLeftRotation ('ForkTree l n ('ForkTree ('ForkTree rll rln rlr) rn rr)) =
-    ('ForkTree ('ForkTree l n rll) rln ('ForkTree rlr rn rr))
+class TLtN (t :: AATree) (x :: Nat) where
+instance TLtN 'EmptyAATree x where
+instance (TLtN l x, Compare n x ~ 'LT, TLtN r x) =>
+  TLtN ('ForkAATree l n lv r) x
 
-type family LeftRightRotation (t :: Tree) :: Tree where
-  LeftRightRotation ('ForkTree ('ForkTree ll ln ('ForkTree lrl lrn lrr)) n r) =
-    ('ForkTree ('ForkTree ll ln lrl) lrn ('ForkTree lrr n r))
+class TGtN (t :: AATree) (x :: Nat) where
+instance TGtN 'EmptyAATree x where
+instance (TGtN l x, Compare n x ~ 'GT, TGtN r x) =>
+  TGtN ('ForkAATree l n lv r) x
 
-data BBT :: Tree -> * where
-  BBT :: (IsBBT t) => ITree t -> BBT t
+class IsBST (t :: AATree) where
+instance IsBST 'EmptyAATree where
+instance (IsBST l, IsBST r, TLtN l n, TGtN r n) =>
+  IsBST ('ForkAATree l n lv r) where
+
+data ProofBST :: AATree -> * where
+  PE :: ProofBST 'EmptyAATree
+  PF :: (IsBST l, IsBST r, TLtN l n, TGtN r n, IsBST ('ForkAATree l n lv r)) =>
+    ProofBST l -> Natty n -> Natty lv -> ProofBST r -> ProofBST ('ForkAATree l n lv r)
+
+proofBST :: IAATree t -> ProofBST t
+proofBST EmptyIAATree        = PE
+proofBST (ForkIAATree l n lv r) = case proofGTN r n of
+  PGTN _ _ -> case proofLTN l n of
+    PLTN _ _ -> PF (proofBST l) n lv (proofBST r)
+
+data LTN :: AATree -> Nat -> * where
+  PLTN :: (TLtN t n, IsBST t) =>
+    IAATree t -> Natty n -> LTN t n
+
+proofLTN :: IAATree t -> Natty n -> LTN t n
+proofLTN EmptyIAATree         n = PLTN EmptyIAATree n
+proofLTN t@(ForkIAATree l n1 lv r) n = case proofLTN l n of
+  PLTN _ _ -> case proofLTN r n of
+    PLTN _ _ -> case owotoNat n1 n of
+      EE -> undefined -- | Impossible case since we want to prove LtN t n
+      LE -> case proofBST t of
+        PF{} -> PLTN t n
+      GE -> undefined -- | Impossible case since we want to prove LtN t n
+
+data GTN :: AATree -> Nat -> * where
+  PGTN :: (TGtN t n, IsBST t) =>
+    IAATree t -> Natty n -> GTN t n
+
+proofGTN :: IAATree t -> Natty n -> GTN t n
+proofGTN EmptyIAATree           n = PGTN EmptyIAATree n
+proofGTN t@(ForkIAATree l n1 lv r) n = case proofGTN r n of
+  PGTN _ _ -> case proofGTN l n of
+    PGTN _ _ -> case owotoNat n1 n of
+      EE -> undefined -- | Impossible case since we want to prove GtN t n
+      LE -> undefined -- | Impossible case since we want to prove GtN t n
+      GE -> case proofBST t of
+        PF{} -> PGTN t n
+
+class IsAA (t :: AATree) where
+instance IsAA 'EmptyAATree where
+instance (IsAA l, IsAA r, IsAA1 ('ForkAATree l n lv r), IsAA2 ('ForkAATree l n lv r),
+  IsAA3 ('ForkAATree l n lv r), IsAA4 ('ForkAATree l n lv r)) =>
+  IsAA ('ForkAATree l n lv r)
+
+class IsAA1 (t :: AATree) where
+instance IsAA1 'EmptyAATree where
+instance IsAA1 ('ForkAATree 'EmptyAATree n lv r) where
+instance LtN llv lv =>
+  IsAA1 ('ForkAATree ('ForkAATree ll ln llv lr) n lv r) where
+
+class IsAA2 (t :: AATree) where
+instance IsAA2 'EmptyAATree where
+instance IsAA2 ('ForkAATree l n lv 'EmptyAATree) where
+instance LeN rlv lv =>
+  IsAA2 ('ForkAATree l n lv ('ForkAATree rl rn rlv rr)) where
+
+class IsAA3 (t :: AATree) where
+instance IsAA3 'EmptyAATree where
+instance IsAA3 ('ForkAATree 'EmptyAATree n 'Z 'EmptyAATree) where
+instance IsAA3 ('ForkAATree 'EmptyAATree n 'Z ('ForkAATree 'EmptyAATree rn 'Z 'EmptyAATree)) where
+instance IsAA3 ('ForkAATree l n lv ('ForkAATree rl rn rlv 'EmptyAATree)) where
+instance LtN rrlv lv =>
+  IsAA3 ('ForkAATree l n lv ('ForkAATree rl rn rlv ('ForkAATree rrl rrn rrlv rrr))) where
+
+class IsAA4 (t :: AATree) where
+instance IsAA4 'EmptyAATree where
+instance IsAA4 ('ForkAATree l n 'Z r) where
+instance IsAA4 ('ForkAATree ('ForkAATree ll ln llv lr) n ('S lv) ('ForkAATree rl rn rlv rr)) where
+
+data ProofIsAA :: AATree -> * where
+  PAAE :: ProofIsAA 'EmptyAATree
+  PAAF :: (IsAA l, IsAA r, IsAA1 ('ForkAATree l n lv r), IsAA2 ('ForkAATree l n lv r),
+    IsAA3 ('ForkAATree l n lv r), IsAA4 ('ForkAATree l n lv r)) =>
+    Natty lv -> ProofIsAA ('ForkAATree l n lv r)
+
+proofIsAA :: IAATree t -> ProofIsAA t
+proofIsAA EmptyIAATree = PAAE
+proofIsAA (ForkIAATree EmptyIAATree _ Zy EmptyIAATree) = PAAF Zy
+proofIsAA (ForkIAATree l@(ForkIAATree _ _ llv _) _ (Sy lv) r@(ForkIAATree _ _ rlv EmptyIAATree)) = case owotoNat llv (Sy lv) of
+  EE -> undefined -- | Impossible case because it violates IsAA1
+  LE -> case owotoNat rlv (Sy lv) of
+    EE -> case proofIsAA l of
+      PAAF _ -> case proofIsAA r of
+        PAAF _ -> PAAF (Sy lv)
+    LE -> case proofIsAA l of
+      PAAF _ -> case proofIsAA r of
+        PAAF _ -> PAAF (Sy lv)
+    GE -> undefined -- | Impossible case because it violates IsAA2
+  GE -> undefined -- | Impossible case because it violates IsAA1
+proofIsAA (ForkIAATree EmptyIAATree _ Zy r@(ForkIAATree EmptyIAATree _ rlv EmptyIAATree)) =
+  case owotoNat Zy rlv of
+    EE -> case proofIsAA r of
+      PAAF _ -> PAAF Zy
+    LE -> undefined -- | Impossible case since right level must be equal to Zy
+    GE -> undefined -- | Impossible case since right level must be equal to Zy
+-- | Impossible cases
+proofIsAA (ForkIAATree EmptyIAATree _ Zy (ForkIAATree EmptyIAATree _ _ ForkIAATree{})) = undefined
+proofIsAA (ForkIAATree EmptyIAATree _ Zy (ForkIAATree ForkIAATree{} _ _ _)) = undefined
+proofIsAA (ForkIAATree EmptyIAATree _ (Sy _) _) = undefined
+proofIsAA (ForkIAATree ForkIAATree{} _ Zy _) = undefined
+proofIsAA (ForkIAATree ForkIAATree{} _ (Sy _) EmptyIAATree) = undefined
+proofIsAA (ForkIAATree l@(ForkIAATree _ _ llv _) _ (Sy lv) r@(ForkIAATree _ _ rlv (ForkIAATree _ _ rrlv _))) =
+  case owotoNat llv (Sy lv) of
+    EE -> undefined -- | Impossible case because it violates IsAA1
+    LE -> case owotoNat rrlv (Sy lv) of
+      EE -> undefined -- | Impossible case because it violates IsAA3
+      LE -> case owotoNat rlv (Sy lv) of
+        EE -> case proofIsAA l of
+          PAAF _ -> case proofIsAA r of
+            PAAF _ -> PAAF (Sy lv)
+        LE -> case proofIsAA l of
+          PAAF _ -> case proofIsAA r of
+            PAAF _ -> PAAF (Sy lv)
+        GE -> undefined -- | Impossible case because it violates IsAA2
+      GE -> undefined -- | Impossible case because it violates IsAA3
+    GE -> undefined -- | Impossible case because it violates IsAA1
+
+data BBT :: AATree -> * where
+  BBT :: (IsBST t, IsAA t) => IAATree t -> BBT t
 
 instance Show (BBT t) where
   show (BBT t) = "BBT $ " ++ show t
 
-data ProofBBT :: Tree -> * where
-  PBE :: ProofBBT 'EmptyTree
-  PBF :: (IsBBT l, IsBBT r, BalancedHeights (Height l) (Height r)) =>
-    ProofBBT l -> Natty n -> ProofBBT r -> ProofBBT ('ForkTree l n r)
-
-proofBBT :: ITree t -> ProofBBT t
-proofBBT EmptyITree        = PBE
-proofBBT (ForkITree l n r) = case proofSubTreeBBT l of
-  STBBT _ -> case proofSubTreeBBT r of
-    STBBT _ -> case proofHeight l of
-      PH _ hl -> case proofHeight r of
-        PH _ hr -> case proofBalancedHeights hl hr of
-          PBH _ _ -> PBF (proofBBT l) n (proofBBT r)
-          NPBH    -> undefined  -- | Unbalanced tree
-
-data SubTreeBBT :: Tree -> * where
-  STBBT :: (IsBBT t) =>
-    ITree t -> SubTreeBBT t
-
-proofSubTreeBBT :: ITree t -> SubTreeBBT t
-proofSubTreeBBT EmptyITree        = STBBT EmptyITree
-proofSubTreeBBT (ForkITree l n r) = case proofSubTreeBBT l of
-  STBBT _ -> case proofSubTreeBBT r of
-    STBBT _ -> case proofHeight l of
-      PH _ hl -> case proofHeight r of
-        PH _ hr -> case proofBalancedHeights hl hr of
-          PBH _ _ -> STBBT (ForkITree l n r)
-          NPBH    -> undefined  -- | Unbalanced tree
-
-data ProofHeight :: Tree -> Nat -> *  where
-  PH :: (Height t ~ h) => ITree t -> Natty h -> ProofHeight t h
-
-proofHeight :: (Height t ~ h) =>
-  ITree t -> ProofHeight t h
-proofHeight EmptyITree        = PH EmptyITree Zy
-proofHeight t@(ForkITree l _ r) = let
-  PH _ hl = proofHeight l
-  PH _ hr = proofHeight r
-  in case owotoNat hl hr of
-    EE -> PH t (Sy hr)
-    LE -> PH t (Sy hr)
-    GE -> PH t (Sy hl)
-
-class BalancedHeights (h1 :: Nat) (h2 :: Nat) where
-instance BalancedHeights 'Z      'Z      where
-instance BalancedHeights 'Z      ('S 'Z) where
-instance BalancedHeights ('S 'Z) 'Z      where
-instance BalancedHeights h1 h2 =>
-  BalancedHeights ('S h1) ('S h2)
-
-data ProofBalancedHeights :: Nat -> Nat -> * where
-  PBH  :: (BalancedHeights h1 h2) =>
-    Natty h1 -> Natty h2 -> ProofBalancedHeights h1 h2
-  NPBH :: ProofBalancedHeights h1 h2  -- | For completion only
-
-proofBalancedHeights :: Natty h1 -> Natty h2 -> ProofBalancedHeights h1 h2
-proofBalancedHeights Zy      Zy      = PBH Zy Zy
-proofBalancedHeights Zy      (Sy Zy) = PBH Zy (Sy Zy)
-proofBalancedHeights (Sy Zy) Zy      = PBH (Sy Zy) Zy
-proofBalancedHeights (Sy h1) (Sy h2) = case proofBalancedHeights h1 h2 of
-  PBH h1' h2' -> PBH (Sy h1') (Sy h2')
-  NPBH        -> NPBH
-proofBalancedHeights Zy          (Sy (Sy _)) = NPBH
-proofBalancedHeights (Sy (Sy _)) Zy          = NPBH
-
-type family Height (t :: Tree) :: Nat where
-  Height 'EmptyTree        = 'Z
-  Height ('ForkTree l n r) = 'S (MaxNat (Height l) (Height r))
-
-type family MaxNat (n1 :: Nat) (n2 :: Nat) :: Nat where
-  MaxNat n1 n2 =
-    (If (Compare n1 n2 == 'EQ)
-      n1
-      (If (Compare n1 n2 == 'LT)
-        n2
-        n1
+type family Insert (x :: Nat) (t :: AATree) :: AATree where
+  Insert x 'EmptyAATree = 'ForkAATree 'EmptyAATree x 'Z 'EmptyAATree
+  Insert x ('ForkAATree l n lv r) =
+    (If (Compare x n == 'EQ)
+      ('ForkAATree l n lv r)
+      (If (Compare x n == 'LT)
+        (Split (Skew ('ForkAATree (Insert x l) n lv r)))
+        (Split (Skew ('ForkAATree l n lv (Insert x r))))
       )
     )
+
+type family Skew (t :: AATree) :: AATree where
+  Skew ('ForkAATree ('ForkAATree ll ln llv lr) n lv r) =
+    (If (Compare llv lv == 'EQ)
+      ('ForkAATree ll ln lv ('ForkAATree lr n lv r))
+      ('ForkAATree ('ForkAATree ll ln llv lr) n lv r)
+    )
+  Skew t = t
+
+skew :: IAATree t -> IAATree (Skew t)
+skew EmptyIAATree = EmptyIAATree
+skew t@(ForkIAATree EmptyIAATree _ _ _) = t
+skew t@(ForkIAATree (ForkIAATree ll ln llv lr) n lv r) = case owotoNat llv lv of
+  EE -> ForkIAATree ll ln lv (ForkIAATree lr n lv r)
+  LE -> t
+  GE -> t
+
+type family Split (t :: AATree) :: AATree where
+  Split ('ForkAATree l n lv ('ForkAATree rl rn rlv ('ForkAATree rrl rrn rrlv rrr))) =
+    (If (Compare lv rlv == 'EQ && Compare rlv rrlv == 'EQ)
+      ('ForkAATree ('ForkAATree l n lv rl) rn ('S lv) ('ForkAATree rrl rrn lv rrr))
+      ('ForkAATree l n lv ('ForkAATree rl rn rlv ('ForkAATree rrl rrn rrlv rrr)))
+    )
+  Split t = t
+
+split :: IAATree t -> IAATree (Split t)
+split EmptyIAATree = EmptyIAATree
+split t@(ForkIAATree _ _ _ EmptyIAATree) = t
+split t@(ForkIAATree _ _ _ (ForkIAATree _ _ _ EmptyIAATree)) = t
+split t@(ForkIAATree l n lv (ForkIAATree rl rn rlv (ForkIAATree rrl rrn rrlv rrr))) =
+  case owotoNat lv rlv of
+    EE -> case owotoNat rlv rrlv of
+      EE -> ForkIAATree (ForkIAATree l n lv rl) rn (Sy lv) (ForkIAATree rrl rrn lv rrr)
+      LE -> t
+      GE -> t
+    LE -> t
+    GE -> t
+
+insert :: Natty x -> IAATree t -> IAATree (Insert x t)
+insert x EmptyIAATree         = ForkIAATree EmptyIAATree x Zy EmptyIAATree
+insert x (ForkIAATree l n lv r)  = case owotoNat x n of
+  EE -> ForkIAATree l n lv r
+  LE -> split $ skew $ ForkIAATree (insert x l) n lv r
+  GE -> split $ skew $ ForkIAATree l n lv (insert x r)
 
 insertBBT :: Natty x -> BBT t -> BBT (Insert x t)
 insertBBT x (BBT t) = let
   t' = insert x t
-  in case proofBBT t' of
-    PBE   -> undefined -- | Impossible case since t' = insert x t
-    PBF{} -> BBT t'
-
-deleteBBT :: Natty x -> BBT t -> BBT (Delete x t)
-deleteBBT x (BBT t) = let
-  t' = delete x t
-  in case proofBBT t' of
-    PBE   -> BBT EmptyITree
-    PBF{} -> BBT t'
+  in case proofIsAA t' of
+    PAAE -> undefined -- | Impossible case since t' has at least x
+    PAAF _ -> case proofBST t' of
+      PF{} -> BBT t'

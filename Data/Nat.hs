@@ -8,8 +8,6 @@
 
 module Data.Nat where
 
-import Compare (Compare)
-
 -- Natural Numbers.
 data Nat = Z | S Nat
   deriving (Eq, Ord, Show)
@@ -51,12 +49,11 @@ owotoNat (Sy m)  (Sy n)  = case owotoNat m n of
   GE -> GE
   EE -> EE
 
-type family CompareNat (m :: Nat) (n :: Nat) :: Ordering where
-  CompareNat 'Z      'Z      = 'EQ
-  CompareNat ('S m)  ('S n)  = CompareNat m n
-  CompareNat ('S m)  'Z      = 'GT
-  CompareNat 'Z      ('S n)  = 'LT
-type instance Compare (a :: Nat) (b :: Nat) = CompareNat a b
+type family Compare (m :: Nat) (n :: Nat) :: Ordering where
+  Compare 'Z      'Z      = 'EQ
+  Compare ('S m)  ('S n)  = Compare m n
+  Compare ('S m)  'Z      = 'GT
+  Compare 'Z      ('S n)  = 'LT
 
 class LeN (n1 :: Nat) (n2 :: Nat) where
 instance LeN 'Z      'Z      where
