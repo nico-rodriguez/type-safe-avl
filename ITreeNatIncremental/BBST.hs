@@ -258,3 +258,13 @@ insertBBST x (BBST t) = let
     PAAE -> undefined -- | Impossible case since t' has at least x
     PAAF _ -> case proofBST t' of
       PF{} -> BBST t'
+
+member :: Natty x -> IAATree t -> Bool
+member _ EmptyIAATree           = False
+member x (ForkIAATree l n _ r) = case owotoNat x n of
+  EE -> True
+  LE -> member x l
+  GE -> member x r
+
+memberBBST :: Natty x -> BBST t -> Bool
+memberBBST x (BBST t) = member x t
