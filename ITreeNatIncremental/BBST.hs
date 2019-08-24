@@ -268,3 +268,39 @@ member x (ForkIAATree l n _ r) = case owotoNat x n of
 
 memberBBST :: Natty x -> BBST t -> Bool
 memberBBST x (BBST t) = member x t
+
+type family Adjust (t :: AATree) :: AATree where
+  -- | (1) Right child has two levels lover than root
+  -- | (1.a) left child is a simple node
+  Adjust ('ForkAATree 'EmptyAATree n ('S lv) ('ForkAATree rl rn rlv rr)) =
+    (If (Compare rlv lv == 'LT)
+      (Skew ('ForkAATree 'EmptyAATree n lv ('ForkAATree rl rn rlv rr)))
+      ('ForkAATree 'EmptyAATree n ('S lv) ('ForkAATree rl rn rlv rr))
+    )
+  Adjust ('ForkAATree ('ForkAATree ll ln llv 'EmptyAATree) n ('S lv) ('ForkAATree rl rn rlv rr)) =
+    (If (Compare rlv lv == 'LT)
+      (Skew ('ForkAATree ('ForkAATree ll ln llv 'EmptyAATree) n lv ('ForkAATree rl rn rlv rr)))
+      ('ForkAATree ('ForkAATree ll ln llv 'EmptyAATree) n ('S lv) ('ForkAATree rl rn rlv rr))
+    )
+  -- | TODO
+  Adjust ('ForkAATree ('ForkAATree ll ln llv ('ForkAATree lrl lrn lrlv lrr)) n ('S lv) ('ForkAATree rl rn rlv rr)) =
+    (If (Compare lrlv llv == 'LT)
+      (If (Compare rlv lv == 'LT)
+        (Skew ('ForkAATree ('ForkAATree ll ln llv 'EmptyAATree) n lv ('ForkAATree rl rn rlv rr)))
+        ('ForkAATree ('ForkAATree ll ln llv 'EmptyAATree) n ('S lv) ('ForkAATree rl rn rlv rr))
+      )
+      -- | (1.a) left child is a double node
+      'EmptyAATree
+    )
+
+adjust :: IAATree t -> IAATree (Adjust t)
+adjust t@(ForkIAATree EmptyIAATree n (Sy lv) (ForkIAATree rl rn rlv rr)) =
+  case owotoNat rlv lv of
+    EE -> t
+    LE -> ForkIAATree EmptyIAATree n lv (ForkIAATree rl rn rlv rr)
+    GE -> t
+adjust t@(ForkIAATree (ForkIAATree ll ln llv EmptyIAATree) n (Sy lv) (ForkIAATree rl rn rlv rr)) =
+  case owotoNat rlv lv of
+    EE -> t
+    LE -> skew $ ForkIAATree (ForkIAATree ll ln llv EmptyIAATree) n lv (ForkIAATree rl rn rlv rr)
+    GE -> t
