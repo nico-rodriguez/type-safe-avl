@@ -1,12 +1,16 @@
 {-# LANGUAGE AllowAmbiguousTypes #-}
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE GADTs #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE StandaloneDeriving #-}
 {-# LANGUAGE TypeFamilies #-}
+{-# LANGUAGE PolyKinds #-}
 
 module Data.Nat where
+
+import Data.Proxy
 
 -- Natural Numbers.
 data Nat = Z | S Nat
@@ -35,6 +39,13 @@ natty2IntAc (Sy n) ac = natty2IntAc n (ac+1)
 instance Show (Natty n) where
   show n = show $ natty2Int n
 
+class NATTY (n :: Nat) where
+  natty :: Natty n
+instance NATTY 'Z where
+  natty = Zy
+instance NATTY n => NATTY ('S n) where
+  natty = Sy natty
+
 data OWOTO :: Nat -> Nat -> * where
   LE :: (Compare x y ~ 'LT, LtN x y, LeN x y) => OWOTO x y
   EE :: (Compare x x ~ 'EQ, LeN x x) => OWOTO x x
@@ -49,11 +60,27 @@ owotoNat (Sy m)  (Sy n)  = case owotoNat m n of
   GE -> GE
   EE -> EE
 
-type family Compare (m :: Nat) (n :: Nat) :: Ordering where
+-- type family Compare (m :: Nat) (n :: Nat) :: Ordering where
+--   Compare 'Z      'Z      = 'EQ
+--   Compare ('S m)  ('S n)  = Compare m n
+--   Compare ('S m)  'Z      = 'GT
+--   Compare 'Z      ('S n)  = 'LT
+
+type family Compare (m :: k) (n :: k') :: Ordering where
   Compare 'Z      'Z      = 'EQ
   Compare ('S m)  ('S n)  = Compare m n
   Compare ('S m)  'Z      = 'GT
   Compare 'Z      ('S n)  = 'LT
+  Compare (Natty m) (Natty n) = Compare m n
+  Compare (Proxy m) (Proxy n) = Compare m n
+  Compare (Proxy m) n = Compare m n
+  Compare m (Proxy n) = Compare m n
+
+type family CompareNat (m :: Nat) (n :: Nat) :: Ordering where
+  CompareNat 'Z      'Z      = 'EQ
+  CompareNat ('S m)  ('S n)  = CompareNat m n
+  CompareNat ('S m)  'Z      = 'GT
+  CompareNat 'Z      ('S n)  = 'LT
 
 class LeN (n1 :: Nat) (n2 :: Nat) where
 instance LeN 'Z      'Z      where
