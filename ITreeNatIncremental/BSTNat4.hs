@@ -1,24 +1,24 @@
-{-# LANGUAGE DataKinds #-}
-{-# LANGUAGE FlexibleInstances #-}
-{-# LANGUAGE GADTs #-}
+{-# LANGUAGE DataKinds             #-}
+{-# LANGUAGE FlexibleContexts      #-}
+{-# LANGUAGE FlexibleInstances     #-}
+{-# LANGUAGE GADTs                 #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
-{-# LANGUAGE ScopedTypeVariables #-}
-{-# LANGUAGE TypeFamilies #-}
-{-# LANGUAGE TypeOperators #-}
-{-# LANGUAGE UndecidableInstances #-}
-{-# LANGUAGE PolyKinds #-}
-{-# LANGUAGE RankNTypes #-}
-{-# LANGUAGE StandaloneDeriving #-}
-{-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE PolyKinds             #-}
+{-# LANGUAGE RankNTypes            #-}
+{-# LANGUAGE ScopedTypeVariables   #-}
+{-# LANGUAGE StandaloneDeriving    #-}
+{-# LANGUAGE TypeFamilies          #-}
+{-# LANGUAGE TypeOperators         #-}
+{-# LANGUAGE UndecidableInstances  #-}
 
 module ITreeNatIncremental.BSTNat4 where
 
-import Data.Kind
-import Data.Proxy
-import Data.Type.Bool
-import Data.Type.Equality
-import Data.Nat (Nat(..), Compare, Natty, NATTY(..))
-import Prelude hiding (lookup)
+import           Data.Kind
+import           Data.Nat           (Compare, NATTY (..), Nat (..), Natty)
+import           Data.Proxy
+import           Data.Type.Bool
+import           Data.Type.Equality
+import           Prelude            hiding (lookup)
 
 data Node :: k -> Type -> Type where
   Node :: forall (k :: Nat) (a :: Type). a -> Node k a

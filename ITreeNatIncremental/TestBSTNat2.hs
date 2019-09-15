@@ -2,8 +2,8 @@
 
 module ITreeNatIncremental.Test2 where
 
-import ITreeNatIncremental.BSTNat2
-import Data.Nat
+import           Data.Nat
+import           ITreeNatIncremental.BSTNat2
 
 sbn0 :: Natty 'Z
 sbn0 = Zy

@@ -1,12 +1,12 @@
-{-# LANGUAGE DataKinds #-}
-{-# LANGUAGE FlexibleContexts #-}
-{-# LANGUAGE FlexibleInstances #-}
-{-# LANGUAGE GADTs #-}
-{-# LANGUAGE IncoherentInstances #-}
+{-# LANGUAGE DataKinds             #-}
+{-# LANGUAGE FlexibleContexts      #-}
+{-# LANGUAGE FlexibleInstances     #-}
+{-# LANGUAGE GADTs                 #-}
+{-# LANGUAGE IncoherentInstances   #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
-{-# LANGUAGE TypeFamilies #-}
-{-# LANGUAGE TypeOperators #-}
-{-# LANGUAGE UndecidableInstances #-}
+{-# LANGUAGE TypeFamilies          #-}
+{-# LANGUAGE TypeOperators         #-}
+{-# LANGUAGE UndecidableInstances  #-}
 
 -- | Binary trees without constraints. The functions insert, member, max and delete
 -- | assume the trees are binary search, but this constraint is not included in
@@ -14,10 +14,10 @@
 
 module ITreeNatIncremental.ITree where
 
-import Data.Type.Bool
-import Data.Type.Equality
-import Data.Nat
-import Prelude hiding (max)
+import           Data.Nat
+import           Data.Type.Bool
+import           Data.Type.Equality
+import           Prelude            hiding (max)
 
 data Tree :: * where
   EmptyTree :: Tree
@@ -92,7 +92,7 @@ type family Max (t :: Tree) :: Nat where
 
 max :: ITree ('ForkTree l n r) -> Natty (Max ('ForkTree l n r))
 max (ForkITree _ n r) = case isEmpty r of
-  E -> n
+  E  -> n
   NE -> max r
 
 type family Delete (x :: Nat) (t :: Tree) :: Tree where

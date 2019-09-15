@@ -2,9 +2,9 @@
 
 module ITreeNatIncremental.Test4 where
 
-import ITreeNatIncremental.BSTNat4
-import Data.Nat
-import Data.Proxy
+import           Data.Nat
+import           Data.Proxy
+import           ITreeNatIncremental.BSTNat4
 
 p0 :: Proxy 'Z
 p0 = Proxy

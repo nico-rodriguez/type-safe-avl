@@ -1,20 +1,21 @@
-{-# LANGUAGE DataKinds #-}
-{-# LANGUAGE FlexibleContexts #-}
-{-# LANGUAGE FlexibleInstances #-}
-{-# LANGUAGE GADTs #-}
-{-# LANGUAGE IncoherentInstances #-}
+{-# LANGUAGE DataKinds             #-}
+{-# LANGUAGE FlexibleContexts      #-}
+{-# LANGUAGE FlexibleInstances     #-}
+{-# LANGUAGE GADTs                 #-}
+{-# LANGUAGE IncoherentInstances   #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
-{-# LANGUAGE TypeFamilies #-}
-{-# LANGUAGE TypeOperators #-}
-{-# LANGUAGE UndecidableInstances #-}
+{-# LANGUAGE TypeFamilies          #-}
+{-# LANGUAGE TypeOperators         #-}
+{-# LANGUAGE UndecidableInstances  #-}
 
 -- | Import the ITree module and add the constrint of binary search tree to the
 -- | types of the trees using type classes.
 
 module ITreeNatIncremental.BST where
 
-import Data.Nat (Nat, Natty, owotoNat, OWOTO (..), Compare)
-import ITreeNatIncremental.ITree
+import           Data.Nat                  (Compare, Nat, Natty, OWOTO (..),
+                                            owotoNat)
+import           ITreeNatIncremental.ITree
 
 -- | Class of Binary Search Trees
 class IsBST (t :: Tree) where

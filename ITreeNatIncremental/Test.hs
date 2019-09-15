@@ -2,10 +2,10 @@
 
 module ITreeNatIncremental.Test where
 
-import ITreeNatIncremental.ITree
-import ITreeNatIncremental.BST
-import ITreeNatIncremental.BBST
-import Data.Nat
+import           Data.Nat
+import           ITreeNatIncremental.BBST
+import           ITreeNatIncremental.BST
+import           ITreeNatIncremental.ITree
 
 sbn0 :: Natty 'Z
 sbn0 = Zy

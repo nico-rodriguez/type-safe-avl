@@ -2,8 +2,8 @@
 
 module BSTNatTypeFamilies.Test where
 
-import BSTNatTypeFamilies.BSTNat
-import Data.Nat
+import           BSTNatTypeFamilies.BSTNat
+import           Data.Nat
 
 sbn0 :: Natty 'Z
 sbn0 = Zy

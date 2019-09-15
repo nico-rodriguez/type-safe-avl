@@ -1,18 +1,19 @@
-{-# LANGUAGE DataKinds #-}
-{-# LANGUAGE FlexibleInstances #-}
-{-# LANGUAGE GADTs #-}
+{-# LANGUAGE DataKinds             #-}
+{-# LANGUAGE FlexibleContexts      #-}
+{-# LANGUAGE FlexibleInstances     #-}
+{-# LANGUAGE GADTs                 #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
-{-# LANGUAGE ScopedTypeVariables #-}
-{-# LANGUAGE TypeFamilies #-}
-{-# LANGUAGE TypeOperators #-}
-{-# LANGUAGE UndecidableInstances #-}
+{-# LANGUAGE ScopedTypeVariables   #-}
+{-# LANGUAGE TypeFamilies          #-}
+{-# LANGUAGE TypeOperators         #-}
+{-# LANGUAGE UndecidableInstances  #-}
 
 module ITreeNatIncremental.BSTNat2 where
 
-import Data.Proxy
-import Data.Type.Bool
-import Data.Type.Equality
-import Data.Nat (Nat, Compare, Natty, OWOTO(..), owotoNat)
+import           Data.Nat           (Compare, Nat, Natty, OWOTO (..), owotoNat)
+import           Data.Proxy
+import           Data.Type.Bool
+import           Data.Type.Equality
 
 data Tree :: * where
   EmptyTree :: Tree

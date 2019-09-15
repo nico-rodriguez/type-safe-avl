@@ -1,16 +1,16 @@
-{-# LANGUAGE DataKinds #-}
-{-# LANGUAGE GADTs #-}
-{-# LANGUAGE TypeFamilies #-}
-{-# LANGUAGE TypeOperators #-}
+{-# LANGUAGE DataKinds            #-}
+{-# LANGUAGE GADTs                #-}
+{-# LANGUAGE TypeFamilies         #-}
+{-# LANGUAGE TypeOperators        #-}
 {-# LANGUAGE UndecidableInstances #-}
 
 module Data.Chr where
 
-import Compare
-import Data.Type.Bool
-import Data.Type.Equality
+import           Compare
+import           Data.Type.Bool
+import           Data.Type.Equality
 
-import qualified Data.Char as Char
+import qualified Data.Char          as Char
 
 data SBool :: Bool -> * where
   STrue   :: SBool 'True

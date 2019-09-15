@@ -1,15 +1,15 @@
-{-# LANGUAGE DataKinds #-}
-{-# LANGUAGE GADTs #-}
-{-# LANGUAGE TypeFamilies #-}
-{-# LANGUAGE TypeOperators #-}
+{-# LANGUAGE DataKinds            #-}
+{-# LANGUAGE GADTs                #-}
+{-# LANGUAGE TypeFamilies         #-}
+{-# LANGUAGE TypeOperators        #-}
 {-# LANGUAGE UndecidableInstances #-}
 
 module Data.Str where
 
-import Compare
-import Data.Chr
-import Data.Type.Bool
-import Data.Type.Equality
+import           Compare
+import           Data.Chr
+import           Data.Type.Bool
+import           Data.Type.Equality
 
 data Str :: [Chr] -> * where
   EmptyStr :: Str '[]

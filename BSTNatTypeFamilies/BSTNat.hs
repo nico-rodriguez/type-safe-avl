@@ -1,15 +1,15 @@
-{-# LANGUAGE DataKinds #-}
-{-# LANGUAGE GADTs #-}
-{-# LANGUAGE TypeFamilies #-}
-{-# LANGUAGE TypeOperators #-}
+{-# LANGUAGE DataKinds            #-}
+{-# LANGUAGE GADTs                #-}
+{-# LANGUAGE TypeFamilies         #-}
+{-# LANGUAGE TypeOperators        #-}
 {-# LANGUAGE UndecidableInstances #-}
 
 module BSTNatTypeFamilies.BSTNat where
 
-import Data.Type.Bool
-import Data.Type.Equality
-import Data.Nat (Nat, Compare, Natty, OWOTO(..), owotoNat)
-import Prelude hiding (max)
+import           Data.Nat           (Compare, Nat, Natty, OWOTO (..), owotoNat)
+import           Data.Type.Bool
+import           Data.Type.Equality
+import           Prelude            hiding (max)
 
 
 data Tree :: * where
@@ -156,7 +156,7 @@ type family Max (t :: Tree) :: Nat where
 
 max :: BST ('ForkTree l n r) -> Natty (Max ('ForkTree l n r))
 max (ForkBST _ n r) = case isEmpty r of
-  E -> n
+  E  -> n
   NE -> max r
 
 type family Delete (x :: Nat) (t :: Tree) :: Tree where
@@ -187,7 +187,7 @@ proofDelete x t@(ForkBST l n r) = case owotoNat x n of
   EE -> case isEmpty l of
     E -> gcastWith (proofLtNTree r n) Refl
     NE -> case isEmpty r of
-      E -> Refl
+      E  -> Refl
       NE -> undefined -- | Impossible case since x ~ Max t
   LE -> undefined -- | Impossible case since can't happen x ~ Max t AND owoto x n = LE
   GE -> gcastWith (proofMaxRight x t) (gcastWith (proofDelete x r) (gcastWith (proofLtNTree l x) (gcastWith (proofLtNNode n x) Refl)))
