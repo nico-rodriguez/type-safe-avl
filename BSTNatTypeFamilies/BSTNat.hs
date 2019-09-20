@@ -6,10 +6,11 @@
 
 module BSTNatTypeFamilies.BSTNat where
 
-import           Data.Nat           (Compare, Nat, Natty, OWOTO (..), owotoNat)
+import           BSTNatTypeFamilies.Nat (Compare, Nat, Natty, OWOTO (..),
+                                         owotoNat)
 import           Data.Type.Bool
 import           Data.Type.Equality
-import           Prelude            hiding (max)
+import           Prelude                hiding (max)
 
 
 data Tree :: * where
