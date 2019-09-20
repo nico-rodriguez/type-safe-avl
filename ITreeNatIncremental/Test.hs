@@ -3,334 +3,73 @@
 module ITreeNatIncremental.Test where
 
 import           Data.Nat
-import           ITreeNatIncremental.BBST
+import           Data.Proxy
 import           ITreeNatIncremental.BST
+import           ITreeNatIncremental.Node
 import           ITreeNatIncremental.ITree
 
-sbn0 :: Natty 'Z
-sbn0 = Zy
+p0 :: Proxy 'Z
+p0 = Proxy
 
-sbn1 :: Natty ('S 'Z)
-sbn1 = Sy Zy
+p1 :: Proxy ('S 'Z)
+p1 = Proxy
 
-sbn2 :: Natty ('S ('S 'Z))
-sbn2 = Sy (Sy Zy)
+p2 :: Proxy ('S ('S 'Z))
+p2 = Proxy
 
-sbn3 :: Natty ('S ('S ('S 'Z)))
-sbn3 = Sy (Sy (Sy Zy))
+p3 :: Proxy ('S ('S ('S 'Z)))
+p3 = Proxy
 
-sbn4 :: Natty ('S ('S ('S ('S 'Z))))
-sbn4 = Sy (Sy (Sy (Sy Zy)))
+p4 :: Proxy ('S ('S ('S ('S 'Z))))
+p4 = Proxy
 
-sbn5 :: Natty ('S ('S ('S ('S ('S 'Z)))))
-sbn5 = Sy (Sy (Sy (Sy (Sy Zy))))
+p5 :: Proxy ('S ('S ('S ('S ('S 'Z)))))
+p5 = Proxy
 
-sbn6 :: Natty ('S ('S ('S ('S ('S ('S 'Z))))))
-sbn6 = Sy (Sy (Sy (Sy (Sy (Sy Zy)))))
+p6 :: Proxy ('S ('S ('S ('S ('S ('S 'Z))))))
+p6 = Proxy
 
-sbn7 :: Natty ('S ('S ('S ('S ('S ('S ('S 'Z)))))))
-sbn7 = Sy (Sy (Sy (Sy (Sy (Sy (Sy Zy))))))
+p7 :: Proxy ('S ('S ('S ('S ('S ('S ('S 'Z)))))))
+p7 = Proxy
 
--- | Test Binary Search Trees
-
-e :: BST 'EmptyTree
 e = BST EmptyITree
 
--- [4]
-t1 :: BST ('ForkTree 'EmptyTree ('S ('S ('S ('S 'Z)))) 'EmptyTree)
-t1 = insertBST sbn4 e
+t1 = insertBST (mkNode p4 'f') e
+t2 = insertBST (mkNode p2 (4::Int)) t1
+t3 = insertBST (mkNode p6 "lala") t2
+t4 = insertBST (mkNode p3 True) t3
+t5 = insertBST (mkNode p5 ([1,2,3]::[Int])) t4
+t6 = insertBST (mkNode p0 (1.8::Float)) t5
+t7 = insertBST (mkNode p7 [False]) t6
 
--- [2,4]
-t2 :: BST
-        ('ForkTree
-           ('ForkTree 'EmptyTree ('S ('S 'Z)) 'EmptyTree)
-           ('S ('S ('S ('S 'Z))))
-           'EmptyTree)
-t2 = insertBST sbn2 t1
+data SomeData = SD
+  deriving (Show)
 
--- [2,4,6]
-t3 :: BST
-        ('ForkTree
-           ('ForkTree 'EmptyTree ('S ('S 'Z)) 'EmptyTree)
-           ('S ('S ('S ('S 'Z))))
-           ('ForkTree 'EmptyTree ('S ('S ('S ('S ('S ('S 'Z)))))) 'EmptyTree))
-t3 = insertBST sbn6 t2
+t8 = insertBST (mkNode p7 SD) t7
 
--- [2,3,4,6]
-t4 :: BST
-        ('ForkTree
-           ('ForkTree
-              'EmptyTree
-              ('S ('S 'Z))
-              ('ForkTree 'EmptyTree ('S ('S ('S 'Z))) 'EmptyTree))
-           ('S ('S ('S ('S 'Z))))
-           ('ForkTree 'EmptyTree ('S ('S ('S ('S ('S ('S 'Z)))))) 'EmptyTree))
-t4 = insertBST sbn3 t3
+l1 :: [Char]
+l1 = lookupBST p6 t8
 
--- [2,3,4,5,6]
-t5 :: BST
-        ('ForkTree
-           ('ForkTree
-              'EmptyTree
-              ('S ('S 'Z))
-              ('ForkTree 'EmptyTree ('S ('S ('S 'Z))) 'EmptyTree))
-           ('S ('S ('S ('S 'Z))))
-           ('ForkTree
-              ('ForkTree 'EmptyTree ('S ('S ('S ('S ('S 'Z))))) 'EmptyTree)
-              ('S ('S ('S ('S ('S ('S 'Z))))))
-              'EmptyTree))
-t5 = insertBST sbn5 t4
-
--- [0,2,3,4,5,6]
-t6 :: BST
-        ('ForkTree
-           ('ForkTree
-              ('ForkTree 'EmptyTree 'Z 'EmptyTree)
-              ('S ('S 'Z))
-              ('ForkTree 'EmptyTree ('S ('S ('S 'Z))) 'EmptyTree))
-           ('S ('S ('S ('S 'Z))))
-           ('ForkTree
-              ('ForkTree 'EmptyTree ('S ('S ('S ('S ('S 'Z))))) 'EmptyTree)
-              ('S ('S ('S ('S ('S ('S 'Z))))))
-              'EmptyTree))
-t6 = insertBST sbn0 t5
-
--- [0,2,3,4,5,6,7]
-t7 :: BST
-        ('ForkTree
-           ('ForkTree
-              ('ForkTree 'EmptyTree 'Z 'EmptyTree)
-              ('S ('S 'Z))
-              ('ForkTree 'EmptyTree ('S ('S ('S 'Z))) 'EmptyTree))
-           ('S ('S ('S ('S 'Z))))
-           ('ForkTree
-              ('ForkTree 'EmptyTree ('S ('S ('S ('S ('S 'Z))))) 'EmptyTree)
-              ('S ('S ('S ('S ('S ('S 'Z))))))
-              ('ForkTree
-                 'EmptyTree ('S ('S ('S ('S ('S ('S ('S 'Z))))))) 'EmptyTree)))
-t7 = insertBST sbn7 t6
-
-t8 :: BST
-        ('ForkTree
-           ('ForkTree
-              ('ForkTree 'EmptyTree 'Z 'EmptyTree)
-              ('S ('S 'Z))
-              ('ForkTree 'EmptyTree ('S ('S ('S 'Z))) 'EmptyTree))
-           ('S ('S ('S ('S 'Z))))
-           ('ForkTree
-              ('ForkTree 'EmptyTree ('S ('S ('S ('S ('S 'Z))))) 'EmptyTree)
-              ('S ('S ('S ('S ('S ('S 'Z))))))
-              ('ForkTree
-                 'EmptyTree ('S ('S ('S ('S ('S ('S ('S 'Z))))))) 'EmptyTree)))
-t8 = insertBST sbn7 t7
-
-t9 :: BST
-        ('ForkTree
-           ('ForkTree
-              ('ForkTree 'EmptyTree 'Z 'EmptyTree)
-              ('S ('S 'Z))
-              ('ForkTree 'EmptyTree ('S ('S ('S 'Z))) 'EmptyTree))
-           ('S ('S ('S ('S 'Z))))
-           ('ForkTree
-              ('ForkTree 'EmptyTree ('S ('S ('S ('S ('S 'Z))))) 'EmptyTree)
-              ('S ('S ('S ('S ('S ('S 'Z))))))
-              'EmptyTree))
-t9 = deleteBST sbn7 t7
-
-t10 :: BST
-         ('ForkTree
-            ('ForkTree
-               ('ForkTree 'EmptyTree 'Z 'EmptyTree) ('S ('S 'Z)) 'EmptyTree)
-            ('S ('S ('S 'Z)))
-            ('ForkTree
-               ('ForkTree 'EmptyTree ('S ('S ('S ('S ('S 'Z))))) 'EmptyTree)
-               ('S ('S ('S ('S ('S ('S 'Z))))))
-               ('ForkTree
-                  'EmptyTree ('S ('S ('S ('S ('S ('S ('S 'Z))))))) 'EmptyTree)))
-t10 = deleteBST sbn4 t7
-
-t11 :: BST
-         ('ForkTree
-            ('ForkTree
-               ('ForkTree 'EmptyTree 'Z 'EmptyTree)
-               ('S ('S 'Z))
-               ('ForkTree 'EmptyTree ('S ('S ('S 'Z))) 'EmptyTree))
-            ('S ('S ('S ('S 'Z))))
-            ('ForkTree
-               ('ForkTree 'EmptyTree ('S ('S ('S ('S ('S 'Z))))) 'EmptyTree)
-               ('S ('S ('S ('S ('S ('S 'Z))))))
-               ('ForkTree
-                  'EmptyTree ('S ('S ('S ('S ('S ('S ('S 'Z))))))) 'EmptyTree)))
-t11 = deleteBST sbn1 t7
-
--- | Test Balanced Binary Tree
-
-be :: BBST 'EmptyAATree
-be = BBST EmptyIAATree
-
-bt :: BBST
-        ('ForkAATree
-           ('ForkAATree
-              ('ForkAATree 'EmptyAATree 'Z 'Z 'EmptyAATree)
-              ('S 'Z)
-              ('S 'Z)
-              ('ForkAATree 'EmptyAATree ('S ('S 'Z)) 'Z 'EmptyAATree))
-           ('S ('S ('S 'Z)))
-           ('S ('S 'Z))
-           ('ForkAATree
-              ('ForkAATree 'EmptyAATree ('S ('S ('S ('S 'Z)))) 'Z 'EmptyAATree)
-              ('S ('S ('S ('S ('S 'Z)))))
-              ('S 'Z)
-              ('ForkAATree
-                 'EmptyAATree
-                 ('S ('S ('S ('S ('S ('S 'Z))))))
-                 'Z
-                 ('ForkAATree
-                    'EmptyAATree
-                    ('S ('S ('S ('S ('S ('S ('S 'Z)))))))
-                    'Z
-                    'EmptyAATree))))
-bt = insertBBST sbn7 $ insertBBST sbn6 $ insertBBST sbn5 $ insertBBST sbn4 $ insertBBST sbn3 $ insertBBST sbn2 $ insertBBST sbn1 $ insertBBST sbn0 be
-
--- [4]
-bt1 :: BBST ('ForkAATree 'EmptyAATree ('S ('S ('S ('S 'Z)))) 'Z 'EmptyAATree)
-bt1 = insertBBST sbn4 be
-
--- [2,4]
-bt2 :: BBST
-         ('ForkAATree
-            'EmptyAATree
-            ('S ('S 'Z))
-            'Z
-            ('ForkAATree 'EmptyAATree ('S ('S ('S ('S 'Z)))) 'Z 'EmptyAATree))
-bt2 = insertBBST sbn2 bt1
-
--- [2,4,6]
-bt3 :: BBST
-        ('ForkAATree
-           ('ForkAATree 'EmptyAATree ('S ('S 'Z)) 'Z 'EmptyAATree)
-           ('S ('S ('S ('S 'Z)))) ('S 'Z)
-           ('ForkAATree 'EmptyAATree ('S ('S ('S ('S ('S ('S 'Z)))))) 'Z 'EmptyAATree))
-bt3 = insertBBST sbn6 bt2
-
--- [2,3,4,6]
-bt4 :: BBST
-         ('ForkAATree
-            ('ForkAATree
-               'EmptyAATree
-               ('S ('S 'Z))
-               'Z
-               ('ForkAATree 'EmptyAATree ('S ('S ('S 'Z))) 'Z 'EmptyAATree))
-            ('S ('S ('S ('S 'Z))))
-            ('S 'Z)
-            ('ForkAATree
-               'EmptyAATree ('S ('S ('S ('S ('S ('S 'Z)))))) 'Z 'EmptyAATree))
-bt4 = insertBBST sbn3 bt3
-
--- [2,3,4,5,6]
-bt5 :: BBST
-         ('ForkAATree
-            ('ForkAATree
-               'EmptyAATree
-               ('S ('S 'Z))
-               'Z
-               ('ForkAATree 'EmptyAATree ('S ('S ('S 'Z))) 'Z 'EmptyAATree))
-            ('S ('S ('S ('S 'Z))))
-            ('S 'Z)
-            ('ForkAATree
-               'EmptyAATree
-               ('S ('S ('S ('S ('S 'Z)))))
-               'Z
-               ('ForkAATree
-                  'EmptyAATree ('S ('S ('S ('S ('S ('S 'Z)))))) 'Z 'EmptyAATree)))
-bt5 = insertBBST sbn5 bt4
-
--- [0,2,3,4,5,6]
-bt6 :: BBST
-         ('ForkAATree
-            ('ForkAATree 'EmptyAATree 'Z 'Z 'EmptyAATree)
-            ('S ('S 'Z))
-            ('S 'Z)
-            ('ForkAATree
-               ('ForkAATree 'EmptyAATree ('S ('S ('S 'Z))) 'Z 'EmptyAATree)
-               ('S ('S ('S ('S 'Z))))
-               ('S 'Z)
-               ('ForkAATree
-                  'EmptyAATree
-                  ('S ('S ('S ('S ('S 'Z)))))
-                  'Z
-                  ('ForkAATree
-                     'EmptyAATree ('S ('S ('S ('S ('S ('S 'Z)))))) 'Z 'EmptyAATree))))
-bt6 = insertBBST sbn0 bt5
-
--- [0,2,3,4,5,6,7]
-bt7 :: BBST
-         ('ForkAATree
-            ('ForkAATree
-               ('ForkAATree 'EmptyAATree 'Z 'Z 'EmptyAATree)
-               ('S ('S 'Z))
-               ('S 'Z)
-               ('ForkAATree 'EmptyAATree ('S ('S ('S 'Z))) 'Z 'EmptyAATree))
-            ('S ('S ('S ('S 'Z))))
-            ('S ('S 'Z))
-            ('ForkAATree
-               ('ForkAATree
-                  'EmptyAATree ('S ('S ('S ('S ('S 'Z))))) 'Z 'EmptyAATree)
-               ('S ('S ('S ('S ('S ('S 'Z))))))
-               ('S 'Z)
-               ('ForkAATree
-                  'EmptyAATree
-                  ('S ('S ('S ('S ('S ('S ('S 'Z)))))))
-                  'Z
-                  'EmptyAATree)))
-bt7 = insertBBST sbn7 bt6
-
-bt8 :: BBST
-         ('ForkAATree
-            ('ForkAATree
-               ('ForkAATree 'EmptyAATree 'Z 'Z 'EmptyAATree)
-               ('S ('S 'Z))
-               ('S 'Z)
-               ('ForkAATree 'EmptyAATree ('S ('S ('S 'Z))) 'Z 'EmptyAATree))
-            ('S ('S ('S ('S 'Z))))
-            ('S ('S 'Z))
-            ('ForkAATree
-               ('ForkAATree
-                  'EmptyAATree ('S ('S ('S ('S ('S 'Z))))) 'Z 'EmptyAATree)
-               ('S ('S ('S ('S ('S ('S 'Z))))))
-               ('S 'Z)
-               ('ForkAATree
-                  'EmptyAATree
-                  ('S ('S ('S ('S ('S ('S ('S 'Z)))))))
-                  'Z
-                  'EmptyAATree)))
-bt8 = insertBBST sbn7 bt7
-
-
--- bt9 = deleteBBST sbn7 bt7
-
--- bt10 :: BBST
---          ('ForkTree
---             ('ForkTree
---                ('ForkTree 'EmptyTree 'Z 'EmptyTree) ('S ('S 'Z)) 'EmptyTree)
---             ('S ('S ('S 'Z)))
---             ('ForkTree
---                ('ForkTree 'EmptyTree ('S ('S ('S ('S ('S 'Z))))) 'EmptyTree)
---                ('S ('S ('S ('S ('S ('S 'Z))))))
---                ('ForkTree
---                   'EmptyTree ('S ('S ('S ('S ('S ('S ('S 'Z))))))) 'EmptyTree)))
--- bt10 = deleteBBST sbn4 bt7
+-- | Error: key p1 ('S 'Z) is not in the tree t8
+-- err = lookupBST p1 t8
 --
--- bt11 :: BBST
---          ('ForkTree
---             ('ForkTree
---                ('ForkTree 'EmptyTree 'Z 'EmptyTree)
---                ('S ('S 'Z))
---                ('ForkTree 'EmptyTree ('S ('S ('S 'Z))) 'EmptyTree))
---             ('S ('S ('S ('S 'Z))))
---             ('ForkTree
---                ('ForkTree 'EmptyTree ('S ('S ('S ('S ('S 'Z))))) 'EmptyTree)
---                ('S ('S ('S ('S ('S ('S 'Z))))))
---                ('ForkTree
---                   'EmptyTree ('S ('S ('S ('S ('S ('S ('S 'Z))))))) 'EmptyTree)))
+-- t9 = deleteBST sbn7 t7
+-- t10 = deleteBST sbn4 t7
+-- t11 = deleteBST sbn1 t7
+--
+-- | Test Balanced Binary Tree
+-- be = BBST EmptyIAATree
+--
+-- bt = insertBBST sbn7 $ insertBBST sbn6 $ insertBBST sbn5 $ insertBBST sbn4 $ insertBBST sbn3 $ insertBBST sbn2 $ insertBBST sbn1 $ insertBBST sbn0 be
+-- bt1 = insertBBST sbn4 be
+-- bt2 = insertBBST sbn2 bt1
+-- bt3 = insertBBST sbn6 bt2
+-- bt4 = insertBBST sbn3 bt3
+-- bt5 = insertBBST sbn5 bt4
+-- bt6 = insertBBST sbn0 bt5
+-- bt7 = insertBBST sbn7 bt6
+-- bt8 = insertBBST sbn7 bt7
+--
+-- bt9 = deleteBBST sbn7 bt7
+-- bt10 = deleteBBST sbn4 bt7
 -- bt11 = deleteBBST sbn1 bt7

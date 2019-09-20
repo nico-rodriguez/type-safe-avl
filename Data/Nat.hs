@@ -47,9 +47,9 @@ instance NATTY n => NATTY ('S n) where
   natty = Sy natty
 
 data OWOTO :: Nat -> Nat -> * where
-  LE :: (Compare x y ~ 'LT, LtN x y, LeN x y) => OWOTO x y
-  EE :: (Compare x x ~ 'EQ, LeN x x) => OWOTO x x
-  GE :: (Compare x y ~ 'GT, LtN y x, LeN y x) => OWOTO x y
+  LE :: (Compare x y ~ 'LT) => OWOTO x y
+  EE :: (Compare x x ~ 'EQ) => OWOTO x x
+  GE :: (Compare x y ~ 'GT) => OWOTO x y
 
 owotoNat :: Natty m -> Natty n -> OWOTO m n
 owotoNat Zy      Zy      = EE
@@ -81,14 +81,3 @@ type family CompareNat (m :: Nat) (n :: Nat) :: Ordering where
   CompareNat ('S m)  ('S n)  = CompareNat m n
   CompareNat ('S m)  'Z      = 'GT
   CompareNat 'Z      ('S n)  = 'LT
-
-class LeN (n1 :: Nat) (n2 :: Nat) where
-instance LeN 'Z      'Z      where
-instance LeN 'Z      ('S n2) where
-instance LeN n1 n2 =>
-  LeN ('S n1) ('S n2) where
-
-class LtN (n1 :: Nat) (n2 :: Nat) where
-instance LtN 'Z      ('S n2) where
-instance LtN n1 n2 =>
-  LtN ('S n1) ('S n2) where
