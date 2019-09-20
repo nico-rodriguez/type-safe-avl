@@ -2,52 +2,53 @@
 
 module ITreeNatIncremental.Test where
 
-import           Data.Nat
 import           Data.Proxy
 import           ITreeNatIncremental.BST
-import           ITreeNatIncremental.Node
 import           ITreeNatIncremental.ITree
+import           ITreeNatIncremental.Node
 
-p0 :: Proxy 'Z
+p0 :: Proxy 0
 p0 = Proxy
-
-p1 :: Proxy ('S 'Z)
+p1 :: Proxy 1
 p1 = Proxy
-
-p2 :: Proxy ('S ('S 'Z))
+p2 :: Proxy 2
 p2 = Proxy
-
-p3 :: Proxy ('S ('S ('S 'Z)))
+p3 :: Proxy 3
 p3 = Proxy
-
-p4 :: Proxy ('S ('S ('S ('S 'Z))))
+p4 :: Proxy 4
 p4 = Proxy
-
-p5 :: Proxy ('S ('S ('S ('S ('S 'Z)))))
+p5 :: Proxy 5
 p5 = Proxy
-
-p6 :: Proxy ('S ('S ('S ('S ('S ('S 'Z))))))
+p6 :: Proxy 6
 p6 = Proxy
-
-p7 :: Proxy ('S ('S ('S ('S ('S ('S ('S 'Z)))))))
+p7 :: Proxy 7
 p7 = Proxy
 
+e :: BST 'EmptyTree
 e = BST EmptyITree
 
+t1 :: BST (Insert 4 Char 'EmptyTree)
 t1 = insertBST (mkNode p4 'f') e
+t2 :: BST (Insert 2 Int ('ForkTree 'EmptyTree (Node 4 Char) 'EmptyTree))
 t2 = insertBST (mkNode p2 (4::Int)) t1
+t3 :: BST (Insert 6 String ('ForkTree ('ForkTree 'EmptyTree (Node 2 Int) 'EmptyTree) (Node 4 Char) 'EmptyTree))
 t3 = insertBST (mkNode p6 "lala") t2
+t4 :: BST (Insert 3 Bool ('ForkTree ('ForkTree 'EmptyTree (Node 2 Int) 'EmptyTree) (Node 4 Char) ('ForkTree 'EmptyTree (Node 6 String) 'EmptyTree)))
 t4 = insertBST (mkNode p3 True) t3
+t5 :: BST (Insert 5 [Int] ('ForkTree ('ForkTree 'EmptyTree (Node 2 Int) ('ForkTree 'EmptyTree (Node 3 Bool) 'EmptyTree)) (Node 4 Char) ('ForkTree 'EmptyTree (Node 6 String) 'EmptyTree)))
 t5 = insertBST (mkNode p5 ([1,2,3]::[Int])) t4
+t6 :: BST (Insert 0 Float ('ForkTree ('ForkTree 'EmptyTree (Node 2 Int) ('ForkTree 'EmptyTree (Node 3 Bool) 'EmptyTree)) (Node 4 Char) ('ForkTree ('ForkTree 'EmptyTree (Node 5 [Int]) 'EmptyTree) (Node 6 String) 'EmptyTree)))
 t6 = insertBST (mkNode p0 (1.8::Float)) t5
+t7 :: BST (Insert 7 [Bool] ('ForkTree ('ForkTree ('ForkTree 'EmptyTree (Node 0 Float) 'EmptyTree) (Node 2 Int) ('ForkTree 'EmptyTree (Node 3 Bool) 'EmptyTree)) (Node 4 Char) ('ForkTree ('ForkTree 'EmptyTree (Node 5 [Int]) 'EmptyTree) (Node 6 String) 'EmptyTree)))
 t7 = insertBST (mkNode p7 [False]) t6
 
 data SomeData = SD
   deriving (Show)
 
+t8 :: BST (Insert 7 SomeData ('ForkTree ('ForkTree ('ForkTree 'EmptyTree (Node 0 Float) 'EmptyTree) (Node 2 Int) ('ForkTree 'EmptyTree (Node 3 Bool) 'EmptyTree)) (Node 4 Char) ('ForkTree ('ForkTree 'EmptyTree (Node 5 [Int]) 'EmptyTree) (Node 6 String) ('ForkTree 'EmptyTree (Node 7 [Bool]) 'EmptyTree))))
 t8 = insertBST (mkNode p7 SD) t7
 
-l1 :: [Char]
+l1 :: String
 l1 = lookupBST p6 t8
 
 -- | Error: key p1 ('S 'Z) is not in the tree t8
