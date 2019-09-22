@@ -53,11 +53,38 @@ l1 = lookupBST p6 t8
 
 -- | Error: key p1 ('S 'Z) is not in the tree t8
 -- err = lookupBST p1 t8
---
--- t9 = deleteBST sbn7 t7
--- t10 = deleteBST sbn4 t7
--- t11 = deleteBST sbn1 t7
---
+
+t9' = let
+  BST t7' = t7
+  in delete p7 t7'
+t10' = let
+  BST t7' = t7
+  in delete p4 t7'
+t11' = let
+  BST t7' = t7
+  in delete p1 t7'
+t12' = let
+  BST t7' = t7
+  in delete p0 t7'
+t13' = let
+  BST t7' = t7
+  in delete p2 t7'
+t14' = let
+  BST t7' = t7
+  in delete p6 t7'
+t15' = let
+  BST t7' = t7
+  in delete p5 t7'
+
+t9 = deleteBST p7 t7
+t10 = deleteBST p4 t7
+t11 = deleteBST p1 t7
+t12 = deleteBST p0 t7
+t13 = deleteBST p2 t7
+t14 = deleteBST p6 t7
+t15 = deleteBST p5 t7
+t16 = deleteBST p3 t7
+
 -- | Test Balanced Binary Tree
 -- be = BBST EmptyIAATree
 --
