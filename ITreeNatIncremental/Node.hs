@@ -10,8 +10,8 @@ import           Data.Kind
 import           Data.Proxy
 import           GHC.TypeLits
 
-data Node :: k -> Type -> Type where
-  Node :: forall (k :: Nat) (a :: Type). a -> Node k a
+data Node :: Nat -> Type -> Type where
+  Node :: a -> Node k a
 deriving instance Show a => Show (Node k a)
 
 mkNode :: forall (k::Nat)(a::Type). Proxy k -> a -> Node k a
