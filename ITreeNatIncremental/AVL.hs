@@ -129,6 +129,7 @@ instance Rotateable ('ForkTree ('ForkTree ll (Node ln la) ('ForkTree lrl (Node l
     ('ForkTree ('ForkTree ll (Node ln la) lrl) (Node lrn lra) ('ForkTree lrr (Node n a) r))
   rotate (ForkITree (ForkITree ll lnode (ForkITree lrl lrnode lrr)) xnode r) _ _ =
     ForkITree (ForkITree ll lnode lrl) lrnode (ForkITree lrr xnode r)
+-- | Right-Left case (First right rotation, then left rotation)
 instance Rotateable ('ForkTree l (Node n a) ('ForkTree ('ForkTree rll (Node rln rla) rlr) (Node rn ra) rr)) 'RightUnbalanced 'LeftHeavy where
   type Rotate ('ForkTree l (Node n a) ('ForkTree ('ForkTree rll (Node rln rla) rlr) (Node rn ra) rr)) 'RightUnbalanced 'LeftHeavy =
     ('ForkTree ('ForkTree l (Node n a) rll) (Node rln rla) ('ForkTree rlr (Node rn ra) rr))
