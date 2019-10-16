@@ -68,10 +68,8 @@ data BS = LeftHeavy | RightHeavy | Balanced
 
 type family BalancedState (h1 :: Nat) (h2 :: Nat) :: BS where
   BalancedState 0 0   = 'Balanced
-  BalancedState 1 0   = 'Balanced
-  BalancedState 0 1   = 'Balanced
-  BalancedState 2 0   = 'LeftHeavy
-  BalancedState 0 2   = 'RightHeavy
+  BalancedState 1 0   = 'LeftHeavy
+  BalancedState 0 1   = 'RightHeavy
   BalancedState h1 h2 = BalancedState (h1-1) (h2-1)
 
 class Balanceable (t :: Tree) where
@@ -155,29 +153,41 @@ instance (Show a, CmpNat x n ~ 'EQ) =>
   type Insert' x a ('ForkTree l (Node n a1) r) 'EQ = 'ForkTree l (Node n a) r
   insert' (Node a) (ForkITree l (Node _) r) _ = ForkITree l (Node a::Node n a) r
 instance (Show a, CmpNat x n ~ 'LT,
-  Balanceable' ('ForkTree ('ForkTree 'EmptyTree (Node x a) 'EmptyTree) (Node n a1) r) (UnbalancedState 1 (Height r))) =>
+  -- Balanceable' ('ForkTree ('ForkTree 'EmptyTree (Node x a) 'EmptyTree) (Node n a1) r) (UnbalancedState 1 (Height r))) =>
+  Balanceable ('ForkTree ('ForkTree 'EmptyTree (Node x a) 'EmptyTree) (Node n a1) r)) =>
   Insertable' x a ('ForkTree 'EmptyTree (Node n a1) r) 'LT where
-  type Insert' x a ('ForkTree 'EmptyTree (Node n a1) r) 'LT = Balance' ('ForkTree ('ForkTree 'EmptyTree (Node x a) 'EmptyTree) (Node n a1) r) (UnbalancedState 1 (Height r))
-  insert' (Node a) (ForkITree EmptyITree n r) _ = balance' (ForkITree (ForkITree EmptyITree (Node a::Node x a) EmptyITree) n r) (Proxy::Proxy (UnbalancedState 1 (Height r)))
+  -- type Insert' x a ('ForkTree 'EmptyTree (Node n a1) r) 'LT = Balance' ('ForkTree ('ForkTree 'EmptyTree (Node x a) 'EmptyTree) (Node n a1) r) (UnbalancedState 1 (Height r))
+  -- insert' (Node a) (ForkITree EmptyITree n r) _ = balance' (ForkITree (ForkITree EmptyITree (Node a::Node x a) EmptyITree) n r) (Proxy::Proxy (UnbalancedState 1 (Height r)))
+  type Insert' x a ('ForkTree 'EmptyTree (Node n a1) r) 'LT = Balance ('ForkTree ('ForkTree 'EmptyTree (Node x a) 'EmptyTree) (Node n a1) r)
+  insert' (Node a) (ForkITree EmptyITree n r) _ = balance (ForkITree (ForkITree EmptyITree (Node a::Node x a) EmptyITree) n r)
 instance (CmpNat x n ~ 'LT, l ~ 'ForkTree ll (Node ln lna) lr, Insertable' x a l (CmpNat x ln),
-  Balanceable' ('ForkTree (Insert' x a l (CmpNat x ln)) (Node n a1) r) (UnbalancedState (Height (Insert x a ('ForkTree ll (Node ln lna) lr))) (Height r))) =>
+  -- Balanceable' ('ForkTree (Insert' x a l (CmpNat x ln)) (Node n a1) r) (UnbalancedState (Height (Insert x a ('ForkTree ll (Node ln lna) lr))) (Height r))) =>
+  Balanceable ('ForkTree (Insert' x a l (CmpNat x ln)) (Node n a1) r)) =>
   Insertable' x a ('ForkTree ('ForkTree ll (Node ln lna) lr) (Node n a1) r) 'LT where
   type Insert' x a ('ForkTree ('ForkTree ll (Node ln lna) lr) (Node n a1) r) 'LT =
-    Balance' ('ForkTree (Insert' x a ('ForkTree ll (Node ln lna) lr) (CmpNat x ln)) (Node n a1) r) (UnbalancedState (Height (Insert x a ('ForkTree ll (Node ln lna) lr))) (Height r))
+    -- Balance' ('ForkTree (Insert' x a ('ForkTree ll (Node ln lna) lr) (CmpNat x ln)) (Node n a1) r) (UnbalancedState (Height (Insert x a ('ForkTree ll (Node ln lna) lr))) (Height r))
+    Balance ('ForkTree (Insert' x a ('ForkTree ll (Node ln lna) lr) (CmpNat x ln)) (Node n a1) r)
   insert' (Node a) (ForkITree l@ForkITree{} n r) _ =
-    balance' (ForkITree (insert' (Node a::Node x a) l (Proxy::Proxy (CmpNat x ln))) n r) (Proxy::Proxy (UnbalancedState (Height (Insert x a ('ForkTree ll (Node ln lna) lr))) (Height r)))
+    -- balance' (ForkITree (insert' (Node a::Node x a) l (Proxy::Proxy (CmpNat x ln))) n r) (Proxy::Proxy (UnbalancedState (Height (Insert x a ('ForkTree ll (Node ln lna) lr))) (Height r)))
+    balance (ForkITree (insert' (Node a::Node x a) l (Proxy::Proxy (CmpNat x ln))) n r)
 instance (Show a, CmpNat x n ~ 'GT,
-  Balanceable' ('ForkTree l (Node n a1) ('ForkTree 'EmptyTree (Node x a) 'EmptyTree)) (UnbalancedState (Height l) 1)) =>
+  -- Balanceable' ('ForkTree l (Node n a1) ('ForkTree 'EmptyTree (Node x a) 'EmptyTree)) (UnbalancedState (Height l) 1)) =>
+  Balanceable ('ForkTree l (Node n a1) ('ForkTree 'EmptyTree (Node x a) 'EmptyTree))) =>
   Insertable' x a ('ForkTree l (Node n a1) 'EmptyTree) 'GT where
-  type Insert' x a ('ForkTree l (Node n a1) 'EmptyTree) 'GT = Balance' ('ForkTree l (Node n a1) ('ForkTree 'EmptyTree (Node x a) 'EmptyTree)) (UnbalancedState (Height l) 1)
-  insert' (Node a) (ForkITree l n EmptyITree) _ = balance' (ForkITree l n (ForkITree EmptyITree (Node a::Node x a) EmptyITree)) (Proxy::Proxy (UnbalancedState (Height l) 1))
+  -- type Insert' x a ('ForkTree l (Node n a1) 'EmptyTree) 'GT = Balance' ('ForkTree l (Node n a1) ('ForkTree 'EmptyTree (Node x a) 'EmptyTree)) (UnbalancedState (Height l) 1)
+  -- insert' (Node a) (ForkITree l n EmptyITree) _ = balance' (ForkITree l n (ForkITree EmptyITree (Node a::Node x a) EmptyITree)) (Proxy::Proxy (UnbalancedState (Height l) 1))
+  type Insert' x a ('ForkTree l (Node n a1) 'EmptyTree) 'GT = Balance ('ForkTree l (Node n a1) ('ForkTree 'EmptyTree (Node x a) 'EmptyTree))
+  insert' (Node a) (ForkITree l n EmptyITree) _ = balance (ForkITree l n (ForkITree EmptyITree (Node a::Node x a) EmptyITree))
 instance (CmpNat x n ~ 'GT, r ~ 'ForkTree rl (Node rn rna) rr, Insertable' x a r (CmpNat x rn),
-  Balanceable' ('ForkTree l (Node n a1) (Insert' x a r (CmpNat x rn))) (UnbalancedState (Height l) (Height (Insert' x a ('ForkTree rl (Node rn rna) rr) (CmpNat x rn))))) =>
+  -- Balanceable' ('ForkTree l (Node n a1) (Insert' x a r (CmpNat x rn))) (UnbalancedState (Height l) (Height (Insert' x a ('ForkTree rl (Node rn rna) rr) (CmpNat x rn))))) =>
+  Balanceable ('ForkTree l (Node n a1) (Insert' x a r (CmpNat x rn)))) =>
   Insertable' x a ('ForkTree l (Node n a1) ('ForkTree rl (Node rn rna) rr)) 'GT where
   type Insert' x a ('ForkTree l (Node n a1) ('ForkTree rl (Node rn rna) rr)) 'GT =
-    Balance' ('ForkTree l (Node n a1) (Insert' x a ('ForkTree rl (Node rn rna) rr) (CmpNat x rn))) (UnbalancedState (Height l) (Height (Insert' x a ('ForkTree rl (Node rn rna) rr) (CmpNat x rn))))
+    -- Balance' ('ForkTree l (Node n a1) (Insert' x a ('ForkTree rl (Node rn rna) rr) (CmpNat x rn))) (UnbalancedState (Height l) (Height (Insert' x a ('ForkTree rl (Node rn rna) rr) (CmpNat x rn))))
+    Balance ('ForkTree l (Node n a1) (Insert' x a ('ForkTree rl (Node rn rna) rr) (CmpNat x rn)))
   insert' (Node a) (ForkITree l n r@ForkITree{}) _ =
-    balance' (ForkITree l n (insert' (Node a::Node x a) r (Proxy::Proxy (CmpNat x rn)))) (Proxy::Proxy (UnbalancedState (Height l) (Height (Insert' x a ('ForkTree rl (Node rn rna) rr) (CmpNat x rn)))))
+    -- balance' (ForkITree l n (insert' (Node a::Node x a) r (Proxy::Proxy (CmpNat x rn)))) (Proxy::Proxy (UnbalancedState (Height l) (Height (Insert' x a ('ForkTree rl (Node rn rna) rr) (CmpNat x rn)))))
+    balance (ForkITree l n (insert' (Node a::Node x a) r (Proxy::Proxy (CmpNat x rn))))
 
 insertAVL :: (ProofIsBSTInsert x a t, IsBST t ~ 'True, IsAVL t ~ 'True,
   Insertable x a t) =>
