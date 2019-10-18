@@ -17,10 +17,11 @@ import           Data.Proxy
 import           Data.Type.Bool
 import           Data.Type.Equality
 import           GHC.TypeLits
-import           ITreeNatIncremental.BST
-import           ITreeNatIncremental.ITree (ITree (..), Tree (..))
+import           ITreeNatIncremental.BST (IsBST)
+import           ITreeNatIncremental.ITree (ITree (..), Tree (..), LtN, GtN)
 import           ITreeNatIncremental.Node
 import           Prelude                   hiding (lookup)
+-- import           Unsafe.Coerce
 
 
 type family Max (n1 :: Nat) (n2 :: Nat) :: Nat where
@@ -177,7 +178,128 @@ instance (CmpNat x n ~ 'GT, r ~ 'ForkTree rl (Node rn rna) rr, Insertable' x a r
   insert' (Node a) (ForkITree l n r@ForkITree{}) _ =
     balance (ForkITree l n (insert' (Node a::Node x a) r (Proxy::Proxy (CmpNat x rn))))
 
-insertAVL :: (ProofIsBSTInsert x a t, IsBST t ~ 'True, IsAVL t ~ 'True,
-  Insertable x a t) =>
-  Node x a -> ITree t -> ITree (Insert x a t)
-insertAVL x t = gcastWith (proofIsBSTInsert x t) insert x t
+class ProofIsBSTInsert (x :: Nat) (a :: Type) (t :: Tree) where
+  proofIsBSTInsert :: (IsBST t ~ 'True) =>
+    Node x a -> ITree t -> IsBST (Insert x a t) :~: 'True
+instance ProofIsBSTInsert x a 'EmptyTree where
+  proofIsBSTInsert _ EmptyITree = Refl
+instance ProofIsBSTInsert' x a ('ForkTree l (Node n a1) r) (CmpNat x n) => ProofIsBSTInsert x a ('ForkTree l (Node n a1) r) where
+  proofIsBSTInsert node t = proofIsBSTInsert' node t (Proxy::Proxy (CmpNat x n))
+
+class ProofIsBSTInsert' (x :: Nat) (a :: Type) (t :: Tree) (o :: Ordering) where
+  proofIsBSTInsert' :: (t ~ 'ForkTree l (Node n a1) r) => Node x a -> ITree t -> Proxy o -> IsBST (Insert' x a t o) :~: 'True
+instance (CmpNat x n ~ 'EQ, IsBST l ~ 'True, IsBST r ~ 'True, LtN l n ~ 'True, GtN r n ~ 'True) =>
+  ProofIsBSTInsert' x a ('ForkTree l (Node n a1) r) 'EQ where
+  proofIsBSTInsert' _ ForkITree{} _ = Refl
+instance (Show a, l ~ 'EmptyTree, CmpNat x n ~ 'LT, IsBST l ~ 'True, IsBST r ~ 'True, LtN l n ~ 'True, GtN r n ~ 'True,
+  ProofIsBSTBalance' ('ForkTree ('ForkTree 'EmptyTree (Node x a) 'EmptyTree) (Node n a1) r) (UnbalancedState 1 (Height r))) =>
+  ProofIsBSTInsert' x a ('ForkTree 'EmptyTree (Node n a1) r) 'LT where
+  proofIsBSTInsert' xnode (ForkITree EmptyITree n r) _ =  gcastWith (proofIsBSTBalance' (ForkITree (ForkITree EmptyITree xnode EmptyITree) n r) (Proxy::Proxy (UnbalancedState 1 (Height r)))) Refl
+instance (l ~ 'ForkTree ll (Node ln lna) lr, CmpNat x n ~ 'LT, IsBST l ~ 'True, IsBST r ~ 'True, LtN l n ~ 'True, GtN r n ~ 'True, ProofIsBSTInsert' x a l (CmpNat x ln),
+  ProofLtNInsert' x a l n (CmpNat x ln),
+  ProofIsBSTBalance ('ForkTree (Insert' x a l (CmpNat x ln)) (Node n a1) r)) =>
+  ProofIsBSTInsert' x a ('ForkTree ('ForkTree ll (Node ln lna) lr) (Node n a1) r) 'LT where
+  proofIsBSTInsert' node (ForkITree l@ForkITree{} _ _) _ =
+    gcastWith (proofLtNInsert' node l (Proxy::Proxy n) (Proxy::Proxy (CmpNat x ln))) $
+      gcastWith (proofIsBSTInsert' node l (Proxy::Proxy (CmpNat x ln))) $
+        gcastWith (proofIsBSTBalance (Proxy::Proxy ('ForkTree (Insert' x a l (CmpNat x ln)) (Node n a1) r))) Refl
+instance (r ~ 'EmptyTree, CmpNat x n ~ 'GT, IsBST l ~ 'True, IsBST r ~ 'True, LtN l n ~ 'True, GtN r n ~ 'True,
+  ProofIsBSTBalance ('ForkTree l (Node n a1) ('ForkTree 'EmptyTree (Node x a) 'EmptyTree))) =>
+  ProofIsBSTInsert' x a ('ForkTree l (Node n a1) 'EmptyTree) 'GT where
+  proofIsBSTInsert' _ (ForkITree _ _ EmptyITree) _ = gcastWith (proofIsBSTBalance (Proxy::Proxy ('ForkTree l (Node n a1) ('ForkTree 'EmptyTree (Node x a) 'EmptyTree)))) Refl
+instance (r ~ 'ForkTree rl (Node rn rna) rr, CmpNat x n ~ 'GT, IsBST r ~ 'True, IsBST l ~ 'True, GtN r n ~ 'True, LtN l n ~ 'True, ProofIsBSTInsert' x a r (CmpNat x rn),
+  ProofGtNInsert' x a r n (CmpNat x rn), ProofIsBSTBalance ('ForkTree l (Node n a1) (Insert' x a ('ForkTree rl (Node rn rna) rr) (CmpNat x rn)))) =>
+  ProofIsBSTInsert' x a ('ForkTree l (Node n a1) ('ForkTree rl (Node rn rna) rr)) 'GT where
+  proofIsBSTInsert' node (ForkITree _ _ r@ForkITree{}) _ =
+    gcastWith (proofGtNInsert' node r (Proxy::Proxy n) (Proxy::Proxy (CmpNat x rn))) $
+      gcastWith (proofIsBSTInsert' node r (Proxy::Proxy (CmpNat x rn))) $
+        gcastWith (proofIsBSTBalance (Proxy::Proxy ('ForkTree l (Node n a1) (Insert' x a ('ForkTree rl (Node rn rna) rr) (CmpNat x rn))))) Refl
+
+class ProofLtNInsert' (x :: Nat) (a :: Type) (t :: Tree) (n :: Nat) (o :: Ordering) where
+  proofLtNInsert' :: (t ~ 'ForkTree l n1 r, CmpNat x n ~ 'LT, LtN t n ~ 'True) =>
+    Node x a -> ITree t -> Proxy n -> Proxy o -> LtN (Insert x a t) n :~: 'True
+instance (t ~ 'ForkTree l n1 r, CmpNat x n1 ~ 'EQ, CmpNat x n ~ 'LT, CmpNat n1 n ~ 'LT, LtN l n ~ 'True, LtN r n ~ 'True) =>
+  ProofLtNInsert' x a ('ForkTree l (Node n1 a1) r) n 'EQ where
+  proofLtNInsert' _ ForkITree{} _ _ = Refl
+instance (t ~ 'ForkTree l n1 r, l ~ 'EmptyTree, CmpNat x n1 ~ 'LT, CmpNat x n ~ 'LT, CmpNat n1 n ~ 'LT, LtN l n ~ 'True, LtN r n ~ 'True,
+  ProofLtNBalance ('ForkTree ('ForkTree 'EmptyTree (Node x a) 'EmptyTree) (Node n1 a1) r) n) =>
+  ProofLtNInsert' x a ('ForkTree 'EmptyTree (Node n1 a1) r) n 'LT where
+  proofLtNInsert' _ (ForkITree EmptyITree _ _) _ _ =
+    gcastWith (proofLtNBalance (Proxy::Proxy ('ForkTree ('ForkTree 'EmptyTree (Node x a) 'EmptyTree) (Node n1 a1) r)) (Proxy::Proxy n)) Refl
+instance (t ~ 'ForkTree l (Node n1 a1) r, l ~ 'ForkTree ll (Node ln lna) lr, CmpNat x n1 ~ 'LT, CmpNat x n ~ 'LT, CmpNat n1 n ~ 'LT, LtN l n ~ 'True, LtN r n ~ 'True,
+  ProofLtNInsert' x a l n (CmpNat x ln), ProofLtNBalance ('ForkTree (Insert' x a ('ForkTree ll (Node ln lna) lr) (CmpNat x ln)) (Node n1 a1) r) n) =>
+  ProofLtNInsert' x a ('ForkTree ('ForkTree ll (Node ln lna) lr) (Node n1 a1) r) n 'LT where
+  proofLtNInsert' node (ForkITree l@ForkITree{} _ _) n _ =
+    gcastWith (proofLtNInsert' node l n (Proxy::Proxy (CmpNat x ln))) $
+      gcastWith (proofLtNBalance (Proxy::Proxy ('ForkTree (Insert' x a ('ForkTree ll (Node ln lna) lr) (CmpNat x ln)) (Node n1 a1) r)) (Proxy::Proxy n)) Refl
+instance (t ~ 'ForkTree l (Node n1 a1) r, r ~ 'EmptyTree, CmpNat x n1 ~ 'GT, CmpNat x n ~ 'LT, CmpNat n1 n ~ 'LT, LtN l n ~ 'True, LtN r n ~ 'True,
+  ProofLtNBalance ('ForkTree l (Node n1 a1) ('ForkTree 'EmptyTree (Node x a) 'EmptyTree)) n) =>
+  ProofLtNInsert' x a ('ForkTree l (Node n1 a1) 'EmptyTree) n 'GT where
+  proofLtNInsert' _ (ForkITree _ _ EmptyITree) _ _ =
+    gcastWith (proofLtNBalance (Proxy::Proxy ('ForkTree l (Node n1 a1) ('ForkTree 'EmptyTree (Node x a) 'EmptyTree))) (Proxy::Proxy n)) Refl
+instance (t ~ 'ForkTree l (Node n1 a1) r, r ~ 'ForkTree rl (Node rn rna) rr, CmpNat x n1 ~ 'GT, CmpNat x n ~ 'LT, CmpNat n1 n ~ 'LT, LtN l n ~ 'True, LtN r n ~ 'True,
+  ProofLtNInsert' x a r n (CmpNat x rn),
+  ProofLtNBalance ('ForkTree l (Node n1 a1) (Insert' x a ('ForkTree rl (Node rn rna) rr) (CmpNat x rn))) n) =>
+  ProofLtNInsert' x a ('ForkTree l (Node n1 a1) ('ForkTree rl (Node rn rna) rr)) n 'GT where
+  proofLtNInsert' node (ForkITree _ _ r@ForkITree{}) n _ =
+    gcastWith (proofLtNInsert' node r n (Proxy::Proxy (CmpNat x rn))) $
+      gcastWith (proofLtNBalance (Proxy::Proxy ('ForkTree l (Node n1 a1) (Insert' x a ('ForkTree rl (Node rn rna) rr) (CmpNat x rn)))) (Proxy::Proxy n)) Refl
+
+class ProofGtNInsert' (x :: Nat) (a :: Type) (t :: Tree) (n :: Nat) (o :: Ordering) where
+  proofGtNInsert' :: (t ~ 'ForkTree l n1 r, CmpNat x n ~ 'GT, GtN t n ~ 'True) =>
+    Node x a -> ITree t -> Proxy n -> Proxy o -> GtN (Insert x a t) n :~: 'True
+instance (t ~ 'ForkTree l (Node n1 a1) r, CmpNat x n1 ~ 'EQ, CmpNat x n ~ 'GT, CmpNat n1 n ~ 'GT, GtN l n ~ 'True, GtN r n ~ 'True) =>
+  ProofGtNInsert' x a ('ForkTree l (Node n1 a1) r) n 'EQ where
+  proofGtNInsert' _ ForkITree{} _ _ = Refl
+instance (t ~ 'ForkTree l (Node n1 a1) r, l ~ 'EmptyTree, CmpNat x n1 ~ 'LT, CmpNat x n ~ 'GT, CmpNat n1 n ~ 'GT, GtN l n ~ 'True, GtN r n ~ 'True,
+  ProofGtNBalance ('ForkTree ('ForkTree 'EmptyTree (Node x a) 'EmptyTree) (Node n1 a1) r) n) =>
+  ProofGtNInsert' x a ('ForkTree 'EmptyTree (Node n1 a1) r) n 'LT where
+  proofGtNInsert' _ (ForkITree EmptyITree _ _) _ _ =
+    gcastWith (proofGtNBalance (Proxy::Proxy ('ForkTree ('ForkTree 'EmptyTree (Node x a) 'EmptyTree) (Node n1 a1) r)) (Proxy::Proxy n)) Refl
+instance (t ~ 'ForkTree l (Node n1 a1) r, l ~ 'ForkTree ll (Node ln lna) lr, CmpNat x n1 ~ 'LT, CmpNat x n ~ 'GT, CmpNat n1 n ~ 'GT, GtN l n ~ 'True, GtN r n ~ 'True,
+  ProofGtNInsert' x a l n (CmpNat x ln),
+  ProofGtNBalance ('ForkTree (Insert' x a ('ForkTree ll (Node ln lna) lr) (CmpNat x ln)) (Node n1 a1) r) n) =>
+  ProofGtNInsert' x a ('ForkTree ('ForkTree ll (Node ln lna) lr) (Node n1 a1) r) n 'LT where
+  proofGtNInsert' x (ForkITree l@ForkITree{} _ _) n _ =
+    gcastWith (proofGtNInsert' x l n (Proxy::Proxy (CmpNat x ln))) $
+      gcastWith (proofGtNBalance (Proxy::Proxy ('ForkTree (Insert' x a ('ForkTree ll (Node ln lna) lr) (CmpNat x ln)) (Node n1 a1) r)) (Proxy::Proxy n)) Refl
+instance (t ~ 'ForkTree l (Node n1 a1) r, r ~ 'EmptyTree, CmpNat x n1 ~ 'GT, CmpNat x n ~ 'GT, CmpNat n1 n ~ 'GT, GtN l n ~ 'True, GtN r n ~ 'True,
+  ProofGtNBalance ('ForkTree l (Node n1 a1) ('ForkTree 'EmptyTree (Node x a) 'EmptyTree)) n) =>
+  ProofGtNInsert' x a ('ForkTree l (Node n1 a1) 'EmptyTree) n 'GT where
+  proofGtNInsert' _ (ForkITree _ _ EmptyITree) _ _ =
+    gcastWith (proofGtNBalance (Proxy::Proxy ('ForkTree l (Node n1 a1) ('ForkTree 'EmptyTree (Node x a) 'EmptyTree))) (Proxy::Proxy n)) Refl
+instance (t ~ 'ForkTree l (Node n1 a1) r, r ~ 'ForkTree rl (Node rn rna) rr, CmpNat x n1 ~ 'GT, CmpNat x n ~ 'GT, CmpNat n1 n ~ 'GT, GtN l n ~ 'True, GtN r n ~ 'True,
+  ProofGtNInsert' x a r n (CmpNat x rn),
+  ProofGtNBalance ('ForkTree l (Node n1 a1) (Insert' x a ('ForkTree rl (Node rn rna) rr) (CmpNat x rn))) n) =>
+  ProofGtNInsert' x a ('ForkTree l (Node n1 a1) ('ForkTree rl (Node rn rna) rr)) n 'GT where
+  proofGtNInsert' x (ForkITree _ _ r@ForkITree{}) n _ =
+    gcastWith (proofGtNInsert' x r n (Proxy::Proxy (CmpNat x rn))) $
+      gcastWith (proofGtNBalance (Proxy::Proxy ('ForkTree l (Node n1 a1) (Insert' x a ('ForkTree rl (Node rn rna) rr) (CmpNat x rn)))) (Proxy::Proxy n)) Refl
+
+class ProofIsBSTBalance (t :: Tree) where
+  proofIsBSTBalance :: (IsBST t ~ 'True) =>
+    Proxy t -> IsBST (Balance t) :~: 'True
+
+class ProofLtNBalance (t :: Tree) (n :: Nat) where
+  proofLtNBalance :: (LtN t n ~ 'True) =>
+    Proxy t -> Proxy n -> LtN (Balance t) n :~: 'True
+
+class ProofGtNBalance (t :: Tree) (n :: Nat) where
+  proofGtNBalance :: (GtN t n ~ 'True) =>
+    Proxy t -> Proxy n -> GtN (Balance t) n :~: 'True
+
+class ProofIsBSTBalance' (t :: Tree) (us :: US) where
+  proofIsBSTBalance' :: (IsBST t ~ 'True) =>
+    ITree t -> Proxy us -> IsBST (Balance' t us) :~: 'True
+
+class ProofIsAVLBalance (t :: Tree) where
+  proofIsAVLBalance :: (IsAVL t ~ 'True) =>
+    ITree t -> IsAVL t :~: 'True
+
+class ProofIsAVLInsert (x :: Nat) (a :: Type) (t :: Tree) where
+  proofIsAVLInsert :: (IsAVL t ~ 'True) =>
+    Node x a -> ITree t -> IsAVL (Insert x a t) :~: 'True
+
+insertAVL :: (Insertable x a t, ProofIsBSTInsert x a t, ProofIsAVLInsert x a t) =>
+  Node x a -> AVL t -> AVL (Insert x a t)
+insertAVL x (AVL t) = gcastWith (proofIsAVLInsert x t) $ gcastWith (proofIsBSTInsert x t) AVL $ insert x t
