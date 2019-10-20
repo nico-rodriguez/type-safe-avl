@@ -4,7 +4,7 @@ module ITreeNatIncremental.Test where
 
 import           Data.Proxy
 import           ITreeNatIncremental.AVL
--- import           ITreeNatIncremental.BST
+import           ITreeNatIncremental.BST
 import           ITreeNatIncremental.ITree
 import           ITreeNatIncremental.Node
 
@@ -89,12 +89,12 @@ p7 = Proxy
 -- | Test Balanced Binary Tree
 be = AVL EmptyITree
 t1 = insertAVL (mkNode p0 'f') be
-t2 = insertAVL (mkNode p1 (4::Int)) (AVL t1)
-t3 = insertAVL (mkNode p3 "lala") (AVL t2)
-t4 = insertAVL (mkNode p4 True) (AVL t3)
-t5 = insertAVL (mkNode p5 ([1,2,3]::[Int])) (AVL t4)
-t6 = insertAVL (mkNode p2 (1.8::Float)) (AVL t5)
-t7 = insertAVL (mkNode p7 [False]) (AVL t6)
+t2 = insertAVL (mkNode p1 (4::Int)) t1
+t3 = insertAVL (mkNode p3 "lala") t2
+t4 = insertAVL (mkNode p4 True) t3
+t5 = insertAVL (mkNode p5 ([1,2,3]::[Int])) t4
+t6 = insertAVL (mkNode p2 (1.8::Float)) t5
+t7 = insertAVL (mkNode p7 [False]) t6
 --
 -- bt = insertBBST sbn7 $ insertBBST sbn6 $ insertBBST sbn5 $ insertBBST sbn4 $ insertBBST sbn3 $ insertBBST sbn2 $ insertBBST sbn1 $ insertBBST sbn0 be
 -- bt1 = insertBBST sbn4 be
