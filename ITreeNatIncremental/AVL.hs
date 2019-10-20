@@ -18,9 +18,9 @@ import           Data.Type.Bool
 import           Data.Type.Equality
 import           GHC.TypeLits
 import           ITreeNatIncremental.BST (IsBST)
-import           ITreeNatIncremental.ITree (ITree (..), Tree (..), LtN, GtN)
+import           ITreeNatIncremental.ITree (ITree (..), Tree (..), LtN, GtN, Member, Lookupable, lookup)
 import           ITreeNatIncremental.Node
--- import           Prelude                   hiding (lookup)
+import           Prelude                   hiding (lookup)
 -- import           Unsafe.Coerce
 
 
@@ -436,15 +436,6 @@ instance (IsBST l ~ 'True, IsBST rll ~ 'True, LtN l n ~ 'True, GtN rll n ~ 'True
   ProofGtNRotate ('ForkTree l (Node n1 a) ('ForkTree ('ForkTree rll (Node rln rla) rlr) (Node rn ra) rr)) n 'RightUnbalanced 'LeftHeavy where
   proofGtNRotate _ _ _ _ = Refl
 
--- class ProofIsAVLBalance (t :: Tree) where
---   proofIsAVLBalance :: (IsAVL t ~ 'True) =>
---     Proxy t -> IsAVL t :~: 'True
--- instance ProofIsAVLBalance 'EmptyTree where
---   proofIsAVLBalance _ = Refl
--- instance (ProofIsAVLBalance' ('ForkTree l (Node n a) r) (UnbalancedState (Height l) (Height r))) =>
---   ProofIsAVLBalance ('ForkTree l (Node n a) r) where
---   proofIsAVLBalance pt = gcastWith (proofIsAVLBalance' pt (Proxy::Proxy (UnbalancedState (Height l) (Height r)))) Refl
-
 class ProofIsAVLBalance' (t :: Tree) (us::US) where
   proofIsAVLBalance' :: --(IsAVL t ~ 'True) =>
     Proxy t -> Proxy us -> IsAVL (Balance' t us) :~: 'True
@@ -527,3 +518,7 @@ instance (r ~ 'ForkTree rl (Node rn rna) rr, CmpNat x n ~ 'GT, IsAVL r ~ 'True, 
 insertAVL :: (Insertable x a t, ProofIsBSTInsert x a t, ProofIsAVLInsert x a t) =>
   Node x a -> AVL t -> AVL (Insert x a t)
 insertAVL x (AVL t) = gcastWith (proofIsAVLInsert x t) $ gcastWith (proofIsBSTInsert x t) AVL $ insert x t
+
+lookupAVL :: (t ~ 'ForkTree l (Node n a1) r, Member x t ~ 'True, Lookupable x a t) =>
+  Proxy x -> AVL t -> a
+lookupAVL p (AVL t) = lookup p t

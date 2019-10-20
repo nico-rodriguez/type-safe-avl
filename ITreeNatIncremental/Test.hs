@@ -88,24 +88,16 @@ p7 = Proxy
 
 -- | Test Balanced Binary Tree
 be = AVL EmptyITree
-t1 = insertAVL (mkNode p0 'f') be
-t2 = insertAVL (mkNode p1 (4::Int)) t1
-t3 = insertAVL (mkNode p3 "lala") t2
-t4 = insertAVL (mkNode p4 True) t3
-t5 = insertAVL (mkNode p5 ([1,2,3]::[Int])) t4
-t6 = insertAVL (mkNode p2 (1.8::Float)) t5
-t7 = insertAVL (mkNode p7 [False]) t6
---
--- bt = insertBBST sbn7 $ insertBBST sbn6 $ insertBBST sbn5 $ insertBBST sbn4 $ insertBBST sbn3 $ insertBBST sbn2 $ insertBBST sbn1 $ insertBBST sbn0 be
--- bt1 = insertBBST sbn4 be
--- bt2 = insertBBST sbn2 bt1
--- bt3 = insertBBST sbn6 bt2
--- bt4 = insertBBST sbn3 bt3
--- bt5 = insertBBST sbn5 bt4
--- bt6 = insertBBST sbn0 bt5
--- bt7 = insertBBST sbn7 bt6
--- bt8 = insertBBST sbn7 bt7
---
--- bt9 = deleteBBST sbn7 bt7
--- bt10 = deleteBBST sbn4 bt7
--- bt11 = deleteBBST sbn1 bt7
+t1 = insertAVL (mkNode (Proxy::Proxy 20) 'f') be
+t2 = insertAVL (mkNode (Proxy::Proxy 60) (4::Int)) t1
+t3 = insertAVL (mkNode (Proxy::Proxy 30) "lala") t2
+t4 = insertAVL (mkNode (Proxy::Proxy 50) True) t3
+t5 = insertAVL (mkNode (Proxy::Proxy 0) ([1,2,3]::[Int])) t4
+t6 = insertAVL (mkNode (Proxy::Proxy 70) (1.8::Float)) t5
+t7 = insertAVL (mkNode (Proxy::Proxy 70) [False]) t6
+t8 = insertAVL (mkNode (Proxy::Proxy 75) 'a') t7
+l1 :: String
+l1 = lookupAVL (Proxy::Proxy 30) t8
+
+-- | Error: key 10 is not in the tree t8
+-- err = lookupAVL (Proxy::Proxy 10) t8
