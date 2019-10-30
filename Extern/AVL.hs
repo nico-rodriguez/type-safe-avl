@@ -21,7 +21,6 @@ import           Extern.BST (IsBST)
 import           Extern.ITree (ITree (..), Tree (..), LtN, GtN, Member, Lookupable, MaxKeyDeletable(..), Maxable(..), lookup)
 import           Extern.Node
 import           Prelude                   hiding (lookup)
-import           Unsafe.Coerce
 
 
 type family Max (n1 :: Nat) (n2 :: Nat) :: Nat where
@@ -733,26 +732,21 @@ instance (l ~ 'ForkTree ll (Node ln la) lr, LtN l n ~ 'True) =>
 instance (l ~ 'ForkTree ll (Node ln la) lr, LtN l n ~ 'True, r ~ 'ForkTree rl (Node rn ra) rr, IsBST r ~ 'True,
   Maxable r, MaxKeyDeletable r, ProofLtNMaxKeyDeleteMaxKey r,
   t ~ 'ForkTree l (Node n a) r,
-  GtN r n ~ 'True, ProofGTMaxKey r n) =>
+  GtN r n ~ 'True, CmpNat ln (MaxKey r) ~ 'LT, LtN ll (MaxKey r) ~ 'True, LtN lr (MaxKey r) ~ 'True,
+  CmpNat n (MaxKey r) ~ 'LT) =>
   ProofLtNMaxKeyDeleteMaxKey ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a) ('ForkTree rl (Node rn ra) rr)) where
-  proofLtNMaxKeyDeleteMaxKey t@(ForkITree ForkITree{} (Node _) r@ForkITree{}) = gcastWith (proofMaxKeyGTLtN t (Proxy::Proxy n) (proofGTMaxKey r (Proxy::Proxy n))) (gcastWith (proofGT2LT (Proxy::Proxy (MaxKey r)) (Proxy::Proxy n) (proofGTMaxKey r (Proxy::Proxy n))) (gcastWith (proofLtNMaxKeyDeleteMaxKey r) Refl))
-
-proofMaxKeyGTLtN :: (t ~ 'ForkTree l (Node n a) r, LtN l n ~ 'True) =>
-  ITree t -> Proxy n -> CmpNat (MaxKey r) n :~: 'GT -> LtN l (MaxKey r) :~: 'True
-proofMaxKeyGTLtN _ _ _ = unsafeCoerce Refl
+  proofLtNMaxKeyDeleteMaxKey (ForkITree ForkITree{} (Node _) r@ForkITree{}) =
+    gcastWith (proofLtNMaxKeyDeleteMaxKey r) Refl
 
 class ProofGtNMaxKey (t :: Tree) where
   proofGtNMaxKey :: (t ~ 'ForkTree l (Node n a) r, IsBST t ~ 'True, Maxable l) =>
     ITree t -> GtN r (MaxKey l) :~: 'True
 instance ProofGtNMaxKey ('ForkTree l (Node n a) 'EmptyTree) where
   proofGtNMaxKey (ForkITree _ (Node _) EmptyITree) = Refl
-instance (r ~ 'ForkTree rl (Node rn ra) rr, IsBST r ~ 'True, GtN r n ~ 'True, LtN l n ~ 'True, ProofLTMaxKey l n) =>
+instance (r ~ 'ForkTree rl (Node rn ra) rr, IsBST r ~ 'True, GtN r n ~ 'True, LtN l n ~ 'True,
+  CmpNat rn (MaxKey l) ~ 'GT, GtN rl (MaxKey l) ~ 'True, GtN rr (MaxKey l) ~ 'True) =>
   ProofGtNMaxKey ('ForkTree l (Node n a) ('ForkTree rl (Node rn ra) rr)) where
-  proofGtNMaxKey t@(ForkITree l (Node _) ForkITree{}) = gcastWith (proofMaxKeyLTGtN t (Proxy::Proxy n) (proofLTMaxKey l (Proxy::Proxy n))) Refl
-
-proofMaxKeyLTGtN :: (t ~ 'ForkTree l (Node n a) r, GtN r n ~ 'True) =>
-  ITree t -> Proxy n -> CmpNat (MaxKey l) n :~: 'LT -> GtN r (MaxKey l) :~: 'True
-proofMaxKeyLTGtN _ _ _ = unsafeCoerce Refl
+  proofGtNMaxKey (ForkITree _ (Node _) ForkITree{}) = Refl
 
 class ProofGTMaxKey (t :: Tree) (n :: Nat) where
   proofGTMaxKey :: (Maxable t, GtN t n ~ 'True) =>
@@ -764,9 +758,6 @@ instance (r ~ 'ForkTree rl (Node rn ra) rr, GtN r n ~ 'True,
   Maxable r, ProofGTMaxKey r n) =>
   ProofGTMaxKey ('ForkTree l (Node n1 a) ('ForkTree rl (Node rn ra) rr)) n where
   proofGTMaxKey (ForkITree _ (Node _) r@ForkITree{}) pn = gcastWith (proofGTMaxKey r pn) Refl
-
-proofGT2LT :: Proxy n1 -> Proxy n2 -> CmpNat n1 n2 :~: 'GT -> CmpNat n2 n1 :~: 'LT
-proofGT2LT _ _ _ = unsafeCoerce Refl
 
 class ProofGtNMaxKeyDelete (t :: Tree) (n :: Nat) where
   proofGtNMaxKeyDelete :: (MaxKeyDeletable t, GtN t n ~ 'True) =>
