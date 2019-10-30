@@ -14,14 +14,14 @@
 -- | assume the trees are binary search, but this constraint is not included in
 -- | the types of the trees.
 
-module ITreeNatIncremental.ITree where
+module Extern.ITree where
 
 import           Data.Kind
 import           Data.Proxy
 import           Data.Type.Bool
 import           Data.Type.Equality
 import           GHC.TypeLits
-import           ITreeNatIncremental.Node
+import           Extern.Node
 
 data Tree :: Type where
   EmptyTree :: Tree

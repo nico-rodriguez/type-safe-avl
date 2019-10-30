@@ -4,7 +4,7 @@
 {-# LANGUAGE RankNTypes            #-}
 {-# LANGUAGE StandaloneDeriving    #-}
 
-module ITreeNatIncremental.Node where
+module Extern.Node where
 
 import           Data.Kind
 import           Data.Proxy

@@ -1,12 +1,12 @@
 {-# LANGUAGE DataKinds #-}
 
-module ITreeNatIncremental.Test where
+module Extern.Test where
 
 import           Data.Proxy
-import           ITreeNatIncremental.AVL
-import           ITreeNatIncremental.BST
-import           ITreeNatIncremental.ITree
-import           ITreeNatIncremental.Node
+import           Extern.AVL
+import           Extern.BST
+import           Extern.ITree
+import           Extern.Node
 
 p0 :: Proxy 0
 p0 = Proxy
@@ -101,3 +101,14 @@ l1 = lookupAVL (Proxy::Proxy 30) t8
 
 -- | Error: key 10 is not in the tree t8
 -- err = lookupAVL (Proxy::Proxy 10) t8
+
+t11 = deleteAVL (Proxy::Proxy 20) t8
+t12 = deleteAVL (Proxy::Proxy 60) t8
+t13 = deleteAVL (Proxy::Proxy 30) t8
+t14 = deleteAVL (Proxy::Proxy 50) t8
+t15 = deleteAVL (Proxy::Proxy 0) t8
+t16 = deleteAVL (Proxy::Proxy 70) t8
+t17 = deleteAVL (Proxy::Proxy 70) t8
+t18 = deleteAVL (Proxy::Proxy 75) t8
+t19 = deleteAVL (Proxy::Proxy 21) t8
+t20 = deleteAVL (Proxy::Proxy 21) be

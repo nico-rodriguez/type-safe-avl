@@ -10,15 +10,15 @@
 {-# LANGUAGE TypeOperators         #-}
 {-# LANGUAGE UndecidableInstances  #-}
 
-module ITreeNatIncremental.BST where
+module Extern.BST where
 
 import           Data.Kind
 import           Data.Proxy
 import           Data.Type.Bool
 import           Data.Type.Equality
 import           GHC.TypeLits
-import           ITreeNatIncremental.ITree
-import           ITreeNatIncremental.Node
+import           Extern.ITree
+import           Extern.Node
 import           Prelude                   hiding (lookup)
 import           Unsafe.Coerce
 

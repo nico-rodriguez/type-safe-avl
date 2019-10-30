@@ -10,16 +10,16 @@
 {-# LANGUAGE TypeOperators         #-}
 {-# LANGUAGE UndecidableInstances  #-}
 
-module ITreeNatIncremental.AVL where
+module Extern.AVL where
 
 import           Data.Kind
 import           Data.Proxy
 import           Data.Type.Bool
 import           Data.Type.Equality
 import           GHC.TypeLits
-import           ITreeNatIncremental.BST (IsBST)
-import           ITreeNatIncremental.ITree (ITree (..), Tree (..), LtN, GtN, Member, Lookupable, MaxKeyDeletable(..), Maxable(..), lookup)
-import           ITreeNatIncremental.Node
+import           Extern.BST (IsBST)
+import           Extern.ITree (ITree (..), Tree (..), LtN, GtN, Member, Lookupable, MaxKeyDeletable(..), Maxable(..), lookup)
+import           Extern.Node
 import           Prelude                   hiding (lookup)
 import           Unsafe.Coerce
 
