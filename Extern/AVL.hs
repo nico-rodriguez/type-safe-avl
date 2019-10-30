@@ -436,8 +436,7 @@ instance (IsBST l ~ 'True, IsBST rll ~ 'True, LtN l n ~ 'True, GtN rll n ~ 'True
   proofGtNRotate _ _ _ _ = Refl
 
 class ProofIsAVLBalance' (t :: Tree) (us::US) where
-  proofIsAVLBalance' :: --(IsAVL t ~ 'True) =>
-    Proxy t -> Proxy us -> IsAVL (Balance' t us) :~: 'True
+  proofIsAVLBalance' :: Proxy t -> Proxy us -> IsAVL (Balance' t us) :~: 'True
 instance (IsAVL ('ForkTree l (Node n a) r) ~ 'True) =>
   ProofIsAVLBalance' ('ForkTree l (Node n a) r) 'NotUnbalanced where
   proofIsAVLBalance' _ _ = Refl
