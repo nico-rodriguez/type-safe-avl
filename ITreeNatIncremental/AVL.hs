@@ -804,6 +804,45 @@ instance (t ~ 'ForkTree l (Node n1 a) 'EmptyTree, LtN t n ~ 'True, LtN l n ~ 'Tr
 class ProofIsAVLDelete (x :: Nat) (t :: Tree) where
   proofIsAVLDelete :: (IsAVL t ~ 'True) =>
     Proxy x -> ITree t -> IsAVL (Delete x t) :~: 'True
+instance ProofIsAVLDelete x 'EmptyTree where
+  proofIsAVLDelete _ EmptyITree = Refl
+instance ProofIsAVLDelete' x ('ForkTree l (Node n a1) r) (CmpNat x n) => ProofIsAVLDelete x ('ForkTree l (Node n a1) r) where
+  proofIsAVLDelete px t = proofIsAVLDelete' px t (Proxy::Proxy (CmpNat x n))
+
+class ProofIsAVLDelete' (x :: Nat) (t :: Tree) (o :: Ordering) where
+  proofIsAVLDelete' :: (t ~ 'ForkTree l (Node n a1) r) => Proxy x -> ITree t -> Proxy o -> IsAVL (Delete' x t o) :~: 'True
+instance ProofIsAVLDelete' x ('ForkTree 'EmptyTree (Node n a1) 'EmptyTree) 'EQ where
+  proofIsAVLDelete' _ (ForkITree EmptyITree (Node _) EmptyITree) _ = Refl
+instance (BalancedHeights (Height rl) (Height rr) ~ 'True, IsAVL rl ~ 'True, IsAVL rr ~ 'True) =>
+  ProofIsAVLDelete' x ('ForkTree 'EmptyTree (Node n a1) ('ForkTree rl (Node rn ra) rr)) 'EQ where
+  proofIsAVLDelete' _ (ForkITree EmptyITree (Node _) ForkITree{}) _ = Refl
+instance (BalancedHeights (Height ll) (Height lr) ~ 'True, IsAVL ll ~ 'True, IsAVL lr ~ 'True) =>
+  ProofIsAVLDelete' x ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a1) 'EmptyTree) 'EQ where
+  proofIsAVLDelete' _ (ForkITree ForkITree{} (Node _) EmptyITree) _ = Refl
+instance (Show (MaxValue ('ForkTree ll (Node ln la) lr)), MaxKeyDeletable ('ForkTree ll (Node ln la) lr), Maxable ('ForkTree ll (Node ln la) lr),
+  Balanceable ('ForkTree (MaxKeyDelete ('ForkTree ll (Node ln la) lr)) (Node (MaxKey ('ForkTree ll (Node ln la) lr)) (MaxValue ('ForkTree ll (Node ln la) lr))) ('ForkTree rl (Node rn ra) rr)),
+  ProofIsAVLBalance' ('ForkTree (MaxKeyDelete ('ForkTree ll (Node ln la) lr)) (Node (MaxKey ('ForkTree ll (Node ln la) lr)) (MaxValue ('ForkTree ll (Node ln la) lr))) ('ForkTree rl (Node rn ra) rr)) (UnbalancedState (Height (MaxKeyDelete ('ForkTree ll (Node ln la) lr))) (1 + If (Height rl <=? Height rr) (Height rr) (Height rl)))) =>
+  ProofIsAVLDelete' x ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a1) ('ForkTree rl (Node rn ra) rr)) 'EQ where
+  proofIsAVLDelete' _ (ForkITree ForkITree{} (Node _) ForkITree{}) _ =
+    gcastWith (proofIsAVLBalance' (Proxy::Proxy ('ForkTree (MaxKeyDelete ('ForkTree ll (Node ln la) lr)) (Node (MaxKey ('ForkTree ll (Node ln la) lr)) (MaxValue ('ForkTree ll (Node ln la) lr))) ('ForkTree rl (Node rn ra) rr))) (Proxy::Proxy (UnbalancedState (Height (MaxKeyDelete ('ForkTree ll (Node ln la) lr))) (1 + If (Height rl <=? Height rr) (Height rr) (Height rl))))) Refl
+instance (IsAVL ('ForkTree 'EmptyTree (Node n a1) r) ~ 'True) =>
+  ProofIsAVLDelete' x ('ForkTree 'EmptyTree (Node n a1) r) 'LT where
+  proofIsAVLDelete' _ (ForkITree EmptyITree (Node _) _) _ = Refl
+instance (Deletable' x ('ForkTree ll (Node ln la) lr) (CmpNat x ln),
+  Balanceable ('ForkTree (Delete' x ('ForkTree ll (Node ln la) lr) (CmpNat x ln)) (Node n a1) r),
+  ProofIsAVLBalance' ('ForkTree (Delete' x ('ForkTree ll (Node ln la) lr) (CmpNat x ln)) (Node n a1) r) (UnbalancedState (Height (Delete' x ('ForkTree ll (Node ln la) lr) (CmpNat x ln))) (Height r))) =>
+  ProofIsAVLDelete' x ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a1) r) 'LT where
+  proofIsAVLDelete' _ (ForkITree ForkITree{} _ _) _ =
+    gcastWith (proofIsAVLBalance' (Proxy::Proxy ('ForkTree (Delete' x ('ForkTree ll (Node ln la) lr) (CmpNat x ln)) (Node n a1) r)) (Proxy::Proxy (UnbalancedState (Height (Delete' x ('ForkTree ll (Node ln la) lr) (CmpNat x ln))) (Height r)))) Refl
+instance (IsAVL ('ForkTree l (Node n a1) 'EmptyTree) ~ 'True) =>
+  ProofIsAVLDelete' x ('ForkTree l (Node n a1) 'EmptyTree) 'GT where
+  proofIsAVLDelete' _ (ForkITree _ (Node _) EmptyITree) _ = Refl
+instance (Deletable' x ('ForkTree rl (Node rn ra) rr) (CmpNat x rn),
+  Balanceable ('ForkTree l (Node n a1) (Delete' x ('ForkTree rl (Node rn ra) rr) (CmpNat x rn))),
+  ProofIsAVLBalance' ('ForkTree l (Node n a1) (Delete' x ('ForkTree rl (Node rn ra) rr) (CmpNat x rn))) (UnbalancedState (Height l) (Height (Delete' x ('ForkTree rl (Node rn ra) rr) (CmpNat x rn))))) =>
+  ProofIsAVLDelete' x ('ForkTree l (Node n a1) ('ForkTree rl (Node rn ra) rr)) 'GT where
+  proofIsAVLDelete' _ (ForkITree _ _ ForkITree{}) _ =
+    gcastWith (proofIsAVLBalance' (Proxy::Proxy ('ForkTree l (Node n a1) (Delete' x ('ForkTree rl (Node rn ra) rr) (CmpNat x rn)))) (Proxy::Proxy (UnbalancedState (Height l) (Height (Delete' x ('ForkTree rl (Node rn ra) rr) (CmpNat x rn)))))) Refl
 
 deleteAVL :: (Deletable x t, ProofIsBSTDelete x t, ProofIsAVLDelete x t) =>
   Proxy x -> AVL t -> AVL (Delete x t)
