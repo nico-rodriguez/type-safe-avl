@@ -10,10 +10,6 @@
 {-# LANGUAGE TypeOperators         #-}
 {-# LANGUAGE UndecidableInstances  #-}
 
--- | Binary trees without constraints. The functions insert, member, max and delete
--- | assume the trees are binary search, but this constraint is not included in
--- | the types of the trees.
-
 module Extern.BSTOperations where
 
 import           Data.Kind
