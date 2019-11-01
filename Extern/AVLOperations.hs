@@ -17,8 +17,8 @@ import           Data.Proxy
 import           Data.Type.Bool
 import           GHC.TypeLits
 import           Extern.BSTOperations (MaxKeyDeletable(..), Maxable, MaxKey, MaxKeyDelete, MaxValue(..))
-import           Extern.ITree
-import           Extern.Node
+import           ITree
+import           Node
 
 
 type family Max (n1 :: Nat) (n2 :: Nat) :: Nat where

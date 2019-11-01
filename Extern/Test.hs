@@ -5,8 +5,8 @@ module Extern.Test where
 import           Data.Proxy
 import           Extern.AVL
 import           Extern.BST
-import           Extern.ITree
-import           Extern.Node
+import           ITree
+import           Node
 
 p0 :: Proxy 0
 p0 = Proxy

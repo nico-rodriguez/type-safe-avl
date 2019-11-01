@@ -22,8 +22,8 @@ import           Data.Type.Equality
 import           Extern.AVLOperations
 import           Extern.AVLProofs
 import           Extern.BSTOperations (Member, Lookupable(..))
-import           Extern.ITree
-import           Extern.Node
+import           ITree
+import           Node
 import           Prelude                   hiding (lookup)
 
 insertAVL :: (Insertable x a t, ProofIsBSTInsert x a t, ProofIsAVLInsert x a t) =>

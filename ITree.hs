@@ -10,10 +10,10 @@
 {-# LANGUAGE TypeOperators         #-}
 {-# LANGUAGE UndecidableInstances  #-}
 
-module Extern.ITree where
+module ITree where
 
 import           Data.Kind
-import           Extern.Node
+import           Node
 
 data Tree :: Type where
   EmptyTree :: Tree

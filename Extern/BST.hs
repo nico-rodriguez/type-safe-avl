@@ -21,8 +21,8 @@ import           Data.Proxy
 import           Data.Type.Equality
 import           Extern.BSTOperations
 import           Extern.BSTProofs
-import           Extern.ITree
-import           Extern.Node
+import           ITree
+import           Node
 import           Prelude                   hiding (lookup)
 
 insertBST :: (Insertable x a t, ProofIsBSTInsert x a t) =>

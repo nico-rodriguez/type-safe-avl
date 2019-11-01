@@ -20,8 +20,8 @@ import           GHC.TypeLits
 import           Extern.AVLOperations
 import           Extern.BSTOperations (MaxKeyDeletable(..), Maxable, MaxKey, MaxKeyDelete, MaxValue(..))
 import           Extern.BSTProofs (IsBST, LtN, GtN)
-import           Extern.ITree
-import           Extern.Node
+import           ITree
+import           Node
 
 type family IsAVL (t :: Tree) :: Bool where
   IsAVL 'EmptyTree = 'True

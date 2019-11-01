@@ -4,7 +4,7 @@
 {-# LANGUAGE RankNTypes            #-}
 {-# LANGUAGE StandaloneDeriving    #-}
 
-module Extern.Node where
+module Node where
 
 import           Data.Kind
 import           Data.Proxy
