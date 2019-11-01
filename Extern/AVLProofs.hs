@@ -16,10 +16,11 @@ import           Data.Kind
 import           Data.Proxy
 import           Data.Type.Bool
 import           Data.Type.Equality
-import           GHC.TypeLits
 import           Extern.AVLOperations
-import           Extern.BSTOperations (MaxKeyDeletable(..), Maxable, MaxKey, MaxKeyDelete, MaxValue(..))
-import           Extern.BSTProofs (IsBST, LtN, GtN)
+import           Extern.BSTOperations (MaxKey, MaxKeyDeletable (..),
+                                       MaxKeyDelete, MaxValue (..), Maxable)
+import           Extern.BSTProofs     (GtN, IsBST, LtN)
+import           GHC.TypeLits
 import           ITree
 import           Node
 

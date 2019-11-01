@@ -16,8 +16,8 @@ import           Data.Kind
 import           Data.Proxy
 import           Data.Type.Bool
 import           Data.Type.Equality
-import           GHC.TypeLits
 import           Extern.BSTOperations
+import           GHC.TypeLits
 import           ITree
 import           Node
 

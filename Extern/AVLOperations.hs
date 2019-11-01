@@ -15,8 +15,9 @@ module Extern.AVLOperations where
 import           Data.Kind
 import           Data.Proxy
 import           Data.Type.Bool
+import           Extern.BSTOperations (MaxKey, MaxKeyDeletable (..),
+                                       MaxKeyDelete, MaxValue (..), Maxable)
 import           GHC.TypeLits
-import           Extern.BSTOperations (MaxKeyDeletable(..), Maxable, MaxKey, MaxKeyDelete, MaxValue(..))
 import           ITree
 import           Node
 

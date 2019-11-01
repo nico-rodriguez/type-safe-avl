@@ -17,8 +17,8 @@ import           Data.Proxy
 import           Data.Type.Bool
 import           Data.Type.Equality
 import           GHC.TypeLits
-import           Node
 import           ITree
+import           Node
 
 class Insertable (x :: Nat) (a :: Type) (t :: Tree) where
   type Insert (x :: Nat) (a :: Type) (t :: Tree) :: Tree

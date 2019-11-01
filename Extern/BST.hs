@@ -23,7 +23,7 @@ import           Extern.BSTOperations
 import           Extern.BSTProofs
 import           ITree
 import           Node
-import           Prelude                   hiding (lookup)
+import           Prelude              hiding (lookup)
 
 insertBST :: (Insertable x a t, ProofIsBSTInsert x a t) =>
   Node x a -> BST t -> BST (Insert x a t)
