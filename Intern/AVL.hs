@@ -18,9 +18,7 @@ module Intern.AVL (
 ) where
 
 import           Data.Proxy
-import           Data.Type.Equality
 import           Intern.AVLOperations
-import           Intern.BSTOperations (Lookupable (..), Member)
 import           ITree
 import           Node
 import           Prelude              hiding (lookup)
