@@ -51,7 +51,7 @@ type family BalancedHeights (h1 :: Nat) (h2 :: Nat) :: Bool where
 
 data AVL :: Tree -> Type where
   EmptyAVL :: AVL 'EmptyTree
-  ForkAVL  :: (Show a, LtN l n ~ 'True, GtN r n ~ 'True) =>
+  ForkAVL  :: (Show a, LtN l n ~ 'True, GtN r n ~ 'True, BalancedHeights (Height l) (Height r) ~ 'True) =>
     AVL l -> Node n a -> AVL r -> AVL ('ForkTree l (Node n a) r)
 
 instance Show (AVL t) where
@@ -99,7 +99,8 @@ instance (Balanceable' ('ForkTree l (Node n a) r) (UnbalancedState (Height l) (H
 class Balanceable' (t :: Tree) (us :: US) where
   type Balance' (t :: Tree) (us :: US) :: Tree
   balance' :: AlmostAVL t -> Proxy us -> AVL (Balance' t us)
-instance Balanceable' ('ForkTree l (Node n a) r) 'NotUnbalanced where
+instance (BalancedHeights (Height l) (Height r) ~ 'True) =>
+  Balanceable' ('ForkTree l (Node n a) r) 'NotUnbalanced where
   type Balance' ('ForkTree l (Node n a) r) 'NotUnbalanced = ('ForkTree l (Node n a) r)
   balance' (AlmostAVL l node r) _ = ForkAVL l node r
 instance Rotateable ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a) r) 'LeftUnbalanced (BalancedState (Height ll) (Height lr)) =>
@@ -117,36 +118,48 @@ class Rotateable (t :: Tree) (us :: US) (bs :: BS) where
   type Rotate (t :: Tree) (us :: US) (bs :: BS) :: Tree
   rotate :: AlmostAVL t -> Proxy us -> Proxy bs -> AVL (Rotate t us bs)
 -- | Left-Left case (Right rotation)
-instance (CmpNat n ln ~ 'GT, GtN r ln ~ 'True, LtN lr n ~ 'True) =>
+instance (CmpNat n ln ~ 'GT, GtN r ln ~ 'True, LtN lr n ~ 'True,
+  BalancedHeights (Height ll) (1 + If (Height lr <=? Height r) (Height r) (Height lr)) ~ 'True,
+  BalancedHeights (Height lr) (Height r) ~ 'True) =>
   Rotateable ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a) r) 'LeftUnbalanced 'LeftHeavy where
   type Rotate ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a) r) 'LeftUnbalanced 'LeftHeavy =
     ('ForkTree ll (Node ln la) ('ForkTree lr (Node n a) r))
   rotate (AlmostAVL (ForkAVL ll lnode lr) xnode r) _ _ = ForkAVL ll lnode (ForkAVL lr xnode r)
-instance (CmpNat n ln ~ 'GT, GtN r ln ~ 'True, LtN lr n ~ 'True) =>
+instance (CmpNat n ln ~ 'GT, GtN r ln ~ 'True, LtN lr n ~ 'True,
+  BalancedHeights (Height ll) (1 + If (Height lr <=? Height r) (Height r) (Height lr)) ~ 'True,
+  BalancedHeights (Height lr) (Height r) ~ 'True) =>
   Rotateable ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a) r) 'LeftUnbalanced 'Balanced where
   type Rotate ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a) r) 'LeftUnbalanced 'Balanced =
     ('ForkTree ll (Node ln la) ('ForkTree lr (Node n a) r))
   rotate (AlmostAVL (ForkAVL ll lnode lr) xnode r) _ _ = ForkAVL ll lnode (ForkAVL lr xnode r)
 -- | Right-Right case (Left rotation)
-instance (CmpNat n rn ~ 'LT, LtN l rn ~ 'True, GtN rl n ~ 'True) =>
+instance (CmpNat n rn ~ 'LT, LtN l rn ~ 'True, GtN rl n ~ 'True,
+  BalancedHeights (1 + If (Height l <=? Height rl) (Height rl) (Height l)) (Height rr) ~ 'True,
+  BalancedHeights (Height l) (Height rl) ~ 'True) =>
   Rotateable ('ForkTree l (Node n a) ('ForkTree rl (Node rn ra) rr)) 'RightUnbalanced 'RightHeavy where
   type Rotate ('ForkTree l (Node n a) ('ForkTree rl (Node rn ra) rr)) 'RightUnbalanced 'RightHeavy =
     ('ForkTree ('ForkTree l (Node n a) rl) (Node rn ra) rr)
   rotate (AlmostAVL l xnode (ForkAVL rl rnode rr)) _ _ = ForkAVL (ForkAVL l xnode rl) rnode rr
-instance (CmpNat n rn ~ 'LT, LtN l rn ~ 'True, GtN rl n ~ 'True) =>
+instance (CmpNat n rn ~ 'LT, LtN l rn ~ 'True, GtN rl n ~ 'True,
+  BalancedHeights (1 + If (Height l <=? Height rl) (Height rl) (Height l)) (Height rr) ~ 'True,
+  BalancedHeights (Height l) (Height rl) ~ 'True) =>
   Rotateable ('ForkTree l (Node n a) ('ForkTree rl (Node rn ra) rr)) 'RightUnbalanced 'Balanced where
   type Rotate ('ForkTree l (Node n a) ('ForkTree rl (Node rn ra) rr)) 'RightUnbalanced 'Balanced =
     ('ForkTree ('ForkTree l (Node n a) rl) (Node rn ra) rr)
   rotate (AlmostAVL l xnode (ForkAVL rl rnode rr)) _ _ = ForkAVL (ForkAVL l xnode rl) rnode rr
 -- | Left-Right case (First left rotation, then right rotation)
-instance (CmpNat ln lrn ~ 'LT, LtN ll lrn ~ 'True, CmpNat n lrn ~ 'GT, GtN r lrn ~ 'True, GtN lrl ln ~ 'True, LtN lrr n ~ 'True) =>
+instance (CmpNat ln lrn ~ 'LT, LtN ll lrn ~ 'True, CmpNat n lrn ~ 'GT, GtN r lrn ~ 'True, GtN lrl ln ~ 'True, LtN lrr n ~ 'True,
+  BalancedHeights (1 + If (Height ll <=? Height lrl) (Height lrl) (Height ll)) (1 + If (Height lrr <=? Height r) (Height r) (Height lrr)) ~ 'True,
+  BalancedHeights (Height ll) (Height lrl) ~ 'True, BalancedHeights (Height lrr) (Height r) ~ 'True) =>
   Rotateable ('ForkTree ('ForkTree ll (Node ln la) ('ForkTree lrl (Node lrn lra) lrr)) (Node n a) r) 'LeftUnbalanced 'RightHeavy where
   type Rotate ('ForkTree ('ForkTree ll (Node ln la) ('ForkTree lrl (Node lrn lra) lrr)) (Node n a) r) 'LeftUnbalanced 'RightHeavy =
     ('ForkTree ('ForkTree ll (Node ln la) lrl) (Node lrn lra) ('ForkTree lrr (Node n a) r))
   rotate (AlmostAVL (ForkAVL ll lnode (ForkAVL lrl lrnode lrr)) xnode r) _ _ =
     ForkAVL (ForkAVL ll lnode lrl) lrnode (ForkAVL lrr xnode r)
 -- | Right-Left case (First right rotation, then left rotation)
-instance (CmpNat n rln ~ 'LT, LtN l rln ~ 'True, CmpNat rn  rln ~ 'GT, GtN rr rln ~ 'True, GtN rll n ~ 'True, LtN rlr rn ~ 'True) =>
+instance (CmpNat n rln ~ 'LT, LtN l rln ~ 'True, CmpNat rn  rln ~ 'GT, GtN rr rln ~ 'True, GtN rll n ~ 'True, LtN rlr rn ~ 'True,
+  BalancedHeights (1 + If (Height l <=? Height rll) (Height rll) (Height l)) (1 + If (Height rlr <=? Height rr) (Height rr) (Height rlr)) ~ 'True,
+  BalancedHeights (Height l) (Height rll) ~ 'True, BalancedHeights (Height rlr) (Height rr) ~ 'True) =>
   Rotateable ('ForkTree l (Node n a) ('ForkTree ('ForkTree rll (Node rln rla) rlr) (Node rn ra) rr)) 'RightUnbalanced 'LeftHeavy where
   type Rotate ('ForkTree l (Node n a) ('ForkTree ('ForkTree rll (Node rln rla) rlr) (Node rn ra) rr)) 'RightUnbalanced 'LeftHeavy =
     ('ForkTree ('ForkTree l (Node n a) rll) (Node rln rla) ('ForkTree rlr (Node rn ra) rr))
@@ -571,7 +584,8 @@ instance MaxKeyDeletable ('ForkTree l (Node n a1) 'EmptyTree) where
   type MaxKeyDelete ('ForkTree l (Node n a1) 'EmptyTree) = l
   maxKeyDelete (ForkAVL l (Node _) EmptyAVL) = l
 instance (MaxKeyDeletable ('ForkTree rl (Node rn ra) rr),
-  ProofGtNMaxKeyDelete ('ForkTree rl (Node rn ra) rr) n) =>
+  ProofGtNMaxKeyDelete ('ForkTree rl (Node rn ra) rr) n,
+  BalancedHeights (Height l) (Height (MaxKeyDelete ('ForkTree rl (Node rn ra) rr))) ~ 'True) =>
   MaxKeyDeletable ('ForkTree l (Node n a1) ('ForkTree rl (Node rn ra) rr)) where
   type MaxKeyDelete ('ForkTree l (Node n a1) ('ForkTree rl (Node rn ra) rr)) =
     ('ForkTree l (Node n a1) (MaxKeyDelete ('ForkTree rl (Node rn ra) rr)))
