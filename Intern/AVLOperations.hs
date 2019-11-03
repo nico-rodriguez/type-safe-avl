@@ -19,7 +19,6 @@ import           Data.Type.Equality
 import           GHC.TypeLits
 import           Node
 import           ITree
--- import           Intern.BST
 
 -- | Check if all elements of the tree are strictly less than x
 type family LtN (l :: Tree) (x :: Nat) :: Bool where
