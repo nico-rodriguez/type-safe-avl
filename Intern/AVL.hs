@@ -1,14 +1,5 @@
 {-# LANGUAGE DataKinds             #-}
-{-# LANGUAGE FlexibleContexts      #-}
-{-# LANGUAGE FlexibleInstances     #-}
 {-# LANGUAGE GADTs                 #-}
-{-# LANGUAGE MultiParamTypeClasses #-}
-{-# LANGUAGE PolyKinds             #-}
-{-# LANGUAGE RankNTypes            #-}
-{-# LANGUAGE ScopedTypeVariables   #-}
-{-# LANGUAGE TypeFamilies          #-}
-{-# LANGUAGE TypeOperators         #-}
-{-# LANGUAGE UndecidableInstances  #-}
 
 module Intern.AVL (
   AVL(..),

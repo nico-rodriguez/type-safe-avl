@@ -1,10 +1,7 @@
 {-# LANGUAGE DataKinds             #-}
-{-# LANGUAGE FlexibleContexts      #-}
 {-# LANGUAGE FlexibleInstances     #-}
 {-# LANGUAGE GADTs                 #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
-{-# LANGUAGE PolyKinds             #-}
-{-# LANGUAGE RankNTypes            #-}
 {-# LANGUAGE ScopedTypeVariables   #-}
 {-# LANGUAGE TypeFamilies          #-}
 {-# LANGUAGE TypeOperators         #-}
@@ -46,20 +43,20 @@ instance Show (BST t) where
 class ProofLtNInsert' (x :: Nat) (a :: Type) (t :: Tree) (n :: Nat) (o :: Ordering) where
   proofLtNInsert' :: (t ~ 'ForkTree l n1 r, CmpNat x n ~ 'LT, LtN t n ~ 'True) =>
     Node x a -> BST t -> Proxy n -> Proxy o -> LtN (Insert x a t) n :~: 'True
-instance (t ~ 'ForkTree l n1 r, CmpNat x n1 ~ 'EQ, CmpNat x n ~ 'LT, CmpNat n1 n ~ 'LT, LtN l n ~ 'True, LtN r n ~ 'True) =>
+instance (t ~ 'ForkTree l n1 r, CmpNat x n1 ~ 'EQ, CmpNat x n ~ 'LT, LtN l n ~ 'True, LtN r n ~ 'True) =>
   ProofLtNInsert' x a ('ForkTree l (Node n1 a1) r) n 'EQ where
   proofLtNInsert' _ ForkBST{} _ _ = Refl
-instance (t ~ 'ForkTree l n1 r, l ~ 'EmptyTree, CmpNat x n1 ~ 'LT, CmpNat x n ~ 'LT, CmpNat n1 n ~ 'LT, LtN l n ~ 'True, LtN r n ~ 'True) =>
+instance (t ~ 'ForkTree l n1 r, l ~ 'EmptyTree, CmpNat x n1 ~ 'LT, CmpNat x n ~ 'LT, LtN r n ~ 'True) =>
   ProofLtNInsert' x a ('ForkTree 'EmptyTree (Node n1 a1) r) n 'LT where
   proofLtNInsert' _ (ForkBST EmptyBST _ _) _ _ = Refl
-instance (t ~ 'ForkTree l (Node n1 a1) r, l ~ 'ForkTree ll (Node ln lna) lr, CmpNat x n1 ~ 'LT, CmpNat x n ~ 'LT, CmpNat n1 n ~ 'LT, LtN l n ~ 'True, LtN r n ~ 'True,
+instance (t ~ 'ForkTree l (Node n1 a1) r, l ~ 'ForkTree ll (Node ln lna) lr, CmpNat x n1 ~ 'LT, CmpNat x n ~ 'LT, LtN l n ~ 'True, LtN r n ~ 'True,
   ProofLtNInsert' x a l n (CmpNat x ln)) =>
   ProofLtNInsert' x a ('ForkTree ('ForkTree ll (Node ln lna) lr) (Node n1 a1) r) n 'LT where
   proofLtNInsert' node (ForkBST l@ForkBST{} _ _) n _ = gcastWith (proofLtNInsert' node l n (Proxy::Proxy (CmpNat x ln))) Refl
-instance (t ~ 'ForkTree l (Node n1 a1) r, r ~ 'EmptyTree, CmpNat x n1 ~ 'GT, CmpNat x n ~ 'LT, CmpNat n1 n ~ 'LT, LtN l n ~ 'True, LtN r n ~ 'True) =>
+instance (t ~ 'ForkTree l (Node n1 a1) r, r ~ 'EmptyTree, CmpNat x n1 ~ 'GT, CmpNat x n ~ 'LT, LtN l n ~ 'True) =>
   ProofLtNInsert' x a ('ForkTree l (Node n1 a1) 'EmptyTree) n 'GT where
   proofLtNInsert' _ (ForkBST _ _ EmptyBST) _ _ = Refl
-instance (t ~ 'ForkTree l (Node n1 a1) r, r ~ 'ForkTree rl (Node rn rna) rr, CmpNat x n1 ~ 'GT, CmpNat x n ~ 'LT, CmpNat n1 n ~ 'LT, LtN l n ~ 'True, LtN r n ~ 'True,
+instance (t ~ 'ForkTree l (Node n1 a1) r, r ~ 'ForkTree rl (Node rn rna) rr, CmpNat x n1 ~ 'GT, CmpNat x n ~ 'LT, LtN l n ~ 'True, LtN r n ~ 'True,
   ProofLtNInsert' x a r n (CmpNat x rn)) =>
   ProofLtNInsert' x a ('ForkTree l (Node n1 a1) ('ForkTree rl (Node rn rna) rr)) n 'GT where
   proofLtNInsert' node (ForkBST _ _ r@ForkBST{}) n _ = gcastWith (proofLtNInsert' node r n (Proxy::Proxy (CmpNat x rn))) Refl
@@ -67,20 +64,20 @@ instance (t ~ 'ForkTree l (Node n1 a1) r, r ~ 'ForkTree rl (Node rn rna) rr, Cmp
 class ProofGtNInsert' (x :: Nat) (a :: Type) (t :: Tree) (n :: Nat) (o :: Ordering) where
   proofGtNInsert' :: (t ~ 'ForkTree l n1 r, CmpNat x n ~ 'GT, GtN t n ~ 'True) =>
     Node x a -> BST t -> Proxy n -> Proxy o -> GtN (Insert x a t) n :~: 'True
-instance (t ~ 'ForkTree l (Node n1 a1) r, CmpNat x n1 ~ 'EQ, CmpNat x n ~ 'GT, CmpNat n1 n ~ 'GT, GtN l n ~ 'True, GtN r n ~ 'True) =>
+instance (t ~ 'ForkTree l (Node n1 a1) r, CmpNat x n1 ~ 'EQ, CmpNat x n ~ 'GT, GtN l n ~ 'True, GtN r n ~ 'True) =>
   ProofGtNInsert' x a ('ForkTree l (Node n1 a1) r) n 'EQ where
   proofGtNInsert' _ ForkBST{} _ _ = Refl
-instance (t ~ 'ForkTree l (Node n1 a1) r, l ~ 'EmptyTree, CmpNat x n1 ~ 'LT, CmpNat x n ~ 'GT, CmpNat n1 n ~ 'GT, GtN l n ~ 'True, GtN r n ~ 'True) =>
+instance (t ~ 'ForkTree l (Node n1 a1) r, l ~ 'EmptyTree, CmpNat x n1 ~ 'LT, CmpNat x n ~ 'GT,GtN r n ~ 'True) =>
   ProofGtNInsert' x a ('ForkTree 'EmptyTree (Node n1 a1) r) n 'LT where
   proofGtNInsert' _ (ForkBST EmptyBST _ _) _ _ = Refl
-instance (t ~ 'ForkTree l (Node n1 a1) r, l ~ 'ForkTree ll (Node ln lna) lr, CmpNat x n1 ~ 'LT, CmpNat x n ~ 'GT, CmpNat n1 n ~ 'GT, GtN l n ~ 'True, GtN r n ~ 'True,
+instance (t ~ 'ForkTree l (Node n1 a1) r, l ~ 'ForkTree ll (Node ln lna) lr, CmpNat x n1 ~ 'LT, CmpNat x n ~ 'GT, GtN l n ~ 'True, GtN r n ~ 'True,
   ProofGtNInsert' x a l n (CmpNat x ln)) =>
   ProofGtNInsert' x a ('ForkTree ('ForkTree ll (Node ln lna) lr) (Node n1 a1) r) n 'LT where
   proofGtNInsert' x (ForkBST l@ForkBST{} _ _) n _ = gcastWith (proofGtNInsert' x l n (Proxy::Proxy (CmpNat x ln))) Refl
-instance (t ~ 'ForkTree l (Node n1 a1) r, r ~ 'EmptyTree, CmpNat x n1 ~ 'GT, CmpNat x n ~ 'GT, CmpNat n1 n ~ 'GT, GtN l n ~ 'True, GtN r n ~ 'True) =>
+instance (t ~ 'ForkTree l (Node n1 a1) r, r ~ 'EmptyTree, CmpNat x n1 ~ 'GT, CmpNat x n ~ 'GT, GtN l n ~ 'True) =>
   ProofGtNInsert' x a ('ForkTree l (Node n1 a1) 'EmptyTree) n 'GT where
   proofGtNInsert' _ (ForkBST _ _ EmptyBST) _ _ = Refl
-instance (t ~ 'ForkTree l (Node n1 a1) r, r ~ 'ForkTree rl (Node rn rna) rr, CmpNat x n1 ~ 'GT, CmpNat x n ~ 'GT, CmpNat n1 n ~ 'GT, GtN l n ~ 'True, GtN r n ~ 'True,
+instance (t ~ 'ForkTree l (Node n1 a1) r, r ~ 'ForkTree rl (Node rn rna) rr, CmpNat x n1 ~ 'GT, CmpNat x n ~ 'GT, GtN l n ~ 'True, GtN r n ~ 'True,
   ProofGtNInsert' x a r n (CmpNat x rn)) =>
   ProofGtNInsert' x a ('ForkTree l (Node n1 a1) ('ForkTree rl (Node rn rna) rr)) n 'GT where
   proofGtNInsert' x (ForkBST _ _ r@ForkBST{}) n _ = gcastWith (proofGtNInsert' x r n (Proxy::Proxy (CmpNat x rn))) Refl
@@ -179,14 +176,14 @@ instance (r ~ 'ForkTree rl (Node rn ra) rr, LtN r n ~ 'True,
 instance (LtN r n ~ 'True) =>
   ProofLtNDelete' x ('ForkTree 'EmptyTree (Node n1 a1) r) n 'LT where
   proofLtNDelete' _ (ForkBST EmptyBST (Node _) _) _ _ = Refl
-instance (LtN r n ~ 'True, LtN ('ForkTree ll (Node ln la) lr) n ~ 'True, CmpNat n1 n ~ 'LT,
+instance (LtN r n ~ 'True, LtN ('ForkTree ll (Node ln la) lr) n ~ 'True,
   ProofLtNDelete' x ('ForkTree ll (Node ln la) lr) n (CmpNat x ln)) =>
   ProofLtNDelete' x ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n1 a1) r) n 'LT where
   proofLtNDelete' px (ForkBST l@ForkBST{} _ _) _ _ = gcastWith (proofLtNDelete' px l (Proxy::Proxy n) (Proxy::Proxy (CmpNat x ln))) Refl
 instance (LtN l n ~ 'True) =>
   ProofLtNDelete' x ('ForkTree l (Node n1 a1) 'EmptyTree) n 'GT where
   proofLtNDelete' _ (ForkBST _ (Node _) EmptyBST) _ _ = Refl
-instance (LtN l n ~ 'True, CmpNat x n1 ~ 'GT, CmpNat n1 n ~ 'LT, LtN ('ForkTree rl (Node rn ra) rr) n ~ 'True,
+instance (LtN l n ~ 'True, CmpNat x n1 ~ 'GT, LtN ('ForkTree rl (Node rn ra) rr) n ~ 'True,
   ProofLtNDelete' x ('ForkTree rl (Node rn ra) rr) n (CmpNat x rn)) =>
   ProofLtNDelete' x ('ForkTree l (Node n1 a1) ('ForkTree rl (Node rn ra) rr)) n 'GT where
   proofLtNDelete' px (ForkBST _ (Node _) r@ForkBST{}) _ _ = gcastWith (proofLtNDelete' px r (Proxy::Proxy n) (Proxy::Proxy (CmpNat x rn))) Refl
@@ -217,7 +214,7 @@ instance (GtN r n ~ 'True, GtN ('ForkTree ll (Node ln la) lr) n ~ 'True, CmpNat 
 instance (GtN l n ~ 'True) =>
   ProofGtNDelete' x ('ForkTree l (Node n1 a1) 'EmptyTree) n 'GT where
   proofGtNDelete' _ (ForkBST _ (Node _) EmptyBST) _ _ = Refl
-instance (GtN l n ~ 'True, CmpNat x n1 ~ 'GT, CmpNat n1 n ~ 'GT, GtN ('ForkTree rl (Node rn ra) rr) n ~ 'True,
+instance (GtN l n ~ 'True, CmpNat x n1 ~ 'GT, GtN ('ForkTree rl (Node rn ra) rr) n ~ 'True,
   ProofGtNDelete' x ('ForkTree rl (Node rn ra) rr) n (CmpNat x rn)) =>
   ProofGtNDelete' x ('ForkTree l (Node n1 a1) ('ForkTree rl (Node rn ra) rr)) n 'GT where
   proofGtNDelete' px (ForkBST _ (Node _) r@ForkBST{}) _ _ = gcastWith (proofGtNDelete' px r (Proxy::Proxy n) (Proxy::Proxy (CmpNat x rn))) Refl
@@ -232,8 +229,7 @@ instance (l ~ 'ForkTree ll (Node ln la) lr, LtN l n ~ 'True) =>
   proofLtNMaxKeyDeleteMaxKey (ForkBST ForkBST{} (Node _) EmptyBST) = Refl
 instance (l ~ 'ForkTree ll (Node ln la) lr, LtN l n ~ 'True, r ~ 'ForkTree rl (Node rn ra) rr,
   Maxable r, MaxKeyDeletable r, ProofLtNMaxKeyDeleteMaxKey r,
-  t ~ 'ForkTree l (Node n a) r, GtN r n ~ 'True,
-  LtN l (MaxKey r) ~ 'True, CmpNat n (MaxKey r) ~ 'LT) =>
+  t ~ 'ForkTree l (Node n a) r, LtN l (MaxKey r) ~ 'True, CmpNat n (MaxKey r) ~ 'LT) =>
   ProofLtNMaxKeyDeleteMaxKey ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a) ('ForkTree rl (Node rn ra) rr)) where
   proofLtNMaxKeyDeleteMaxKey (ForkBST ForkBST{} (Node _) r@ForkBST{}) =
     gcastWith (proofLtNMaxKeyDeleteMaxKey r) Refl
@@ -243,8 +239,7 @@ class ProofGtNMaxKey (t :: Tree) where
     BST t -> GtN r (MaxKey l) :~: 'True
 instance ProofGtNMaxKey ('ForkTree l (Node n a) 'EmptyTree) where
   proofGtNMaxKey (ForkBST _ (Node _) EmptyBST) = Refl
-instance (r ~ 'ForkTree rl (Node rn ra) rr, GtN r n ~ 'True, LtN l n ~ 'True,
-  GtN r (MaxKey l) ~ 'True) =>
+instance (r ~ 'ForkTree rl (Node rn ra) rr, GtN r n ~ 'True, GtN r (MaxKey l) ~ 'True) =>
   ProofGtNMaxKey ('ForkTree l (Node n a) ('ForkTree rl (Node rn ra) rr)) where
   proofGtNMaxKey (ForkBST _ (Node _) ForkBST{}) = Refl
 
@@ -254,8 +249,7 @@ class ProofGTMaxKey (t :: Tree) (n :: Nat) where
 instance (CmpNat n1 n ~ 'GT) =>
   ProofGTMaxKey ('ForkTree l (Node n1 a) 'EmptyTree) n where
   proofGTMaxKey (ForkBST _ (Node _) EmptyBST) _ = Refl
-instance (r ~ 'ForkTree rl (Node rn ra) rr, GtN r n ~ 'True,
-  Maxable r, ProofGTMaxKey r n) =>
+instance (r ~ 'ForkTree rl (Node rn ra) rr, GtN r n ~ 'True, Maxable r, ProofGTMaxKey r n) =>
   ProofGTMaxKey ('ForkTree l (Node n1 a) ('ForkTree rl (Node rn ra) rr)) n where
   proofGTMaxKey (ForkBST _ (Node _) r@ForkBST{}) pn = gcastWith (proofGTMaxKey r pn) Refl
 
@@ -276,8 +270,7 @@ class ProofLTMaxKey (t :: Tree) (n :: Nat) where
 instance (CmpNat n1 n ~ 'LT) =>
   ProofLTMaxKey ('ForkTree l (Node n1 a) 'EmptyTree) n where
   proofLTMaxKey (ForkBST _ (Node _) EmptyBST) _ = Refl
-instance (r ~ 'ForkTree rl (Node rn ra) rr, LtN r n ~ 'True,
-  Maxable r, ProofLTMaxKey r n) =>
+instance (r ~ 'ForkTree rl (Node rn ra) rr, LtN r n ~ 'True, Maxable r, ProofLTMaxKey r n) =>
   ProofLTMaxKey ('ForkTree l (Node n1 a) ('ForkTree rl (Node rn ra) rr)) n where
   proofLTMaxKey (ForkBST _ (Node _) r@ForkBST{}) pn = gcastWith (proofLTMaxKey r pn) Refl
 

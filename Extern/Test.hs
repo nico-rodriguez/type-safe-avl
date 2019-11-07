@@ -4,6 +4,7 @@ module Extern.Test where
 
 import           Data.Proxy
 import           Extern.AVL
+import           Extern.AVLOperations
 import           Extern.BST
 import           ITree
 import           Node
@@ -66,6 +67,8 @@ avlt5 = insertAVL (mkNode (Proxy::Proxy 0) ([1,2,3]::[Int])) avlt4
 avlt6 = insertAVL (mkNode (Proxy::Proxy 70) (1.8::Float)) avlt5
 avlt7 = insertAVL (mkNode (Proxy::Proxy 70) [False]) avlt6
 avlt8 = insertAVL (mkNode (Proxy::Proxy 75) 'a') avlt7
+avlt9 = insertAVL (mkNode (Proxy::Proxy 80) 'a') avlt8
+avlt10 = insertAVL (mkNode (Proxy::Proxy 90) 'a') avlt9
 l1' :: String
 l1' = lookupAVL (Proxy::Proxy 30) avlt8
 

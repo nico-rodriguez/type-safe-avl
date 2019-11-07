@@ -1,10 +1,7 @@
 {-# LANGUAGE DataKinds             #-}
-{-# LANGUAGE FlexibleContexts      #-}
 {-# LANGUAGE FlexibleInstances     #-}
 {-# LANGUAGE GADTs                 #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
-{-# LANGUAGE PolyKinds             #-}
-{-# LANGUAGE RankNTypes            #-}
 {-# LANGUAGE ScopedTypeVariables   #-}
 {-# LANGUAGE TypeFamilies          #-}
 {-# LANGUAGE TypeOperators         #-}
@@ -169,26 +166,26 @@ instance (CmpNat n rln ~ 'LT, LtN l rln ~ 'True, CmpNat rn  rln ~ 'GT, GtN rr rl
 class ProofLtNInsert' (x :: Nat) (a :: Type) (t :: Tree) (n :: Nat) (o :: Ordering) where
   proofLtNInsert' :: (t ~ 'ForkTree l n1 r, CmpNat x n ~ 'LT, LtN t n ~ 'True) =>
     Node x a -> AVL t -> Proxy n -> Proxy o -> LtN (Insert x a t) n :~: 'True
-instance (t ~ 'ForkTree l n1 r, CmpNat x n1 ~ 'EQ, CmpNat x n ~ 'LT, CmpNat n1 n ~ 'LT, LtN l n ~ 'True, LtN r n ~ 'True) =>
+instance (t ~ 'ForkTree l n1 r, CmpNat x n1 ~ 'EQ, LtN l n ~ 'True) =>
   ProofLtNInsert' x a ('ForkTree l (Node n1 a1) r) n 'EQ where
   proofLtNInsert' _ ForkAVL{} _ _ = Refl
-instance (t ~ 'ForkTree l n1 r, l ~ 'EmptyTree, CmpNat x n1 ~ 'LT, CmpNat x n ~ 'LT, CmpNat n1 n ~ 'LT, LtN l n ~ 'True, LtN r n ~ 'True,
+instance (t ~ 'ForkTree l n1 r, l ~ 'EmptyTree, CmpNat x n1 ~ 'LT, LtN l n ~ 'True,
   ProofLtNBalance ('ForkTree ('ForkTree 'EmptyTree (Node x a) 'EmptyTree) (Node n1 a1) r) n) =>
   ProofLtNInsert' x a ('ForkTree 'EmptyTree (Node n1 a1) r) n 'LT where
   proofLtNInsert' _ (ForkAVL EmptyAVL _ _) _ _ =
     gcastWith (proofLtNBalance (Proxy::Proxy ('ForkTree ('ForkTree 'EmptyTree (Node x a) 'EmptyTree) (Node n1 a1) r)) (Proxy::Proxy n)) Refl
-instance (t ~ 'ForkTree l (Node n1 a1) r, l ~ 'ForkTree ll (Node ln lna) lr, CmpNat x n1 ~ 'LT, CmpNat x n ~ 'LT, CmpNat n1 n ~ 'LT, LtN l n ~ 'True, LtN r n ~ 'True,
+instance (t ~ 'ForkTree l (Node n1 a1) r, l ~ 'ForkTree ll (Node ln lna) lr, CmpNat x n1 ~ 'LT, LtN l n ~ 'True,
   ProofLtNInsert' x a l n (CmpNat x ln), ProofLtNBalance ('ForkTree (Insert' x a ('ForkTree ll (Node ln lna) lr) (CmpNat x ln)) (Node n1 a1) r) n) =>
   ProofLtNInsert' x a ('ForkTree ('ForkTree ll (Node ln lna) lr) (Node n1 a1) r) n 'LT where
   proofLtNInsert' node (ForkAVL l@ForkAVL{} _ _) n _ =
     gcastWith (proofLtNInsert' node l n (Proxy::Proxy (CmpNat x ln))) $
       gcastWith (proofLtNBalance (Proxy::Proxy ('ForkTree (Insert' x a ('ForkTree ll (Node ln lna) lr) (CmpNat x ln)) (Node n1 a1) r)) (Proxy::Proxy n)) Refl
-instance (t ~ 'ForkTree l (Node n1 a1) r, r ~ 'EmptyTree, CmpNat x n1 ~ 'GT, CmpNat x n ~ 'LT, CmpNat n1 n ~ 'LT, LtN l n ~ 'True, LtN r n ~ 'True,
+instance (t ~ 'ForkTree l (Node n1 a1) r, r ~ 'EmptyTree, CmpNat x n1 ~ 'GT, LtN l n ~ 'True,
   ProofLtNBalance ('ForkTree l (Node n1 a1) ('ForkTree 'EmptyTree (Node x a) 'EmptyTree)) n) =>
   ProofLtNInsert' x a ('ForkTree l (Node n1 a1) 'EmptyTree) n 'GT where
   proofLtNInsert' _ (ForkAVL _ _ EmptyAVL) _ _ =
     gcastWith (proofLtNBalance (Proxy::Proxy ('ForkTree l (Node n1 a1) ('ForkTree 'EmptyTree (Node x a) 'EmptyTree))) (Proxy::Proxy n)) Refl
-instance (t ~ 'ForkTree l (Node n1 a1) r, r ~ 'ForkTree rl (Node rn rna) rr, CmpNat x n1 ~ 'GT, CmpNat x n ~ 'LT, CmpNat n1 n ~ 'LT, LtN l n ~ 'True, LtN r n ~ 'True,
+instance (t ~ 'ForkTree l (Node n1 a1) r, r ~ 'ForkTree rl (Node rn rna) rr, CmpNat x n1 ~ 'GT, LtN l n ~ 'True, LtN r n ~ 'True,
   ProofLtNInsert' x a r n (CmpNat x rn),
   ProofLtNBalance ('ForkTree l (Node n1 a1) (Insert' x a ('ForkTree rl (Node rn rna) rr) (CmpNat x rn))) n) =>
   ProofLtNInsert' x a ('ForkTree l (Node n1 a1) ('ForkTree rl (Node rn rna) rr)) n 'GT where
@@ -199,27 +196,27 @@ instance (t ~ 'ForkTree l (Node n1 a1) r, r ~ 'ForkTree rl (Node rn rna) rr, Cmp
 class ProofGtNInsert' (x :: Nat) (a :: Type) (t :: Tree) (n :: Nat) (o :: Ordering) where
   proofGtNInsert' :: (t ~ 'ForkTree l n1 r, CmpNat x n ~ 'GT, GtN t n ~ 'True) =>
     Node x a -> AVL t -> Proxy n -> Proxy o -> GtN (Insert x a t) n :~: 'True
-instance (t ~ 'ForkTree l (Node n1 a1) r, CmpNat x n1 ~ 'EQ, CmpNat x n ~ 'GT, CmpNat n1 n ~ 'GT, GtN l n ~ 'True, GtN r n ~ 'True) =>
+instance (t ~ 'ForkTree l (Node n1 a1) r, CmpNat x n1 ~ 'EQ, CmpNat x n ~ 'GT,GtN l n ~ 'True, GtN r n ~ 'True) =>
   ProofGtNInsert' x a ('ForkTree l (Node n1 a1) r) n 'EQ where
   proofGtNInsert' _ ForkAVL{} _ _ = Refl
-instance (t ~ 'ForkTree l (Node n1 a1) r, l ~ 'EmptyTree, CmpNat x n1 ~ 'LT, CmpNat x n ~ 'GT, CmpNat n1 n ~ 'GT, GtN l n ~ 'True, GtN r n ~ 'True,
+instance (t ~ 'ForkTree l (Node n1 a1) r, l ~ 'EmptyTree, CmpNat x n1 ~ 'LT, GtN l n ~ 'True, GtN r n ~ 'True,
   ProofGtNBalance ('ForkTree ('ForkTree 'EmptyTree (Node x a) 'EmptyTree) (Node n1 a1) r) n) =>
   ProofGtNInsert' x a ('ForkTree 'EmptyTree (Node n1 a1) r) n 'LT where
   proofGtNInsert' _ (ForkAVL EmptyAVL _ _) _ _ =
     gcastWith (proofGtNBalance (Proxy::Proxy ('ForkTree ('ForkTree 'EmptyTree (Node x a) 'EmptyTree) (Node n1 a1) r)) (Proxy::Proxy n)) Refl
-instance (t ~ 'ForkTree l (Node n1 a1) r, l ~ 'ForkTree ll (Node ln lna) lr, CmpNat x n1 ~ 'LT, CmpNat x n ~ 'GT, CmpNat n1 n ~ 'GT, GtN l n ~ 'True, GtN r n ~ 'True,
+instance (t ~ 'ForkTree l (Node n1 a1) r, l ~ 'ForkTree ll (Node ln lna) lr, CmpNat x n1 ~ 'LT, GtN l n ~ 'True, GtN r n ~ 'True,
   ProofGtNInsert' x a l n (CmpNat x ln),
   ProofGtNBalance ('ForkTree (Insert' x a ('ForkTree ll (Node ln lna) lr) (CmpNat x ln)) (Node n1 a1) r) n) =>
   ProofGtNInsert' x a ('ForkTree ('ForkTree ll (Node ln lna) lr) (Node n1 a1) r) n 'LT where
   proofGtNInsert' x (ForkAVL l@ForkAVL{} _ _) n _ =
     gcastWith (proofGtNInsert' x l n (Proxy::Proxy (CmpNat x ln))) $
       gcastWith (proofGtNBalance (Proxy::Proxy ('ForkTree (Insert' x a ('ForkTree ll (Node ln lna) lr) (CmpNat x ln)) (Node n1 a1) r)) (Proxy::Proxy n)) Refl
-instance (t ~ 'ForkTree l (Node n1 a1) r, r ~ 'EmptyTree, CmpNat x n1 ~ 'GT, CmpNat x n ~ 'GT, CmpNat n1 n ~ 'GT, GtN l n ~ 'True, GtN r n ~ 'True,
+instance (t ~ 'ForkTree l (Node n1 a1) r, r ~ 'EmptyTree, CmpNat x n1 ~ 'GT, GtN l n ~ 'True, GtN r n ~ 'True,
   ProofGtNBalance ('ForkTree l (Node n1 a1) ('ForkTree 'EmptyTree (Node x a) 'EmptyTree)) n) =>
   ProofGtNInsert' x a ('ForkTree l (Node n1 a1) 'EmptyTree) n 'GT where
   proofGtNInsert' _ (ForkAVL _ _ EmptyAVL) _ _ =
     gcastWith (proofGtNBalance (Proxy::Proxy ('ForkTree l (Node n1 a1) ('ForkTree 'EmptyTree (Node x a) 'EmptyTree))) (Proxy::Proxy n)) Refl
-instance (t ~ 'ForkTree l (Node n1 a1) r, r ~ 'ForkTree rl (Node rn rna) rr, CmpNat x n1 ~ 'GT, CmpNat x n ~ 'GT, CmpNat n1 n ~ 'GT, GtN l n ~ 'True, GtN r n ~ 'True,
+instance (t ~ 'ForkTree l (Node n1 a1) r, r ~ 'ForkTree rl (Node rn rna) rr, CmpNat x n1 ~ 'GT, GtN l n ~ 'True, GtN r n ~ 'True,
   ProofGtNInsert' x a r n (CmpNat x rn),
   ProofGtNBalance ('ForkTree l (Node n1 a1) (Insert' x a ('ForkTree rl (Node rn rna) rr) (CmpNat x rn))) n) =>
   ProofGtNInsert' x a ('ForkTree l (Node n1 a1) ('ForkTree rl (Node rn rna) rr)) n 'GT where
@@ -251,32 +248,26 @@ instance ProofLtNRotate ('ForkTree l (Node n1 a) ('ForkTree rl (Node rn ra) rr))
 class ProofLtNRotate (t :: Tree) (n :: Nat) (us::US) (bs::BS) where
   proofLtNRotate :: Proxy t -> Proxy n -> Proxy us -> Proxy bs -> LtN (Rotate t us bs) n :~: 'True
 -- | Left-Left case (Right rotation)
-instance (LtN lr n ~ 'True, GtN r n ~ 'True, LtN ll ln ~ 'True, CmpNat n ln ~ 'GT,
-  GtN lr ln ~ 'True, GtN r ln ~ 'True, CmpNat ln n ~ 'LT, LtN ll n ~ 'True, CmpNat n1 n ~ 'LT, LtN r n ~ 'True) =>
+instance (LtN lr n ~ 'True, LtN ll ln ~ 'True, CmpNat ln n ~ 'LT, LtN ll n ~ 'True, CmpNat n1 n ~ 'LT, LtN r n ~ 'True) =>
   ProofLtNRotate ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n1 a) r) n 'LeftUnbalanced 'LeftHeavy where
   proofLtNRotate _ _ _ _ = Refl
-instance (LtN lr n ~ 'True, GtN r n ~ 'True, LtN ll ln ~ 'True, CmpNat n ln ~ 'GT,
-  GtN lr ln ~ 'True, GtN r ln ~ 'True, CmpNat ln n ~ 'LT, LtN ll n ~ 'True, CmpNat n1 n ~ 'LT, LtN r n ~ 'True) =>
+instance (LtN lr n ~ 'True, LtN ll ln ~ 'True, CmpNat ln n ~ 'LT, LtN ll n ~ 'True, CmpNat n1 n ~ 'LT, LtN r n ~ 'True) =>
   ProofLtNRotate ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n1 a) r) n 'LeftUnbalanced 'Balanced where
   proofLtNRotate _ _ _ _ = Refl
 -- | Right-Right case (Left rotation)
-instance (LtN l n ~ 'True, GtN rl n ~ 'True, CmpNat n rn ~ 'LT, LtN l rn ~ 'True,
-  LtN rl rn ~ 'True, GtN rr rn ~ 'True, CmpNat rn n ~ 'LT, CmpNat n1 n ~ 'LT, LtN rl n ~ 'True, LtN rr n ~ 'True) =>
+instance (LtN l n ~ 'True, CmpNat n rn ~ 'LT, LtN l rn ~ 'True, LtN rl rn ~ 'True, CmpNat rn n ~ 'LT, CmpNat n1 n ~ 'LT, LtN rl n ~ 'True, LtN rr n ~ 'True) =>
   ProofLtNRotate ('ForkTree l (Node n1 a) ('ForkTree rl (Node rn ra) rr)) n 'RightUnbalanced 'RightHeavy where
   proofLtNRotate _ _ _ _ = Refl
-instance (LtN l n ~ 'True, GtN rl n ~ 'True, CmpNat n rn ~ 'LT, LtN l rn ~ 'True,
-  LtN rl rn ~ 'True, GtN rr rn ~ 'True, CmpNat rn n ~ 'LT, CmpNat n1 n ~ 'LT, LtN rl n ~ 'True, LtN rr n ~ 'True) =>
+instance (LtN l n ~ 'True, CmpNat n rn ~ 'LT, LtN l rn ~ 'True, LtN rl rn ~ 'True, CmpNat rn n ~ 'LT, CmpNat n1 n ~ 'LT, LtN rl n ~ 'True, LtN rr n ~ 'True) =>
   ProofLtNRotate ('ForkTree l (Node n1 a) ('ForkTree rl (Node rn ra) rr)) n 'RightUnbalanced 'Balanced where
   proofLtNRotate _ _ _ _ = Refl
 -- | Left-Right case (First left rotation, then right rotation)
-instance (LtN ll ln ~ 'True, GtN lrl ln ~ 'True, LtN lrr n ~ 'True,
-  GtN r n ~ 'True, CmpNat ln lrn ~ 'LT, LtN ll lrn ~ 'True, LtN lrl lrn ~ 'True, CmpNat n lrn ~ 'GT, GtN lrr lrn ~ 'True, GtN r lrn ~ 'True,
+instance (LtN ll ln ~ 'True, LtN lrr n ~ 'True, CmpNat ln lrn ~ 'LT, LtN ll lrn ~ 'True, LtN lrl lrn ~ 'True,
   CmpNat lrn n ~ 'LT, CmpNat ln n ~ 'LT, LtN ll n ~ 'True, LtN lrl n ~ 'True, CmpNat n1 n ~ 'LT, LtN r n ~ 'True) =>
   ProofLtNRotate ('ForkTree ('ForkTree ll (Node ln la) ('ForkTree lrl (Node lrn lra) lrr)) (Node n1 a) r) n 'LeftUnbalanced 'RightHeavy where
   proofLtNRotate _ _ _ _ = Refl
 -- | Right-Left case (First right rotation, then left rotation)
-instance (LtN l n ~ 'True, GtN rll n ~ 'True, LtN rlr rn ~ 'True,
-  GtN rr rn ~ 'True, CmpNat n rln ~ 'LT, LtN l rln ~ 'True, LtN rll rln ~ 'True, CmpNat rn rln ~ 'GT, GtN rlr rln ~ 'True, GtN rr rln ~ 'True,
+instance (LtN l n ~ 'True, LtN rlr rn ~ 'True, CmpNat n rln ~ 'LT, LtN l rln ~ 'True, LtN rll rln ~ 'True,
   CmpNat rln n ~ 'LT, CmpNat n1 n ~ 'LT, LtN rll n ~ 'True, CmpNat rn n ~ 'LT, LtN rll n ~ 'True, LtN rr n ~ 'True, LtN rlr n ~ 'True) =>
   ProofLtNRotate ('ForkTree l (Node n1 a) ('ForkTree ('ForkTree rll (Node rln rla) rlr) (Node rn ra) rr)) n 'RightUnbalanced 'LeftHeavy where
   proofLtNRotate _ _ _ _ = Refl
@@ -305,32 +296,26 @@ instance ProofGtNRotate ('ForkTree l (Node n1 a) ('ForkTree rl (Node rn ra) rr))
 class ProofGtNRotate (t :: Tree) (n :: Nat) (us::US) (bs::BS) where
   proofGtNRotate :: Proxy t -> Proxy n -> Proxy us -> Proxy bs -> GtN (Rotate t us bs) n :~: 'True
 -- | Left-Left case (Right rotation)
-instance (LtN lr n ~ 'True, GtN r n ~ 'True, LtN ll ln ~ 'True, CmpNat n ln ~ 'GT,
-  GtN lr ln ~ 'True, GtN r ln ~ 'True, CmpNat ln n ~ 'GT, GtN ll n ~ 'True, CmpNat n1 n ~ 'GT, GtN lr n ~ 'True) =>
+instance (GtN r n ~ 'True, CmpNat n ln ~ 'GT, GtN lr ln ~ 'True, GtN r ln ~ 'True, CmpNat ln n ~ 'GT, GtN ll n ~ 'True, CmpNat n1 n ~ 'GT, GtN lr n ~ 'True) =>
   ProofGtNRotate ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n1 a) r) n 'LeftUnbalanced 'LeftHeavy where
   proofGtNRotate _ _ _ _ = Refl
-instance (LtN lr n ~ 'True, GtN r n ~ 'True, LtN ll ln ~ 'True, CmpNat n ln ~ 'GT,
-  GtN lr ln ~ 'True, GtN r ln ~ 'True, CmpNat ln n ~ 'GT, GtN ll n ~ 'True, CmpNat n1 n ~ 'GT, GtN r n ~ 'True, GtN lr n ~ 'True) =>
+instance (GtN r n ~ 'True, CmpNat n ln ~ 'GT, GtN lr ln ~ 'True, GtN r ln ~ 'True, CmpNat ln n ~ 'GT, GtN ll n ~ 'True, CmpNat n1 n ~ 'GT, GtN lr n ~ 'True) =>
   ProofGtNRotate ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n1 a) r) n 'LeftUnbalanced 'Balanced where
   proofGtNRotate _ _ _ _ = Refl
 -- | Right-Right case (Left rotation)
-instance (LtN l n ~ 'True, GtN rl n ~ 'True, CmpNat n rn ~ 'LT, LtN l rn ~ 'True,
-  LtN rl rn ~ 'True, GtN rr rn ~ 'True, CmpNat rn n ~ 'GT, CmpNat n1 n ~ 'GT, GtN rl n ~ 'True, GtN rr n ~ 'True, GtN l n ~ 'True) =>
+instance (GtN rl n ~ 'True, GtN rr rn ~ 'True, CmpNat rn n ~ 'GT, CmpNat n1 n ~ 'GT, GtN rl n ~ 'True, GtN rr n ~ 'True, GtN l n ~ 'True) =>
   ProofGtNRotate ('ForkTree l (Node n1 a) ('ForkTree rl (Node rn ra) rr)) n 'RightUnbalanced 'RightHeavy where
   proofGtNRotate _ _ _ _ = Refl
-instance (LtN l n ~ 'True, GtN rl n ~ 'True, CmpNat n rn ~ 'LT, LtN l rn ~ 'True,
-  LtN rl rn ~ 'True, GtN rr rn ~ 'True, CmpNat rn n ~ 'GT, CmpNat n1 n ~ 'GT, GtN rl n ~ 'True, GtN rr n ~ 'True, GtN l n ~ 'True) =>
+instance (GtN rl n ~ 'True, GtN rr rn ~ 'True, CmpNat rn n ~ 'GT, CmpNat n1 n ~ 'GT, GtN rl n ~ 'True, GtN rr n ~ 'True, GtN l n ~ 'True) =>
   ProofGtNRotate ('ForkTree l (Node n1 a) ('ForkTree rl (Node rn ra) rr)) n 'RightUnbalanced 'Balanced where
   proofGtNRotate _ _ _ _ = Refl
 -- | Left-Right case (First left rotation, then right rotation)
-instance (LtN ll ln ~ 'True, GtN lrl ln ~ 'True, LtN lrr n ~ 'True,
-  GtN r n ~ 'True, CmpNat ln lrn ~ 'LT, LtN ll lrn ~ 'True, LtN lrl lrn ~ 'True, CmpNat n lrn ~ 'GT, GtN lrr lrn ~ 'True, GtN r lrn ~ 'True,
+instance (GtN lrl ln ~ 'True, GtN r n ~ 'True, CmpNat n lrn ~ 'GT, GtN lrr lrn ~ 'True, GtN r lrn ~ 'True,
   CmpNat lrn n ~ 'GT, CmpNat ln n ~ 'GT, GtN ll n ~ 'True, GtN lrl n ~ 'True, CmpNat n1 n ~ 'GT, GtN r n ~ 'True, GtN lrr n ~ 'True) =>
   ProofGtNRotate ('ForkTree ('ForkTree ll (Node ln la) ('ForkTree lrl (Node lrn lra) lrr)) (Node n1 a) r) n 'LeftUnbalanced 'RightHeavy where
   proofGtNRotate _ _ _ _ = Refl
 -- | Right-Left case (First right rotation, then left rotation)
-instance (LtN l n ~ 'True, GtN rll n ~ 'True, LtN rlr rn ~ 'True,
-  GtN rr rn ~ 'True, CmpNat n rln ~ 'LT, LtN l rln ~ 'True, LtN rll rln ~ 'True, CmpNat rn rln ~ 'GT, GtN rlr rln ~ 'True, GtN rr rln ~ 'True,
+instance (GtN rll n ~ 'True, GtN rr rn ~ 'True, CmpNat rn rln ~ 'GT, GtN rlr rln ~ 'True, GtN rr rln ~ 'True,
   CmpNat rln n ~ 'GT, CmpNat n1 n ~ 'GT, GtN rll n ~ 'True, CmpNat rn n ~ 'GT, GtN rll n ~ 'True, GtN rr n ~ 'True, GtN rlr n ~ 'True, GtN l n ~ 'True) =>
   ProofGtNRotate ('ForkTree l (Node n1 a) ('ForkTree ('ForkTree rll (Node rln rla) rlr) (Node rn ra) rr)) n 'RightUnbalanced 'LeftHeavy where
   proofGtNRotate _ _ _ _ = Refl
@@ -447,7 +432,7 @@ instance (r ~ 'ForkTree rl (Node rn ra) rr, LtN r n ~ 'True,
 instance (LtN r n ~ 'True) =>
   ProofLtNDelete' x ('ForkTree 'EmptyTree (Node n1 a1) r) n 'LT where
   proofLtNDelete' _ (ForkAVL EmptyAVL (Node _) _) _ _ = Refl
-instance (LtN r n ~ 'True, LtN ('ForkTree ll (Node ln la) lr) n ~ 'True, CmpNat n1 n ~ 'LT,
+instance (LtN r n ~ 'True, LtN ('ForkTree ll (Node ln la) lr) n ~ 'True,
   ProofLtNDelete' x ('ForkTree ll (Node ln la) lr) n (CmpNat x ln),
   ProofLtNBalance ('ForkTree (Delete' x ('ForkTree ll (Node ln la) lr) (CmpNat x ln)) (Node n1 a1) r) n) =>
   ProofLtNDelete' x ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n1 a1) r) n 'LT where
@@ -457,7 +442,7 @@ instance (LtN r n ~ 'True, LtN ('ForkTree ll (Node ln la) lr) n ~ 'True, CmpNat 
 instance (LtN l n ~ 'True) =>
   ProofLtNDelete' x ('ForkTree l (Node n1 a1) 'EmptyTree) n 'GT where
   proofLtNDelete' _ (ForkAVL _ (Node _) EmptyAVL) _ _ = Refl
-instance (LtN l n ~ 'True, CmpNat x n1 ~ 'GT, CmpNat n1 n ~ 'LT, LtN ('ForkTree rl (Node rn ra) rr) n ~ 'True,
+instance (LtN l n ~ 'True, CmpNat n1 n ~ 'LT, LtN ('ForkTree rl (Node rn ra) rr) n ~ 'True,
   ProofLtNDelete' x ('ForkTree rl (Node rn ra) rr) n (CmpNat x rn),
   ProofLtNBalance ('ForkTree l (Node n1 a1) (Delete' x ('ForkTree rl (Node rn ra) rr) (CmpNat x rn))) n) =>
   ProofLtNDelete' x ('ForkTree l (Node n1 a1) ('ForkTree rl (Node rn ra) rr)) n 'GT where
@@ -488,7 +473,7 @@ instance (r ~ 'ForkTree rl (Node rn ra) rr, GtN r n ~ 'True,
 instance (GtN r n ~ 'True) =>
   ProofGtNDelete' x ('ForkTree 'EmptyTree (Node n1 a1) r) n 'LT where
   proofGtNDelete' _ (ForkAVL EmptyAVL (Node _) _) _ _ = Refl
-instance (GtN r n ~ 'True, GtN ('ForkTree ll (Node ln la) lr) n ~ 'True, CmpNat n1 n ~ 'GT,
+instance (GtN r n ~ 'True, GtN ('ForkTree ll (Node ln la) lr) n ~ 'True,
   ProofGtNDelete' x ('ForkTree ll (Node ln la) lr) n (CmpNat x ln),
   ProofGtNBalance ('ForkTree (Delete' x ('ForkTree ll (Node ln la) lr) (CmpNat x ln)) (Node n1 a1) r) n) =>
   ProofGtNDelete' x ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n1 a1) r) n 'LT where
@@ -516,8 +501,7 @@ instance (l ~ 'ForkTree ll (Node ln la) lr, LtN l n ~ 'True) =>
   proofLtNMaxKeyDeleteMaxKey (ForkAVL ForkAVL{} (Node _) EmptyAVL) = Refl
 instance (l ~ 'ForkTree ll (Node ln la) lr, LtN l n ~ 'True, r ~ 'ForkTree rl (Node rn ra) rr,
   Maxable r, MaxKeyDeletable r, ProofLtNMaxKeyDeleteMaxKey r,
-  t ~ 'ForkTree l (Node n a) r, GtN r n ~ 'True,
-  LtN l (MaxKey r) ~ 'True, CmpNat n (MaxKey r) ~ 'LT) =>
+  t ~ 'ForkTree l (Node n a) r, LtN l (MaxKey r) ~ 'True, CmpNat n (MaxKey r) ~ 'LT) =>
   ProofLtNMaxKeyDeleteMaxKey ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a) ('ForkTree rl (Node rn ra) rr)) where
   proofLtNMaxKeyDeleteMaxKey (ForkAVL ForkAVL{} (Node _) r@ForkAVL{}) =
     gcastWith (proofLtNMaxKeyDeleteMaxKey r) Refl
@@ -527,8 +511,7 @@ class ProofGtNMaxKey (t :: Tree) where
     AVL t -> GtN r (MaxKey l) :~: 'True
 instance ProofGtNMaxKey ('ForkTree l (Node n a) 'EmptyTree) where
   proofGtNMaxKey (ForkAVL _ (Node _) EmptyAVL) = Refl
-instance (r ~ 'ForkTree rl (Node rn ra) rr, GtN r n ~ 'True, LtN l n ~ 'True,
-  GtN r (MaxKey l) ~ 'True) =>
+instance (r ~ 'ForkTree rl (Node rn ra) rr, GtN r n ~ 'True, GtN r (MaxKey l) ~ 'True) =>
   ProofGtNMaxKey ('ForkTree l (Node n a) ('ForkTree rl (Node rn ra) rr)) where
   proofGtNMaxKey (ForkAVL _ (Node _) ForkAVL{}) = Refl
 
@@ -538,8 +521,7 @@ class ProofGTMaxKey (t :: Tree) (n :: Nat) where
 instance (CmpNat n1 n ~ 'GT) =>
   ProofGTMaxKey ('ForkTree l (Node n1 a) 'EmptyTree) n where
   proofGTMaxKey (ForkAVL _ (Node _) EmptyAVL) _ = Refl
-instance (r ~ 'ForkTree rl (Node rn ra) rr, GtN r n ~ 'True,
-  Maxable r, ProofGTMaxKey r n) =>
+instance (r ~ 'ForkTree rl (Node rn ra) rr, GtN r n ~ 'True, Maxable r, ProofGTMaxKey r n) =>
   ProofGTMaxKey ('ForkTree l (Node n1 a) ('ForkTree rl (Node rn ra) rr)) n where
   proofGTMaxKey (ForkAVL _ (Node _) r@ForkAVL{}) pn = gcastWith (proofGTMaxKey r pn) Refl
 
@@ -560,8 +542,7 @@ class ProofLTMaxKey (t :: Tree) (n :: Nat) where
 instance (CmpNat n1 n ~ 'LT) =>
   ProofLTMaxKey ('ForkTree l (Node n1 a) 'EmptyTree) n where
   proofLTMaxKey (ForkAVL _ (Node _) EmptyAVL) _ = Refl
-instance (r ~ 'ForkTree rl (Node rn ra) rr, LtN r n ~ 'True,
-  Maxable r, ProofLTMaxKey r n) =>
+instance (r ~ 'ForkTree rl (Node rn ra) rr, LtN r n ~ 'True, Maxable r, ProofLTMaxKey r n) =>
   ProofLTMaxKey ('ForkTree l (Node n1 a) ('ForkTree rl (Node rn ra) rr)) n where
   proofLTMaxKey (ForkAVL _ (Node _) r@ForkAVL{}) pn = gcastWith (proofLTMaxKey r pn) Refl
 

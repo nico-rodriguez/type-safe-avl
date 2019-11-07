@@ -1,10 +1,7 @@
 {-# LANGUAGE DataKinds             #-}
-{-# LANGUAGE FlexibleContexts      #-}
 {-# LANGUAGE FlexibleInstances     #-}
-{-# LANGUAGE GADTs                 #-}
-{-# LANGUAGE IncoherentInstances   #-}
+{-# LANGUAGE KindSignatures #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
-{-# LANGUAGE PolyKinds             #-}
 {-# LANGUAGE ScopedTypeVariables   #-}
 {-# LANGUAGE TypeFamilies          #-}
 {-# LANGUAGE TypeOperators         #-}
@@ -93,9 +90,6 @@ class MaxKeyDeletable (t :: Tree) where
   type MaxKeyDelete (t :: Tree) :: Tree
   maxKeyDelete :: (t ~ 'ForkTree l (Node n a1) r) =>
     ITree t -> ITree (MaxKeyDelete t)
-instance MaxKeyDeletable ('ForkTree 'EmptyTree (Node n a1) 'EmptyTree) where
-  type MaxKeyDelete ('ForkTree 'EmptyTree (Node n a1) 'EmptyTree) = 'EmptyTree
-  maxKeyDelete (ForkITree EmptyITree (Node _) EmptyITree) = EmptyITree
 instance MaxKeyDeletable ('ForkTree l (Node n a1) 'EmptyTree) where
   type MaxKeyDelete ('ForkTree l (Node n a1) 'EmptyTree) = l
   maxKeyDelete (ForkITree l (Node _) EmptyITree) = l
