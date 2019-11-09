@@ -1,6 +1,0 @@
-1: No existe una especificación formal de las operaciones. Por ejemplo, la inserción podría
-devolver un árbol con menos nodos mientras no viole la condición IsBST t ~ 'True.
-
-2: ¿Es imposible separar las pruebas de las operaciones en el enfoque internalista?
-
-3: 
