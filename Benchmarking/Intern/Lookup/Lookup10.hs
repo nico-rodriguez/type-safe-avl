@@ -1,12 +1,14 @@
 {-# LANGUAGE DataKinds #-}
-{-# LANGUAGE Safe #-}
+{-# LANGUAGE Safe      #-}
 
-import           Prelude (Bool(False), IO, return, seq, (++), putStrLn, show, Char)
-import           Intern.AVL (AVL(), lookupAVL)
-import           Data.Proxy (Proxy(Proxy))
 import           Benchmarking.Intern.Operations (InsertN, insertN)
-import           System.Time (getClockTime)
-import           Benchmarking.Utils (secDiff)
+import           Benchmarking.Utils             (secDiff)
+import           Data.Proxy                     (Proxy (Proxy))
+import           Intern.AVL                     (AVL (), lookupAVL)
+import           Prelude                        (Bool (False), Char, IO,
+                                                 putStrLn, return, seq, show,
+                                                 (++))
+import           System.Time                    (getClockTime)
 
 
 t10 :: AVL (InsertN 10)

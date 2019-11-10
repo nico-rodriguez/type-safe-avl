@@ -1,13 +1,14 @@
 {-# LANGUAGE DataKinds #-}
-{-# LANGUAGE Safe #-}
+{-# LANGUAGE Safe      #-}
 
-import           ITree (Tree(EmptyTree))
-import           Prelude (Bool(False), IO, return, seq, (++), putStrLn, show)
-import           Extern.AVL (AVL())
-import           Data.Proxy (Proxy(Proxy))
-import           Benchmarking.Extern.Operations (InsertN, insertN, deleteN)
-import           System.Time (getClockTime)
-import           Benchmarking.Utils (secDiff)
+import           Benchmarking.Extern.Operations (InsertN, deleteN, insertN)
+import           Benchmarking.Utils             (secDiff)
+import           Data.Proxy                     (Proxy (Proxy))
+import           Extern.AVL                     (AVL ())
+import           ITree                          (Tree (EmptyTree))
+import           Prelude                        (Bool (False), IO, putStrLn,
+                                                 return, seq, show, (++))
+import           System.Time                    (getClockTime)
 
 
 t50 :: AVL (InsertN 50)
