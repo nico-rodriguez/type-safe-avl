@@ -35,9 +35,6 @@ instance (InsertNClass (n - 1) (CmpNat (n - 1) 0 == 'EQ), Insertable n Char (Ins
   InsertNClass n 'False where
   insertN pn _ = unsafeCoerce $ insertAVL (mkNode pn 'a') (insertN (proxyPred pn) (Proxy::Proxy (CmpNat (n - 1) 0 == 'EQ)))
 
-t10 :: AVL (InsertN 10)
-t10 = insertN (Proxy::Proxy 10) (Proxy::Proxy 'False)
-
 
 type family DeleteN (n::Nat) (t::Tree) where
   DeleteN 0 'EmptyTree                  = 'EmptyTree
@@ -50,6 +47,3 @@ instance DeleteNClass 0 'EmptyTree where
 instance (DeleteNClass (n - 1) (Delete n ('ForkTree l (Node n1 a) r)), Deletable n ('ForkTree l (Node n1 a) r)) =>
   DeleteNClass n ('ForkTree l (Node n1 a) r) where
   deleteN pn t@ForkAVL{}  = deleteN (proxyPred pn) (deleteAVL pn t)
-
-e :: AVL 'EmptyTree
-e = deleteN (Proxy::Proxy 10) t10

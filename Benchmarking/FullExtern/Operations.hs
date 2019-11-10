@@ -10,6 +10,7 @@
 
 module Benchmarking.FullExtern.Operations where
 
+import           Prelude (Bool(True,False), Ordering(LT,GT,EQ), Char, undefined, ($))
 import           Data.Proxy (Proxy(Proxy))
 import           Data.Type.Equality (type (==), gcastWith, (:~:)(Refl))
 import           Node (Node, mkNode)
