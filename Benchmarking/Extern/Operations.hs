@@ -1,25 +1,31 @@
-{-# LANGUAGE DataKinds #-}
-{-# LANGUAGE FlexibleInstances #-}
-{-# LANGUAGE KindSignatures #-}
+{-# LANGUAGE DataKinds             #-}
+{-# LANGUAGE ExplicitNamespaces    #-}
+{-# LANGUAGE FlexibleContexts      #-}
+{-# LANGUAGE FlexibleInstances     #-}
+{-# LANGUAGE KindSignatures        #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
-{-# LANGUAGE ScopedTypeVariables #-}
-{-# LANGUAGE TypeFamilies #-}
-{-# LANGUAGE TypeOperators #-}
-{-# LANGUAGE UndecidableInstances #-}
-{-# LANGUAGE Trustworthy #-}
+{-# LANGUAGE ScopedTypeVariables   #-}
+{-# LANGUAGE Trustworthy           #-}
+{-# LANGUAGE TypeFamilies          #-}
+{-# LANGUAGE TypeOperators         #-}
+{-# LANGUAGE UndecidableInstances  #-}
 
 module Benchmarking.Extern.Operations where
 
-import           Prelude (Char, Bool(True,False), Ordering(EQ), undefined, ($))
-import           Data.Proxy (Proxy(Proxy))
-import           Data.Type.Equality (type (==))
-import           Node (Node(), mkNode)
-import           ITree (Tree(EmptyTree,ForkTree), ITree(EmptyITree,ForkITree))
-import           Extern.AVL (insertAVL, deleteAVL)
-import           Extern.AVLOperations (Insertable(Insert), Deletable(Delete))
-import           Extern.AVLProofs (AVL(AVL), ProofIsAVLInsert, ProofIsBSTInsert, ProofIsAVLDelete, ProofIsBSTDelete)
-import           GHC.TypeLits (Nat, type (-), CmpNat)
-import           Unsafe.Coerce (unsafeCoerce)
+import           Data.Proxy           (Proxy (Proxy))
+import           Data.Type.Equality   (type (==))
+import           Extern.AVL           (deleteAVL, insertAVL)
+import           Extern.AVLOperations (Deletable (Delete), Insertable (Insert))
+import           Extern.AVLProofs     (AVL (AVL), ProofIsAVLDelete,
+                                       ProofIsAVLInsert, ProofIsBSTDelete,
+                                       ProofIsBSTInsert)
+import           GHC.TypeLits         (type (-), CmpNat, Nat)
+import           ITree                (ITree (EmptyITree, ForkITree),
+                                       Tree (EmptyTree, ForkTree))
+import           Node                 (Node (), mkNode)
+import           Prelude              (Bool (False, True), Char, Ordering (EQ),
+                                       undefined, ($))
+import           Unsafe.Coerce        (unsafeCoerce)
 
 proxyPred :: Proxy n -> Proxy (n - 1)
 proxyPred = undefined

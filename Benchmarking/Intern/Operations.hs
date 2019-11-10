@@ -1,24 +1,28 @@
-{-# LANGUAGE DataKinds #-}
-{-# LANGUAGE FlexibleInstances #-}
-{-# LANGUAGE KindSignatures #-}
+{-# LANGUAGE DataKinds             #-}
+{-# LANGUAGE ExplicitNamespaces    #-}
+{-# LANGUAGE FlexibleContexts      #-}
+{-# LANGUAGE FlexibleInstances     #-}
+{-# LANGUAGE KindSignatures        #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
-{-# LANGUAGE ScopedTypeVariables #-}
-{-# LANGUAGE TypeFamilies #-}
-{-# LANGUAGE TypeOperators #-}
-{-# LANGUAGE UndecidableInstances #-}
-{-# LANGUAGE Trustworthy #-}
+{-# LANGUAGE ScopedTypeVariables   #-}
+{-# LANGUAGE Trustworthy           #-}
+{-# LANGUAGE TypeFamilies          #-}
+{-# LANGUAGE TypeOperators         #-}
+{-# LANGUAGE UndecidableInstances  #-}
 
 module Benchmarking.Intern.Operations where
 
-import           Prelude (Char, Bool(True,False), Ordering(EQ), undefined, ($))
-import           Data.Proxy (Proxy(Proxy))
-import           Data.Type.Equality (type (==))
-import           Node (Node, mkNode)
-import           ITree (Tree(EmptyTree,ForkTree))
-import           Intern.AVL (insertAVL, deleteAVL)
-import           Intern.AVLOperations (Insertable(Insert), AVL(EmptyAVL,ForkAVL), Deletable(Delete))
-import           GHC.TypeLits (Nat, type (-), CmpNat)
-import           Unsafe.Coerce (unsafeCoerce)
+import           Data.Proxy           (Proxy (Proxy))
+import           Data.Type.Equality   (type (==))
+import           GHC.TypeLits         (type (-), CmpNat, Nat)
+import           Intern.AVL           (deleteAVL, insertAVL)
+import           Intern.AVLOperations (AVL (EmptyAVL, ForkAVL),
+                                       Deletable (Delete), Insertable (Insert))
+import           ITree                (Tree (EmptyTree, ForkTree))
+import           Node                 (Node, mkNode)
+import           Prelude              (Bool (False, True), Char, Ordering (EQ),
+                                       undefined, ($))
+import           Unsafe.Coerce        (unsafeCoerce)
 
 proxyPred :: Proxy n -> Proxy (n - 1)
 proxyPred = undefined
