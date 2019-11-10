@@ -6,21 +6,66 @@
 {-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE TypeOperators #-}
 {-# LANGUAGE UndecidableInstances #-}
+{-# LANGUAGE Trustworthy #-}
 
-module Benchmarking.Extern.Operations where
+module Benchmarking.FullExtern.Operations where
 
-import           Data.Proxy
-import           Data.Type.Equality
-import           Node
-import           ITree
-import           Extern.AVL
-import           Extern.AVLOperations
-import           Extern.AVLProofs
-import           GHC.TypeLits
-import           Unsafe.Coerce
+import           Data.Proxy (Proxy(Proxy))
+import           Data.Type.Equality (type (==), gcastWith, (:~:)(Refl))
+import           Node (Node, mkNode)
+import           ITree (Tree(EmptyTree,ForkTree), ITree(EmptyITree,ForkITree))
+import           Extern.AVLOperations (Insertable(Insert,insert), Deletable(Delete,delete), BalancedHeights, Height)
+import           Extern.AVLProofs (AVL(AVL), IsAVL)
+import           Extern.BSTProofs (IsBST, LtN, GtN)
+import           GHC.TypeLits (Nat, type (-), CmpNat)
+import           Unsafe.Coerce (unsafeCoerce)
 
 proxyPred :: Proxy n -> Proxy (n - 1)
 proxyPred = undefined
+
+class ProofLtN (t::Tree) (n::Nat) where
+  proofLtN :: ITree t -> Proxy n -> LtN t n :~: 'True
+instance ProofLtN 'EmptyTree n where
+  proofLtN EmptyITree _ = Refl
+instance ( ProofLtN l n, ProofLtN r n, CmpNat n1 n ~ 'LT) =>
+  ProofLtN ('ForkTree l (Node n1 a) r) n where
+  proofLtN (ForkITree l _ r) pn =
+    gcastWith (proofLtN r pn) $
+      gcastWith (proofLtN l pn) Refl
+
+class ProofGtN (t::Tree) (n::Nat) where
+  proofGtN :: ITree t -> Proxy n -> GtN t n :~: 'True
+instance ProofGtN 'EmptyTree n where
+  proofGtN EmptyITree _ = Refl
+instance ( ProofGtN l n, ProofGtN r n, CmpNat n1 n ~ 'GT) =>
+  ProofGtN ('ForkTree l (Node n1 a) r) n where
+  proofGtN (ForkITree l _ r) pn =
+    gcastWith (proofGtN r pn) $
+      gcastWith (proofGtN l pn) Refl
+
+class ProofIsBST (t::Tree) where
+  proofIsBST :: ITree t -> IsBST t :~: 'True
+instance ProofIsBST 'EmptyTree where
+  proofIsBST EmptyITree = Refl
+instance (ProofLtN l n, ProofGtN r n, ProofIsBST l, ProofIsBST r) =>
+  ProofIsBST ('ForkTree l (Node n a) r) where
+  proofIsBST (ForkITree l _ r) =
+    gcastWith (proofLtN l (Proxy::Proxy n)) $
+      gcastWith (proofGtN r (Proxy::Proxy n)) $
+        gcastWith (proofIsBST r) $
+          gcastWith (proofIsBST l) Refl
+
+class ProofIsAVL (t::Tree) where
+  proofIsAVL :: ITree t -> IsAVL t :~: 'True
+instance ProofIsAVL 'EmptyTree where
+  proofIsAVL EmptyITree = Refl
+instance (BalancedHeights (Height l) (Height r) ~ 'True, ProofLtN l n, ProofGtN r n, ProofIsAVL l, ProofIsAVL r) =>
+  ProofIsAVL ('ForkTree l (Node n a) r) where
+  proofIsAVL (ForkITree l _ r) =
+    gcastWith (proofLtN l (Proxy::Proxy n)) $
+      gcastWith (proofGtN r (Proxy::Proxy n)) $
+        gcastWith (proofIsAVL r) $
+          gcastWith (proofIsAVL l) Refl
 
 type family InsertN (n::Nat) :: Tree where
   InsertN 0 = 'EmptyTree
@@ -28,16 +73,19 @@ type family InsertN (n::Nat) :: Tree where
 
 class InsertNClass (n::Nat) (b::Bool) where
   insertN :: Proxy n -> Proxy b -> AVL (InsertN n)
-instance InsertNClass 0 'True where
-  insertN _ _ = AVL EmptyITree
-instance (InsertNClass (n - 1) (CmpNat (n - 1) 0 == 'EQ), Insertable n Char (InsertN (n - 1)), ProofIsAVLInsert n Char (InsertN (n - 1)), ProofIsBSTInsert n Char (InsertN (n - 1))) =>
-  InsertNClass n 'False where
-  insertN pn _ = unsafeCoerce $ insertAVL (mkNode pn 'a') (insertN (proxyPred pn) (Proxy::Proxy (CmpNat (n - 1) 0 == 'EQ)))
+instance (ProofIsBST (InsertN n), ProofIsAVL (InsertN n), InsertNClass' n b) =>
+  InsertNClass n b where
+  insertN pn pb = gcastWith (proofIsAVL t) $ gcastWith (proofIsBST t) $ AVL t
+                    where
+                      t = insertN' pn pb
 
-t1 = insertN (Proxy::Proxy 0) (Proxy::Proxy 'True)
-t2 = insertN (Proxy::Proxy 1) (Proxy::Proxy 'False)
-t3 = insertN (Proxy::Proxy 9) (Proxy::Proxy 'False)
-t4 = insertAVL (mkNode (Proxy::Proxy 10) 'a') t3
+class InsertNClass' (n::Nat) (b::Bool) where
+  insertN' :: Proxy n -> Proxy b -> ITree (InsertN n)
+instance InsertNClass' 0 'True where
+  insertN' _ _ = EmptyITree
+instance (InsertNClass' (n - 1) (CmpNat (n - 1) 0 == 'EQ), Insertable n Char (InsertN (n - 1))) =>
+  InsertNClass' n 'False where
+  insertN' pn _ = unsafeCoerce $ insert (mkNode pn 'a') (insertN' (proxyPred pn) (Proxy::Proxy (CmpNat (n - 1) 0 == 'EQ)))
 
 
 type family DeleteN (n::Nat) (t::Tree) where
@@ -46,23 +94,17 @@ type family DeleteN (n::Nat) (t::Tree) where
 
 class DeleteNClass (n::Nat) (t::Tree) where
   deleteN :: Proxy n -> AVL t -> AVL (DeleteN n t)
-instance DeleteNClass 0 'EmptyTree where
-  deleteN _  (AVL EmptyITree)    = AVL EmptyITree
-instance (DeleteNClass (n - 1) (Delete n ('ForkTree l (Node n1 a) r)), Deletable n ('ForkTree l (Node n1 a) r),
-  ProofIsAVLDelete n ('ForkTree l (Node n1 a) r), ProofIsBSTDelete n ('ForkTree l (Node n1 a) r)) =>
+instance (ProofIsAVL (DeleteN (n - 1) (Delete n ('ForkTree l (Node n1 a) r))), ProofIsBST (DeleteN (n - 1) (Delete n ('ForkTree l (Node n1 a) r))),
+  Deletable n ('ForkTree l (Node n1 a) r), DeleteNClass' (n - 1) (Delete n ('ForkTree l (Node n1 a) r))) =>
   DeleteNClass n ('ForkTree l (Node n1 a) r) where
-  deleteN pn t@(AVL ForkITree{}) = deleteN (proxyPred pn) (deleteAVL pn t)
+  deleteN pn (AVL t@ForkITree{}) = gcastWith (proofIsAVL t') $ gcastWith (proofIsBST t') $ AVL t'
+                                    where
+                                      t' = deleteN' pn t
 
-e = deleteN (Proxy::Proxy 10) t4
--- t5' = deleteAVL (Proxy::Proxy 10) t4
--- t5 = deleteAVL (Proxy::Proxy 9) t5'
--- t6 = deleteAVL (Proxy::Proxy 8) t5
--- t7 = deleteAVL (Proxy::Proxy 7) t6
--- t8 = deleteAVL (Proxy::Proxy 6) t7
--- t9 = deleteAVL (Proxy::Proxy 5) t8
--- t10 = deleteAVL (Proxy::Proxy 4) t9
--- t11 = deleteAVL (Proxy::Proxy 3) t10
--- t12 = deleteAVL (Proxy::Proxy 2) t11
--- t13 = deleteAVL (Proxy::Proxy 1) t12
--- t14 = deleteAVL (Proxy::Proxy 0) t13
--- t15 = deleteAVL (Proxy::Proxy ) t14
+class DeleteNClass' (n::Nat) (t::Tree) where
+  deleteN' :: Proxy n -> ITree t -> ITree (DeleteN n t)
+instance DeleteNClass' 0 'EmptyTree where
+  deleteN' _  EmptyITree    = EmptyITree
+instance (DeleteNClass' (n - 1) (Delete n ('ForkTree l (Node n1 a) r)), Deletable n ('ForkTree l (Node n1 a) r)) =>
+  DeleteNClass' n ('ForkTree l (Node n1 a) r) where
+  deleteN' pn t@ForkITree{} = deleteN' (proxyPred pn) (delete pn t)
