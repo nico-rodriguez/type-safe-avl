@@ -1,7 +1,8 @@
 SHELL = /bin/bash
 
 GHC = ghc
-GHC_FLAGS = --make -prof -fprof-auto -rtsopts -O2 -outputdir output_dir -Weverything
+GHC_DEBUG_FLAGS = -Wno-safe -Wno-unsafe
+GHC_FLAGS = --make -prof -fprof-auto -rtsopts -O2 -outputdir output_dir -Weverything $(GHC_DEBUG_FLAGS)
 
 BENCHMARKING_DIR = ./Benchmarking
 EXTERN_DIR = ./Extern
