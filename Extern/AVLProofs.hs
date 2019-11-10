@@ -1,27 +1,36 @@
 {-# LANGUAGE DataKinds             #-}
+{-# LANGUAGE ExplicitNamespaces    #-}
+{-# LANGUAGE FlexibleContexts      #-}
 {-# LANGUAGE FlexibleInstances     #-}
 {-# LANGUAGE GADTs                 #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE Safe                  #-}
 {-# LANGUAGE ScopedTypeVariables   #-}
 {-# LANGUAGE TypeFamilies          #-}
 {-# LANGUAGE TypeOperators         #-}
 {-# LANGUAGE UndecidableInstances  #-}
-{-# LANGUAGE Safe #-}
 
 module Extern.AVLProofs where
 
-import           Prelude (Show(show), Bool(True), Ordering(EQ,LT,GT), (++), ($))
-import           Data.Kind (Type)
-import           Data.Proxy (Proxy(Proxy))
-import           Data.Type.Bool (type (&&), If)
-import           Data.Type.Equality ((:~:)( Refl ), gcastWith)
-import           Extern.AVLOperations (BalancedHeights, Height, Insert, Insert', UnbalancedState, Balance, US(NotUnbalanced,LeftUnbalanced,RightUnbalanced), Balance', BalancedState, BS(LeftHeavy,Balanced,RightHeavy), Rotate, Delete, Delete')
-import           Extern.BSTOperations (MaxKey, MaxKeyDeletable(),
-                                       MaxKeyDelete, MaxValue(), Maxable)
+import           Data.Kind            (Type)
+import           Data.Proxy           (Proxy (Proxy))
+import           Data.Type.Bool       (type (&&), If)
+import           Data.Type.Equality   ((:~:) (Refl), gcastWith)
+import           Extern.AVLOperations (BS (Balanced, LeftHeavy, RightHeavy),
+                                       Balance, Balance', BalancedHeights,
+                                       BalancedState, Delete, Delete', Height,
+                                       Insert, Insert', Rotate,
+                                       US (LeftUnbalanced, NotUnbalanced, RightUnbalanced),
+                                       UnbalancedState)
+import           Extern.BSTOperations (MaxKey, MaxKeyDeletable (), MaxKeyDelete,
+                                       MaxValue (), Maxable)
 import           Extern.BSTProofs     (GtN, IsBST, LtN)
-import           GHC.TypeLits (Nat, CmpNat, type (+), type (<=?))
-import           ITree (Tree(EmptyTree,ForkTree), ITree(EmptyITree,ForkITree))
-import           Node (Node(Node))
+import           GHC.TypeLits         (type (+), type (<=?), CmpNat, Nat)
+import           ITree                (ITree (EmptyITree, ForkITree),
+                                       Tree (EmptyTree, ForkTree))
+import           Node                 (Node (Node))
+import           Prelude              (Bool (True), Ordering (EQ, GT, LT),
+                                       Show (show), ($), (++))
 
 type family IsAVL (t :: Tree) :: Bool where
   IsAVL 'EmptyTree                   = 'True

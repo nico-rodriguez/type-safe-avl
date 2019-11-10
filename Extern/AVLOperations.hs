@@ -1,24 +1,30 @@
 {-# LANGUAGE DataKinds             #-}
+{-# LANGUAGE ExplicitNamespaces    #-}
+{-# LANGUAGE FlexibleContexts      #-}
 {-# LANGUAGE FlexibleInstances     #-}
-{-# LANGUAGE KindSignatures #-}
+{-# LANGUAGE KindSignatures        #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE Safe                  #-}
 {-# LANGUAGE ScopedTypeVariables   #-}
 {-# LANGUAGE TypeFamilies          #-}
 {-# LANGUAGE TypeOperators         #-}
 {-# LANGUAGE UndecidableInstances  #-}
-{-# LANGUAGE Safe #-}
 
 module Extern.AVLOperations where
 
-import           Prelude (Bool(True,False), Show, Ordering(EQ,LT,GT), ($))
-import           Data.Kind (Type)
-import           Data.Proxy (Proxy(Proxy))
-import           Data.Type.Bool (If)
+import           Data.Kind            (Type)
+import           Data.Proxy           (Proxy (Proxy))
+import           Data.Type.Bool       (If)
 import           Extern.BSTOperations (MaxKey, MaxKeyDeletable (maxKeyDelete),
-                                       MaxKeyDelete, MaxValue (maxValue), Maxable)
-import           GHC.TypeLits (Nat, type (<=?), type (+), type (-), CmpNat)
-import           ITree (Tree(EmptyTree,ForkTree), ITree(EmptyITree,ForkITree))
-import           Node (Node(Node))
+                                       MaxKeyDelete, MaxValue (maxValue),
+                                       Maxable)
+import           GHC.TypeLits         (type (+), type (-), type (<=?), CmpNat,
+                                       Nat)
+import           ITree                (ITree (EmptyITree, ForkITree),
+                                       Tree (EmptyTree, ForkTree))
+import           Node                 (Node (Node))
+import           Prelude              (Bool (False, True),
+                                       Ordering (EQ, GT, LT), Show, ($))
 
 
 type family Max (n1 :: Nat) (n2 :: Nat) :: Nat where

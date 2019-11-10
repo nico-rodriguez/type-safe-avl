@@ -1,6 +1,7 @@
 {-# LANGUAGE DataKinds             #-}
 {-# LANGUAGE GADTs                 #-}
-{-# LANGUAGE Safe #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE Safe                  #-}
 
 module Intern.AVL (
   AVL(EmptyAVL,ForkAVL),
@@ -9,11 +10,14 @@ module Intern.AVL (
   deleteAVL
 ) where
 
-import           Data.Proxy (Proxy)
-import           Intern.AVLOperations (AVL(EmptyAVL,ForkAVL), Insertable(Insert,insert), Member, Lookupable(lookup), Deletable(Delete,delete))
-import           ITree  (Tree(ForkTree))
-import           Node (Node)
-import           Prelude (Bool(True))
+import           Data.Proxy           (Proxy)
+import           Intern.AVLOperations (AVL (EmptyAVL, ForkAVL),
+                                       Deletable (Delete, delete),
+                                       Insertable (Insert, insert),
+                                       Lookupable (lookup), Member)
+import           ITree                (Tree (ForkTree))
+import           Node                 (Node)
+import           Prelude              (Bool (True))
 
 insertAVL :: (Insertable x a t) =>
   Node x a -> AVL t -> AVL (Insert x a t)

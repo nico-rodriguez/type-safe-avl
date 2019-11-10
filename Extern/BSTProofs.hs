@@ -1,24 +1,29 @@
 {-# LANGUAGE DataKinds             #-}
+{-# LANGUAGE ExplicitNamespaces    #-}
+{-# LANGUAGE FlexibleContexts      #-}
 {-# LANGUAGE FlexibleInstances     #-}
 {-# LANGUAGE GADTs                 #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE Safe                  #-}
 {-# LANGUAGE ScopedTypeVariables   #-}
 {-# LANGUAGE TypeFamilies          #-}
 {-# LANGUAGE TypeOperators         #-}
 {-# LANGUAGE UndecidableInstances  #-}
-{-# LANGUAGE Safe #-}
 
 module Extern.BSTProofs where
 
-import           Prelude (Show(show), Bool(True), Ordering(LT,GT,EQ), (++))
-import           Data.Kind (Type)
-import           Data.Proxy (Proxy(Proxy))
-import           Data.Type.Bool (type (&&))
-import           Data.Type.Equality (type (==), (:~:)( Refl ), gcastWith)
-import           Extern.BSTOperations (Insert, Insert', Delete, Delete', MaxKeyDeletable, Maxable, MaxKeyDelete, MaxKey)
-import           GHC.TypeLits (Nat, CmpNat)
-import           ITree (Tree(EmptyTree,ForkTree), ITree(EmptyITree,ForkITree))
-import           Node (Node(Node))
+import           Data.Kind            (Type)
+import           Data.Proxy           (Proxy (Proxy))
+import           Data.Type.Bool       (type (&&))
+import           Data.Type.Equality   ((:~:) (Refl), type (==), gcastWith)
+import           Extern.BSTOperations (Delete, Delete', Insert, Insert', MaxKey,
+                                       MaxKeyDeletable, MaxKeyDelete, Maxable)
+import           GHC.TypeLits         (CmpNat, Nat)
+import           ITree                (ITree (EmptyITree, ForkITree),
+                                       Tree (EmptyTree, ForkTree))
+import           Node                 (Node (Node))
+import           Prelude              (Bool (True), Ordering (EQ, GT, LT),
+                                       Show (show), (++))
 
 -- | Check if all elements of the tree are strictly less than x
 type family LtN (l :: Tree) (x :: Nat) :: Bool where

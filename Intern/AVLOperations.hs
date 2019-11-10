@@ -1,23 +1,27 @@
 {-# LANGUAGE DataKinds             #-}
+{-# LANGUAGE ExplicitNamespaces    #-}
+{-# LANGUAGE FlexibleContexts      #-}
 {-# LANGUAGE FlexibleInstances     #-}
 {-# LANGUAGE GADTs                 #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE Safe                  #-}
 {-# LANGUAGE ScopedTypeVariables   #-}
 {-# LANGUAGE TypeFamilies          #-}
 {-# LANGUAGE TypeOperators         #-}
 {-# LANGUAGE UndecidableInstances  #-}
-{-# LANGUAGE Safe #-}
 
 module Intern.AVLOperations where
 
-import           Prelude(Show(show), Bool(True,False), Ordering(LT,GT,EQ), String, (++), ($))
-import           Data.Kind (Type)
-import           Data.Proxy (Proxy(Proxy))
-import           Data.Type.Bool (type (&&), If)
-import           Data.Type.Equality (type (==), (:~:)( Refl ), gcastWith)
-import           GHC.TypeLits (Nat, CmpNat, type (<=?), type (+), type (-))
-import           ITree (Tree(EmptyTree,ForkTree))
-import           Node (Node(Node), getValue)
+import           Data.Kind          (Type)
+import           Data.Proxy         (Proxy (Proxy))
+import           Data.Type.Bool     (type (&&), If)
+import           Data.Type.Equality ((:~:) (Refl), type (==), gcastWith)
+import           GHC.TypeLits       (type (+), type (-), type (<=?), CmpNat,
+                                     Nat)
+import           ITree              (Tree (EmptyTree, ForkTree))
+import           Node               (Node (Node), getValue)
+import           Prelude            (Bool (False, True), Ordering (EQ, GT, LT),
+                                     Show (show), String, ($), (++))
 
 -- | Check if all elements of the tree are strictly less than x
 type family LtN (l :: Tree) (x :: Nat) :: Bool where

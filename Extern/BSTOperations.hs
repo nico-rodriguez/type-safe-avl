@@ -1,23 +1,27 @@
 {-# LANGUAGE DataKinds             #-}
+{-# LANGUAGE ExplicitNamespaces    #-}
+{-# LANGUAGE FlexibleContexts      #-}
 {-# LANGUAGE FlexibleInstances     #-}
-{-# LANGUAGE KindSignatures #-}
+{-# LANGUAGE KindSignatures        #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE Safe                  #-}
 {-# LANGUAGE ScopedTypeVariables   #-}
 {-# LANGUAGE TypeFamilies          #-}
 {-# LANGUAGE TypeOperators         #-}
 {-# LANGUAGE UndecidableInstances  #-}
-{-# LANGUAGE Safe #-}
 
 module Extern.BSTOperations where
 
-import Prelude (Show, Ordering(EQ,LT,GT),Bool(False,True))
-import           Data.Kind (Type)
-import           Data.Proxy (Proxy(Proxy))
-import           Data.Type.Bool (If)
+import           Data.Kind          (Type)
+import           Data.Proxy         (Proxy (Proxy))
+import           Data.Type.Bool     (If)
 import           Data.Type.Equality (type (==))
-import           GHC.TypeLits (Nat, CmpNat)
-import           ITree (Tree(EmptyTree,ForkTree), ITree(EmptyITree,ForkITree))
-import           Node (Node(Node), getValue)
+import           GHC.TypeLits       (CmpNat, Nat)
+import           ITree              (ITree (EmptyITree, ForkITree),
+                                     Tree (EmptyTree, ForkTree))
+import           Node               (Node (Node), getValue)
+import           Prelude            (Bool (False, True), Ordering (EQ, GT, LT),
+                                     Show)
 
 class Insertable (x :: Nat) (a :: Type) (t :: Tree) where
   type Insert (x :: Nat) (a :: Type) (t :: Tree) :: Tree
