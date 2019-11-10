@@ -1,5 +1,6 @@
 {-# LANGUAGE DataKinds             #-}
 {-# LANGUAGE GADTs                 #-}
+{-# LANGUAGE Safe #-}
 
 module Extern.AVL (
   AVL(..),
@@ -8,14 +9,14 @@ module Extern.AVL (
   deleteAVL
 ) where
 
-import           Data.Proxy
-import           Data.Type.Equality
-import           Extern.AVLOperations
-import           Extern.AVLProofs
-import           Extern.BSTOperations (Lookupable (..), Member)
-import           ITree
-import           Node
-import           Prelude              hiding (lookup)
+import           Data.Proxy (Proxy)
+import           Data.Type.Equality (gcastWith)
+import           Extern.AVLOperations (Insertable(Insert, insert), Deletable(Delete, delete))
+import           Extern.AVLProofs (ProofIsBSTInsert(proofIsBSTInsert), ProofIsAVLInsert(proofIsAVLInsert), AVL(AVL), ProofIsBSTDelete(proofIsBSTDelete), ProofIsAVLDelete(proofIsAVLDelete))
+import           Extern.BSTOperations (Lookupable(lookup), Member)
+import           ITree (Tree(ForkTree))
+import           Node (Node)
+import           Prelude (Bool(True), ($))
 
 insertAVL :: (Insertable x a t, ProofIsBSTInsert x a t, ProofIsAVLInsert x a t) =>
   Node x a -> AVL t -> AVL (Insert x a t)

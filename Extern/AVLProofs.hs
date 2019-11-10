@@ -6,24 +6,26 @@
 {-# LANGUAGE TypeFamilies          #-}
 {-# LANGUAGE TypeOperators         #-}
 {-# LANGUAGE UndecidableInstances  #-}
+{-# LANGUAGE Safe #-}
 
 module Extern.AVLProofs where
 
-import           Data.Kind
-import           Data.Proxy
-import           Data.Type.Bool
-import           Data.Type.Equality
-import           Extern.AVLOperations
-import           Extern.BSTOperations (MaxKey, MaxKeyDeletable (..),
-                                       MaxKeyDelete, MaxValue (..), Maxable)
+import           Prelude (Show(show), Bool(True), Ordering(EQ,LT,GT), (++), ($))
+import           Data.Kind (Type)
+import           Data.Proxy (Proxy(Proxy))
+import           Data.Type.Bool (type (&&), If)
+import           Data.Type.Equality ((:~:)( Refl ), gcastWith)
+import           Extern.AVLOperations (BalancedHeights, Height, Insert, Insert', UnbalancedState, Balance, US(NotUnbalanced,LeftUnbalanced,RightUnbalanced), Balance', BalancedState, BS(LeftHeavy,Balanced,RightHeavy), Rotate, Delete, Delete')
+import           Extern.BSTOperations (MaxKey, MaxKeyDeletable(),
+                                       MaxKeyDelete, MaxValue(), Maxable)
 import           Extern.BSTProofs     (GtN, IsBST, LtN)
-import           GHC.TypeLits
-import           ITree
-import           Node
+import           GHC.TypeLits (Nat, CmpNat, type (+), type (<=?))
+import           ITree (Tree(EmptyTree,ForkTree), ITree(EmptyITree,ForkITree))
+import           Node (Node(Node))
 
 type family IsAVL (t :: Tree) :: Bool where
-  IsAVL 'EmptyTree = 'True
-  IsAVL ('ForkTree l (Node n a) r) =
+  IsAVL 'EmptyTree                   = 'True
+  IsAVL ('ForkTree l (Node _n _a) r) =
     BalancedHeights (Height l) (Height r) && IsAVL l && IsAVL r
 
 data AVL :: Tree -> Type where
@@ -220,7 +222,7 @@ instance (LtN ll ln ~ 'True, LtN lrr n ~ 'True, CmpNat ln lrn ~ 'LT, LtN ll lrn 
   proofLtNRotate _ _ _ _ = Refl
 -- | Right-Left case (First right rotation, then left rotation)
 instance (LtN l n ~ 'True, LtN rlr rn ~ 'True, CmpNat n rln ~ 'LT, LtN l rln ~ 'True, LtN rll rln ~ 'True,
-  CmpNat rln n ~ 'LT, CmpNat n1 n ~ 'LT, LtN rll n ~ 'True, CmpNat rn n ~ 'LT, LtN rll n ~ 'True, LtN rr n ~ 'True, LtN rlr n ~ 'True) =>
+  CmpNat rln n ~ 'LT, CmpNat n1 n ~ 'LT, LtN rll n ~ 'True, CmpNat rn n ~ 'LT, LtN rr n ~ 'True, LtN rlr n ~ 'True) =>
   ProofLtNRotate ('ForkTree l (Node n1 a) ('ForkTree ('ForkTree rll (Node rln rla) rlr) (Node rn ra) rr)) n 'RightUnbalanced 'LeftHeavy where
   proofLtNRotate _ _ _ _ = Refl
 
@@ -266,7 +268,7 @@ instance (CmpNat lrn n ~ 'GT, CmpNat ln n ~ 'GT, GtN ll n ~ 'True, GtN lrl n ~ '
   ProofGtNRotate ('ForkTree ('ForkTree ll (Node ln la) ('ForkTree lrl (Node lrn lra) lrr)) (Node n1 a) r) n 'LeftUnbalanced 'RightHeavy where
   proofGtNRotate _ _ _ _ = Refl
 -- | Right-Left case (First right rotation, then left rotation)
-instance (CmpNat rln n ~ 'GT, CmpNat n1 n ~ 'GT, GtN rll n ~ 'True, CmpNat rn n ~ 'GT, GtN rll n ~ 'True, GtN rr n ~ 'True, GtN rlr n ~ 'True, GtN l n ~ 'True) =>
+instance (CmpNat rln n ~ 'GT, CmpNat n1 n ~ 'GT, GtN rll n ~ 'True, CmpNat rn n ~ 'GT, GtN rr n ~ 'True, GtN rlr n ~ 'True, GtN l n ~ 'True) =>
   ProofGtNRotate ('ForkTree l (Node n1 a) ('ForkTree ('ForkTree rll (Node rln rla) rlr) (Node rn ra) rr)) n 'RightUnbalanced 'LeftHeavy where
   proofGtNRotate _ _ _ _ = Refl
 

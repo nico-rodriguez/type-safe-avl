@@ -6,31 +6,33 @@
 {-# LANGUAGE TypeFamilies          #-}
 {-# LANGUAGE TypeOperators         #-}
 {-# LANGUAGE UndecidableInstances  #-}
+{-# LANGUAGE Safe #-}
 
 module Extern.BSTProofs where
 
-import           Data.Kind
-import           Data.Proxy
-import           Data.Type.Bool
-import           Data.Type.Equality
-import           Extern.BSTOperations
-import           GHC.TypeLits
-import           ITree
-import           Node
+import           Prelude (Show(show), Bool(True), Ordering(LT,GT,EQ), (++))
+import           Data.Kind (Type)
+import           Data.Proxy (Proxy(Proxy))
+import           Data.Type.Bool (type (&&))
+import           Data.Type.Equality (type (==), (:~:)( Refl ), gcastWith)
+import           Extern.BSTOperations (Insert, Insert', Delete, Delete', MaxKeyDeletable, Maxable, MaxKeyDelete, MaxKey)
+import           GHC.TypeLits (Nat, CmpNat)
+import           ITree (Tree(EmptyTree,ForkTree), ITree(EmptyITree,ForkITree))
+import           Node (Node(Node))
 
 -- | Check if all elements of the tree are strictly less than x
 type family LtN (l :: Tree) (x :: Nat) :: Bool where
-  LtN 'EmptyTree        x = 'True
-  LtN ('ForkTree l (Node n a) r) x = CmpNat n x == 'LT && LtN l x && LtN r x
+  LtN 'EmptyTree                 _x = 'True
+  LtN ('ForkTree l (Node n _a) r) x = CmpNat n x == 'LT && LtN l x && LtN r x
 
 -- | Check if all elements of the tree are strictly greater than x
 type family GtN (r :: Tree) (x :: Nat) :: Bool where
-  GtN 'EmptyTree        x = 'True
-  GtN ('ForkTree l (Node n a) r) x = CmpNat n x == 'GT && GtN l x && GtN r x
+  GtN 'EmptyTree                 _x = 'True
+  GtN ('ForkTree l (Node n _a) r) x = CmpNat n x == 'GT && GtN l x && GtN r x
 
 type family IsBST (t :: Tree) :: Bool where
-  IsBST 'EmptyTree = 'True
-  IsBST ('ForkTree l (Node n a) r) = IsBST l && IsBST r && LtN l n && GtN r n
+  IsBST 'EmptyTree                  = 'True
+  IsBST ('ForkTree l (Node n _a) r) = IsBST l && IsBST r && LtN l n && GtN r n
 
 data BST :: Tree -> Type where
   BST :: (IsBST t ~ 'True) => ITree t -> BST t

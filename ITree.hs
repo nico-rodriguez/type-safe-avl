@@ -9,11 +9,13 @@
 {-# LANGUAGE TypeFamilies          #-}
 {-# LANGUAGE TypeOperators         #-}
 {-# LANGUAGE UndecidableInstances  #-}
+{-# LANGUAGE Safe #-}
 
 module ITree where
 
-import           Data.Kind
-import           Node
+import           Prelude (Show(show), String, (++))
+import           Data.Kind (Type)
+import           Node (Node(Node))
 
 data Tree :: Type where
   EmptyTree :: Tree

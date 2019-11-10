@@ -3,12 +3,14 @@
 {-# LANGUAGE PolyKinds             #-}
 {-# LANGUAGE RankNTypes            #-}
 {-# LANGUAGE StandaloneDeriving    #-}
+{-# LANGUAGE Safe #-}
 
 module Node where
 
-import           Data.Kind
-import           Data.Proxy
-import           GHC.TypeLits
+import           Prelude (Show, Char)
+import           Data.Kind (Type)
+import           Data.Proxy (Proxy(Proxy))
+import           GHC.TypeLits (Nat)
 
 data Node :: Nat -> Type -> Type where
   Node :: a -> Node k a

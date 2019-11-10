@@ -6,16 +6,18 @@
 {-# LANGUAGE TypeFamilies          #-}
 {-# LANGUAGE TypeOperators         #-}
 {-# LANGUAGE UndecidableInstances  #-}
+{-# LANGUAGE Safe #-}
 
 module Extern.BSTOperations where
 
-import           Data.Kind
-import           Data.Proxy
-import           Data.Type.Bool
-import           Data.Type.Equality
-import           GHC.TypeLits
-import           ITree
-import           Node
+import Prelude (Show, Ordering(EQ,LT,GT),Bool(False,True))
+import           Data.Kind (Type)
+import           Data.Proxy (Proxy(Proxy))
+import           Data.Type.Bool (If)
+import           Data.Type.Equality (type (==))
+import           GHC.TypeLits (Nat, CmpNat)
+import           ITree (Tree(EmptyTree,ForkTree), ITree(EmptyITree,ForkITree))
+import           Node (Node(Node), getValue)
 
 class Insertable (x :: Nat) (a :: Type) (t :: Tree) where
   type Insert (x :: Nat) (a :: Type) (t :: Tree) :: Tree
@@ -31,7 +33,7 @@ class Insertable' (x :: Nat) (a :: Type) (t :: Tree) (o :: Ordering) where
   type Insert' (x :: Nat) (a :: Type) (t :: Tree) (o :: Ordering) :: Tree
   insert' :: Node x a -> ITree t -> Proxy o -> ITree (Insert x a t)
 instance (Show a, CmpNat x n ~ 'EQ) => Insertable' x a ('ForkTree l (Node n a1) r) 'EQ where
-  type Insert' x a ('ForkTree l (Node n a1) r) 'EQ = 'ForkTree l (Node n a) r
+  type Insert' _x a ('ForkTree l (Node n _a1) r) 'EQ = 'ForkTree l (Node n a) r
   insert' (Node a) (ForkITree l (Node _) r) _ = ForkITree l (Node a::Node n a) r
 instance (Show a, CmpNat x n ~ 'LT) => Insertable' x a ('ForkTree 'EmptyTree (Node n a1) r) 'LT where
   type Insert' x a ('ForkTree 'EmptyTree (Node n a1) r) 'LT = 'ForkTree ('ForkTree 'EmptyTree (Node x a) 'EmptyTree) (Node n a1) r
@@ -47,8 +49,8 @@ instance (CmpNat x n ~ 'GT, r ~ 'ForkTree rl (Node rn rna) rr, Insertable' x a r
   insert' (Node a) (ForkITree l n r@ForkITree{}) _ = ForkITree l n (insert' (Node a::Node x a) r (Proxy::Proxy (CmpNat x rn)))
 
 type family Member (x :: Nat) (t :: Tree) :: Bool where
-  Member x 'EmptyTree = 'False
-  Member x ('ForkTree l (Node n a) r) =
+  Member _x 'EmptyTree = 'False
+  Member x ('ForkTree l (Node n _a) r) =
     (If (CmpNat x n == 'EQ)
       'True
       (If (CmpNat x n == 'LT)
@@ -91,7 +93,7 @@ class MaxKeyDeletable (t :: Tree) where
   maxKeyDelete :: (t ~ 'ForkTree l (Node n a1) r) =>
     ITree t -> ITree (MaxKeyDelete t)
 instance MaxKeyDeletable ('ForkTree l (Node n a1) 'EmptyTree) where
-  type MaxKeyDelete ('ForkTree l (Node n a1) 'EmptyTree) = l
+  type MaxKeyDelete ('ForkTree l (Node _n _a1) 'EmptyTree) = l
   maxKeyDelete (ForkITree l (Node _) EmptyITree) = l
 instance MaxKeyDeletable ('ForkTree rl (Node rn ra) rr) =>
   MaxKeyDeletable ('ForkTree l (Node n a1) ('ForkTree rl (Node rn ra) rr)) where
@@ -106,20 +108,20 @@ class Maxable (t :: Tree) where
   maxValue :: (t ~ 'ForkTree l (Node n a1) r, a ~ MaxValue t) =>
     ITree t -> a
 instance Maxable ('ForkTree l (Node n a1) 'EmptyTree) where
-  type MaxKey ('ForkTree l (Node n a1) 'EmptyTree) = n
-  type MaxValue ('ForkTree l (Node n a1) 'EmptyTree) = a1
+  type MaxKey ('ForkTree _l (Node n _a1) 'EmptyTree) = n
+  type MaxValue ('ForkTree _l (Node _n a1) 'EmptyTree) = a1
   maxValue (ForkITree _ (Node a1) EmptyITree) = a1
 instance Maxable ('ForkTree rl (Node rn ra) rr) =>
   Maxable ('ForkTree l (Node n a1) ('ForkTree rl (Node rn ra) rr)) where
-  type MaxKey ('ForkTree l (Node n a1) ('ForkTree rl (Node rn ra) rr)) = MaxKey ('ForkTree rl (Node rn ra) rr)
-  type MaxValue ('ForkTree l (Node n a1) ('ForkTree rl (Node rn ra) rr)) = MaxValue ('ForkTree rl (Node rn ra) rr)
+  type MaxKey ('ForkTree _l (Node _n _a1) ('ForkTree rl (Node rn ra) rr)) = MaxKey ('ForkTree rl (Node rn ra) rr)
+  type MaxValue ('ForkTree _l (Node _n _a1) ('ForkTree rl (Node rn ra) rr)) = MaxValue ('ForkTree rl (Node rn ra) rr)
   maxValue (ForkITree _ (Node _) r@ForkITree{}) = maxValue r
 
 class Deletable (x :: Nat) (t :: Tree) where
   type Delete (x :: Nat) (t :: Tree) :: Tree
   delete :: Proxy x -> ITree t -> ITree (Delete x t)
 instance Deletable x 'EmptyTree where
-  type Delete x 'EmptyTree = 'EmptyTree
+  type Delete _x 'EmptyTree = 'EmptyTree
   delete _ EmptyITree = EmptyITree
 instance (Deletable' x ('ForkTree l (Node n a1) r) (CmpNat x n)) =>
   Deletable x ('ForkTree l (Node n a1) r) where
@@ -130,22 +132,22 @@ class Deletable' (x :: Nat) (t :: Tree) (o :: Ordering) where
   type Delete' (x :: Nat) (t :: Tree) (o :: Ordering) :: Tree
   delete' :: Proxy x -> ITree t -> Proxy o -> ITree (Delete' x t o)
 instance Deletable' x ('ForkTree 'EmptyTree (Node n a1) 'EmptyTree) 'EQ where
-  type Delete' x ('ForkTree 'EmptyTree (Node n a1) 'EmptyTree) 'EQ = 'EmptyTree
+  type Delete' _x ('ForkTree 'EmptyTree (Node _n _a1) 'EmptyTree) 'EQ = 'EmptyTree
   delete' _ (ForkITree EmptyITree (Node _) EmptyITree) _ = EmptyITree
 instance Deletable' x ('ForkTree 'EmptyTree (Node n a1) ('ForkTree rl (Node rn ra) rr)) 'EQ where
-  type Delete' x ('ForkTree 'EmptyTree (Node n a1) ('ForkTree rl (Node rn ra) rr)) 'EQ = ('ForkTree rl (Node rn ra) rr)
+  type Delete' _x ('ForkTree 'EmptyTree (Node _n _a1) ('ForkTree rl (Node rn ra) rr)) 'EQ = ('ForkTree rl (Node rn ra) rr)
   delete' _ (ForkITree EmptyITree (Node _) r@ForkITree{}) _ = r
 instance Deletable' x ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a1) 'EmptyTree) 'EQ where
-  type Delete' x ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a1) 'EmptyTree) 'EQ = ('ForkTree ll (Node ln la) lr)
+  type Delete' _x ('ForkTree ('ForkTree ll (Node ln la) lr) (Node _n _a1) 'EmptyTree) 'EQ = ('ForkTree ll (Node ln la) lr)
   delete' _ (ForkITree l@ForkITree{} (Node _) EmptyITree) _ = l
 instance (Show (MaxValue ('ForkTree ll (Node ln la) lr)), MaxKeyDeletable ('ForkTree ll (Node ln la) lr), Maxable ('ForkTree ll (Node ln la) lr)) =>
   Deletable' x ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a1) ('ForkTree rl (Node rn ra) rr)) 'EQ where
-  type Delete' x ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a1) ('ForkTree rl (Node rn ra) rr)) 'EQ =
+  type Delete' _x ('ForkTree ('ForkTree ll (Node ln la) lr) (Node _n _a1) ('ForkTree rl (Node rn ra) rr)) 'EQ =
     ('ForkTree (MaxKeyDelete ('ForkTree ll (Node ln la) lr)) (Node (MaxKey ('ForkTree ll (Node ln la) lr)) (MaxValue ('ForkTree ll (Node ln la) lr))) ('ForkTree rl (Node rn ra) rr))
   delete' _ (ForkITree l@ForkITree{} (Node _) r@ForkITree{}) _ =
     ForkITree (maxKeyDelete l) (Node (maxValue l)::Node (MaxKey ('ForkTree ll (Node ln la) lr)) (MaxValue ('ForkTree ll (Node ln la) lr))) r
 instance Deletable' x ('ForkTree 'EmptyTree (Node n a1) r) 'LT where
-  type Delete' x ('ForkTree 'EmptyTree (Node n a1) r) 'LT = ('ForkTree 'EmptyTree (Node n a1) r)
+  type Delete' _x ('ForkTree 'EmptyTree (Node n a1) r) 'LT = ('ForkTree 'EmptyTree (Node n a1) r)
   delete' _ t@(ForkITree EmptyITree (Node _) _) _ = t
 instance (Deletable' x ('ForkTree ll (Node ln la) lr) (CmpNat x ln)) =>
   Deletable' x ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a1) r) 'LT where
@@ -153,7 +155,7 @@ instance (Deletable' x ('ForkTree ll (Node ln la) lr) (CmpNat x ln)) =>
     ('ForkTree (Delete' x ('ForkTree ll (Node ln la) lr) (CmpNat x ln)) (Node n a1) r)
   delete' px (ForkITree l@ForkITree{} node r) _ = ForkITree (delete' px l (Proxy::Proxy (CmpNat x ln))) node r
 instance Deletable' x ('ForkTree l (Node n a1) 'EmptyTree) 'GT where
-  type Delete' x ('ForkTree l (Node n a1) 'EmptyTree) 'GT = ('ForkTree l (Node n a1) 'EmptyTree)
+  type Delete' _x ('ForkTree l (Node n a1) 'EmptyTree) 'GT = ('ForkTree l (Node n a1) 'EmptyTree)
   delete' _ t@(ForkITree _ (Node _) EmptyITree) _ = t
 instance (Deletable' x ('ForkTree rl (Node rn ra) rr) (CmpNat x rn)) =>
   Deletable' x ('ForkTree l (Node n a1) ('ForkTree rl (Node rn ra) rr)) 'GT where
