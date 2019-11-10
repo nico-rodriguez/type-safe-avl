@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+BENCHMARK_VALUES=(10 200 300 400 500 600)
+
 function compile_benchmarks() {
   compile_deps "extern"
   compile_deps "fullextern"
@@ -34,7 +36,7 @@ function compile_aproach() {
   touch $FILE_RESULTS
   echo "Compilando $FUNCTION_NAME para $APROACH"
   echo "Tiempos de compilación" >> $FILE_RESULTS
-  for i in {10..60..10}; do
+  for i in "${BENCHMARK_VALUES[@]}"; do
     echo "N = $i" >> $FILE_RESULTS
     ( time make ${APROACH}/${FUNCTION_NAME}/${FUNCTION_NAME}$i ) |& grep 'real' | sed 's/real\t/Real time: /' >> $FILE_RESULTS
   done
@@ -65,7 +67,7 @@ function run_aproach() {
   touch $FILE_RESULTS
   echo "Ejecutando $FUNCTION_NAME para $APROACH"
   echo "Tiempos de ejecución" >> $FILE_RESULTS
-  for i in 10 200 300 400 500 600; do
+  for i in "${BENCHMARK_VALUES[@]}"; do
     echo "N = $i" >> $FILE_RESULTS
     ( time ./Benchmarks/${APROACH}/${FUNCTION_NAME}/${FUNCTION_NAME}$i ) |& grep 'real' | sed 's/real\t/Real time: /' >> $FILE_RESULTS
   done
