@@ -65,7 +65,7 @@ function run_aproach() {
   touch $FILE_RESULTS
   echo "Ejecutando $FUNCTION_NAME para $APROACH"
   echo "Tiempos de ejecución" >> $FILE_RESULTS
-  for i in {10..60..10}; do
+  for i in 10 200 300 400 500 600; do
     echo "N = $i" >> $FILE_RESULTS
     ( time ./Benchmarks/${APROACH}/${FUNCTION_NAME}/${FUNCTION_NAME}$i ) |& grep 'real' | sed 's/real\t/Real time: /' >> $FILE_RESULTS
   done
