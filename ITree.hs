@@ -5,17 +5,17 @@
 {-# LANGUAGE IncoherentInstances   #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE PolyKinds             #-}
+{-# LANGUAGE Safe                  #-}
 {-# LANGUAGE ScopedTypeVariables   #-}
 {-# LANGUAGE TypeFamilies          #-}
 {-# LANGUAGE TypeOperators         #-}
 {-# LANGUAGE UndecidableInstances  #-}
-{-# LANGUAGE Safe #-}
 
 module ITree where
 
-import           Prelude (Show(show), String, (++))
 import           Data.Kind (Type)
-import           Node (Node(Node))
+import           Node      (Node (Node))
+import           Prelude   (Show (show), String, (++))
 
 data Tree :: Type where
   EmptyTree :: Tree

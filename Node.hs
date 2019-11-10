@@ -1,16 +1,16 @@
-{-# LANGUAGE DataKinds             #-}
-{-# LANGUAGE GADTs                 #-}
-{-# LANGUAGE PolyKinds             #-}
-{-# LANGUAGE RankNTypes            #-}
-{-# LANGUAGE StandaloneDeriving    #-}
-{-# LANGUAGE Safe #-}
+{-# LANGUAGE DataKinds          #-}
+{-# LANGUAGE GADTs              #-}
+{-# LANGUAGE PolyKinds          #-}
+{-# LANGUAGE RankNTypes         #-}
+{-# LANGUAGE Safe               #-}
+{-# LANGUAGE StandaloneDeriving #-}
 
 module Node where
 
-import           Prelude (Show, Char)
-import           Data.Kind (Type)
-import           Data.Proxy (Proxy(Proxy))
+import           Data.Kind    (Type)
+import           Data.Proxy   (Proxy (Proxy))
 import           GHC.TypeLits (Nat)
+import           Prelude      (Char, Show)
 
 data Node :: Nat -> Type -> Type where
   Node :: a -> Node k a
