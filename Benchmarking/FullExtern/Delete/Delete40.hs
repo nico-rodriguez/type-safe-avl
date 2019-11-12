@@ -11,7 +11,7 @@ import           Prelude                            (Bool (False), IO, putStrLn,
 import           System.Time                        (getClockTime)
 
 
-t40 :: AVL (InsertN 40)
+t40 :: AVL (InsertN 40 'False 'EmptyTree)
 t40 = insertN (Proxy::Proxy 40) (Proxy::Proxy 'False)
 e :: AVL 'EmptyTree
 e = deleteN (Proxy::Proxy 40) t40

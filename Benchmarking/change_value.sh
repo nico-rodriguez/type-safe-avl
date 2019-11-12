@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
-OLD_VALUES=(10 30 50 70 90 110)
-NEW_VALUES=(10 20 30 40 50 60)
+OLD_VALUES=(10 30 50 70 90)
+NEW_VALUES=(10 20 30 40 50)
 
-for i in {0..5}; do
+for i in {0..4}; do
   REPLACEMENT=s/${OLD_VALUES[$i]}/${NEW_VALUES[$i]}/g
 
   sed $REPLACEMENT -i ./Extern/Insert/Insert${OLD_VALUES[$i]}.hs

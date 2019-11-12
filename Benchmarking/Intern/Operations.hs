@@ -27,26 +27,27 @@ import           Unsafe.Coerce        (unsafeCoerce)
 proxyPred :: Proxy n -> Proxy (n - 1)
 proxyPred = undefined
 
-type family InsertN (n::Nat) :: Tree where
-  InsertN 0 = 'EmptyTree
-  InsertN n = Insert n Char (InsertN (n - 1))
+type family InsertN (n::Nat) (b::Bool) (t::Tree) :: Tree where
+  InsertN 0 'True  t = Insert 0 Char t
+  InsertN n 'False t = InsertN (n - 1) (CmpNat (n - 1) 0 == 'EQ) (Insert n Char t)
 
-class InsertNClass (n::Nat) (b::Bool) where
-  insertN :: Proxy n -> Proxy b -> AVL (InsertN n)
-instance InsertNClass 0 'True where
-  insertN _ _ = EmptyAVL
-instance (InsertNClass (n - 1) (CmpNat (n - 1) 0 == 'EQ), Insertable n Char (InsertN (n - 1))) =>
-  InsertNClass n 'False where
-  insertN pn _ = unsafeCoerce $ insertAVL (mkNode pn 'a') (insertN (proxyPred pn) (Proxy::Proxy (CmpNat (n - 1) 0 == 'EQ)))
+class InsertNClass (n::Nat) (b::Bool) (t::Tree) where
+  insertN :: Proxy n -> Proxy b -> AVL t -> AVL (InsertN n (CmpNat n 0 == 'EQ) t)
+instance (Insertable 0 Char t) =>
+  InsertNClass 0 'True t where
+  insertN _ _  = insertAVL (mkNode (Proxy::Proxy 0) 'a')
+instance (InsertNClass (n - 1) (CmpNat (n - 1) 0 == 'EQ) (Insert n Char t), Insertable n Char t) =>
+  InsertNClass n 'False t where
+  insertN pn _ t = unsafeCoerce $ insertN (proxyPred pn) (Proxy::Proxy (CmpNat (n - 1) 0 == 'EQ)) (insertAVL (mkNode pn 'a') t)
 
 
 type family DeleteN (n::Nat) (t::Tree) where
-  DeleteN 0 'EmptyTree                  = 'EmptyTree
+  DeleteN n 'EmptyTree                  = 'EmptyTree
   DeleteN n ('ForkTree l (Node n1 a) r) = DeleteN (n - 1) (Delete n ('ForkTree l (Node n1 a) r))
 
 class DeleteNClass (n::Nat) (t::Tree) where
   deleteN :: Proxy n -> AVL t -> AVL (DeleteN n t)
-instance DeleteNClass 0 'EmptyTree where
+instance DeleteNClass n 'EmptyTree where
   deleteN _  EmptyAVL     = EmptyAVL
 instance (DeleteNClass (n - 1) (Delete n ('ForkTree l (Node n1 a) r)), Deletable n ('ForkTree l (Node n1 a) r)) =>
   DeleteNClass n ('ForkTree l (Node n1 a) r) where

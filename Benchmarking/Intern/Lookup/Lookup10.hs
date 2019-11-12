@@ -4,15 +4,16 @@
 import           Benchmarking.Intern.Operations (InsertN, insertN)
 import           Benchmarking.Utils             (secDiff)
 import           Data.Proxy                     (Proxy (Proxy))
-import           Intern.AVL                     (AVL (), lookupAVL)
+import           Intern.AVL                     (AVL (EmptyAVL), lookupAVL)
 import           Prelude                        (Bool (False), Char, IO,
                                                  putStrLn, return, seq, show,
                                                  (++))
 import           System.Time                    (getClockTime)
+import           ITree (Tree(EmptyTree))
 
 
-t10 :: AVL (InsertN 10)
-t10 = insertN (Proxy::Proxy 10) (Proxy::Proxy 'False)
+t10 :: AVL (InsertN 10 'False 'EmptyTree)
+t10 = insertN (Proxy::Proxy 10) (Proxy::Proxy 'False) EmptyAVL
 
 v :: Char
 v = lookupAVL (Proxy::Proxy 10) t10

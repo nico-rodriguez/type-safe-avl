@@ -9,9 +9,10 @@ import           Prelude                            (Bool (False), Char, IO,
                                                      putStrLn, return, seq,
                                                      show, (++))
 import           System.Time                        (getClockTime)
+import           ITree (Tree(EmptyTree))
 
 
-t20 :: AVL (InsertN 20)
+t20 :: AVL (InsertN 20 'False 'EmptyTree)
 t20 = insertN (Proxy::Proxy 20) (Proxy::Proxy 'False)
 
 v :: Char

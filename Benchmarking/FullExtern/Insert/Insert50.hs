@@ -8,9 +8,10 @@ import           Extern.AVL                         (AVL ())
 import           Prelude                            (Bool (False), IO, putStrLn,
                                                      return, seq, show, (++))
 import           System.Time                        (getClockTime)
+import           ITree (Tree(EmptyTree))
 
 
-t50 :: AVL (InsertN 50)
+t50 :: AVL (InsertN 50 'False 'EmptyTree)
 t50 = insertN (Proxy::Proxy 50) (Proxy::Proxy 'False)
 
 main :: IO ()
