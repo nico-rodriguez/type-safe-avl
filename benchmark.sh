@@ -9,6 +9,9 @@ function compile_benchmarks() {
   compile_function "Insert"
   compile_function "Delete"
   compile_function "Lookup"
+  compile_benchmark "Extern"
+  compile_benchmark "FullExtern"
+  compile_benchmark "Intern"
 }
 
 function compile_deps() {
@@ -43,10 +46,19 @@ function compile_aproach() {
   done
 }
 
+function compile_benchmark() {
+  APROACH=$1
+  echo "Compilando benchmark para $APROACH"
+  make ${APROACH}/Benchmark
+}
+
 function run_benchmarks() {
   run_function "Insert"
   run_function "Delete"
   run_function "Lookup"
+  run_benchmark "Extern"
+  run_benchmark "FullExtern"
+  run_benchmark "Intern"
 }
 
 function run_function() {
@@ -74,6 +86,14 @@ function run_aproach() {
     ./output_dir/Benchmarking/${APROACH}/${FUNCTION_NAME}/${FUNCTION_NAME}$i
     ( time ./output_dir/Benchmarking/${APROACH}/${FUNCTION_NAME}/${FUNCTION_NAME}$i ) |& grep 'real' | sed 's/real\t/Real time: /' >> $FILE_RESULTS
   done
+}
+
+function run_benchmark() {
+  APROACH=$1
+  FILE_RESULTS=Benchmarks/$APROACH
+  echo "Ejecutando benchmark para $APROACH"
+  echo "Tiempos de ejecución" >> $FILE_RESULTS
+  ( time ./output_dir/Benchmarking/${APROACH}/Benchmark ) |& grep 'real' | sed 's/real\t/Real time: /' >> $FILE_RESULTS
 }
 
 function main() {

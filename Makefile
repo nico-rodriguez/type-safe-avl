@@ -2,7 +2,7 @@ SHELL = /bin/bash
 
 GHC = ghc
 GHC_DEBUG_FLAGS = -Wno-safe -Wno-unsafe
-GHC_FLAGS = --make -prof -fprof-auto -rtsopts -O2 -outputdir output_dir -Weverything $(GHC_DEBUG_FLAGS)
+GHC_FLAGS = --make -prof -fprof-auto -rtsopts -O2 -outputdir output_dir -freduction-depth=0 -Weverything $(GHC_DEBUG_FLAGS)
 
 BENCHMARKING_DIR = Benchmarking
 EXTERN_DIR = Extern
@@ -86,6 +86,19 @@ FullExtern/Lookup/Lookup%: benchmarking_fullextern_deps
 Intern/Lookup/Lookup%: benchmarking_intern_deps
 	$(GHC) $(GHC_FLAGS) -o $(OUTPUT_DIR)/Benchmarking/$@ $(BENCHMARKING_DIR)/$@.hs
 	rm -f $(OUTPUT_DIR)/Main*
+
+
+# Benchmarks for Extern
+Extern/Benchmark: benchmarking_extern_deps
+	$(GHC) $(GHC_FLAGS) -o $(OUTPUT_DIR)/Benchmarking/$@ $(BENCHMARKING_DIR)/$@.hs
+
+# Benchmarks for FullExtern
+FullExtern/Benchmark: benchmarking_fullextern_deps
+	$(GHC) $(GHC_FLAGS) -o $(OUTPUT_DIR)/Benchmarking/$@ $(BENCHMARKING_DIR)/$@.hs
+
+# Benchmarks for Intern
+Intern/Benchmark: benchmarking_intern_deps
+	$(GHC) $(GHC_FLAGS) -o $(OUTPUT_DIR)/Benchmarking/$@ $(BENCHMARKING_DIR)/$@.hs
 
 
 .PHONY: clean
