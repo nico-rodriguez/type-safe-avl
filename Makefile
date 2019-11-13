@@ -1,8 +1,9 @@
 SHELL = /bin/bash
 
 GHC = ghc
-GHC_DEBUG_FLAGS = -Wno-safe -Wno-unsafe
-GHC_FLAGS = --make -prof -fprof-auto -rtsopts -O2 -outputdir output_dir -freduction-depth=0 -Weverything $(GHC_DEBUG_FLAGS)
+GHC_DEBUG_FLAGS = -Weverything -Wno-safe -Wno-unsafe
+GHC_PROF_FLAGS = -prof -fprof-auto -rtsopts -O2
+GHC_FLAGS = --make -outputdir output_dir -freduction-depth=0
 
 BENCHMARKING_DIR = Benchmarking
 EXTERN_DIR = Extern
@@ -19,19 +20,19 @@ benchmarking_extern_deps:
 	mkdir -p $(OUTPUT_DIR)/Benchmarking/Extern/Insert
 	mkdir -p $(OUTPUT_DIR)/Benchmarking/Extern/Delete
 	mkdir -p $(OUTPUT_DIR)/Benchmarking/Extern/Lookup
-	$(GHC) $(GHC_FLAGS) -no-link $(BENCHMARKING_DIR)/Extern/Operations.hs
+	$(GHC) $(GHC_FLAGS) $(GHC_DEBUG_FLAGS) $(GHC_PROF_FLAGS) -no-link $(BENCHMARKING_DIR)/Extern/Operations.hs
 
 benchmarking_fullextern_deps:
 	mkdir -p $(OUTPUT_DIR)/Benchmarking/FullExtern/Insert
 	mkdir -p $(OUTPUT_DIR)/Benchmarking/FullExtern/Delete
 	mkdir -p $(OUTPUT_DIR)/Benchmarking/FullExtern/Lookup
-	$(GHC) $(GHC_FLAGS) -no-link $(BENCHMARKING_DIR)/FullExtern/Operations.hs
+	$(GHC) $(GHC_FLAGS) $(GHC_DEBUG_FLAGS) $(GHC_PROF_FLAGS) -no-link $(BENCHMARKING_DIR)/FullExtern/Operations.hs
 
 benchmarking_intern_deps:
 	mkdir -p $(OUTPUT_DIR)/Benchmarking/Intern/Insert
 	mkdir -p $(OUTPUT_DIR)/Benchmarking/Intern/Delete
 	mkdir -p $(OUTPUT_DIR)/Benchmarking/Intern/Lookup
-	$(GHC) $(GHC_FLAGS) -no-link $(BENCHMARKING_DIR)/Intern/Operations.hs
+	$(GHC) $(GHC_FLAGS) $(GHC_DEBUG_FLAGS) $(GHC_PROF_FLAGS) -no-link $(BENCHMARKING_DIR)/Intern/Operations.hs
 
 
 # Benchmarks for insertAVL
@@ -90,15 +91,15 @@ Intern/Lookup/Lookup%: benchmarking_intern_deps
 
 # Benchmarks for Extern
 Extern/Benchmark: benchmarking_extern_deps
-	$(GHC) $(GHC_FLAGS) -o $(OUTPUT_DIR)/Benchmarking/$@ $(BENCHMARKING_DIR)/$@.hs
+	$(GHC) $(GHC_FLAGS) $(GHC_PROF_FLAGS) -o $(OUTPUT_DIR)/Benchmarking/$@ $(BENCHMARKING_DIR)/$@.hs
 
 # Benchmarks for FullExtern
 FullExtern/Benchmark: benchmarking_fullextern_deps
-	$(GHC) $(GHC_FLAGS) -o $(OUTPUT_DIR)/Benchmarking/$@ $(BENCHMARKING_DIR)/$@.hs
+	$(GHC) $(GHC_FLAGS) $(GHC_PROF_FLAGS) -o $(OUTPUT_DIR)/Benchmarking/$@ $(BENCHMARKING_DIR)/$@.hs
 
 # Benchmarks for Intern
 Intern/Benchmark: benchmarking_intern_deps
-	$(GHC) $(GHC_FLAGS) -o $(OUTPUT_DIR)/Benchmarking/$@ $(BENCHMARKING_DIR)/$@.hs
+	$(GHC) $(GHC_FLAGS) $(GHC_PROF_FLAGS) -o $(OUTPUT_DIR)/Benchmarking/$@ $(BENCHMARKING_DIR)/$@.hs
 
 
 .PHONY: clean
