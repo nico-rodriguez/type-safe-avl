@@ -2,13 +2,13 @@
 {-# LANGUAGE Safe      #-}
 
 import           Benchmarking.FullExtern.Operations (InsertN, insertN)
-import           Benchmarking.Utils                 (diffUTCTime)
+
 import           Data.Proxy                         (Proxy (Proxy))
 import           Extern.AVL                         (AVL (), lookupAVL)
 import           Prelude                            (Bool (False), Char, IO,
                                                      putStrLn, return, seq,
                                                      show, (++))
-import           System.Time                        (getCurrentTime)
+import           Data.Time.Clock (diffUTCTime, getCurrentTime)
 import           ITree (Tree(EmptyTree))
 
 
