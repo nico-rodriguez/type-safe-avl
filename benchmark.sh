@@ -35,7 +35,7 @@ function compile_aproach() {
   APROACH=${1^}
   APROACH=`echo $APROACH | sed 's/extern/Extern/'`
   FUNCTION_NAME=$2
-  FILE_RESULTS=Benchmarks/$APROACH/$FUNCTION_NAME
+  FILE_RESULTS=Benchmarks/$APROACH/${FUNCTION_NAME}.txt
   touch $FILE_RESULTS
   echo "Compilando $FUNCTION_NAME para $APROACH"
   echo "Tiempos de compilación" >> $FILE_RESULTS
@@ -76,7 +76,7 @@ function run_aproach() {
   APROACH=${1^}
   APROACH=`echo $APROACH | sed 's/extern/Extern/'`
   FUNCTION_NAME=$2
-  FILE_RESULTS=Benchmarks/$APROACH/$FUNCTION_NAME
+  FILE_RESULTS=Benchmarks/$APROACH/${FUNCTION_NAME}.txt
   touch $FILE_RESULTS
   echo "Ejecutando $FUNCTION_NAME para $APROACH"
   echo "Tiempos de ejecución" >> $FILE_RESULTS
@@ -90,7 +90,7 @@ function run_aproach() {
 
 function run_benchmark() {
   APROACH=$1
-  FILE_RESULTS=Benchmarks/$APROACH
+  FILE_RESULTS=Benchmarks/${APROACH}.txt
   echo "Ejecutando benchmark para $APROACH"
   echo "Tiempos de ejecución" >> $FILE_RESULTS
   ( time ./output_dir/Benchmarking/${APROACH}/Benchmark ) |& grep 'real' | sed 's/real\t/Real time: /' >> $FILE_RESULTS
