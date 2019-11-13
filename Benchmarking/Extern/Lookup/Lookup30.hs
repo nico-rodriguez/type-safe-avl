@@ -12,14 +12,14 @@ import           Prelude                        (Bool (False), Char, IO,
 import           ITree (Tree(EmptyTree), ITree(EmptyITree))
 
 
-t80 :: AVL (InsertN 80 'False 'EmptyTree)
-t80 = insertN (Proxy::Proxy 80) (Proxy::Proxy 'False) (AVL EmptyITree)
+t30 :: AVL (InsertN 30 'False 'EmptyTree)
+t30 = insertN (Proxy::Proxy 30) (Proxy::Proxy 'False) (AVL EmptyITree)
 
 v :: Char
-v = lookupAVL (Proxy::Proxy 80) t80
+v = lookupAVL (Proxy::Proxy 30) t30
 
 main :: IO ()
-main = do seq t80 (return ())
+main = do seq t30 (return ())
           t0 <- getCurrentTime
           seq v (return ())
           t1 <- getCurrentTime

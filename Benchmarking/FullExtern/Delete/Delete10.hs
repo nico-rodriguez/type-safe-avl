@@ -11,13 +11,13 @@ import           Prelude                            (Bool (False), IO, putStrLn,
 import           System.Time                        (getCurrentTime)
 
 
-t100 :: AVL (InsertN 100 'False 'EmptyTree)
-t100 = insertN (Proxy::Proxy 100) (Proxy::Proxy 'False)
+t10 :: AVL (InsertN 10 'False 'EmptyTree)
+t10 = insertN (Proxy::Proxy 10) (Proxy::Proxy 'False)
 e :: AVL 'EmptyTree
-e = deleteN (Proxy::Proxy 100) t100
+e = deleteN (Proxy::Proxy 10) t10
 
 main :: IO ()
-main = do seq t100 (return ())
+main = do seq t10 (return ())
           t0 <- getCurrentTime
           seq e (return ())
           t1 <- getCurrentTime

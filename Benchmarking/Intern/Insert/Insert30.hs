@@ -11,11 +11,11 @@ import           Prelude                        (Bool (False), IO, putStrLn,
 import           ITree (Tree(EmptyTree))
 
 
-t80 :: AVL (InsertN 80 'False 'EmptyTree)
-t80 = insertN (Proxy::Proxy 80) (Proxy::Proxy 'False) EmptyAVL
+t30 :: AVL (InsertN 30 'False 'EmptyTree)
+t30 = insertN (Proxy::Proxy 30) (Proxy::Proxy 'False) EmptyAVL
 
 main :: IO ()
 main = do t0 <- getCurrentTime
-          seq t80 (return ())
+          seq t30 (return ())
           t1 <- getCurrentTime
           putStrLn ("Time: " ++ show (diffUTCTime t0 t1) ++ " seconds")

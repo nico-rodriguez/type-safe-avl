@@ -1,25 +1,25 @@
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE Safe      #-}
 
-import           Benchmarking.Intern.Operations (InsertN, insertN)
+import           Benchmarking.Extern.Operations (InsertN, insertN)
 import           Data.Time.Clock (diffUTCTime, getCurrentTime)
 import           Data.Proxy                     (Proxy (Proxy))
-import           Intern.AVL                     (AVL (EmptyAVL), lookupAVL)
+import           Extern.AVL                     (AVL (AVL), lookupAVL)
 import           Prelude                        (Bool (False), Char, IO,
                                                  putStrLn, return, seq, show,
                                                  (++))
 
-import           ITree (Tree(EmptyTree))
+import           ITree (Tree(EmptyTree), ITree(EmptyITree))
 
 
-t60 :: AVL (InsertN 60 'False 'EmptyTree)
-t60 = insertN (Proxy::Proxy 60) (Proxy::Proxy 'False) EmptyAVL
+t50 :: AVL (InsertN 50 'False 'EmptyTree)
+t50 = insertN (Proxy::Proxy 50) (Proxy::Proxy 'False) (AVL EmptyITree)
 
 v :: Char
-v = lookupAVL (Proxy::Proxy 60) t60
+v = lookupAVL (Proxy::Proxy 50) t50
 
 main :: IO ()
-main = do seq t60 (return ())
+main = do seq t50 (return ())
           t0 <- getCurrentTime
           seq v (return ())
           t1 <- getCurrentTime

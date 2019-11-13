@@ -11,11 +11,11 @@ import           System.Time                        (getCurrentTime)
 import           ITree (Tree(EmptyTree))
 
 
-t100 :: AVL (InsertN 100 'False 'EmptyTree)
-t100 = insertN (Proxy::Proxy 100) (Proxy::Proxy 'False)
+t30 :: AVL (InsertN 30 'False 'EmptyTree)
+t30 = insertN (Proxy::Proxy 30) (Proxy::Proxy 'False)
 
 main :: IO ()
 main = do t0 <- getCurrentTime
-          seq t100 (return ())
+          seq t30 (return ())
           t1 <- getCurrentTime
           putStrLn ("Time: " ++ show (diffUTCTime t0 t1) ++ " seconds")

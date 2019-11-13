@@ -12,14 +12,14 @@ import           System.Time                        (getCurrentTime)
 import           ITree (Tree(EmptyTree))
 
 
-t100 :: AVL (InsertN 100 'False 'EmptyTree)
-t100 = insertN (Proxy::Proxy 100) (Proxy::Proxy 'False)
+t10 :: AVL (InsertN 10 'False 'EmptyTree)
+t10 = insertN (Proxy::Proxy 10) (Proxy::Proxy 'False)
 
 v :: Char
-v = lookupAVL (Proxy::Proxy 100) t100
+v = lookupAVL (Proxy::Proxy 10) t10
 
 main :: IO ()
-main = do seq t100 (return ())
+main = do seq t10 (return ())
           t0 <- getCurrentTime
           seq v (return ())
           t1 <- getCurrentTime
