@@ -1,21 +1,21 @@
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE Safe      #-}
 
-import           Benchmarking.Extern.Operations (InsertN, insertN)
+import           Benchmarking.Intern.Operations (InsertN, insertN)
 import           Data.Time.Clock (diffUTCTime, getCurrentTime)
 import           Data.Proxy                     (Proxy (Proxy))
-import           Extern.AVL                     (AVL (AVL))
+import           Intern.AVL                     (AVL (EmptyAVL))
 import           Prelude                        (Bool (False), IO, putStrLn,
                                                  return, seq, show, (++))
 
-import           ITree (Tree(EmptyTree), ITree(EmptyITree))
+import           ITree (Tree(EmptyTree))
 
 
-t100 :: AVL (InsertN 100 'False 'EmptyTree)
-t100 = insertN (Proxy::Proxy 100) (Proxy::Proxy 'False) (AVL EmptyITree)
+t80 :: AVL (InsertN 80 'False 'EmptyTree)
+t80 = insertN (Proxy::Proxy 80) (Proxy::Proxy 'False) EmptyAVL
 
 main :: IO ()
 main = do t0 <- getCurrentTime
-          seq t100 (return ())
+          seq t80 (return ())
           t1 <- getCurrentTime
           putStrLn ("Time: " ++ show (diffUTCTime t0 t1) ++ " seconds")

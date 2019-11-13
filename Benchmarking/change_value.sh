@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-OLD_VALUES=(10 20 30 40 50)
-NEW_VALUES=(100 200 300 400 500)
+OLD_VALUES=(100 200 300 400 500)
+NEW_VALUES=(20 40 60 80 100)
 
 for i in {0..4}; do
   REPLACEMENT=s/${OLD_VALUES[$i]}/${NEW_VALUES[$i]}/g

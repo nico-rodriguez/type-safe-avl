@@ -2,13 +2,13 @@
 {-# LANGUAGE Safe      #-}
 
 import           Benchmarking.Intern.Operations (InsertN, insertN)
-import           Benchmarking.Utils             (secDiff)
+import           Data.Time.Clock (diffUTCTime, getCurrentTime)
 import           Data.Proxy                     (Proxy (Proxy))
 import           Intern.AVL                     (AVL (EmptyAVL), lookupAVL)
 import           Prelude                        (Bool (False), Char, IO,
                                                  putStrLn, return, seq, show,
                                                  (++))
-import           System.Time                    (getClockTime)
+
 import           ITree (Tree(EmptyTree))
 
 
@@ -20,7 +20,7 @@ v = lookupAVL (Proxy::Proxy 100) t100
 
 main :: IO ()
 main = do seq t100 (return ())
-          t0 <- getClockTime
+          t0 <- getCurrentTime
           seq v (return ())
-          t1 <- getClockTime
-          putStrLn ("Time: " ++ show (secDiff t0 t1) ++ " seconds")
+          t1 <- getCurrentTime
+          putStrLn ("Time: " ++ show (diffUTCTime t0 t1) ++ " seconds")

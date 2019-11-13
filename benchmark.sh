@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-BENCHMARK_VALUES=(100 200 300 400 500)
+BENCHMARK_VALUES=(20 40 60 80 100)
 
 function compile_benchmarks() {
   compile_deps "extern"
