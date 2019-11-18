@@ -1,8 +1,8 @@
 SHELL = /bin/bash
 
 GHC = ghc
-GHC_DEBUG_FLAGS = -Weverything -Wno-safe -Wno-unsafe
-GHC_PROF_FLAGS = -prof -fprof-auto -rtsopts -O2
+GHC_DEBUG_FLAGS = #-Weverything -Wno-safe -Wno-unsafe
+GHC_PROF_FLAGS = #-prof -fprof-auto -rtsopts -O2
 GHC_FLAGS = --make -outputdir output_dir -freduction-depth=0
 
 BENCHMARKING_DIR = Benchmarking
