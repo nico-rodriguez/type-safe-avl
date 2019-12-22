@@ -1,10 +1,12 @@
 {-# LANGUAGE DataKinds #-}
 
+{-# OPTIONS_GHC -Wno-missing-signatures #-}
+
+
 module Extern.Test where
 
 import           Data.Proxy
 import           Extern.AVL
-import           Extern.AVLOperations
 import           Extern.BST
 import           ITree
 import           Node
