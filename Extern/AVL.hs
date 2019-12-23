@@ -5,6 +5,7 @@
 
 module Extern.AVL (
   AVL(..),
+  emptyAVL,
   insertAVL,
   lookupAVL,
   deleteAVL
@@ -20,9 +21,13 @@ import           Extern.AVLProofs     (AVL (AVL),
                                        ProofIsBSTDelete (proofIsBSTDelete),
                                        ProofIsBSTInsert (proofIsBSTInsert))
 import           Extern.BSTOperations (Lookupable (lookup), Member)
-import           ITree                (Tree (ForkTree))
+import           ITree                (ITree (EmptyITree), Tree (EmptyTree, ForkTree))
 import           Node                 (Node)
 import           Prelude              (Bool (True), ($))
+
+
+emptyAVL :: AVL 'EmptyTree
+emptyAVL = AVL EmptyITree
 
 insertAVL :: (Insertable x a t, ProofIsBSTInsert x a t, ProofIsAVLInsert x a t) =>
   Node x a -> AVL t -> AVL (Insert x a t)

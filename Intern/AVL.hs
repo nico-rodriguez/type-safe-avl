@@ -5,6 +5,7 @@
 
 module Intern.AVL (
   AVL(EmptyAVL,ForkAVL),
+  emptyAVL,
   insertAVL,
   lookupAVL,
   deleteAVL
@@ -15,9 +16,13 @@ import           Intern.AVLOperations (AVL (EmptyAVL, ForkAVL),
                                        Deletable (Delete, delete),
                                        Insertable (Insert, insert),
                                        Lookupable (lookup), Member)
-import           ITree                (Tree (ForkTree))
+import           ITree                (Tree (EmptyTree, ForkTree))
 import           Node                 (Node)
 import           Prelude              (Bool (True))
+
+
+emptyAVL :: AVL 'EmptyTree
+emptyAVL = EmptyAVL
 
 insertAVL :: (Insertable x a t) =>
   Node x a -> AVL t -> AVL (Insert x a t)
