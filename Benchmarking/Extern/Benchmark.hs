@@ -1,12 +1,10 @@
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE Safe      #-}
 
-import           Benchmarking.Extern.Operations (InsertN, deleteN, insertN)
 import           Data.Proxy                     (Proxy (Proxy))
-import           Extern.AVL                     (AVL (AVL), lookupAVL)
-import           ITree                          (Tree (EmptyTree), ITree (EmptyITree))
-import           Prelude                        (Bool (False), IO, putStrLn,
-                                                 return, seq, show, (++), Char)
+import           Extern.AVL                     (lookupAVL)
+import           Prelude                        (IO, putStrLn,
+                                                 return, seq, show, (++))
 import           Data.Time.Clock (diffUTCTime, getCurrentTime)
 import Benchmarking.Extern.Insert.Insert10 (t10)
 import Benchmarking.Extern.Insert.Insert20 (t20)
@@ -30,16 +28,16 @@ import Benchmarking.Extern.Delete.Delete90 (e90)
 import Benchmarking.Extern.Delete.Delete100 (e100)
 
 
-v10 = lookupAVL (Proxy::Proxy 10) t10
-v20 = lookupAVL (Proxy::Proxy 20) t20
-v30 = lookupAVL (Proxy::Proxy 30) t30
-v40 = lookupAVL (Proxy::Proxy 40) t40
-v50 = lookupAVL (Proxy::Proxy 50) t50
-v60 = lookupAVL (Proxy::Proxy 60) t60
-v70 = lookupAVL (Proxy::Proxy 70) t70
-v80 = lookupAVL (Proxy::Proxy 80) t80
-v90 = lookupAVL (Proxy::Proxy 90) t90
-v10 = lookupAVL (Proxy::Proxy 100) t100
+v10 = lookupAVL (Proxy::Proxy 0) t10
+v20 = lookupAVL (Proxy::Proxy 0) t20
+v30 = lookupAVL (Proxy::Proxy 0) t30
+v40 = lookupAVL (Proxy::Proxy 0) t40
+v50 = lookupAVL (Proxy::Proxy 0) t50
+v60 = lookupAVL (Proxy::Proxy 0) t60
+v70 = lookupAVL (Proxy::Proxy 0) t70
+v80 = lookupAVL (Proxy::Proxy 0) t80
+v90 = lookupAVL (Proxy::Proxy 0) t90
+v10 = lookupAVL (Proxy::Proxy 0) t100
 
 main :: IO ()
 main = do t0 <- getCurrentTime
