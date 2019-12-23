@@ -21,7 +21,6 @@ benchmarking_extern_deps:
 	mkdir -p $(OUTPUT_DIR)/Benchmarking/Extern/Insert
 	mkdir -p $(OUTPUT_DIR)/Benchmarking/Extern/Delete
 	mkdir -p $(OUTPUT_DIR)/Benchmarking/Extern/Lookup
-	$(GHC) $(GHC_FLAGS) $(GHC_DEBUG_FLAGS) $(GHC_PROF_FLAGS) -no-link $(BENCHMARKING_DIR)/Extern/Operations.hs
 
 benchmarking_fullextern_deps:
 	mkdir -p $(OUTPUT_DIR)/Benchmarking/FullExtern/Insert
@@ -33,7 +32,6 @@ benchmarking_intern_deps:
 	mkdir -p $(OUTPUT_DIR)/Benchmarking/Intern/Insert
 	mkdir -p $(OUTPUT_DIR)/Benchmarking/Intern/Delete
 	mkdir -p $(OUTPUT_DIR)/Benchmarking/Intern/Lookup
-	$(GHC) $(GHC_FLAGS) $(GHC_DEBUG_FLAGS) $(GHC_PROF_FLAGS) -no-link $(BENCHMARKING_DIR)/Intern/Operations.hs
 
 
 # Benchmarks for insertAVL
