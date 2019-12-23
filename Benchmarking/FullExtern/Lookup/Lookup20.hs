@@ -1,26 +1,23 @@
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE Safe      #-}
 
-import           Benchmarking.FullExtern.Operations (InsertN, insertN)
 
-import           Data.Proxy                         (Proxy (Proxy))
-import           Extern.AVL                         (AVL (), lookupAVL)
-import           Prelude                            (Bool (False), Char, IO,
-                                                     putStrLn, return, seq,
-                                                     show, (++))
+module Benchmarking.Extern.Lookup.Lookup20 (v20, main) where
+
 import           Data.Time.Clock (diffUTCTime, getCurrentTime)
-import           ITree (Tree(EmptyTree))
+import           Data.Proxy                     (Proxy (Proxy))
+import           Extern.AVL                     (AVL (AVL))
+import           Extern.BSTOperations               (Lookupable (lookup))
+import           Prelude                        (IO, putStrLn, return, seq, show, (++))
+import           Benchmarking.Extern.Insert.Insert20 (t20)
 
 
-t20 :: AVL (InsertN 20 'False 'EmptyTree)
-t20 = insertN (Proxy::Proxy 20) (Proxy::Proxy 'False)
-
-v :: Char
-v = lookupAVL (Proxy::Proxy 20) t20
+v20 = case t20 of
+  AVL t20' -> lookup (Proxy::Proxy 0) t20'
 
 main :: IO ()
 main = do seq t20 (return ())
           t0 <- getCurrentTime
-          seq v (return ())
+          seq v20 (return ())
           t1 <- getCurrentTime
           putStrLn ("Time: " ++ show (diffUTCTime t0 t1) ++ " seconds")
