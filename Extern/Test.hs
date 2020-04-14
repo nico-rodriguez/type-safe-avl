@@ -5,44 +5,35 @@
 
 module Extern.Test where
 
-import           Data.Proxy
-import           Extern.AVL
-import           Extern.BST
-import           ITree
-import           Node
+import           Data.Proxy (Proxy(Proxy))
+import           Extern.AVL (AVL(AVL), insertAVL, lookupAVL, deleteAVL)
+import           Extern.BST (BST(BST), insertBST, lookupBST, deleteBST)
+import           ITree (ITree(EmptyITree))
+import           Node (mkNode)
 
-p0 :: Proxy 0
-p0 = Proxy
-p1 :: Proxy 1
-p1 = Proxy
-p2 :: Proxy 2
-p2 = Proxy
-p3 :: Proxy 3
-p3 = Proxy
-p4 :: Proxy 4
-p4 = Proxy
-p5 :: Proxy 5
-p5 = Proxy
-p6 :: Proxy 6
-p6 = Proxy
-p7 :: Proxy 7
-p7 = Proxy
+p0 = Proxy :: Proxy 0
+p1 = Proxy :: Proxy 1
+p2 = Proxy :: Proxy 2
+p3 = Proxy :: Proxy 3
+p4 = Proxy :: Proxy 4
+p5 = Proxy :: Proxy 5
+p6 = Proxy :: Proxy 6
+p7 = Proxy :: Proxy 7
 
-bste :: BST 'EmptyTree
 bste = BST EmptyITree
 
-bst1 = insertBST (mkNode p4 'f') bste
-bst2 = insertBST (mkNode p2 (4::Int)) bst1
-bst3 = insertBST (mkNode p6 "lala") bst2
-bst4 = insertBST (mkNode p3 True) bst3
-bst5 = insertBST (mkNode p5 ([1,2,3]::[Int])) bst4
-bst6 = insertBST (mkNode p0 (1.8::Float)) bst5
-bst7 = insertBST (mkNode p7 [False]) bst6
+bst1 = insertBST p4 'f' bste
+bst2 = insertBST p2 (4::Int) bst1
+bst3 = insertBST p6 "lala" bst2
+bst4 = insertBST p3 True bst3
+bst5 = insertBST p5 ([1,2,3]::[Int]) bst4
+bst6 = insertBST p0 (1.8::Float) bst5
+bst7 = insertBST p7 [False] bst6
 
 data SomeData = SD
   deriving (Show)
 
-bst8 = insertBST (mkNode p7 SD) bst7
+bst8 = insertBST p7 SD bst7
 
 l1 :: String
 l1 = lookupBST p6 bst8

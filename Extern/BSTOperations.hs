@@ -2,13 +2,18 @@
 {-# LANGUAGE FlexibleContexts      #-}
 {-# LANGUAGE FlexibleInstances     #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
-{-# LANGUAGE Safe                  #-}
 {-# LANGUAGE ScopedTypeVariables   #-}
 {-# LANGUAGE TypeFamilies          #-}
 {-# LANGUAGE TypeOperators         #-}
 {-# LANGUAGE UndecidableInstances  #-}
 
-module Extern.BSTOperations where
+module Extern.BSTOperations (
+  Insertable(Insert, insert), Insertable'(Insert', insert'),
+  Member,
+  Lookupable(lookup),
+  Maxable(MaxKey, MaxValue, maxValue), MaxKeyDeletable(MaxKeyDelete, maxKeyDelete),
+  Deletable(Delete, delete), Deletable'(Delete', delete')
+) where
 
 import           Data.Kind          (Type)
 import           Data.Proxy         (Proxy (Proxy))
@@ -106,12 +111,12 @@ instance (Lookupable' x a ('ForkTree l (Node n a1) r) (CmpNat x n), a ~ LookupVa
 class Lookupable' (x :: Nat) (a :: Type) (t :: Tree) (o :: Ordering) where
   lookup' :: (t ~ 'ForkTree l (Node n a1) r, Member x t ~ 'True) =>
     Proxy x -> ITree t -> Proxy o -> a
-instance (CmpNat x n ~ 'EQ) => Lookupable' x a ('ForkTree l (Node n a) r) 'EQ where
+instance Lookupable' x a ('ForkTree l (Node n a) r) 'EQ where
   lookup' _ (ForkITree _ node _) _ = getValue node
-instance (CmpNat x n ~ 'LT, l ~ 'ForkTree ll (Node ln lna) lr, Member x l ~ 'True, Lookupable' x a l (CmpNat x ln)) =>
+instance (l ~ 'ForkTree ll (Node ln lna) lr, Member x l ~ 'True, Lookupable' x a l (CmpNat x ln)) =>
   Lookupable' x a ('ForkTree ('ForkTree ll (Node ln lna) lr) (Node n a1) r) 'LT where
   lookup' p (ForkITree l@ForkITree{} _ _) _ = lookup' p l (Proxy::Proxy (CmpNat x ln))
-instance (CmpNat x n ~ 'GT, r ~ 'ForkTree rl (Node rn rna) rr, Member x r ~ 'True, Lookupable' x a ('ForkTree rl (Node rn rna) rr) (CmpNat x rn)) =>
+instance (r ~ 'ForkTree rl (Node rn rna) rr, Member x r ~ 'True, Lookupable' x a ('ForkTree rl (Node rn rna) rr) (CmpNat x rn)) =>
   Lookupable' x a ('ForkTree l (Node n a1) ('ForkTree rl (Node rn rna) rr)) 'GT where
   lookup' p (ForkITree _ _ r@ForkITree{}) _ = lookup' p r (Proxy::Proxy (CmpNat x rn))
 
@@ -123,6 +128,9 @@ class MaxKeyDeletable (t :: Tree) where
   type MaxKeyDelete (t :: Tree) :: Tree
   maxKeyDelete :: (t ~ 'ForkTree l (Node n a1) r) =>
     ITree t -> ITree (MaxKeyDelete t)
+instance MaxKeyDeletable 'EmptyTree where
+  type MaxKeyDelete 'EmptyTree = 'EmptyTree
+  maxKeyDelete EmptyITree = EmptyITree
 instance MaxKeyDeletable ('ForkTree l (Node n a1) 'EmptyTree) where
   type MaxKeyDelete ('ForkTree l (Node n a1) 'EmptyTree) = l
   maxKeyDelete (ForkITree l (Node _) EmptyITree) = l

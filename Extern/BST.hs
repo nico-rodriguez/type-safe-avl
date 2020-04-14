@@ -3,7 +3,7 @@
 {-# LANGUAGE MultiParamTypeClasses #-}
 
 module Extern.BST (
-  BST(..),
+  BST(BST),
   insertBST,
   lookupBST,
   deleteBST
@@ -18,8 +18,9 @@ import           Node
 import           Prelude              hiding (lookup)
 
 insertBST :: (Insertable x a t, ProofIsBSTInsert x a t) =>
-  Node x a -> BST t -> BST (Insert x a t)
-insertBST x (BST t) = gcastWith (proofIsBSTInsert x t) BST $ insert x t
+  Proxy x -> a -> BST t -> BST (Insert x a t)
+insertBST x a bst@(BST t) = gcastWith (proofIsBSTInsert node bst) BST $ insert node t
+  where node = mkNode x a
 
 lookupBST :: (t ~ 'ForkTree l (Node n a1) r, Member x t ~ 'True, Lookupable x a t) =>
   Proxy x -> BST t -> a
@@ -27,4 +28,4 @@ lookupBST p (BST t) = lookup p t
 
 deleteBST :: (Deletable x t, ProofIsBSTDelete x t) =>
   Proxy x -> BST t -> BST (Delete x t)
-deleteBST px (BST t) = gcastWith (proofIsBSTDelete px t) (BST $ delete px t)
+deleteBST px bst@(BST t) = gcastWith (proofIsBSTDelete px bst) (BST $ delete px t)
