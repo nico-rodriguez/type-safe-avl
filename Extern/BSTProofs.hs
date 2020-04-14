@@ -208,7 +208,7 @@ instance (IsBST r ~ 'True, LtN r n ~ 'True, LtN ('ForkTree ll (Node ln la) lr) n
 instance (IsBST l ~ 'True, LtN l n ~ 'True) =>
   ProofLtNDelete' x ('ForkTree l (Node n1 a1) 'EmptyTree) n 'GT where
   proofLtNDelete' _ (ForkITree _ (Node _) EmptyITree) _ _ = Refl
-instance (IsBST l ~ 'True, LtN l n ~ 'True, CmpNat x n1 ~ 'GT, LtN ('ForkTree rl (Node rn ra) rr) n ~ 'True,
+instance (IsBST l ~ 'True, LtN l n ~ 'True, LtN ('ForkTree rl (Node rn ra) rr) n ~ 'True,
   ProofLtNDelete' x ('ForkTree rl (Node rn ra) rr) n (CmpNat x rn)) =>
   ProofLtNDelete' x ('ForkTree l (Node n1 a1) ('ForkTree rl (Node rn ra) rr)) n 'GT where
   proofLtNDelete' px (ForkITree _ (Node _) r@ForkITree{}) _ _ = gcastWith (proofLtNDelete' px r (Proxy::Proxy n) (Proxy::Proxy (CmpNat x rn))) Refl
@@ -229,21 +229,21 @@ instance (l ~ 'ForkTree ll (Node ln la) lr, IsBST l ~ 'True, GtN l n ~ 'True) =>
   ProofGtNDelete' x ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n1 a1) 'EmptyTree) n 'EQ where
   proofGtNDelete' _ (ForkITree ForkITree{} (Node _) EmptyITree) _ _ = Refl
 instance (r ~ 'ForkTree rl (Node rn ra) rr, IsBST r ~ 'True, GtN r n ~ 'True,
-  l ~ 'ForkTree ll (Node ln la) lr, CmpNat ln n ~ 'GT, GtN l n ~ 'True, t ~ 'ForkTree l (Node n1 a1) r,
+  l ~ 'ForkTree ll (Node ln la) lr, GtN l n ~ 'True, t ~ 'ForkTree l (Node n1 a1) r,
   ProofGTMaxKey l n, Maxable l, ProofGtNMaxKeyDelete l n, MaxKeyDeletable l) =>
   ProofGtNDelete' x ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n1 a1) ('ForkTree rl (Node rn ra) rr)) n 'EQ where
   proofGtNDelete' _ (ForkITree l@ForkITree{} (Node _) ForkITree{}) _ _ = gcastWith (proofGtNMaxKeyDelete l (Proxy::Proxy n)) (gcastWith (proofGTMaxKey l (Proxy::Proxy n)) Refl)
 instance (IsBST r ~ 'True, GtN r n ~ 'True) =>
   ProofGtNDelete' x ('ForkTree 'EmptyTree (Node n1 a1) r) n 'LT where
   proofGtNDelete' _ (ForkITree EmptyITree (Node _) _) _ _ = Refl
-instance (IsBST r ~ 'True, GtN r n ~ 'True, GtN ('ForkTree ll (Node ln la) lr) n ~ 'True, CmpNat n1 n ~ 'GT,
+instance (IsBST r ~ 'True, GtN r n ~ 'True, GtN ('ForkTree ll (Node ln la) lr) n ~ 'True,
   ProofGtNDelete' x ('ForkTree ll (Node ln la) lr) n (CmpNat x ln)) =>
   ProofGtNDelete' x ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n1 a1) r) n 'LT where
   proofGtNDelete' px (ForkITree l@ForkITree{} _ _) _ _ = gcastWith (proofGtNDelete' px l (Proxy::Proxy n) (Proxy::Proxy (CmpNat x ln))) Refl
 instance (IsBST l ~ 'True, GtN l n ~ 'True) =>
   ProofGtNDelete' x ('ForkTree l (Node n1 a1) 'EmptyTree) n 'GT where
   proofGtNDelete' _ (ForkITree _ (Node _) EmptyITree) _ _ = Refl
-instance (IsBST l ~ 'True, GtN l n ~ 'True, CmpNat x n1 ~ 'GT, CmpNat n1 n ~ 'GT, GtN ('ForkTree rl (Node rn ra) rr) n ~ 'True,
+instance (IsBST l ~ 'True, GtN l n ~ 'True, GtN ('ForkTree rl (Node rn ra) rr) n ~ 'True,
   ProofGtNDelete' x ('ForkTree rl (Node rn ra) rr) n (CmpNat x rn)) =>
   ProofGtNDelete' x ('ForkTree l (Node n1 a1) ('ForkTree rl (Node rn ra) rr)) n 'GT where
   proofGtNDelete' px (ForkITree _ (Node _) r@ForkITree{}) _ _ = gcastWith (proofGtNDelete' px r (Proxy::Proxy n) (Proxy::Proxy (CmpNat x rn))) Refl
