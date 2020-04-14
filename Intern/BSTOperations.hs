@@ -28,6 +28,10 @@ type family GtN (r :: Tree) (x :: Nat) :: Bool where
   GtN 'EmptyTree        x = 'True
   GtN ('ForkTree l (Node n a) r) x = CmpNat n x == 'GT && GtN l x && GtN r x
 
+-- | Constructor of BSTs. Given two BST trees and an arbitrary node,
+-- | it tests wether the key of the node verifies the LtN and GtN invariants
+-- | wtih respect to each tree.
+-- | Notice that this is all that's needed to assert that the new tree is a BST.
 data BST :: Tree -> Type where
   EmptyBST :: BST 'EmptyTree
   ForkBST  :: (Show a, LtN l n ~ 'True, GtN r n ~ 'True) =>
@@ -41,6 +45,10 @@ instance Show (BST t) where
       go EmptyBST         = "E"
       go (ForkBST l' n'@(Node _) r')  = "(F " ++ go l' ++ " " ++ show n' ++ " " ++ go r' ++ ")"
 
+-- | Prove that inserting a node with key 'x' (lower than 'n') and element value 'a'
+-- | in a BST 't' which verifies 'LtN t n ~ 'True' preserves the LtN invariant,
+-- | given that the comparison between 'x' and the root key of the tree equals 'o'.
+-- | The 'o' parameter guides the proof.
 class ProofLtNInsert' (x :: Nat) (a :: Type) (t :: Tree) (n :: Nat) (o :: Ordering) where
   proofLtNInsert' :: (t ~ 'ForkTree l n1 r, CmpNat x n ~ 'LT, LtN t n ~ 'True) =>
     Node x a -> BST t -> Proxy n -> Proxy o -> LtN (Insert x a t) n :~: 'True
@@ -62,6 +70,10 @@ instance (t ~ 'ForkTree l (Node n1 a1) r, r ~ 'ForkTree rl (Node rn rna) rr, Cmp
   ProofLtNInsert' x a ('ForkTree l (Node n1 a1) ('ForkTree rl (Node rn rna) rr)) n 'GT where
   proofLtNInsert' node (ForkBST _ _ r@ForkBST{}) n _ = gcastWith (proofLtNInsert' node r n (Proxy::Proxy (CmpNat x rn))) Refl
 
+-- | Prove that inserting a node with key 'x' (greater than 'n') and element value 'a'
+-- | in a BST 't' which verifies 'GtN t n ~ 'True' preserves the GtN invariant,
+-- | given that the comparison between 'x' and the root key of the tree equals 'o'.
+-- | The 'o' parameter guides the proof.
 class ProofGtNInsert' (x :: Nat) (a :: Type) (t :: Tree) (n :: Nat) (o :: Ordering) where
   proofGtNInsert' :: (t ~ 'ForkTree l n1 r, CmpNat x n ~ 'GT, GtN t n ~ 'True) =>
     Node x a -> BST t -> Proxy n -> Proxy o -> GtN (Insert x a t) n :~: 'True
@@ -83,6 +95,10 @@ instance (t ~ 'ForkTree l (Node n1 a1) r, r ~ 'ForkTree rl (Node rn rna) rr, Cmp
   ProofGtNInsert' x a ('ForkTree l (Node n1 a1) ('ForkTree rl (Node rn rna) rr)) n 'GT where
   proofGtNInsert' x (ForkBST _ _ r@ForkBST{}) n _ = gcastWith (proofGtNInsert' x r n (Proxy::Proxy (CmpNat x rn))) Refl
 
+-- | This class provides the functionality to insert a node with key 'x' and value type 'a'
+-- | in a BST 't'.
+-- | The insertion is defined at the value level and the type level.
+-- | The returned tree verifies the BST invariant.
 class Insertable (x :: Nat) (a :: Type) (t :: Tree) where
   type Insert (x :: Nat) (a :: Type) (t :: Tree) :: Tree
   insert :: Node x a -> BST t -> BST (Insert x a t)
@@ -93,6 +109,11 @@ instance Insertable' x a ('ForkTree l (Node n a1) r) (CmpNat x n) => Insertable 
   type Insert x a ('ForkTree l (Node n a1) r) = Insert' x a ('ForkTree l (Node n a1) r) (CmpNat x n)
   insert n t = insert' n t (Proxy::Proxy (CmpNat x n))
 
+-- | This class provides the functionality to insert a node with key 'x' and value type 'a'
+-- | in a non empty BST 't'.
+-- | It's only used by the 'Insertable' class and it has one extra parameter 'o',
+-- | which is the type level comparison of 'x' with the key value of the root node.
+-- | The 'o' parameter guides the insertion.
 class Insertable' (x :: Nat) (a :: Type) (t :: Tree) (o :: Ordering) where
   type Insert' (x :: Nat) (a :: Type) (t :: Tree) (o :: Ordering) :: Tree
   insert' :: Node x a -> BST t -> Proxy o -> BST (Insert x a t)
@@ -118,6 +139,8 @@ instance (CmpNat x n ~ 'GT, r ~ 'ForkTree rl (Node rn rna) rr, Insertable' x a r
   insert' nx (ForkBST l n r@ForkBST{}) _ =
     gcastWith (proofGtNInsert' nx r (Proxy::Proxy n) (Proxy::Proxy (CmpNat x rn))) $ ForkBST l n (insert' nx r (Proxy::Proxy (CmpNat x rn)))
 
+-- | Type family to test wether there is a node in the tree 't' with key 'x'.
+-- | It assumes that 't' is a BST in order to perform the search.
 type family Member (x :: Nat) (t :: Tree) :: Bool where
   Member x 'EmptyTree = 'False
   Member x ('ForkTree l (Node n a) r) =
@@ -129,6 +152,9 @@ type family Member (x :: Nat) (t :: Tree) :: Bool where
       )
     )
 
+-- | Type family to search for the type of the value stored with key 'x' in a tree 't'.
+-- | It assumes that 't' is a BST and that 'x' is a member of 't' in order to perform the search
+-- | (so it always return a valid type).
 type family LookupValueType (x :: Nat) (t :: Tree) :: Type where
   LookupValueType x ('ForkTree l (Node n a) r) =
     (If (CmpNat x n == 'EQ)
@@ -139,6 +165,11 @@ type family LookupValueType (x :: Nat) (t :: Tree) :: Type where
       )
     )
 
+-- | This class provides the functionality to lookup a node with key 'x'
+-- | in a non empty BST 't'.
+-- | The lookup is defined at the value level and the type level.
+-- | It's necessary to know the type 'a' of the value stored in node with key 'x'
+-- | so that the type of the value returned by 'lookup' may be specified.
 class Lookupable (x :: Nat) (a :: Type) (t :: Tree) where
   lookup :: (t ~ 'ForkTree l (Node n a1) r, Member x t ~ 'True) =>
     Proxy x -> BST t -> a
@@ -146,11 +177,16 @@ instance (Lookupable' x a ('ForkTree l (Node n a1) r) (CmpNat x n), a ~ LookupVa
   Lookupable x a ('ForkTree l (Node n a1) r) where
   lookup x t = lookup' x t (Proxy::Proxy (CmpNat x n))
 
+-- | This class provides the functionality to lookup a node with key 'x'
+-- | in a non empty BST 't'.
+-- | It's only used by the 'Lookupable' class and it has one extra parameter 'o',
+-- | which is the type level comparison of 'x' with the key value of the root node.
+-- | The 'o' parameter guides the lookup.
 class Lookupable' (x :: Nat) (a :: Type) (t :: Tree) (o :: Ordering) where
   lookup' :: (t ~ 'ForkTree l (Node n a1) r, Member x t ~ 'True) =>
     Proxy x -> BST t -> Proxy o -> a
 instance (CmpNat x n ~ 'EQ) => Lookupable' x a ('ForkTree l (Node n a) r) 'EQ where
-  lookup' _ (ForkBST _ (Node a) _) _ = getValue (Node a::Node n a)
+  lookup' _ (ForkBST _ node _) _ = getValue node
 instance (CmpNat x n ~ 'LT, l ~ 'ForkTree ll (Node ln lna) lr, Member x l ~ 'True, Lookupable' x a l (CmpNat x ln)) =>
   Lookupable' x a ('ForkTree ('ForkTree ll (Node ln lna) lr) (Node n a1) r) 'LT where
   lookup' p (ForkBST l@ForkBST{} _ _) _ = lookup' p l (Proxy::Proxy (CmpNat x ln))
@@ -158,6 +194,10 @@ instance (CmpNat x n ~ 'GT, r ~ 'ForkTree rl (Node rn rna) rr, Member x r ~ 'Tru
   Lookupable' x a ('ForkTree l (Node n a1) ('ForkTree rl (Node rn rna) rr)) 'GT where
   lookup' p (ForkBST _ _ r@ForkBST{}) _ = lookup' p r (Proxy::Proxy (CmpNat x rn))
 
+-- | Prove that deleting a node with key 'x' (lower than 'n')
+-- | in a BST 't' which verifies 'LtN t n ~ 'True' preserves the LtN invariant,
+-- | given that the comparison between 'x' and the root key of the tree equals 'o'.
+-- | The 'o' parameter guides the proof.
 class ProofLtNDelete' (x :: Nat) (t :: Tree) (n :: Nat) (o :: Ordering) where
   proofLtNDelete' :: (t ~ 'ForkTree l n1 r, CmpNat x n ~ 'LT, LtN t n ~ 'True) =>
     Proxy x -> BST t -> Proxy n -> Proxy o -> LtN (Delete' x t o) n :~: 'True
@@ -189,6 +229,10 @@ instance (LtN l n ~ 'True, CmpNat x n1 ~ 'GT, LtN ('ForkTree rl (Node rn ra) rr)
   ProofLtNDelete' x ('ForkTree l (Node n1 a1) ('ForkTree rl (Node rn ra) rr)) n 'GT where
   proofLtNDelete' px (ForkBST _ (Node _) r@ForkBST{}) _ _ = gcastWith (proofLtNDelete' px r (Proxy::Proxy n) (Proxy::Proxy (CmpNat x rn))) Refl
 
+-- | Prove that deleting a node with key 'x' (greater than 'n')
+-- | in a BST 't' which verifies 'GtN t n ~ 'True' preserves the GtN invariant,
+-- | given that the comparison between 'x' and the root key of the tree equals 'o'.
+-- | The 'o' parameter guides the proof.
 class ProofGtNDelete' (x :: Nat) (t :: Tree) (n :: Nat) (o :: Ordering) where
   proofGtNDelete' :: (t ~ 'ForkTree l n1 r, CmpNat x n ~ 'GT, GtN t n ~ 'True) =>
     Proxy x -> BST t -> Proxy n -> Proxy o -> GtN (Delete' x t o) n :~: 'True
@@ -220,6 +264,9 @@ instance (GtN l n ~ 'True, CmpNat x n1 ~ 'GT, GtN ('ForkTree rl (Node rn ra) rr)
   ProofGtNDelete' x ('ForkTree l (Node n1 a1) ('ForkTree rl (Node rn ra) rr)) n 'GT where
   proofGtNDelete' px (ForkBST _ (Node _) r@ForkBST{}) _ _ = gcastWith (proofGtNDelete' px r (Proxy::Proxy n) (Proxy::Proxy (CmpNat x rn))) Refl
 
+-- | Prove that deleting the node with maximum key value
+-- | in a BST 't' returns a tree whose keys are all less than the maximum key value.
+-- | This proof is needed for the delete operation.
 class ProofLtNMaxKeyDeleteMaxKey (t :: Tree) where
   proofLtNMaxKeyDeleteMaxKey :: (MaxKeyDeletable t, Maxable t) =>
     BST t -> LtN (MaxKeyDelete t) (MaxKey t) :~: 'True
@@ -235,6 +282,9 @@ instance (l ~ 'ForkTree ll (Node ln la) lr, LtN l n ~ 'True, r ~ 'ForkTree rl (N
   proofLtNMaxKeyDeleteMaxKey (ForkBST ForkBST{} (Node _) r@ForkBST{}) =
     gcastWith (proofLtNMaxKeyDeleteMaxKey r) Refl
 
+-- | Prove that in a BST 't', all the keys in the right subtree are greater than
+-- | the maximum key of the left subtree.
+-- | This proof is needed for the delete operation.
 class ProofGtNMaxKey (t :: Tree) where
   proofGtNMaxKey :: (t ~ 'ForkTree l (Node n a) r, Maxable l) =>
     BST t -> GtN r (MaxKey l) :~: 'True
@@ -244,6 +294,9 @@ instance (r ~ 'ForkTree rl (Node rn ra) rr, GtN r n ~ 'True, GtN r (MaxKey l) ~ 
   ProofGtNMaxKey ('ForkTree l (Node n a) ('ForkTree rl (Node rn ra) rr)) where
   proofGtNMaxKey (ForkBST _ (Node _) ForkBST{}) = Refl
 
+-- | Prove that in a BST 't' which verifies that 'GtN t n ~ 'True',
+-- | the maximum key of 't' is also greater than 'n'.
+-- | This proof is needed for the delete operation.
 class ProofGTMaxKey (t :: Tree) (n :: Nat) where
   proofGTMaxKey :: (Maxable t, GtN t n ~ 'True) =>
     BST t -> Proxy n -> CmpNat (MaxKey t) n :~: 'GT
@@ -254,6 +307,9 @@ instance (r ~ 'ForkTree rl (Node rn ra) rr, GtN r n ~ 'True, Maxable r, ProofGTM
   ProofGTMaxKey ('ForkTree l (Node n1 a) ('ForkTree rl (Node rn ra) rr)) n where
   proofGTMaxKey (ForkBST _ (Node _) r@ForkBST{}) pn = gcastWith (proofGTMaxKey r pn) Refl
 
+-- | Prove that in a BST 't' which verifies that 'GtN t n ~ 'True',
+-- | the tree resulting from the removal of the maximum key of 't' preserves the GtN invariant.
+-- | This proof is needed for the delete operation.
 class ProofGtNMaxKeyDelete (t :: Tree) (n :: Nat) where
   proofGtNMaxKeyDelete :: (MaxKeyDeletable t, GtN t n ~ 'True) =>
     BST t -> Proxy n -> GtN (MaxKeyDelete t) n :~: 'True
@@ -265,6 +321,9 @@ instance (t ~ 'ForkTree l (Node n1 a) 'EmptyTree, GtN t n ~ 'True, GtN l n ~ 'Tr
   ProofGtNMaxKeyDelete ('ForkTree l (Node n1 a) ('ForkTree rl (Node rn ra) rr)) n where
   proofGtNMaxKeyDelete (ForkBST _ (Node _) r@ForkBST{}) pn = gcastWith (proofGtNMaxKeyDelete r pn) Refl
 
+-- | Prove that in a BST 't' which verifies that 'LtN t n ~ 'True',
+-- | the maximum key of 't' is also less than 'n'.
+-- | This proof is needed for the delete operation.
 class ProofLTMaxKey (t :: Tree) (n :: Nat) where
   proofLTMaxKey :: (Maxable t, LtN t n ~ 'True) =>
     BST t -> Proxy n -> CmpNat (MaxKey t) n :~: 'LT
@@ -275,6 +334,9 @@ instance (r ~ 'ForkTree rl (Node rn ra) rr, LtN r n ~ 'True, Maxable r, ProofLTM
   ProofLTMaxKey ('ForkTree l (Node n1 a) ('ForkTree rl (Node rn ra) rr)) n where
   proofLTMaxKey (ForkBST _ (Node _) r@ForkBST{}) pn = gcastWith (proofLTMaxKey r pn) Refl
 
+-- | Prove that in a BST 't' which verifies that 'LtN t n ~ 'True',
+-- | the tree resulting from the removal of the maximum key of 't' preserves the LtN invariant.
+-- | This proof is needed for the delete operation.
 class ProofLtNMaxKeyDelete (t :: Tree) (n :: Nat) where
   proofLtNMaxKeyDelete :: (MaxKeyDeletable t, LtN t n ~ 'True) =>
     BST t -> Proxy n -> LtN (MaxKeyDelete t) n :~: 'True
@@ -286,6 +348,9 @@ instance (t ~ 'ForkTree l (Node n1 a) 'EmptyTree, LtN t n ~ 'True, LtN l n ~ 'Tr
   ProofLtNMaxKeyDelete ('ForkTree l (Node n1 a) ('ForkTree rl (Node rn ra) rr)) n where
   proofLtNMaxKeyDelete (ForkBST _ (Node _) r@ForkBST{}) pn = gcastWith (proofLtNMaxKeyDelete r pn) Refl
 
+-- | This class provides the functionality to delete the node with maximum key value
+-- | in a BST 't'.
+-- | The deletion is defined at the value level and the type level.
 class MaxKeyDeletable (t :: Tree) where
   type MaxKeyDelete (t :: Tree) :: Tree
   maxKeyDelete :: (t ~ 'ForkTree l (Node n a1) r) =>
@@ -301,6 +366,10 @@ instance (MaxKeyDeletable ('ForkTree rl (Node rn ra) rr),
   maxKeyDelete (ForkBST l node r@ForkBST{}) =
     gcastWith (proofGtNMaxKeyDelete r (Proxy::Proxy n)) $ ForkBST l node (maxKeyDelete r)
 
+-- | This class provides the functionality to get the key, type and value of the node with maximum key value
+-- | in a BST 't'.
+-- | The lookup is defined at the value level and the type level.
+-- | Since the keys are only kept at the type level, there's no value level getter of the maximum key.
 class Maxable (t :: Tree) where
   type MaxKey (t :: Tree) :: Nat
   type MaxValue (t :: Tree) :: Type
@@ -316,6 +385,10 @@ instance Maxable ('ForkTree rl (Node rn ra) rr) =>
   type MaxValue ('ForkTree l (Node n a1) ('ForkTree rl (Node rn ra) rr)) = MaxValue ('ForkTree rl (Node rn ra) rr)
   maxValue (ForkBST _ (Node _) r@ForkBST{}) = maxValue r
 
+-- | This class provides the functionality to delete a node with key 'x'
+-- | in a BST 't'.
+-- | The deletion is defined at the value level and the type level.
+-- | The returned tree verifies the BST invariant.
 class Deletable (x :: Nat) (t :: Tree) where
   type Delete (x :: Nat) (t :: Tree) :: Tree
   delete :: Proxy x -> BST t -> BST (Delete x t)
@@ -327,6 +400,11 @@ instance (Deletable' x ('ForkTree l (Node n a1) r) (CmpNat x n)) =>
   type Delete x ('ForkTree l (Node n a1) r) = Delete' x ('ForkTree l (Node n a1) r) (CmpNat x n)
   delete px t = delete' px t (Proxy::Proxy (CmpNat x n))
 
+-- | This class provides the functionality to delete a node with key 'x'
+-- | in a non empty BST 't'.
+-- | It's only used by the 'Deletable' class and it has one extra parameter 'o',
+-- | which is the type level comparison of 'x' with the key value of the root node.
+-- | The 'o' parameter guides the insertion.
 class Deletable' (x :: Nat) (t :: Tree) (o :: Ordering) where
   type Delete' (x :: Nat) (t :: Tree) (o :: Ordering) :: Tree
   delete' :: Proxy x -> BST t -> Proxy o -> BST (Delete' x t o)
