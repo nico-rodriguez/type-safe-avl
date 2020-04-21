@@ -3,7 +3,6 @@
 {-# LANGUAGE MultiParamTypeClasses #-}
 
 module Extern.AVL (
-  AVL(..),
   emptyAVL,
   insertAVL,
   lookupAVL,
@@ -20,8 +19,9 @@ import           Extern.AVLProofs     (AVL (AVL),
                                        ProofIsBSTDelete (proofIsBSTDelete),
                                        ProofIsBSTInsert (proofIsBSTInsert))
 import           Extern.BSTOperations (Lookupable (lookup), Member)
+import           Extern.BSTProofs     (BST(BST))
 import           ITree                (ITree (EmptyITree), Tree (EmptyTree, ForkTree))
-import           Node                 (Node)
+import           Node                 (Node, mkNode)
 import           Prelude              (Bool (True), ($))
 
 
@@ -29,8 +29,9 @@ emptyAVL :: AVL 'EmptyTree
 emptyAVL = AVL EmptyITree
 
 insertAVL :: (Insertable x a t, ProofIsBSTInsert x a t, ProofIsAVLInsert x a t) =>
-  Node x a -> AVL t -> AVL (Insert x a t)
-insertAVL x (AVL t) = gcastWith (proofIsAVLInsert x t) $ gcastWith (proofIsBSTInsert x t) AVL $ insert x t
+  Proxy x -> a -> AVL t -> AVL (Insert x a t)
+insertAVL x a avl@(AVL t) = gcastWith (proofIsAVLInsert node t) $ gcastWith (proofIsBSTInsert node (BST t)) AVL $ insert node t
+  where node = mkNode x a
 
 lookupAVL :: (t ~ 'ForkTree l (Node n a1) r, Member x t ~ 'True, Lookupable x a t) =>
   Proxy x -> AVL t -> a
