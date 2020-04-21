@@ -21,7 +21,7 @@ import           Data.Type.Bool       (type (&&))
 import           Data.Type.Equality   ((:~:) (Refl), type (==), gcastWith)
 import           Extern.BSTOperations (Delete, Delete', Insert, Insert', MaxKey,
                                        MaxKeyDeletable, MaxKeyDelete, Maxable)
-import           GHC.TypeLits         (CmpNat, Nat)
+import           GHC.TypeNats         (CmpNat, Nat)
 import           ITree                (ITree (EmptyITree, ForkITree),
                                        Tree (EmptyTree, ForkTree))
 import           Node                 (Node (Node))
@@ -66,24 +66,25 @@ instance ProofIsBSTInsert' x a ('ForkTree l (Node n a1) r) (CmpNat x n) =>
 -- | The BST invariant was already check when proofIsBSTInsert was called before.
 -- | The 'o' parameter guides the proof.
 class ProofIsBSTInsert' (x :: Nat) (a :: Type) (t :: Tree) (o :: Ordering) where
-  proofIsBSTInsert' :: Node x a -> ITree t -> Proxy o -> IsBST (Insert' x a t o) :~: 'True
+  proofIsBSTInsert' :: (IsBST t ~ 'True) =>
+    Node x a -> ITree t -> Proxy o -> IsBST (Insert' x a t o) :~: 'True
 instance (LtN l n ~ 'True, GtN r n ~ 'True, IsBST l ~ 'True, IsBST r ~ 'True) =>
   ProofIsBSTInsert' x a ('ForkTree l (Node n a1) r) 'EQ where
   proofIsBSTInsert' _ ForkITree{} _ = Refl
-instance (CmpNat x n ~ 'LT, IsBST r ~ 'True, GtN r n ~ 'True) =>
+instance (CmpNat x n ~ 'LT, GtN r n ~ 'True, IsBST r ~ 'True) =>
   ProofIsBSTInsert' x a ('ForkTree 'EmptyTree (Node n a1) r) 'LT where
   proofIsBSTInsert' _ (ForkITree EmptyITree _ _) _ = Refl
 instance (l ~ 'ForkTree ll (Node ln lna) lr, CmpNat x n ~ 'LT, LtN l n ~ 'True,
-  IsBST r ~ 'True, GtN r n ~ 'True,
+  GtN r n ~ 'True, IsBST r ~ 'True,
   ProofIsBSTInsert' x a l (CmpNat x ln), ProofLtNInsert' x a l n (CmpNat x ln)) =>
   ProofIsBSTInsert' x a ('ForkTree ('ForkTree ll (Node ln lna) lr) (Node n a1) r) 'LT where
   proofIsBSTInsert' node (ForkITree l@ForkITree{} _ _) _ =
     gcastWith (proofLtNInsert' node l (Proxy::Proxy n) (Proxy::Proxy (CmpNat x ln))) $
       gcastWith (proofIsBSTInsert' node l (Proxy::Proxy (CmpNat x ln))) Refl
-instance (IsBST l ~ 'True, LtN l n ~ 'True, CmpNat x n ~ 'GT) =>
+instance (CmpNat x n ~ 'GT, LtN l n ~ 'True, IsBST l ~ 'True) =>
   ProofIsBSTInsert' x a ('ForkTree l (Node n a1) 'EmptyTree) 'GT where
   proofIsBSTInsert' _ (ForkITree _ _ EmptyITree) _ = Refl
-instance (IsBST l ~ 'True, LtN l n ~ 'True,
+instance (LtN l n ~ 'True, IsBST l ~ 'True,
   r ~ 'ForkTree rl (Node rn rna) rr, CmpNat x n ~ 'GT, GtN r n ~ 'True, 
   ProofIsBSTInsert' x a r (CmpNat x rn), ProofGtNInsert' x a r n (CmpNat x rn)) =>
   ProofIsBSTInsert' x a ('ForkTree l (Node n a1) ('ForkTree rl (Node rn rna) rr)) 'GT where
@@ -104,7 +105,7 @@ instance (CmpNat x n1 ~ 'EQ) =>
 instance (CmpNat x n1 ~ 'LT) =>
   ProofLtNInsert' x a ('ForkTree 'EmptyTree (Node n1 a1) r) n 'LT where
   proofLtNInsert' _ (ForkITree EmptyITree _ _) _ _ = Refl
-instance (l ~ 'ForkTree ll (Node ln lna) lr, CmpNat x n1 ~ 'LT, LtN l n ~ 'True,
+instance (CmpNat x n1 ~ 'LT, l ~ 'ForkTree ll (Node ln lna) lr, LtN l n ~ 'True,
   ProofLtNInsert' x a l n (CmpNat x ln)) =>
   ProofLtNInsert' x a ('ForkTree ('ForkTree ll (Node ln lna) lr) (Node n1 a1) r) n 'LT where
   proofLtNInsert' node (ForkITree l@ForkITree{} _ _) n _ =
@@ -112,7 +113,7 @@ instance (l ~ 'ForkTree ll (Node ln lna) lr, CmpNat x n1 ~ 'LT, LtN l n ~ 'True,
 instance (CmpNat x n1 ~ 'GT) =>
   ProofLtNInsert' x a ('ForkTree l (Node n1 a1) 'EmptyTree) n 'GT where
   proofLtNInsert' _ (ForkITree _ _ EmptyITree) _ _ = Refl
-instance (r ~ 'ForkTree rl (Node rn rna) rr, CmpNat x n1 ~ 'GT, LtN r n ~ 'True,
+instance (CmpNat x n1 ~ 'GT, r ~ 'ForkTree rl (Node rn rna) rr, LtN r n ~ 'True,
   ProofLtNInsert' x a r n (CmpNat x rn)) =>
   ProofLtNInsert' x a ('ForkTree l (Node n1 a1) ('ForkTree rl (Node rn rna) rr)) n 'GT where
   proofLtNInsert' node (ForkITree _ _ r@ForkITree{}) n _ =
@@ -131,7 +132,7 @@ instance (CmpNat x n1 ~ 'EQ) =>
 instance (CmpNat x n1 ~ 'LT) =>
   ProofGtNInsert' x a ('ForkTree 'EmptyTree (Node n1 a1) r) n 'LT where
   proofGtNInsert' _ (ForkITree EmptyITree _ _) _ _ = Refl
-instance (l ~ 'ForkTree ll (Node ln lna) lr, CmpNat x n1 ~ 'LT, GtN l n ~ 'True,
+instance (CmpNat x n1 ~ 'LT, l ~ 'ForkTree ll (Node ln lna) lr, GtN l n ~ 'True,
   ProofGtNInsert' x a l n (CmpNat x ln)) =>
   ProofGtNInsert' x a ('ForkTree ('ForkTree ll (Node ln lna) lr) (Node n1 a1) r) n 'LT where
   proofGtNInsert' x (ForkITree l@ForkITree{} _ _) n _ =
@@ -139,7 +140,7 @@ instance (l ~ 'ForkTree ll (Node ln lna) lr, CmpNat x n1 ~ 'LT, GtN l n ~ 'True,
 instance (CmpNat x n1 ~ 'GT) =>
   ProofGtNInsert' x a ('ForkTree l (Node n1 a1) 'EmptyTree) n 'GT where
   proofGtNInsert' _ (ForkITree _ _ EmptyITree) _ _ = Refl
-instance (r ~ 'ForkTree rl (Node rn rna) rr, CmpNat x n1 ~ 'GT, GtN r n ~ 'True,
+instance (CmpNat x n1 ~ 'GT, r ~ 'ForkTree rl (Node rn rna) rr, GtN r n ~ 'True,
   ProofGtNInsert' x a r n (CmpNat x rn)) =>
   ProofGtNInsert' x a ('ForkTree l (Node n1 a1) ('ForkTree rl (Node rn rna) rr)) n 'GT where
   proofGtNInsert' x (ForkITree _ _ r@ForkITree{}) n _ =
@@ -161,7 +162,8 @@ instance ProofIsBSTDelete' x ('ForkTree l (Node n a1) r) (CmpNat x n) =>
 -- | The BST invariant was already check when proofIsBSTDelete was called before.
 -- | The 'o' parameter guides the proof.
 class ProofIsBSTDelete' (x :: Nat) (t :: Tree) (o :: Ordering) where
-  proofIsBSTDelete' :: Proxy x -> ITree t -> Proxy o -> IsBST (Delete' x t o) :~: 'True
+  proofIsBSTDelete' :: (IsBST t ~ 'True) =>
+    Proxy x -> ITree t -> Proxy o -> IsBST (Delete' x t o) :~: 'True
 instance ProofIsBSTDelete' x ('ForkTree 'EmptyTree (Node n a1) 'EmptyTree) 'EQ where
   proofIsBSTDelete' _ (ForkITree EmptyITree (Node _) EmptyITree) _ = Refl
 instance (IsBST rl ~ 'True, IsBST rr ~ 'True, LtN rl rn ~ 'True, GtN rr rn ~ 'True) =>

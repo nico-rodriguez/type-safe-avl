@@ -22,82 +22,106 @@ import           Extern.AVLOperations (BS (Balanced, LeftHeavy, RightHeavy),
                                        UnbalancedState)
 import           Extern.BSTOperations (MaxKey, MaxKeyDeletable (), MaxKeyDelete,
                                        MaxValue (), Maxable)
-import           Extern.BSTProofs     (GtN, IsBST, LtN)
-import           GHC.TypeLits         (type (+), type (<=?), CmpNat, Nat)
+import           Extern.BSTProofs     (GtN, IsBST, LtN, BST(BST))
+import           GHC.TypeNats         (type (+), type (<=?), CmpNat, Nat)
 import           ITree                (ITree (EmptyITree, ForkITree),
                                        Tree (EmptyTree, ForkTree))
 import           Node                 (Node (Node))
 import           Prelude              (Bool (True), Ordering (EQ, GT, LT),
                                        Show (show), ($), (++))
+import           Unsafe.Coerce        (unsafeCoerce)
 
+-- | Check if tree is AVL by comparing the differences in the heights of all sub trees pairs
+-- | It doesn't check if the tree is BST, IsBST is used for that.
 type family IsAVL (t :: Tree) :: Bool where
   IsAVL 'EmptyTree                   = 'True
   IsAVL ('ForkTree l (Node _n _a) r) =
     BalancedHeights (Height l) (Height r) && IsAVL l && IsAVL r
 
+
+-- | Constructor of AVLs. Given an arbitrary tree, it tests wether it verifies the BST and  AVL invariant.
 data AVL :: Tree -> Type where
   AVL :: (IsBST t ~ 'True, IsAVL t ~ 'True) => ITree t -> AVL t
 
 instance Show (AVL t) where
   show (AVL t) = "AVL $ " ++ show t
 
-class ProofIsBSTInsert (x :: Nat) (a :: Type) (t :: Tree) where
-  proofIsBSTInsert :: (IsBST t ~ 'True) =>
-    Node x a -> ITree t -> IsBST (Insert x a t) :~: 'True
-instance ProofIsBSTInsert x a 'EmptyTree where
-  proofIsBSTInsert _ EmptyITree = Refl
-instance ProofIsBSTInsert' x a ('ForkTree l (Node n a1) r) (CmpNat x n) => ProofIsBSTInsert x a ('ForkTree l (Node n a1) r) where
-  proofIsBSTInsert node t = proofIsBSTInsert' node t (Proxy::Proxy (CmpNat x n))
 
+-- | Prove that inserting a node with key 'x' and element value 'a'
+-- | in a BST tree preserves BST condition.
+class ProofIsBSTInsert (x :: Nat) (a :: Type) (t :: Tree) where
+  proofIsBSTInsert :: Node x a -> BST t -> IsBST (Insert x a t) :~: 'True
+instance ProofIsBSTInsert x a 'EmptyTree where
+  proofIsBSTInsert _ (BST EmptyITree) = Refl
+instance ProofIsBSTInsert' x a ('ForkTree l (Node n a1) r) (CmpNat x n) => ProofIsBSTInsert x a ('ForkTree l (Node n a1) r) where
+  proofIsBSTInsert node (BST t) = proofIsBSTInsert' node t (Proxy::Proxy (CmpNat x n))
+
+-- | Prove that inserting a node with key 'x' and element value 'a'
+-- | in a BST tree preserves BST condition, given that the comparison between
+-- | 'x' and the root key of the tree equals 'o'.
+-- | The BST invariant was already check when proofIsBSTInsert was called before.
+-- | The 'o' parameter guides the proof.
 class ProofIsBSTInsert' (x :: Nat) (a :: Type) (t :: Tree) (o :: Ordering) where
-  proofIsBSTInsert' :: (t ~ 'ForkTree l (Node n a1) r) => Node x a -> ITree t -> Proxy o -> IsBST (Insert' x a t o) :~: 'True
-instance (IsBST l ~ 'True, IsBST r ~ 'True, LtN l n ~ 'True, GtN r n ~ 'True) =>
+  proofIsBSTInsert' :: (IsBST t ~ 'True) =>
+    Node x a -> ITree t -> Proxy o -> IsBST (Insert' x a t o) :~: 'True
+instance (LtN l n ~ 'True, GtN r n ~ 'True, IsBST l ~ 'True, IsBST r ~ 'True) =>
   ProofIsBSTInsert' x a ('ForkTree l (Node n a1) r) 'EQ where
   proofIsBSTInsert' _ ForkITree{} _ = Refl
-instance (l ~ 'EmptyTree, ProofIsBSTBalance' ('ForkTree ('ForkTree 'EmptyTree (Node x a) 'EmptyTree) (Node n a1) r) (UnbalancedState 1 (Height r))) =>
+instance (IsBST('ForkTree ('ForkTree 'EmptyTree (Node x a) 'EmptyTree) (Node n a1) r) ~ 'True,
+  ProofIsBSTBalance ('ForkTree ('ForkTree 'EmptyTree (Node x a) 'EmptyTree) (Node n a1) r)) =>
   ProofIsBSTInsert' x a ('ForkTree 'EmptyTree (Node n a1) r) 'LT where
-  proofIsBSTInsert' _ (ForkITree EmptyITree _ _) _ =  gcastWith (proofIsBSTBalance' (Proxy::Proxy ('ForkTree ('ForkTree 'EmptyTree (Node x a) 'EmptyTree) (Node n a1) r)) (Proxy::Proxy (UnbalancedState 1 (Height r)))) Refl
-instance (l ~ 'ForkTree ll (Node ln lna) lr, CmpNat x n ~ 'LT, IsBST r ~ 'True, LtN l n ~ 'True, GtN r n ~ 'True, ProofIsBSTInsert' x a l (CmpNat x ln),
-  ProofLtNInsert' x a l n (CmpNat x ln),
+  proofIsBSTInsert' _ (ForkITree EmptyITree _ _) _ =
+    gcastWith (proofIsBSTBalance (Proxy::Proxy ('ForkTree ('ForkTree 'EmptyTree (Node x a) 'EmptyTree) (Node n a1) r))) Refl
+instance (l ~ 'ForkTree ll (Node ln lna) lr, CmpNat x n ~ 'LT, LtN l n ~ 'True,
+  GtN r n ~ 'True, IsBST r ~ 'True,
+  ProofIsBSTInsert' x a l (CmpNat x ln), ProofLtNInsert' x a l n (CmpNat x ln),
   ProofIsBSTBalance ('ForkTree (Insert' x a l (CmpNat x ln)) (Node n a1) r)) =>
   ProofIsBSTInsert' x a ('ForkTree ('ForkTree ll (Node ln lna) lr) (Node n a1) r) 'LT where
   proofIsBSTInsert' node (ForkITree l@ForkITree{} _ _) _ =
     gcastWith (proofLtNInsert' node l (Proxy::Proxy n) (Proxy::Proxy (CmpNat x ln))) $
       gcastWith (proofIsBSTInsert' node l (Proxy::Proxy (CmpNat x ln))) $
         gcastWith (proofIsBSTBalance (Proxy::Proxy ('ForkTree (Insert' x a l (CmpNat x ln)) (Node n a1) r))) Refl
-instance (r ~ 'EmptyTree, CmpNat x n ~ 'GT, IsBST l ~ 'True, LtN l n ~ 'True, GtN r n ~ 'True,
+instance (CmpNat x n ~ 'GT, LtN l n ~ 'True, IsBST l ~ 'True,
   ProofIsBSTBalance ('ForkTree l (Node n a1) ('ForkTree 'EmptyTree (Node x a) 'EmptyTree))) =>
   ProofIsBSTInsert' x a ('ForkTree l (Node n a1) 'EmptyTree) 'GT where
-  proofIsBSTInsert' _ (ForkITree _ _ EmptyITree) _ = gcastWith (proofIsBSTBalance (Proxy::Proxy ('ForkTree l (Node n a1) ('ForkTree 'EmptyTree (Node x a) 'EmptyTree)))) Refl
-instance (r ~ 'ForkTree rl (Node rn rna) rr, CmpNat x n ~ 'GT, IsBST r ~ 'True, IsBST l ~ 'True, GtN r n ~ 'True, LtN l n ~ 'True, ProofIsBSTInsert' x a r (CmpNat x rn),
-  ProofGtNInsert' x a r n (CmpNat x rn), ProofIsBSTBalance ('ForkTree l (Node n a1) (Insert' x a ('ForkTree rl (Node rn rna) rr) (CmpNat x rn)))) =>
+  proofIsBSTInsert' _ (ForkITree _ _ EmptyITree) _ =
+    gcastWith (proofIsBSTBalance (Proxy::Proxy ('ForkTree l (Node n a1) ('ForkTree 'EmptyTree (Node x a) 'EmptyTree)))) Refl
+instance (LtN l n ~ 'True, IsBST l ~ 'True,
+  r ~ 'ForkTree rl (Node rn rna) rr, CmpNat x n ~ 'GT, GtN r n ~ 'True,
+  ProofGtNInsert' x a r n (CmpNat x rn), ProofIsBSTInsert' x a r (CmpNat x rn),
+  ProofIsBSTBalance ('ForkTree l (Node n a1) (Insert' x a ('ForkTree rl (Node rn rna) rr) (CmpNat x rn)))) =>
   ProofIsBSTInsert' x a ('ForkTree l (Node n a1) ('ForkTree rl (Node rn rna) rr)) 'GT where
   proofIsBSTInsert' node (ForkITree _ _ r@ForkITree{}) _ =
     gcastWith (proofGtNInsert' node r (Proxy::Proxy n) (Proxy::Proxy (CmpNat x rn))) $
       gcastWith (proofIsBSTInsert' node r (Proxy::Proxy (CmpNat x rn))) $
         gcastWith (proofIsBSTBalance (Proxy::Proxy ('ForkTree l (Node n a1) (Insert' x a ('ForkTree rl (Node rn rna) rr) (CmpNat x rn))))) Refl
 
+
+-- | Prove that inserting a node with key 'x' (lower than 'n') and element value 'a'
+-- | in a tree 't' which verifies 'LtN t n ~ 'True' preserves the LtN invariant,
+-- | given that the comparison between 'x' and the root key of the tree equals 'o'.
+-- | The 'o' parameter guides the proof.
 class ProofLtNInsert' (x :: Nat) (a :: Type) (t :: Tree) (n :: Nat) (o :: Ordering) where
-  proofLtNInsert' :: (t ~ 'ForkTree l n1 r, CmpNat x n ~ 'LT, LtN t n ~ 'True) =>
+  proofLtNInsert' :: (CmpNat x n ~ 'LT, LtN t n ~ 'True) =>
     Node x a -> ITree t -> Proxy n -> Proxy o -> LtN (Insert x a t) n :~: 'True
-instance (t ~ 'ForkTree l n1 r, CmpNat x n1 ~ 'EQ) =>
+instance (CmpNat x n1 ~ 'EQ) =>
   ProofLtNInsert' x a ('ForkTree l (Node n1 a1) r) n 'EQ where
   proofLtNInsert' _ ForkITree{} _ _ = Refl
-instance (t ~ 'ForkTree l n1 r, l ~ 'EmptyTree, CmpNat x n1 ~ 'LT, ProofLtNBalance ('ForkTree ('ForkTree 'EmptyTree (Node x a) 'EmptyTree) (Node n1 a1) r) n) =>
+instance (CmpNat x n1 ~ 'LT, ProofLtNBalance ('ForkTree ('ForkTree 'EmptyTree (Node x a) 'EmptyTree) (Node n1 a1) r) n) =>
   ProofLtNInsert' x a ('ForkTree 'EmptyTree (Node n1 a1) r) n 'LT where
   proofLtNInsert' _ (ForkITree EmptyITree _ _) _ _ =
     gcastWith (proofLtNBalance (Proxy::Proxy ('ForkTree ('ForkTree 'EmptyTree (Node x a) 'EmptyTree) (Node n1 a1) r)) (Proxy::Proxy n)) Refl
-instance (t ~ 'ForkTree l (Node n1 a1) r, l ~ 'ForkTree ll (Node ln lna) lr, CmpNat x n1 ~ 'LT, LtN l n ~ 'True,
+instance (CmpNat x n1 ~ 'LT, l ~ 'ForkTree ll (Node ln lna) lr, LtN l n ~ 'True,
   ProofLtNInsert' x a l n (CmpNat x ln), ProofLtNBalance ('ForkTree (Insert' x a ('ForkTree ll (Node ln lna) lr) (CmpNat x ln)) (Node n1 a1) r) n) =>
   ProofLtNInsert' x a ('ForkTree ('ForkTree ll (Node ln lna) lr) (Node n1 a1) r) n 'LT where
   proofLtNInsert' node (ForkITree l@ForkITree{} _ _) n _ =
     gcastWith (proofLtNInsert' node l n (Proxy::Proxy (CmpNat x ln))) $
       gcastWith (proofLtNBalance (Proxy::Proxy ('ForkTree (Insert' x a ('ForkTree ll (Node ln lna) lr) (CmpNat x ln)) (Node n1 a1) r)) (Proxy::Proxy n)) Refl
-instance (t ~ 'ForkTree l (Node n1 a1) r, r ~ 'EmptyTree, CmpNat x n1 ~ 'GT, ProofLtNBalance ('ForkTree l (Node n1 a1) ('ForkTree 'EmptyTree (Node x a) 'EmptyTree)) n) =>
+instance (CmpNat x n1 ~ 'GT, ProofLtNBalance ('ForkTree l (Node n1 a1) ('ForkTree 'EmptyTree (Node x a) 'EmptyTree)) n) =>
   ProofLtNInsert' x a ('ForkTree l (Node n1 a1) 'EmptyTree) n 'GT where
   proofLtNInsert' _ (ForkITree _ _ EmptyITree) _ _ =
     gcastWith (proofLtNBalance (Proxy::Proxy ('ForkTree l (Node n1 a1) ('ForkTree 'EmptyTree (Node x a) 'EmptyTree))) (Proxy::Proxy n)) Refl
-instance (t ~ 'ForkTree l (Node n1 a1) r, r ~ 'ForkTree rl (Node rn rna) rr, CmpNat x n1 ~ 'GT, LtN r n ~ 'True,
+instance (CmpNat x n1 ~ 'GT, r ~ 'ForkTree rl (Node rn rna) rr, LtN r n ~ 'True,
   ProofLtNInsert' x a r n (CmpNat x rn),
   ProofLtNBalance ('ForkTree l (Node n1 a1) (Insert' x a ('ForkTree rl (Node rn rna) rr) (CmpNat x rn))) n) =>
   ProofLtNInsert' x a ('ForkTree l (Node n1 a1) ('ForkTree rl (Node rn rna) rr)) n 'GT where
@@ -105,34 +129,43 @@ instance (t ~ 'ForkTree l (Node n1 a1) r, r ~ 'ForkTree rl (Node rn rna) rr, Cmp
     gcastWith (proofLtNInsert' node r n (Proxy::Proxy (CmpNat x rn))) $
       gcastWith (proofLtNBalance (Proxy::Proxy ('ForkTree l (Node n1 a1) (Insert' x a ('ForkTree rl (Node rn rna) rr) (CmpNat x rn)))) (Proxy::Proxy n)) Refl
 
+
+-- | Prove that inserting a node with key 'x' (greater than 'n') and element value 'a'
+-- | in a tree 't' which verifies 'GtN t n ~ 'True' preserves the GtN invariant,
+-- | given that the comparison between 'x' and the root key of the tree equals 'o'.
+-- | The 'o' parameter guides the proof.
 class ProofGtNInsert' (x :: Nat) (a :: Type) (t :: Tree) (n :: Nat) (o :: Ordering) where
-  proofGtNInsert' :: (t ~ 'ForkTree l n1 r, CmpNat x n ~ 'GT, GtN t n ~ 'True) =>
+  proofGtNInsert' :: (CmpNat x n ~ 'GT, GtN t n ~ 'True) =>
     Node x a -> ITree t -> Proxy n -> Proxy o -> GtN (Insert x a t) n :~: 'True
-instance (t ~ 'ForkTree l (Node n1 a1) r, CmpNat x n1 ~ 'EQ, CmpNat x n ~ 'GT, GtN l n ~ 'True, GtN r n ~ 'True) =>
+instance (CmpNat x n1 ~ 'EQ) =>
   ProofGtNInsert' x a ('ForkTree l (Node n1 a1) r) n 'EQ where
   proofGtNInsert' _ ForkITree{} _ _ = Refl
-instance (t ~ 'ForkTree l (Node n1 a1) r, l ~ 'EmptyTree, CmpNat x n1 ~ 'LT, CmpNat x n ~ 'GT, GtN r n ~ 'True,
+instance (CmpNat x n1 ~ 'LT,
   ProofGtNBalance ('ForkTree ('ForkTree 'EmptyTree (Node x a) 'EmptyTree) (Node n1 a1) r) n) =>
   ProofGtNInsert' x a ('ForkTree 'EmptyTree (Node n1 a1) r) n 'LT where
   proofGtNInsert' _ (ForkITree EmptyITree _ _) _ _ =
     gcastWith (proofGtNBalance (Proxy::Proxy ('ForkTree ('ForkTree 'EmptyTree (Node x a) 'EmptyTree) (Node n1 a1) r)) (Proxy::Proxy n)) Refl
-instance (t ~ 'ForkTree l (Node n1 a1) r, l ~ 'ForkTree ll (Node ln lna) lr, CmpNat x n1 ~ 'LT, CmpNat x n ~ 'GT, GtN l n ~ 'True, GtN r n ~ 'True,
+instance (CmpNat x n1 ~ 'LT, l ~ 'ForkTree ll (Node ln lna) lr, GtN l n ~ 'True,
   ProofGtNInsert' x a l n (CmpNat x ln), ProofGtNBalance ('ForkTree (Insert' x a ('ForkTree ll (Node ln lna) lr) (CmpNat x ln)) (Node n1 a1) r) n) =>
   ProofGtNInsert' x a ('ForkTree ('ForkTree ll (Node ln lna) lr) (Node n1 a1) r) n 'LT where
   proofGtNInsert' x (ForkITree l@ForkITree{} _ _) n _ =
     gcastWith (proofGtNInsert' x l n (Proxy::Proxy (CmpNat x ln))) $
       gcastWith (proofGtNBalance (Proxy::Proxy ('ForkTree (Insert' x a ('ForkTree ll (Node ln lna) lr) (CmpNat x ln)) (Node n1 a1) r)) (Proxy::Proxy n)) Refl
-instance (t ~ 'ForkTree l (Node n1 a1) r, r ~ 'EmptyTree, CmpNat x n1 ~ 'GT, ProofGtNBalance ('ForkTree l (Node n1 a1) ('ForkTree 'EmptyTree (Node x a) 'EmptyTree)) n) =>
+instance (CmpNat x n1 ~ 'GT, ProofGtNBalance ('ForkTree l (Node n1 a1) ('ForkTree 'EmptyTree (Node x a) 'EmptyTree)) n) =>
   ProofGtNInsert' x a ('ForkTree l (Node n1 a1) 'EmptyTree) n 'GT where
   proofGtNInsert' _ (ForkITree _ _ EmptyITree) _ _ =
     gcastWith (proofGtNBalance (Proxy::Proxy ('ForkTree l (Node n1 a1) ('ForkTree 'EmptyTree (Node x a) 'EmptyTree))) (Proxy::Proxy n)) Refl
-instance (t ~ 'ForkTree l (Node n1 a1) r, r ~ 'ForkTree rl (Node rn rna) rr, CmpNat x n1 ~ 'GT, GtN r n ~ 'True,
+instance (CmpNat x n1 ~ 'GT, r ~ 'ForkTree rl (Node rn rna) rr, GtN r n ~ 'True,
   ProofGtNInsert' x a r n (CmpNat x rn), ProofGtNBalance ('ForkTree l (Node n1 a1) (Insert' x a ('ForkTree rl (Node rn rna) rr) (CmpNat x rn))) n) =>
   ProofGtNInsert' x a ('ForkTree l (Node n1 a1) ('ForkTree rl (Node rn rna) rr)) n 'GT where
   proofGtNInsert' x (ForkITree _ _ r@ForkITree{}) n _ =
     gcastWith (proofGtNInsert' x r n (Proxy::Proxy (CmpNat x rn))) $
       gcastWith (proofGtNBalance (Proxy::Proxy ('ForkTree l (Node n1 a1) (Insert' x a ('ForkTree rl (Node rn rna) rr) (CmpNat x rn)))) (Proxy::Proxy n)) Refl
 
+
+-- | Prove that applying a rebalancing (a composition of rotations)
+-- | to a BST tree preserves BST condition.
+-- | The BST invariant was already check since this proof is called after proofs for Insert or Delete.
 class ProofIsBSTBalance (t :: Tree) where
   proofIsBSTBalance :: (IsBST t ~ 'True) =>
     Proxy t -> IsBST (Balance t) :~: 'True
@@ -142,8 +175,14 @@ instance (ProofIsBSTBalance' ('ForkTree l (Node n a) r) (UnbalancedState (Height
   ProofIsBSTBalance ('ForkTree l (Node n a) r) where
   proofIsBSTBalance pt = gcastWith (proofIsBSTBalance' pt (Proxy::Proxy (UnbalancedState (Height l) (Height r)))) Refl
 
+-- | Prove that applying a rebalancing (a composition of rotations)
+-- | to a BST tree preserves BST condition, given the comparison 'us' of the heights of the left and right sub trees.
+-- | This is called only from ProofIsBSTBalance.
+-- | The BST invariant was already check since this proof is called after proofs for Insert or Delete.
+-- | The 'us' parameter guides the proof.
 class ProofIsBSTBalance' (t :: Tree) (us :: US) where
-  proofIsBSTBalance' :: Proxy t -> Proxy us -> IsBST (Balance' t us) :~: 'True
+  proofIsBSTBalance' :: (IsBST t ~ 'True) =>
+    Proxy t -> Proxy us -> IsBST (Balance' t us) :~: 'True
 instance (IsBST ('ForkTree l (Node n a) r) ~ 'True) =>
   ProofIsBSTBalance' ('ForkTree l (Node n a) r) 'NotUnbalanced where
   proofIsBSTBalance' _ _ = Refl
@@ -154,37 +193,52 @@ instance ProofIsBSTRotate ('ForkTree l (Node n a) ('ForkTree rl (Node rn ra) rr)
   ProofIsBSTBalance' ('ForkTree l (Node n a) ('ForkTree rl (Node rn ra) rr)) 'RightUnbalanced where
   proofIsBSTBalance' pt pus = gcastWith (proofIsBSTRotate pt pus (Proxy::Proxy (BalancedState (Height rl) (Height rr)))) Refl
 
-class ProofIsBSTRotate (t :: Tree) (us::US) (bs::BS) where
-  proofIsBSTRotate :: Proxy t -> Proxy us -> Proxy bs -> IsBST (Rotate t us bs) :~: 'True
--- | Left-Left case (Right rotation)
-instance (IsBST ll ~ 'True, IsBST lr ~ 'True, IsBST r ~ 'True, LtN lr n ~ 'True, GtN r n ~ 'True, LtN ll ln ~ 'True, CmpNat n ln ~ 'GT,
-  GtN lr ln ~ 'True, GtN r ln ~ 'True) =>
-  ProofIsBSTRotate ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a) r) 'LeftUnbalanced 'LeftHeavy where
-  proofIsBSTRotate _ _ _ = Refl
-instance (IsBST ll ~ 'True, IsBST lr ~ 'True, IsBST r ~ 'True, LtN lr n ~ 'True, GtN r n ~ 'True, LtN ll ln ~ 'True, CmpNat n ln ~ 'GT,
-  GtN lr ln ~ 'True, GtN r ln ~ 'True) =>
-  ProofIsBSTRotate ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a) r) 'LeftUnbalanced 'Balanced where
-  proofIsBSTRotate _ _ _ = Refl
--- | Right-Right case (Left rotation)
-instance (IsBST l ~ 'True, IsBST rl ~ 'True, LtN l n ~ 'True, GtN rl n ~ 'True, IsBST rr ~ 'True, CmpNat n rn ~ 'LT, LtN l rn ~ 'True,
-  LtN rl rn ~ 'True, GtN rr rn ~ 'True) =>
-  ProofIsBSTRotate ('ForkTree l (Node n a) ('ForkTree rl (Node rn ra) rr)) 'RightUnbalanced 'RightHeavy where
-  proofIsBSTRotate _ _ _ = Refl
-instance (IsBST l ~ 'True, IsBST rl ~ 'True, LtN l n ~ 'True, GtN rl n ~ 'True, IsBST rr ~ 'True, CmpNat n rn ~ 'LT, LtN l rn ~ 'True,
-  LtN rl rn ~ 'True, GtN rr rn ~ 'True) =>
-  ProofIsBSTRotate ('ForkTree l (Node n a) ('ForkTree rl (Node rn ra) rr)) 'RightUnbalanced 'Balanced where
-  proofIsBSTRotate _ _ _ = Refl
--- | Left-Right case (First left rotation, then right rotation)
-instance (IsBST ll ~ 'True, IsBST lrl ~ 'True, LtN ll ln ~ 'True, GtN lrl ln ~ 'True, IsBST lrr ~ 'True, IsBST r ~ 'True, LtN lrr n ~ 'True,
-  GtN r n ~ 'True, CmpNat ln lrn ~ 'LT, LtN ll lrn ~ 'True, LtN lrl lrn ~ 'True, CmpNat n lrn ~ 'GT, GtN lrr lrn ~ 'True, GtN r lrn ~ 'True) =>
-  ProofIsBSTRotate ('ForkTree ('ForkTree ll (Node ln la) ('ForkTree lrl (Node lrn lra) lrr)) (Node n a) r) 'LeftUnbalanced 'RightHeavy where
-  proofIsBSTRotate _ _ _ = Refl
--- | Right-Left case (First right rotation, then left rotation)
-instance (IsBST l ~ 'True, IsBST rll ~ 'True, LtN l n ~ 'True, GtN rll n ~ 'True, IsBST rlr ~ 'True, IsBST rr ~ 'True, LtN rlr rn ~ 'True,
-  GtN rr rn ~ 'True, CmpNat n rln ~ 'LT, LtN l rln ~ 'True, LtN rll rln ~ 'True, CmpNat rn rln ~ 'GT, GtN rlr rln ~ 'True, GtN rr rln ~ 'True) =>
-  ProofIsBSTRotate ('ForkTree l (Node n a) ('ForkTree ('ForkTree rll (Node rln rla) rlr) (Node rn ra) rr)) 'RightUnbalanced 'LeftHeavy where
-  proofIsBSTRotate _ _ _ = Refl
 
+-- | Prove that applying a rotation
+-- | to a BST tree preserves BST condition.
+-- | The BST invariant was already check since this proof is called after proofs for Insert or Delete.
+-- | Each instance needs some set of hypotesis. However, all these are deduced from the fact that 'IsBST ~ 'True'.
+-- | However, the compiler is not able to infer this. Instead of requesting these hypotesis in the context of
+-- | every instance (which would increase the computational effort), unsafeCoerce is used.
+-- | The hypotesis that the compiler needs are commented within the code.
+class ProofIsBSTRotate (t :: Tree) (us :: US) (bs :: BS) where
+  proofIsBSTRotate :: (IsBST t ~ 'True) =>
+    Proxy t -> Proxy us -> Proxy bs -> IsBST (Rotate t us bs) :~: 'True
+
+-- | Left-Left case (Right rotation)
+-- | IsBST ll ~ 'True, IsBST lr ~ 'True, IsBST r ~ 'True, LtN lr n ~ 'True, GtN r n ~ 'True, LtN ll ln ~ 'True, CmpNat n ln ~ 'GT,
+-- | GtN lr ln ~ 'True, GtN r ln ~ 'True
+instance ProofIsBSTRotate ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a) r) 'LeftUnbalanced 'LeftHeavy where
+  proofIsBSTRotate _ _ _ = unsafeCoerce Refl
+-- | IsBST ll ~ 'True, IsBST lr ~ 'True, IsBST r ~ 'True, LtN lr n ~ 'True, GtN r n ~ 'True, LtN ll ln ~ 'True, CmpNat n ln ~ 'GT,
+-- | GtN lr ln ~ 'True, GtN r ln ~ 'True
+instance ProofIsBSTRotate ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a) r) 'LeftUnbalanced 'Balanced where
+  proofIsBSTRotate _ _ _ = unsafeCoerce Refl
+
+-- | Right-Right case (Left rotation)
+-- | IsBST l ~ 'True, IsBST rl ~ 'True, LtN l n ~ 'True, GtN rl n ~ 'True, IsBST rr ~ 'True, CmpNat n rn ~ 'LT, LtN l rn ~ 'True,
+-- | LtN rl rn ~ 'True, GtN rr rn ~ 'True
+instance ProofIsBSTRotate ('ForkTree l (Node n a) ('ForkTree rl (Node rn ra) rr)) 'RightUnbalanced 'RightHeavy where
+  proofIsBSTRotate _ _ _ = unsafeCoerce Refl
+-- | IsBST l ~ 'True, IsBST rl ~ 'True, LtN l n ~ 'True, GtN rl n ~ 'True, IsBST rr ~ 'True, CmpNat n rn ~ 'LT, LtN l rn ~ 'True,
+-- | LtN rl rn ~ 'True, GtN rr rn ~ 'True
+instance ProofIsBSTRotate ('ForkTree l (Node n a) ('ForkTree rl (Node rn ra) rr)) 'RightUnbalanced 'Balanced where
+  proofIsBSTRotate _ _ _ = unsafeCoerce Refl
+
+-- | Left-Right case (First left rotation, then right rotation)
+-- | IsBST ll ~ 'True, IsBST lrl ~ 'True, LtN ll ln ~ 'True, GtN lrl ln ~ 'True, IsBST lrr ~ 'True, IsBST r ~ 'True, LtN lrr n ~ 'True,
+-- | GtN r n ~ 'True, CmpNat ln lrn ~ 'LT, LtN ll lrn ~ 'True, LtN lrl lrn ~ 'True, CmpNat n lrn ~ 'GT, GtN lrr lrn ~ 'True, GtN r lrn ~ 'True
+instance ProofIsBSTRotate ('ForkTree ('ForkTree ll (Node ln la) ('ForkTree lrl (Node lrn lra) lrr)) (Node n a) r) 'LeftUnbalanced 'RightHeavy where
+  proofIsBSTRotate _ _ _ = unsafeCoerce Refl
+
+-- | Right-Left case (First right rotation, then left rotation)
+-- | IsBST l ~ 'True, IsBST rll ~ 'True, LtN l n ~ 'True, GtN rll n ~ 'True, IsBST rlr ~ 'True, IsBST rr ~ 'True, LtN rlr rn ~ 'True,
+-- | GtN rr rn ~ 'True, CmpNat n rln ~ 'LT, LtN l rln ~ 'True, LtN rll rln ~ 'True, CmpNat rn rln ~ 'GT, GtN rlr rln ~ 'True, GtN rr rln ~ 'True
+instance ProofIsBSTRotate ('ForkTree l (Node n a) ('ForkTree ('ForkTree rll (Node rln rla) rlr) (Node rn ra) rr)) 'RightUnbalanced 'LeftHeavy where
+  proofIsBSTRotate _ _ _ = unsafeCoerce Refl
+
+
+-- | Prove that rebalancing a tree 't' which verifies 'LtN t n ~ 'True' preserves the LtN invariant.
 class ProofLtNBalance (t :: Tree) (n :: Nat) where
   proofLtNBalance :: (LtN t n ~ 'True) =>
     Proxy t -> Proxy n -> LtN (Balance t) n :~: 'True
@@ -194,10 +248,13 @@ instance (ProofLtNBalance' ('ForkTree l (Node n1 a) r) n (UnbalancedState (Heigh
   ProofLtNBalance ('ForkTree l (Node n1 a) r) n where
   proofLtNBalance pt pn = gcastWith (proofLtNBalance' pt pn (Proxy::Proxy (UnbalancedState (Height l) (Height r)))) Refl
 
+-- | Prove that rebalancing a tree 't' which verifies 'LtN t n ~ 'True' preserves the LtN invariant,
+-- | given the unbalanced state 'us' of the tree.
+-- | The 'us' parameter guides the proof.
 class ProofLtNBalance' (t :: Tree) (n :: Nat) (us :: US) where
-  proofLtNBalance' :: Proxy t -> Proxy n -> Proxy us -> LtN (Balance' t us) n :~: 'True
-instance (LtN ('ForkTree l (Node n1 a) r) n ~ 'True) =>
-  ProofLtNBalance' ('ForkTree l (Node n1 a) r) n 'NotUnbalanced where
+  proofLtNBalance' :: (LtN t n ~ 'True) =>
+    Proxy t -> Proxy n -> Proxy us -> LtN (Balance' t us) n :~: 'True
+instance ProofLtNBalance' ('ForkTree l (Node n1 a) r) n 'NotUnbalanced where
   proofLtNBalance' _ _ _ = Refl
 instance (ProofLtNRotate ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n1 a) r) n 'LeftUnbalanced (BalancedState (Height ll) (Height lr))) =>
   ProofLtNBalance' ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n1 a) r) n 'LeftUnbalanced where
@@ -206,33 +263,48 @@ instance ProofLtNRotate ('ForkTree l (Node n1 a) ('ForkTree rl (Node rn ra) rr))
   ProofLtNBalance' ('ForkTree l (Node n1 a) ('ForkTree rl (Node rn ra) rr)) n 'RightUnbalanced where
   proofLtNBalance' pt pn pus = gcastWith (proofLtNRotate pt pn pus (Proxy::Proxy (BalancedState (Height rl) (Height rr)))) Refl
 
-class ProofLtNRotate (t :: Tree) (n :: Nat) (us::US) (bs::BS) where
-  proofLtNRotate :: Proxy t -> Proxy n -> Proxy us -> Proxy bs -> LtN (Rotate t us bs) n :~: 'True
--- | Left-Left case (Right rotation)
-instance (l ~ ('ForkTree ll (Node ln la) lr), LtN l n ~ 'True, CmpNat n1 n ~ 'LT, LtN r n ~ 'True) =>
-  ProofLtNRotate ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n1 a) r) n 'LeftUnbalanced 'LeftHeavy where
-  proofLtNRotate _ _ _ _ = Refl
-instance (l ~ ('ForkTree ll (Node ln la) lr), LtN l n ~ 'True, CmpNat n1 n ~ 'LT, LtN r n ~ 'True) =>
-  ProofLtNRotate ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n1 a) r) n 'LeftUnbalanced 'Balanced where
-  proofLtNRotate _ _ _ _ = Refl
--- | Right-Right case (Left rotation)
-instance (r ~ ('ForkTree rl (Node rn ra) rr), LtN l n ~ 'True, LtN r n ~ 'True, CmpNat n1 n ~ 'LT) =>
-  ProofLtNRotate ('ForkTree l (Node n1 a) ('ForkTree rl (Node rn ra) rr)) n 'RightUnbalanced 'RightHeavy where
-  proofLtNRotate _ _ _ _ = Refl
-instance (r ~ ('ForkTree rl (Node rn ra) rr), LtN l n ~ 'True, LtN r n ~ 'True, CmpNat n1 n ~ 'LT) =>
-  ProofLtNRotate ('ForkTree l (Node n1 a) ('ForkTree rl (Node rn ra) rr)) n 'RightUnbalanced 'Balanced where
-  proofLtNRotate _ _ _ _ = Refl
--- | Left-Right case (First left rotation, then right rotation)
-instance (LtN ll ln ~ 'True, LtN lrr n ~ 'True, CmpNat ln lrn ~ 'LT, LtN ll lrn ~ 'True, LtN lrl lrn ~ 'True,
-  CmpNat lrn n ~ 'LT, CmpNat ln n ~ 'LT, LtN ll n ~ 'True, LtN lrl n ~ 'True, CmpNat n1 n ~ 'LT, LtN r n ~ 'True) =>
-  ProofLtNRotate ('ForkTree ('ForkTree ll (Node ln la) ('ForkTree lrl (Node lrn lra) lrr)) (Node n1 a) r) n 'LeftUnbalanced 'RightHeavy where
-  proofLtNRotate _ _ _ _ = Refl
--- | Right-Left case (First right rotation, then left rotation)
-instance (LtN l n ~ 'True, LtN rlr rn ~ 'True, CmpNat n rln ~ 'LT, LtN l rln ~ 'True, LtN rll rln ~ 'True,
-  CmpNat rln n ~ 'LT, CmpNat n1 n ~ 'LT, LtN rll n ~ 'True, CmpNat rn n ~ 'LT, LtN rr n ~ 'True, LtN rlr n ~ 'True) =>
-  ProofLtNRotate ('ForkTree l (Node n1 a) ('ForkTree ('ForkTree rll (Node rln rla) rlr) (Node rn ra) rr)) n 'RightUnbalanced 'LeftHeavy where
-  proofLtNRotate _ _ _ _ = Refl
 
+-- | Prove that applying a rotation to a tree 't' which verifies 'LtN t n ~ 'True' preserves the LtN invariant.
+-- | Each instance needs some set of hypotesis. However, all these are deduced from the fact that 'LtN t n ~ 'True'.
+-- | However, the compiler is not able to infer this. Instead of requesting these hypotesis in the context of
+-- | every instance (which would increase the computational effort), unsafeCoerce is used.
+-- | The hypotesis that the compiler needs are commented within the code.
+class ProofLtNRotate (t :: Tree) (n :: Nat) (us :: US) (bs :: BS) where
+  proofLtNRotate :: (LtN t n ~ 'True) =>
+    Proxy t -> Proxy n -> Proxy us -> Proxy bs -> LtN (Rotate t us bs) n :~: 'True
+
+-- | Left-Left case (Right rotation)
+-- | l ~ ('ForkTree ll (Node ln la) lr), LtN l n ~ 'True, CmpNat n1 n ~ 'LT, LtN r n ~ 'True
+instance ProofLtNRotate ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n1 a) r) n 'LeftUnbalanced 'LeftHeavy where
+  proofLtNRotate _ _ _ _ = unsafeCoerce Refl
+-- | l ~ ('ForkTree ll (Node ln la) lr), LtN l n ~ 'True, CmpNat n1 n ~ 'LT, LtN r n ~ 'True
+instance ProofLtNRotate ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n1 a) r) n 'LeftUnbalanced 'Balanced where
+  proofLtNRotate _ _ _ _ = unsafeCoerce Refl
+
+-- | Right-Right case (Left rotation)
+-- | r ~ ('ForkTree rl (Node rn ra) rr), LtN l n ~ 'True, LtN r n ~ 'True, CmpNat n1 n ~ 'LT
+instance ProofLtNRotate ('ForkTree l (Node n1 a) ('ForkTree rl (Node rn ra) rr)) n 'RightUnbalanced 'RightHeavy where
+  proofLtNRotate _ _ _ _ = unsafeCoerce Refl
+-- | r ~ ('ForkTree rl (Node rn ra) rr), LtN l n ~ 'True, LtN r n ~ 'True, CmpNat n1 n ~ 'LT
+instance ProofLtNRotate ('ForkTree l (Node n1 a) ('ForkTree rl (Node rn ra) rr)) n 'RightUnbalanced 'Balanced where
+  proofLtNRotate _ _ _ _ = unsafeCoerce Refl
+
+-- | Left-Right case (First left rotation, then right rotation)
+-- | LtN lrr n ~ 'True, CmpNat lrn n ~ 'LT, CmpNat ln n ~ 'LT, LtN ll n ~ 'True, LtN lrl n ~ 'True,
+-- | CmpNat n1 n ~ 'LT, LtN r n ~ 'True
+instance (LtN ll ln ~ 'True, CmpNat ln lrn ~ 'LT, LtN ll lrn ~ 'True, LtN lrl lrn ~ 'True) =>
+  ProofLtNRotate ('ForkTree ('ForkTree ll (Node ln la) ('ForkTree lrl (Node lrn lra) lrr)) (Node n1 a) r) n 'LeftUnbalanced 'RightHeavy where
+  proofLtNRotate _ _ _ _ = unsafeCoerce Refl
+
+-- | Right-Left case (First right rotation, then left rotation)
+-- | LtN l n ~ 'True, CmpNat n rln ~ 'LT, CmpNat rln n ~ 'LT, CmpNat n1 n ~ 'LT, LtN rll n ~ 'True,
+-- | CmpNat rn n ~ 'LT, LtN rr n ~ 'True, LtN rlr n ~ 'True
+instance (LtN rlr rn ~ 'True, LtN l rln ~ 'True, LtN rll rln ~ 'True) =>
+  ProofLtNRotate ('ForkTree l (Node n1 a) ('ForkTree ('ForkTree rll (Node rln rla) rlr) (Node rn ra) rr)) n 'RightUnbalanced 'LeftHeavy where
+  proofLtNRotate _ _ _ _ = unsafeCoerce Refl
+
+
+-- | Prove that rebalancing a tree 't' which verifies 'GtN t n ~ 'True' preserves the GtN invariant.
 class ProofGtNBalance (t :: Tree) (n :: Nat) where
   proofGtNBalance :: (GtN t n ~ 'True) =>
     Proxy t -> Proxy n -> GtN (Balance t) n :~: 'True
@@ -242,10 +314,13 @@ instance (ProofGtNBalance' ('ForkTree l (Node n1 a) r) n (UnbalancedState (Heigh
   ProofGtNBalance ('ForkTree l (Node n1 a) r) n where
   proofGtNBalance pt pn = gcastWith (proofGtNBalance' pt pn (Proxy::Proxy (UnbalancedState (Height l) (Height r)))) Refl
 
+-- | Prove that rebalancing a tree 't' which verifies 'GtN t n ~ 'True' preserves the GtN invariant,
+-- | given the unbalanced state 'us' of the tree.
+-- | The 'us' parameter guides the proof.
 class ProofGtNBalance' (t :: Tree) (n :: Nat) (us :: US) where
-  proofGtNBalance' :: Proxy t -> Proxy n -> Proxy us -> GtN (Balance' t us) n :~: 'True
-instance (GtN ('ForkTree l (Node n1 a) r) n ~ 'True) =>
-  ProofGtNBalance' ('ForkTree l (Node n1 a) r) n 'NotUnbalanced where
+  proofGtNBalance' :: (GtN t n ~ 'True) =>
+    Proxy t -> Proxy n -> Proxy us -> GtN (Balance' t us) n :~: 'True
+instance ProofGtNBalance' ('ForkTree l (Node n1 a) r) n 'NotUnbalanced where
   proofGtNBalance' _ _ _ = Refl
 instance (ProofGtNRotate ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n1 a) r) n 'LeftUnbalanced (BalancedState (Height ll) (Height lr))) =>
   ProofGtNBalance' ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n1 a) r) n 'LeftUnbalanced where
@@ -254,30 +329,42 @@ instance ProofGtNRotate ('ForkTree l (Node n1 a) ('ForkTree rl (Node rn ra) rr))
   ProofGtNBalance' ('ForkTree l (Node n1 a) ('ForkTree rl (Node rn ra) rr)) n 'RightUnbalanced where
   proofGtNBalance' pt pn pus = gcastWith (proofGtNRotate pt pn pus (Proxy::Proxy (BalancedState (Height rl) (Height rr)))) Refl
 
+
+-- | Prove that applying a rotation to a tree 't' which verifies 'GtN t n ~ 'True' preserves the GtN invariant.
+-- | Each instance needs some set of hypotesis. However, all these are deduced from the fact that 'GtN t n ~ 'True'.
+-- | However, the compiler is not able to infer this. Instead of requesting these hypotesis in the context of
+-- | every instance (which would increase the computational effort), unsafeCoerce is used.
+-- | The hypotesis that the compiler needs are commented within the code.
 class ProofGtNRotate (t :: Tree) (n :: Nat) (us::US) (bs::BS) where
-  proofGtNRotate :: Proxy t -> Proxy n -> Proxy us -> Proxy bs -> GtN (Rotate t us bs) n :~: 'True
+  proofGtNRotate :: (GtN t n ~ 'True) =>
+    Proxy t -> Proxy n -> Proxy us -> Proxy bs -> GtN (Rotate t us bs) n :~: 'True
+
 -- | Left-Left case (Right rotation)
-instance (GtN r n ~ 'True, CmpNat ln n ~ 'GT, GtN ll n ~ 'True, CmpNat n1 n ~ 'GT, GtN lr n ~ 'True) =>
-  ProofGtNRotate ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n1 a) r) n 'LeftUnbalanced 'LeftHeavy where
-  proofGtNRotate _ _ _ _ = Refl
-instance (CmpNat ln n ~ 'GT, GtN ll n ~ 'True, CmpNat n1 n ~ 'GT, GtN r n ~ 'True, GtN lr n ~ 'True) =>
-  ProofGtNRotate ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n1 a) r) n 'LeftUnbalanced 'Balanced where
-  proofGtNRotate _ _ _ _ = Refl
+-- | GtN r n ~ 'True, CmpNat ln n ~ 'GT, GtN ll n ~ 'True, CmpNat n1 n ~ 'GT, GtN lr n ~ 'True
+instance ProofGtNRotate ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n1 a) r) n 'LeftUnbalanced 'LeftHeavy where
+  proofGtNRotate _ _ _ _ = unsafeCoerce Refl
+-- | CmpNat ln n ~ 'GT, GtN ll n ~ 'True, CmpNat n1 n ~ 'GT, GtN r n ~ 'True, GtN lr n ~ 'True
+instance ProofGtNRotate ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n1 a) r) n 'LeftUnbalanced 'Balanced where
+  proofGtNRotate _ _ _ _ = unsafeCoerce Refl
+
 -- | Right-Right case (Left rotation)
-instance (GtN rr rn ~ 'True, CmpNat rn n ~ 'GT, CmpNat n1 n ~ 'GT, GtN rl n ~ 'True, GtN rr n ~ 'True, GtN l n ~ 'True) =>
-  ProofGtNRotate ('ForkTree l (Node n1 a) ('ForkTree rl (Node rn ra) rr)) n 'RightUnbalanced 'RightHeavy where
-  proofGtNRotate _ _ _ _ = Refl
-instance (GtN rr rn ~ 'True, CmpNat rn n ~ 'GT, CmpNat n1 n ~ 'GT, GtN rl n ~ 'True, GtN rr n ~ 'True, GtN l n ~ 'True) =>
-  ProofGtNRotate ('ForkTree l (Node n1 a) ('ForkTree rl (Node rn ra) rr)) n 'RightUnbalanced 'Balanced where
-  proofGtNRotate _ _ _ _ = Refl
+-- | CmpNat n1 n ~ 'GT, GtN rl n ~ 'True, GtN rr n ~ 'True, GtN l n ~ 'True
+instance ProofGtNRotate ('ForkTree l (Node n1 a) ('ForkTree rl (Node rn ra) rr)) n 'RightUnbalanced 'RightHeavy where
+  proofGtNRotate _ _ _ _ = unsafeCoerce Refl
+-- | CmpNat n1 n ~ 'GT, GtN rl n ~ 'True, GtN rr n ~ 'True, GtN l n ~ 'True
+instance ProofGtNRotate ('ForkTree l (Node n1 a) ('ForkTree rl (Node rn ra) rr)) n 'RightUnbalanced 'Balanced where
+  proofGtNRotate _ _ _ _ = unsafeCoerce Refl
+
 -- | Left-Right case (First left rotation, then right rotation)
-instance (CmpNat lrn n ~ 'GT, CmpNat ln n ~ 'GT, GtN ll n ~ 'True, GtN lrl n ~ 'True, CmpNat n1 n ~ 'GT, GtN r n ~ 'True, GtN lrr n ~ 'True) =>
-  ProofGtNRotate ('ForkTree ('ForkTree ll (Node ln la) ('ForkTree lrl (Node lrn lra) lrr)) (Node n1 a) r) n 'LeftUnbalanced 'RightHeavy where
-  proofGtNRotate _ _ _ _ = Refl
+-- | CmpNat ln n ~ 'GT, GtN ll n ~ 'True, CmpNat n1 n ~ 'GT, GtN r n ~ 'True
+instance ProofGtNRotate ('ForkTree ('ForkTree ll (Node ln la) ('ForkTree lrl (Node lrn lra) lrr)) (Node n1 a) r) n 'LeftUnbalanced 'RightHeavy where
+  proofGtNRotate _ _ _ _ = unsafeCoerce Refl
+
 -- | Right-Left case (First right rotation, then left rotation)
-instance (CmpNat rln n ~ 'GT, CmpNat n1 n ~ 'GT, GtN rll n ~ 'True, CmpNat rn n ~ 'GT, GtN rr n ~ 'True, GtN rlr n ~ 'True, GtN l n ~ 'True) =>
-  ProofGtNRotate ('ForkTree l (Node n1 a) ('ForkTree ('ForkTree rll (Node rln rla) rlr) (Node rn ra) rr)) n 'RightUnbalanced 'LeftHeavy where
-  proofGtNRotate _ _ _ _ = Refl
+-- | CmpNat n1 n ~ 'GT, CmpNat rn n ~ 'GT, GtN rr n ~ 'True, GtN l n ~ 'True
+instance ProofGtNRotate ('ForkTree l (Node n1 a) ('ForkTree ('ForkTree rll (Node rln rla) rlr) (Node rn ra) rr)) n 'RightUnbalanced 'LeftHeavy where
+  proofGtNRotate _ _ _ _ = unsafeCoerce Refl
+
 
 class ProofIsAVLBalance' (t :: Tree) (us::US) where
   proofIsAVLBalance' :: Proxy t -> Proxy us -> IsAVL (Balance' t us) :~: 'True

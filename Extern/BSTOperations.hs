@@ -19,7 +19,7 @@ import           Data.Kind          (Type)
 import           Data.Proxy         (Proxy (Proxy))
 import           Data.Type.Bool     (If)
 import           Data.Type.Equality (type (==))
-import           GHC.TypeLits       (CmpNat, Nat)
+import           GHC.TypeNats       (CmpNat, Nat)
 import           ITree              (ITree (EmptyITree, ForkITree),
                                      Tree (EmptyTree, ForkTree))
 import           Node               (Node (Node), getValue)
@@ -47,20 +47,20 @@ instance Insertable' x a ('ForkTree l (Node n a1) r) (CmpNat x n) => Insertable 
 -- | The 'o' parameter guides the insertion.
 class Insertable' (x :: Nat) (a :: Type) (t :: Tree) (o :: Ordering) where
   type Insert' (x :: Nat) (a :: Type) (t :: Tree) (o :: Ordering) :: Tree
-  insert' :: Node x a -> ITree t -> Proxy o -> ITree (Insert x a t)
-instance (Show a, CmpNat x n ~ 'EQ) => Insertable' x a ('ForkTree l (Node n a1) r) 'EQ where
+  insert' :: Node x a -> ITree t -> Proxy o -> ITree (Insert' x a t o)
+instance (Show a) => Insertable' x a ('ForkTree l (Node n a1) r) 'EQ where
   type Insert' x a ('ForkTree l (Node n a1) r) 'EQ = 'ForkTree l (Node n a) r
   insert' (Node a) (ForkITree l (Node _) r) _ = ForkITree l (Node a::Node n a) r
-instance (Show a, CmpNat x n ~ 'LT) => Insertable' x a ('ForkTree 'EmptyTree (Node n a1) r) 'LT where
+instance (Show a) => Insertable' x a ('ForkTree 'EmptyTree (Node n a1) r) 'LT where
   type Insert' x a ('ForkTree 'EmptyTree (Node n a1) r) 'LT = 'ForkTree ('ForkTree 'EmptyTree (Node x a) 'EmptyTree) (Node n a1) r
   insert' (Node a) (ForkITree EmptyITree n r) _ = ForkITree (ForkITree EmptyITree (Node a::Node x a) EmptyITree) n r
-instance (CmpNat x n ~ 'LT, l ~ 'ForkTree ll (Node ln lna) lr, Insertable' x a l (CmpNat x ln)) => Insertable' x a ('ForkTree ('ForkTree ll (Node ln lna) lr) (Node n a1) r) 'LT where
+instance (l ~ 'ForkTree ll (Node ln lna) lr, Insertable' x a l (CmpNat x ln)) => Insertable' x a ('ForkTree ('ForkTree ll (Node ln lna) lr) (Node n a1) r) 'LT where
   type Insert' x a ('ForkTree ('ForkTree ll (Node ln lna) lr) (Node n a1) r) 'LT = 'ForkTree (Insert' x a ('ForkTree ll (Node ln lna) lr) (CmpNat x ln)) (Node n a1) r
   insert' (Node a) (ForkITree l@ForkITree{} n r) _ = ForkITree (insert' (Node a::Node x a) l (Proxy::Proxy (CmpNat x ln))) n r
-instance (Show a, CmpNat x n ~ 'GT) => Insertable' x a ('ForkTree l (Node n a1) 'EmptyTree) 'GT where
+instance (Show a) => Insertable' x a ('ForkTree l (Node n a1) 'EmptyTree) 'GT where
   type Insert' x a ('ForkTree l (Node n a1) 'EmptyTree) 'GT = 'ForkTree l (Node n a1) ('ForkTree 'EmptyTree (Node x a) 'EmptyTree)
   insert' (Node a) (ForkITree l n EmptyITree) _ = ForkITree l n (ForkITree EmptyITree (Node a::Node x a) EmptyITree)
-instance (CmpNat x n ~ 'GT, r ~ 'ForkTree rl (Node rn rna) rr, Insertable' x a r (CmpNat x rn)) => Insertable' x a ('ForkTree l (Node n a1) ('ForkTree rl (Node rn rna) rr)) 'GT where
+instance (r ~ 'ForkTree rl (Node rn rna) rr, Insertable' x a r (CmpNat x rn)) => Insertable' x a ('ForkTree l (Node n a1) ('ForkTree rl (Node rn rna) rr)) 'GT where
   type Insert' x a ('ForkTree l (Node n a1) ('ForkTree rl (Node rn rna) rr)) 'GT = 'ForkTree l (Node n a1) (Insert' x a ('ForkTree rl (Node rn rna) rr) (CmpNat x rn))
   insert' (Node a) (ForkITree l n r@ForkITree{}) _ = ForkITree l n (insert' (Node a::Node x a) r (Proxy::Proxy (CmpNat x rn)))
 

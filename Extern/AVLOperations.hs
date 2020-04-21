@@ -15,7 +15,7 @@ import           Data.Type.Bool       (If)
 import           Extern.BSTOperations (MaxKey, MaxKeyDeletable (maxKeyDelete),
                                        MaxKeyDelete, MaxValue (maxValue),
                                        Maxable)
-import           GHC.TypeLits         (type (+), type (-), type (<=?), CmpNat,
+import           GHC.TypeNats         (type (+), type (-), type (<=?), CmpNat,
                                        Nat)
 import           ITree                (ITree (EmptyITree, ForkITree),
                                        Tree (EmptyTree, ForkTree))
@@ -23,7 +23,7 @@ import           Node                 (Node (Node))
 import           Prelude              (Bool (False, True),
                                        Ordering (EQ, GT, LT), Show, ($))
 
-
+-- | Get the maximun between two type level natural numbers.
 type family Max (n1 :: Nat) (n2 :: Nat) :: Nat where
   Max n1 n2 =
     (If (n1 <=? n2)
@@ -31,10 +31,14 @@ type family Max (n1 :: Nat) (n2 :: Nat) :: Nat where
       n1
     )
 
+-- | Get the height of a tree.
 type family Height (t :: Tree) :: Nat where
   Height 'EmptyTree = 0
   Height ('ForkTree l (Node _n _a) r) = 1 + Max (Height l) (Height r)
 
+-- | Check if two type level natural numbers,
+-- | that represent the heights of some left and right sub trees,
+-- | differ at most in one (i.e., the tree is balanced).
 type family BalancedHeights (h1 :: Nat) (h2 :: Nat) :: Bool where
   BalancedHeights 0   0   = 'True
   BalancedHeights 1   0   = 'True
@@ -43,8 +47,16 @@ type family BalancedHeights (h1 :: Nat) (h2 :: Nat) :: Bool where
   BalancedHeights 0   _h2 = 'False
   BalancedHeights h1  h2  = BalancedHeights (h1-1) (h2-1)
 
+
+-- | Data type that represents the state of unbalance of the sub trees:
+-- | - LeftUnbalanced: tree is unbalanced because left sub tree is unbalanced.
+-- | - RightUnbalanced: tree is unbalanced because right sub tree is unbalanced.
+-- | - NotUnbalanced: tree is not unbalanced.
 data US = LeftUnbalanced | RightUnbalanced | NotUnbalanced
 
+-- | Check from two type level natural numbers,
+-- | that represent the heights of some left and right sub trees,
+-- | if the tree is balanced or if some of those sub trees is unbalanced.
 type family UnbalancedState (h1 :: Nat) (h2 :: Nat) :: US where
   UnbalancedState 0 0   = 'NotUnbalanced
   UnbalancedState 1 0   = 'NotUnbalanced
@@ -53,14 +65,27 @@ type family UnbalancedState (h1 :: Nat) (h2 :: Nat) :: US where
   UnbalancedState 0 2   = 'RightUnbalanced
   UnbalancedState h1 h2 = UnbalancedState (h1-1) (h2-1)
 
+
+-- | Data type that represents the state of balance of the sub trees in a balanced tree:
+-- | - LeftHeavy: height(left sub tree) = height(right sub tree) + 1.
+-- | - RightHeavy: height(right sub tree) = height(leftt sub tree) + 1.
+-- | - Balanced: height(left sub tree) = height(right sub tree).
 data BS = LeftHeavy | RightHeavy | Balanced
 
+-- | Check from two type level natural numbers,
+-- | that represent the heights of some left and right sub trees,
+-- | if some of those sub trees have height larger than the other.
 type family BalancedState (h1 :: Nat) (h2 :: Nat) :: BS where
   BalancedState 0 0   = 'Balanced
   BalancedState 1 0   = 'LeftHeavy
   BalancedState 0 1   = 'RightHeavy
   BalancedState h1 h2 = BalancedState (h1-1) (h2-1)
 
+
+-- | This class provides the functionality to balance
+-- | a tree 't' without checking any structural invariant (BST/AVL).
+-- | The insertion is defined at the value level and the type level;
+-- | the checking of the BST/AVL invariant is performed after the insertion.
 class Balanceable (t :: Tree) where
   type Balance (t :: Tree) :: Tree
   balance :: ITree t -> ITree (Balance t)
@@ -72,6 +97,11 @@ instance (Balanceable' ('ForkTree l (Node n a) r) (UnbalancedState (Height l) (H
   type Balance ('ForkTree l (Node n a) r) = Balance' ('ForkTree l (Node n a) r) (UnbalancedState (Height l) (Height r))
   balance t@(ForkITree _ (Node _) _) = balance' t (Proxy::Proxy (UnbalancedState (Height l) (Height r)))
 
+-- | This class provides the functionality to balance
+-- | a tree 't' without checking any structural invariant (BST/AVL).
+-- | It's only used by the 'Balanceable' class and it has one extra parameter 'us',
+-- | which is the Unbalance State of the two sub trees of 't'.
+-- | The 'us' parameter guides the insertion.
 class Balanceable' (t :: Tree) (us :: US) where
   type Balance' (t :: Tree) (us :: US) :: Tree
   balance' :: ITree t -> Proxy us -> ITree (Balance' t us)
@@ -89,6 +119,11 @@ instance Rotateable ('ForkTree l (Node n a) ('ForkTree rl (Node rn ra) rr)) 'Rig
     Rotate ('ForkTree l (Node n a) ('ForkTree rl (Node rn ra) rr)) 'RightUnbalanced (BalancedState (Height rl) (Height rr))
   balance' t@(ForkITree _ (Node _) _) pus = rotate t pus (Proxy::Proxy (BalancedState (Height rl) (Height rr)))
 
+
+-- | This class provides the functionality to apply a rotation to
+-- | a tree 't' without checking any structural invariant (BST/AVL).
+-- | The insertion is defined at the value level and the type level;
+-- | the checking of the BST/AVL invariant is performed after the insertion.
 class Rotateable (t :: Tree) (us :: US) (bs :: BS) where
   type Rotate (t :: Tree) (us :: US) (bs :: BS) :: Tree
   rotate :: ITree t -> Proxy us -> Proxy bs -> ITree (Rotate t us bs)
@@ -123,6 +158,11 @@ instance Rotateable ('ForkTree l (Node n a) ('ForkTree ('ForkTree rll (Node rln 
   rotate (ForkITree l xnode (ForkITree (ForkITree rll rlnode rlr) rnode rr)) _ _ =
     ForkITree (ForkITree l xnode rll) rlnode (ForkITree rlr rnode rr)
 
+
+-- | This class provides the functionality to insert a node with key 'x' and value type 'a'
+-- | in a tree 't' without checking any structural invariant (BST/AVL).
+-- | The insertion is defined at the value level and the type level, and is performed
+-- | as if the tree is a BST/AVL; the checking of the BST/AVL invariant is performed after the insertion.
 class Insertable (x :: Nat) (a :: Type) (t :: Tree) where
   type Insert (x :: Nat) (a :: Type) (t :: Tree) :: Tree
   insert :: Node x a -> ITree t -> ITree (Insert x a t)
@@ -134,31 +174,36 @@ instance (Insertable' x a ('ForkTree l (Node n a1) r) (CmpNat x n)) =>
   type Insert x a ('ForkTree l (Node n a1) r) = Insert' x a ('ForkTree l (Node n a1) r) (CmpNat x n)
   insert n t = insert' n t (Proxy::Proxy (CmpNat x n))
 
+-- | This class provides the functionality to insert a node with key 'x' and value type 'a'
+-- | in a non empty tree 't' without checking any structural invariant (BST/AVL).
+-- | It's only used by the 'Insertable' class and it has one extra parameter 'o',
+-- | which is the type level comparison of 'x' with the key value of the root node.
+-- | The 'o' parameter guides the insertion.
 class Insertable' (x :: Nat) (a :: Type) (t :: Tree) (o :: Ordering) where
   type Insert' (x :: Nat) (a :: Type) (t :: Tree) (o :: Ordering) :: Tree
   insert' :: Node x a -> ITree t -> Proxy o -> ITree (Insert' x a t o)
-instance (Show a, CmpNat x n ~ 'EQ) =>
+instance (Show a) =>
   Insertable' x a ('ForkTree l (Node n a1) r) 'EQ where
   type Insert' x a ('ForkTree l (Node n a1) r) 'EQ = 'ForkTree l (Node n a) r
   insert' (Node a) (ForkITree l (Node _) r) _ = ForkITree l (Node a::Node n a) r
-instance (Show a, CmpNat x n ~ 'LT,
+instance (Show a,
   Balanceable ('ForkTree ('ForkTree 'EmptyTree (Node x a) 'EmptyTree) (Node n a1) r)) =>
   Insertable' x a ('ForkTree 'EmptyTree (Node n a1) r) 'LT where
   type Insert' x a ('ForkTree 'EmptyTree (Node n a1) r) 'LT = Balance ('ForkTree ('ForkTree 'EmptyTree (Node x a) 'EmptyTree) (Node n a1) r)
   insert' (Node a) (ForkITree EmptyITree n r) _ = balance (ForkITree (ForkITree EmptyITree (Node a::Node x a) EmptyITree) n r)
-instance (CmpNat x n ~ 'LT, l ~ 'ForkTree ll (Node ln lna) lr, Insertable' x a l (CmpNat x ln),
+instance (l ~ 'ForkTree ll (Node ln lna) lr, Insertable' x a l (CmpNat x ln),
   Balanceable ('ForkTree (Insert' x a l (CmpNat x ln)) (Node n a1) r)) =>
   Insertable' x a ('ForkTree ('ForkTree ll (Node ln lna) lr) (Node n a1) r) 'LT where
   type Insert' x a ('ForkTree ('ForkTree ll (Node ln lna) lr) (Node n a1) r) 'LT =
     Balance ('ForkTree (Insert' x a ('ForkTree ll (Node ln lna) lr) (CmpNat x ln)) (Node n a1) r)
   insert' (Node a) (ForkITree l@ForkITree{} n r) _ =
     balance (ForkITree (insert' (Node a::Node x a) l (Proxy::Proxy (CmpNat x ln))) n r)
-instance (Show a, CmpNat x n ~ 'GT,
+instance (Show a,
   Balanceable ('ForkTree l (Node n a1) ('ForkTree 'EmptyTree (Node x a) 'EmptyTree))) =>
   Insertable' x a ('ForkTree l (Node n a1) 'EmptyTree) 'GT where
   type Insert' x a ('ForkTree l (Node n a1) 'EmptyTree) 'GT = Balance ('ForkTree l (Node n a1) ('ForkTree 'EmptyTree (Node x a) 'EmptyTree))
   insert' (Node a) (ForkITree l n EmptyITree) _ = balance (ForkITree l n (ForkITree EmptyITree (Node a::Node x a) EmptyITree))
-instance (CmpNat x n ~ 'GT, r ~ 'ForkTree rl (Node rn rna) rr, Insertable' x a r (CmpNat x rn),
+instance (r ~ 'ForkTree rl (Node rn rna) rr, Insertable' x a r (CmpNat x rn),
   Balanceable ('ForkTree l (Node n a1) (Insert' x a r (CmpNat x rn)))) =>
   Insertable' x a ('ForkTree l (Node n a1) ('ForkTree rl (Node rn rna) rr)) 'GT where
   type Insert' x a ('ForkTree l (Node n a1) ('ForkTree rl (Node rn rna) rr)) 'GT =
@@ -166,6 +211,11 @@ instance (CmpNat x n ~ 'GT, r ~ 'ForkTree rl (Node rn rna) rr, Insertable' x a r
   insert' (Node a) (ForkITree l n r@ForkITree{}) _ =
     balance (ForkITree l n (insert' (Node a::Node x a) r (Proxy::Proxy (CmpNat x rn))))
 
+
+-- | This class provides the functionality to delete the node with key 'x'
+-- | in a tree 't' without checking any structural invariant (BST/AVL).
+-- | The deletion is defined at the value level and the type level, and is performed
+-- | as if the tree is a BST/AVL; the checking of the BST/AVL invariant is performed after the deletion.
 class Deletable (x :: Nat) (t :: Tree) where
   type Delete (x :: Nat) (t :: Tree) :: Tree
   delete :: Proxy x -> ITree t -> ITree (Delete x t)
@@ -177,6 +227,11 @@ instance (Deletable' x ('ForkTree l (Node n a1) r) (CmpNat x n)) =>
   type Delete x ('ForkTree l (Node n a1) r) = Delete' x ('ForkTree l (Node n a1) r) (CmpNat x n)
   delete px t = delete' px t (Proxy::Proxy (CmpNat x n))
 
+-- | This class provides the functionality to delete a node with key 'x'
+-- | in a non empty tree 't' without checking any structural invariant (BST/AVL).
+-- | It's only used by the 'Deletable' class and it has one extra parameter 'o',
+-- | which is the type level comparison of 'x' with the key value of the root node.
+-- | The 'o' parameter guides the insertion.
 class Deletable' (x :: Nat) (t :: Tree) (o :: Ordering) where
   type Delete' (x :: Nat) (t :: Tree) (o :: Ordering) :: Tree
   delete' :: Proxy x -> ITree t -> Proxy o -> ITree (Delete' x t o)
