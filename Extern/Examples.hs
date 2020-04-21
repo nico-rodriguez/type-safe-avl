@@ -3,11 +3,11 @@
 {-# OPTIONS_GHC -Wno-missing-signatures #-}
 
 
-module Extern.Test where
+module Extern.Examples where
 
 import           Data.Proxy (Proxy(Proxy))
-import           Extern.AVL (AVL(AVL), insertAVL, lookupAVL, deleteAVL)
-import           Extern.BST (BST(BST), insertBST, lookupBST, deleteBST)
+import           Extern.AVL (emptyAVL, insertAVL, lookupAVL, deleteAVL)
+import           Extern.BST (emptyBST, insertBST, lookupBST, deleteBST)
 import           ITree (ITree(EmptyITree))
 import           Node (mkNode)
 
@@ -20,7 +20,7 @@ p5 = Proxy :: Proxy 5
 p6 = Proxy :: Proxy 6
 p7 = Proxy :: Proxy 7
 
-bste = BST EmptyITree
+bste = emptyBST
 
 bst1 = insertBST p4 'f' bste
 bst2 = insertBST p2 (4::Int) bst1
@@ -51,17 +51,17 @@ bst15 = deleteBST p5 bst7
 bst16 = deleteBST p3 bst7
 
 -- | Test Balanced Binary Tree
-avle = AVL EmptyITree
-avlt1 = insertAVL (mkNode (Proxy::Proxy 20) 'f') avle
-avlt2 = insertAVL (mkNode (Proxy::Proxy 60) (4::Int)) avlt1
-avlt3 = insertAVL (mkNode (Proxy::Proxy 30) "lala") avlt2
-avlt4 = insertAVL (mkNode (Proxy::Proxy 50) True) avlt3
-avlt5 = insertAVL (mkNode (Proxy::Proxy 0) ([1,2,3]::[Int])) avlt4
-avlt6 = insertAVL (mkNode (Proxy::Proxy 70) (1.8::Float)) avlt5
-avlt7 = insertAVL (mkNode (Proxy::Proxy 70) [False]) avlt6
-avlt8 = insertAVL (mkNode (Proxy::Proxy 75) 'a') avlt7
-avlt9 = insertAVL (mkNode (Proxy::Proxy 80) 'a') avlt8
-avlt10 = insertAVL (mkNode (Proxy::Proxy 90) 'a') avlt9
+avle = emptyAVL
+avlt1 = insertAVL (Proxy::Proxy 20) 'f' avle
+avlt2 = insertAVL (Proxy::Proxy 60) (4::Int) avlt1
+avlt3 = insertAVL (Proxy::Proxy 30) "lala" avlt2
+avlt4 = insertAVL (Proxy::Proxy 50) True avlt3
+avlt5 = insertAVL (Proxy::Proxy 0) ([1,2,3]::[Int]) avlt4
+avlt6 = insertAVL (Proxy::Proxy 70) (1.8::Float) avlt5
+avlt7 = insertAVL (Proxy::Proxy 70) [False] avlt6
+avlt8 = insertAVL (Proxy::Proxy 75) 'a' avlt7
+avlt9 = insertAVL (Proxy::Proxy 80) 'a' avlt8
+avlt10 = insertAVL (Proxy::Proxy 90) 'a' avlt9
 l1' :: String
 l1' = lookupAVL (Proxy::Proxy 30) avlt8
 
