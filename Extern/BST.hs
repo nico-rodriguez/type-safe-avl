@@ -3,7 +3,7 @@
 {-# LANGUAGE MultiParamTypeClasses #-}
 
 module Extern.BST (
-  BST(BST),
+  emptyBST,
   insertBST,
   lookupBST,
   deleteBST
@@ -16,6 +16,9 @@ import           Extern.BSTProofs
 import           ITree
 import           Node
 import           Prelude              hiding (lookup)
+
+emptyBST :: BST 'EmptyTree
+emptyBST = BST EmptyITree
 
 insertBST :: (Insertable x a t, ProofIsBSTInsert x a t) =>
   Proxy x -> a -> BST t -> BST (Insert x a t)
