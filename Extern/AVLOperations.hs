@@ -7,7 +7,15 @@
 {-# LANGUAGE TypeOperators         #-}
 {-# LANGUAGE UndecidableInstances  #-}
 
-module Extern.AVLOperations where
+module Extern.AVLOperations (
+  BS(Balanced,LeftHeavy,RightHeavy),
+  Balance, Balance', BalancedHeights,
+  BalancedState, Height,
+  Insertable(Insert,insert), Insert',
+  Deletable(Delete,delete), Delete',
+  Rotate, US(LeftUnbalanced,NotUnbalanced,RightUnbalanced),
+  UnbalancedState
+) where
 
 import           Data.Kind            (Type)
 import           Data.Proxy           (Proxy (Proxy))
@@ -22,6 +30,7 @@ import           ITree                (ITree (EmptyITree, ForkITree),
 import           Node                 (Node (Node))
 import           Prelude              (Bool (False, True),
                                        Ordering (EQ, GT, LT), Show, ($))
+
 
 -- | Get the maximun between two type level natural numbers.
 type family Max (n1 :: Nat) (n2 :: Nat) :: Nat where

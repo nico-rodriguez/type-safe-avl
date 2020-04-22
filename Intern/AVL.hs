@@ -1,10 +1,8 @@
 {-# LANGUAGE DataKinds             #-}
 {-# LANGUAGE GADTs                 #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
-{-# LANGUAGE Safe                  #-}
 
 module Intern.AVL (
-  AVL(EmptyAVL,ForkAVL),
   emptyAVL,
   insertAVL,
   lookupAVL,
@@ -17,7 +15,7 @@ import           Intern.AVLOperations (AVL (EmptyAVL, ForkAVL),
                                        Insertable (Insert, insert),
                                        Lookupable (lookup), Member)
 import           ITree                (Tree (EmptyTree, ForkTree))
-import           Node                 (Node)
+import           Node                 (Node,mkNode)
 import           Prelude              (Bool (True))
 
 
@@ -25,8 +23,9 @@ emptyAVL :: AVL 'EmptyTree
 emptyAVL = EmptyAVL
 
 insertAVL :: (Insertable x a t) =>
-  Node x a -> AVL t -> AVL (Insert x a t)
-insertAVL = insert
+  Proxy x -> a -> AVL t -> AVL (Insert x a t)
+insertAVL x a = insert node
+  where node = mkNode x a
 
 lookupAVL :: (t ~ 'ForkTree l (Node n a1) r, Member x t ~ 'True, Lookupable x a t) =>
   Proxy x -> AVL t -> a

@@ -9,7 +9,12 @@
 {-# LANGUAGE TypeOperators         #-}
 {-# LANGUAGE UndecidableInstances  #-}
 
-module Intern.AVLOperations where
+module Intern.AVLOperations (
+  AVL(EmptyAVL,ForkAVL),
+  Insertable(Insert,insert),
+  Member, Lookupable(lookup),
+  Deletable(Delete,delete)
+) where
 
 import           Data.Kind          (Type)
 import           Data.Proxy         (Proxy (Proxy))
@@ -22,6 +27,7 @@ import           Node               (Node (Node), getValue)
 import           Prelude            (Bool (False, True), Ordering (EQ, GT, LT),
                                      Show (show), String, ($), (++))
 
+
 -- | Check if all elements of the tree are strictly less than x
 type family LtN (l :: Tree) (x :: Nat) :: Bool where
   LtN 'EmptyTree                  _x = 'True
@@ -32,6 +38,7 @@ type family GtN (r :: Tree) (x :: Nat) :: Bool where
   GtN 'EmptyTree                  _x = 'True
   GtN ('ForkTree l (Node n _a) r) x  = CmpNat n x == 'GT && GtN l x && GtN r x
 
+-- | Get the maximun between two type level natural numbers.
 type family Max (n1 :: Nat) (n2 :: Nat) :: Nat where
   Max n1 n2 =
     (If (n1 <=? n2)
@@ -39,10 +46,14 @@ type family Max (n1 :: Nat) (n2 :: Nat) :: Nat where
       n1
     )
 
+-- | Get the height of a tree.
 type family Height (t :: Tree) :: Nat where
   Height 'EmptyTree = 0
   Height ('ForkTree l (Node _n _a) r) = 1 + Max (Height l) (Height r)
 
+-- | Check if two type level natural numbers,
+-- | that represent the heights of some left and right sub trees,
+-- | differ at most in one (i.e., the tree is balanced).
 type family BalancedHeights (h1 :: Nat) (h2 :: Nat) :: Bool where
   BalancedHeights 0   0   = 'True
   BalancedHeights 1   0   = 'True
@@ -51,6 +62,11 @@ type family BalancedHeights (h1 :: Nat) (h2 :: Nat) :: Bool where
   BalancedHeights 0   _h2 = 'False
   BalancedHeights h1  h2  = BalancedHeights (h1-1) (h2-1)
 
+
+-- | Constructor of AVLs. Given two AVL trees and an arbitrary node,
+-- | it tests wether the key of the node verifies the LtN and GtN invariants
+-- | wtih respect to each tree and if the heights are balanced.
+-- | Notice that this is all that's needed to assert that the new tree is a AVL.
 data AVL :: Tree -> Type where
   EmptyAVL :: AVL 'EmptyTree
   ForkAVL  :: (Show a, LtN l n ~ 'True, GtN r n ~ 'True, BalancedHeights (Height l) (Height r) ~ 'True) =>
@@ -64,13 +80,24 @@ instance Show (AVL t) where
       go EmptyAVL         = "E"
       go (ForkAVL l' n'@(Node _) r')  = "(F " ++ go l' ++ " " ++ show n' ++ " " ++ go r' ++ ")"
 
+
+-- | Constructor of AlmostAVLs. This kind of trees arises after some operation
+-- | performed over an AVL, like an insertion or deletion, that may leave
+-- | the tree unbalanced.
 data AlmostAVL :: Tree -> Type where
   NullAVL    :: AlmostAVL 'EmptyTree
   AlmostAVL  :: (Show a, LtN l n ~ 'True, GtN r n ~ 'True) =>
     AVL l -> Node n a -> AVL r -> AlmostAVL ('ForkTree l (Node n a) r)
 
+-- | Data type that represents the state of unbalance of the sub trees:
+-- | - LeftUnbalanced: tree is unbalanced because left sub tree is unbalanced.
+-- | - RightUnbalanced: tree is unbalanced because right sub tree is unbalanced.
+-- | - NotUnbalanced: tree is not unbalanced.
 data US = LeftUnbalanced | RightUnbalanced | NotUnbalanced
 
+-- | Check from two type level natural numbers,
+-- | that represent the heights of some left and right sub trees,
+-- | if the tree is balanced or if some of those sub trees is unbalanced.
 type family UnbalancedState (h1 :: Nat) (h2 :: Nat) :: US where
   UnbalancedState 0 0   = 'NotUnbalanced
   UnbalancedState 1 0   = 'NotUnbalanced
@@ -79,8 +106,16 @@ type family UnbalancedState (h1 :: Nat) (h2 :: Nat) :: US where
   UnbalancedState 0 2   = 'RightUnbalanced
   UnbalancedState h1 h2 = UnbalancedState (h1-1) (h2-1)
 
+
+-- | Data type that represents the state of balance of the sub trees in a balanced tree:
+-- | - LeftHeavy: height(left sub tree) = height(right sub tree) + 1.
+-- | - RightHeavy: height(right sub tree) = height(leftt sub tree) + 1.
+-- | - Balanced: height(left sub tree) = height(right sub tree).
 data BS = LeftHeavy | RightHeavy | Balanced
 
+-- | Check from two type level natural numbers,
+-- | that represent the heights of some left and right sub trees,
+-- | if some of those sub trees have height larger than the other.
 type family BalancedState (h1 :: Nat) (h2 :: Nat) :: BS where
   BalancedState 0 0   = 'Balanced
   BalancedState 1 0   = 'LeftHeavy

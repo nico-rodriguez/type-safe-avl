@@ -26,6 +26,7 @@ import           Node               (Node (Node), getValue)
 import           Prelude            (Bool (False, True), Ordering (EQ, GT, LT),
                                      Show)
 
+
 -- | This class provides the functionality to insert a node with key 'x' and value type 'a'
 -- | in a tree 't' without checking any structural invariant (BST).
 -- | The insertion is defined at the value level and the type level, and is performed
@@ -63,6 +64,7 @@ instance (Show a) => Insertable' x a ('ForkTree l (Node n a1) 'EmptyTree) 'GT wh
 instance (r ~ 'ForkTree rl (Node rn rna) rr, Insertable' x a r (CmpNat x rn)) => Insertable' x a ('ForkTree l (Node n a1) ('ForkTree rl (Node rn rna) rr)) 'GT where
   type Insert' x a ('ForkTree l (Node n a1) ('ForkTree rl (Node rn rna) rr)) 'GT = 'ForkTree l (Node n a1) (Insert' x a ('ForkTree rl (Node rn rna) rr) (CmpNat x rn))
   insert' (Node a) (ForkITree l n r@ForkITree{}) _ = ForkITree l n (insert' (Node a::Node x a) r (Proxy::Proxy (CmpNat x rn)))
+
 
 -- | Type family to test wether there is a node in the tree 't' with key 'x'.
 -- | It assumes that 't' is a BST in order to perform the search.
@@ -109,16 +111,16 @@ instance (Lookupable' x a ('ForkTree l (Node n a1) r) (CmpNat x n), a ~ LookupVa
 -- | which is the type level comparison of 'x' with the key value of the root node.
 -- | The 'o' parameter guides the lookup.
 class Lookupable' (x :: Nat) (a :: Type) (t :: Tree) (o :: Ordering) where
-  lookup' :: (t ~ 'ForkTree l (Node n a1) r, Member x t ~ 'True) =>
-    Proxy x -> ITree t -> Proxy o -> a
+  lookup' :: Proxy x -> ITree t -> Proxy o -> a
 instance Lookupable' x a ('ForkTree l (Node n a) r) 'EQ where
   lookup' _ (ForkITree _ node _) _ = getValue node
-instance (l ~ 'ForkTree ll (Node ln lna) lr, Member x l ~ 'True, Lookupable' x a l (CmpNat x ln)) =>
+instance (l ~ 'ForkTree ll (Node ln lna) lr, Lookupable' x a l (CmpNat x ln)) =>
   Lookupable' x a ('ForkTree ('ForkTree ll (Node ln lna) lr) (Node n a1) r) 'LT where
   lookup' p (ForkITree l@ForkITree{} _ _) _ = lookup' p l (Proxy::Proxy (CmpNat x ln))
-instance (r ~ 'ForkTree rl (Node rn rna) rr, Member x r ~ 'True, Lookupable' x a ('ForkTree rl (Node rn rna) rr) (CmpNat x rn)) =>
+instance (r ~ 'ForkTree rl (Node rn rna) rr, Lookupable' x a ('ForkTree rl (Node rn rna) rr) (CmpNat x rn)) =>
   Lookupable' x a ('ForkTree l (Node n a1) ('ForkTree rl (Node rn rna) rr)) 'GT where
   lookup' p (ForkITree _ _ r@ForkITree{}) _ = lookup' p r (Proxy::Proxy (CmpNat x rn))
+
 
 -- | This class provides the functionality to delete the node with maximum key value
 -- | in a tree 't' without checking any structural invariant (BST).
@@ -193,7 +195,7 @@ instance Deletable' x ('ForkTree 'EmptyTree (Node n a1) ('ForkTree rl (Node rn r
 instance Deletable' x ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a1) 'EmptyTree) 'EQ where
   type Delete' x ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a1) 'EmptyTree) 'EQ = ('ForkTree ll (Node ln la) lr)
   delete' _ (ForkITree l@ForkITree{} (Node _) EmptyITree) _ = l
-instance (Show (MaxValue ('ForkTree ll (Node ln la) lr)), MaxKeyDeletable ('ForkTree ll (Node ln la) lr), Maxable ('ForkTree ll (Node ln la) lr)) =>
+instance (l ~ 'ForkTree ll (Node ln la) lr, Show (MaxValue l), MaxKeyDeletable l, Maxable l) =>
   Deletable' x ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a1) ('ForkTree rl (Node rn ra) rr)) 'EQ where
   type Delete' x ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a1) ('ForkTree rl (Node rn ra) rr)) 'EQ =
     ('ForkTree (MaxKeyDelete ('ForkTree ll (Node ln la) lr)) (Node (MaxKey ('ForkTree ll (Node ln la) lr)) (MaxValue ('ForkTree ll (Node ln la) lr))) ('ForkTree rl (Node rn ra) rr))

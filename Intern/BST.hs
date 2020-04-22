@@ -3,21 +3,27 @@
 {-# LANGUAGE MultiParamTypeClasses #-}
 
 module Intern.BST (
-  BST(..),
+  emptyBST,
   insertBST,
   lookupBST,
   deleteBST
 ) where
 
-import           Data.Proxy
-import           Intern.BSTOperations
-import           ITree
-import           Node
+import           Data.Proxy (Proxy)
+import           Intern.BSTOperations (BST(EmptyBST), Insertable(Insert,insert),
+                                      Member, Lookupable(lookup),
+                                      Deletable(Delete,delete))
+import           ITree                 (Tree(EmptyTree,ForkTree))
+import           Node  (Node, mkNode)
 import           Prelude              hiding (lookup)
 
+emptyBST :: BST 'EmptyTree
+emptyBST = EmptyBST
+
 insertBST :: (Insertable x a t) =>
-  Node x a -> BST t -> BST (Insert x a t)
-insertBST = insert
+  Proxy x -> a -> BST t -> BST (Insert x a t)
+insertBST x a = insert node
+  where node = mkNode x a
 
 lookupBST :: (t ~ 'ForkTree l (Node n a1) r, Member x t ~ 'True, Lookupable x a t) =>
   Proxy x -> BST t -> a

@@ -8,7 +8,13 @@
 {-# LANGUAGE TypeOperators         #-}
 {-# LANGUAGE UndecidableInstances  #-}
 
-module Extern.AVLProofs where
+module Extern.AVLProofs (
+  AVL(AVL),
+  ProofIsAVLInsert(proofIsAVLInsert),
+  ProofIsAVLDelete(proofIsAVLDelete),
+  ProofIsBSTInsert(proofIsBSTInsert),
+  ProofIsBSTDelete(proofIsBSTDelete)
+) where
 
 import           Data.Kind            (Type)
 import           Data.Proxy           (Proxy (Proxy))
@@ -30,6 +36,7 @@ import           Node                 (Node (Node))
 import           Prelude              (Bool (True), Ordering (EQ, GT, LT),
                                        Show (show), ($), (++))
 import           Unsafe.Coerce        (unsafeCoerce)
+
 
 -- | Check if tree is AVL by comparing the differences in the heights of all sub trees pairs
 -- | It doesn't check if the tree is BST, IsBST is used for that.
@@ -53,7 +60,8 @@ class ProofIsBSTInsert (x :: Nat) (a :: Type) (t :: Tree) where
   proofIsBSTInsert :: Node x a -> BST t -> IsBST (Insert x a t) :~: 'True
 instance ProofIsBSTInsert x a 'EmptyTree where
   proofIsBSTInsert _ (BST EmptyITree) = Refl
-instance ProofIsBSTInsert' x a ('ForkTree l (Node n a1) r) (CmpNat x n) => ProofIsBSTInsert x a ('ForkTree l (Node n a1) r) where
+instance ProofIsBSTInsert' x a ('ForkTree l (Node n a1) r) (CmpNat x n) =>
+  ProofIsBSTInsert x a ('ForkTree l (Node n a1) r) where
   proofIsBSTInsert node (BST t) = proofIsBSTInsert' node t (Proxy::Proxy (CmpNat x n))
 
 -- | Prove that inserting a node with key 'x' and element value 'a'
