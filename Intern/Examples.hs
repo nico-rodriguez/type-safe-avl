@@ -1,6 +1,6 @@
 {-# LANGUAGE DataKinds #-}
 
-module Intern.Test where
+module Intern.Examples where
 
 import           Data.Proxy
 import           Intern.AVL
@@ -25,21 +25,20 @@ p6 = Proxy
 p7 :: Proxy 7
 p7 = Proxy
 
-bste :: BST 'EmptyTree
-bste = EmptyBST
+bste = emptyBST
 
-bst1 = insertBST (mkNode p4 'f') bste
-bst2 = insertBST (mkNode p2 (4::Int)) bst1
-bst3 = insertBST (mkNode p6 "lala") bst2
-bst4 = insertBST (mkNode p3 True) bst3
-bst5 = insertBST (mkNode p5 ([1,2,3]::[Int])) bst4
-bst6 = insertBST (mkNode p0 (1.8::Float)) bst5
-bst7 = insertBST (mkNode p7 [False]) bst6
+bst1 = insertBST p4 'f' bste
+bst2 = insertBST p2 (4::Int) bst1
+bst3 = insertBST p6 "lala" bst2
+bst4 = insertBST p3 True bst3
+bst5 = insertBST p5 ([1,2,3]::[Int]) bst4
+bst6 = insertBST p0 (1.8::Float) bst5
+bst7 = insertBST p7 [False] bst6
 
 data SomeData = SD
   deriving (Show)
 
-bst8 = insertBST (mkNode p7 SD) bst7
+bst8 = insertBST p7 SD bst7
 
 l1 :: String
 l1 = lookupBST p6 bst8
@@ -57,17 +56,17 @@ bst15 = deleteBST p5 bst7
 bst16 = deleteBST p3 bst7
 
 -- | Test Balanced Binary Tree
-avle = EmptyAVL
-avlt1 = insertAVL (mkNode (Proxy::Proxy 20) 'f') avle
-avlt2 = insertAVL (mkNode (Proxy::Proxy 60) (4::Int)) avlt1
-avlt3 = insertAVL (mkNode (Proxy::Proxy 30) "lala") avlt2
-avlt4 = insertAVL (mkNode (Proxy::Proxy 50) True) avlt3
-avlt5 = insertAVL (mkNode (Proxy::Proxy 0) ([1,2,3]::[Int])) avlt4
-avlt6 = insertAVL (mkNode (Proxy::Proxy 70) (1.8::Float)) avlt5
-avlt7 = insertAVL (mkNode (Proxy::Proxy 70) [False]) avlt6
-avlt8 = insertAVL (mkNode (Proxy::Proxy 75) 'a') avlt7
-avlt9 = insertAVL (mkNode (Proxy::Proxy 80) 'a') avlt8
-avlt10 = insertAVL (mkNode (Proxy::Proxy 90) 'a') avlt9
+avle = emptyAVL
+avlt1 = insertAVL (Proxy::Proxy 20) 'f' avle
+avlt2 = insertAVL (Proxy::Proxy 60) (4::Int) avlt1
+avlt3 = insertAVL (Proxy::Proxy 30) "lala" avlt2
+avlt4 = insertAVL (Proxy::Proxy 50) True avlt3
+avlt5 = insertAVL (Proxy::Proxy 0) ([1,2,3]::[Int]) avlt4
+avlt6 = insertAVL (Proxy::Proxy 70) (1.8::Float) avlt5
+avlt7 = insertAVL (Proxy::Proxy 70) [False] avlt6
+avlt8 = insertAVL (Proxy::Proxy 75) 'a' avlt7
+avlt9 = insertAVL (Proxy::Proxy 80) 'a' avlt8
+avlt10 = insertAVL (Proxy::Proxy 90) 'a' avlt9
 l1' :: String
 l1' = lookupAVL (Proxy::Proxy 30) avlt8
 
