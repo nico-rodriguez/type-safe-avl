@@ -153,7 +153,8 @@ instance (CmpNat x n1 ~ 'LT,
   proofGtNInsert' _ (ForkITree EmptyITree _ _) _ _ =
     gcastWith (proofGtNBalance (Proxy::Proxy ('ForkTree ('ForkTree 'EmptyTree (Node x a) 'EmptyTree) (Node n1 a1) r)) (Proxy::Proxy n)) Refl
 instance (CmpNat x n1 ~ 'LT, l ~ 'ForkTree ll (Node ln lna) lr, GtN l n ~ 'True,
-  ProofGtNInsert' x a l n (CmpNat x ln), ProofGtNBalance ('ForkTree (Insert' x a ('ForkTree ll (Node ln lna) lr) (CmpNat x ln)) (Node n1 a1) r) n) =>
+  ProofGtNInsert' x a l n (CmpNat x ln),
+  ProofGtNBalance ('ForkTree (Insert' x a ('ForkTree ll (Node ln lna) lr) (CmpNat x ln)) (Node n1 a1) r) n) =>
   ProofGtNInsert' x a ('ForkTree ('ForkTree ll (Node ln lna) lr) (Node n1 a1) r) n 'LT where
   proofGtNInsert' x (ForkITree l@ForkITree{} _ _) n _ =
     gcastWith (proofGtNInsert' x l n (Proxy::Proxy (CmpNat x ln))) $

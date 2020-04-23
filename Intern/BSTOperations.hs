@@ -233,17 +233,16 @@ instance (r ~ 'ForkTree rl (Node rn ra) rr, LtN r n ~ 'True) =>
 instance (l ~ 'ForkTree ll (Node ln la) lr, LtN l n ~ 'True) =>
   ProofLtNDelete' x ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n1 a1) 'EmptyTree) n 'EQ where
   proofLtNDelete' _ (ForkBST ForkBST{} (Node _) EmptyBST) _ _ = Refl
-instance (r ~ 'ForkTree rl (Node rn ra) rr, LtN r n ~ 'True,
-  l ~ 'ForkTree ll (Node ln la) lr, LtN l n ~ 'True, ProofLTMaxKey l n, Maxable l,
-  ProofLtNMaxKeyDelete l n, MaxKeyDeletable l) =>
+instance (l ~ 'ForkTree ll (Node ln la) lr, LtN l n ~ 'True,
+  r ~ 'ForkTree rl (Node rn ra) rr, LtN r n ~ 'True,
+  ProofLTMaxKey l n, Maxable l, ProofLtNMaxKeyDelete l n, MaxKeyDeletable l) =>
   ProofLtNDelete' x ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n1 a1) ('ForkTree rl (Node rn ra) rr)) n 'EQ where
   proofLtNDelete' _ (ForkBST l@ForkBST{} (Node _) ForkBST{}) _ _ =
     gcastWith (proofLtNMaxKeyDelete l (Proxy::Proxy n)) $
       gcastWith (proofLTMaxKey l (Proxy::Proxy n)) Refl
 instance ProofLtNDelete' x ('ForkTree 'EmptyTree (Node n1 a1) r) n 'LT where
   proofLtNDelete' _ (ForkBST EmptyBST (Node _) _) _ _ = Refl
-instance (l ~ 'ForkTree ll (Node ln la) lr, LtN l n ~ 'True,
-  ProofLtNDelete' x l n (CmpNat x ln)) =>
+instance (l ~ 'ForkTree ll (Node ln la) lr, LtN l n ~ 'True, ProofLtNDelete' x l n (CmpNat x ln)) =>
   ProofLtNDelete' x ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n1 a1) r) n 'LT where
   proofLtNDelete' px (ForkBST l@ForkBST{} _ _) _ _ =
     gcastWith (proofLtNDelete' px l (Proxy::Proxy n) (Proxy::Proxy (CmpNat x ln))) Refl
@@ -271,8 +270,8 @@ instance (r ~ 'ForkTree rl (Node rn ra) rr, GtN r n ~ 'True) =>
 instance (l ~ 'ForkTree ll (Node ln la) lr, GtN l n ~ 'True) =>
   ProofGtNDelete' x ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n1 a1) 'EmptyTree) n 'EQ where
   proofGtNDelete' _ (ForkBST ForkBST{} (Node _) EmptyBST) _ _ = Refl
-instance (r ~ 'ForkTree rl (Node rn ra) rr, GtN r n ~ 'True,
-  l ~ 'ForkTree ll (Node ln la) lr, GtN l n ~ 'True,
+instance (l ~ 'ForkTree ll (Node ln la) lr, GtN l n ~ 'True,
+  r ~ 'ForkTree rl (Node rn ra) rr, GtN r n ~ 'True,
   ProofGTMaxKey l n, Maxable l, ProofGtNMaxKeyDelete l n, MaxKeyDeletable l) =>
   ProofGtNDelete' x ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n1 a1) r) n 'EQ where
   proofGtNDelete' _ (ForkBST l@ForkBST{} (Node _) ForkBST{}) _ _ =
@@ -316,8 +315,8 @@ class ProofGtNMaxKeyDelete (t :: Tree) (n :: Nat) where
 instance (GtN l n ~ 'True) =>
   ProofGtNMaxKeyDelete ('ForkTree l (Node n1 a) 'EmptyTree) n where
   proofGtNMaxKeyDelete (ForkBST _ (Node _) EmptyBST) _ = Refl
-instance (r ~ 'ForkTree rl (Node rn ra) rr, GtN r n ~ 'True,
-  ProofGtNMaxKeyDelete r n, MaxKeyDeletable r) =>
+instance (r ~ 'ForkTree rl (Node rn ra) rr, GtN r n ~ 'True, MaxKeyDeletable r,
+  ProofGtNMaxKeyDelete r n) =>
   ProofGtNMaxKeyDelete ('ForkTree l (Node n1 a) ('ForkTree rl (Node rn ra) rr)) n where
   proofGtNMaxKeyDelete (ForkBST _ (Node _) r@ForkBST{}) pn =
     gcastWith (proofGtNMaxKeyDelete r pn) Refl
@@ -346,11 +345,12 @@ class ProofLtNMaxKeyDelete (t :: Tree) (n :: Nat) where
 instance (LtN l n ~ 'True) =>
   ProofLtNMaxKeyDelete ('ForkTree l (Node n1 a) 'EmptyTree) n where
   proofLtNMaxKeyDelete (ForkBST _ (Node _) EmptyBST) _ = Refl
-instance (r ~ 'ForkTree rl (Node rn ra) rr, LtN r n ~ 'True,
-  ProofLtNMaxKeyDelete r n, MaxKeyDeletable r) =>
+instance (r ~ 'ForkTree rl (Node rn ra) rr, LtN r n ~ 'True, MaxKeyDeletable r,
+  ProofLtNMaxKeyDelete r n) =>
   ProofLtNMaxKeyDelete ('ForkTree l (Node n1 a) ('ForkTree rl (Node rn ra) rr)) n where
   proofLtNMaxKeyDelete (ForkBST _ (Node _) r@ForkBST{}) pn =
     gcastWith (proofLtNMaxKeyDelete r pn) Refl
+
 
 -- | This class provides the functionality to delete the node with maximum key value
 -- | in a BST 't'.
@@ -430,8 +430,7 @@ instance Deletable' x ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a1) 'Emp
     'ForkTree ll (Node ln la) lr
   delete' _ (ForkBST l@ForkBST{} (Node _) EmptyBST) _ = l
 instance (l ~ 'ForkTree ll (Node ln la) lr, Show (MaxValue l), MaxKeyDeletable l, Maxable l,
-  ProofLtNMaxKeyDelete l n, ProofLTMaxKey l n,
-  LtN (MaxKeyDelete l) (MaxKey l) ~ 'True,
+  ProofLtNMaxKeyDelete l n, ProofLTMaxKey l n, LtN (MaxKeyDelete l) (MaxKey l) ~ 'True,
   r ~ 'ForkTree rl (Node rn ra) rr, GtN r (MaxKey l) ~ 'True) =>
   Deletable' x ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a1) ('ForkTree rl (Node rn ra) rr)) 'EQ where
   type Delete' x ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a1) ('ForkTree rl (Node rn ra) rr)) 'EQ =

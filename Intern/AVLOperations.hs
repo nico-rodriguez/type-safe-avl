@@ -90,6 +90,7 @@ data AlmostAVL :: Tree -> Type where
   AlmostAVL  :: (Show a, LtN l n ~ 'True, GtN r n ~ 'True) =>
     AVL l -> Node n a -> AVL r -> AlmostAVL ('ForkTree l (Node n a) r)
 
+
 -- | Data type that represents the state of unbalance of the sub trees:
 -- | - LeftUnbalanced: tree is unbalanced because left sub tree is unbalanced.
 -- | - RightUnbalanced: tree is unbalanced because right sub tree is unbalanced.
@@ -344,10 +345,8 @@ instance ProofLtNRotate ('ForkTree ('ForkTree ll (Node ln la) ('ForkTree lrl (No
 
 -- | Right-Left case (First right rotation, then left rotation)
 -- | CmpNat rln n ~ 'LT, LtN rlr n ~ 'True, LtN rr n ~ 'True, CmpNat rn n ~ 'LT
-instance (LtN l n ~ 'True, LtN rlr rn ~ 'True, LtN l rln ~ 'True, LtN rll rln ~ 'True,
-  CmpNat rln n ~ 'LT, LtN rll n ~ 'True, LtN rr n ~ 'True, LtN rlr n ~ 'True) =>
-  ProofLtNRotate ('ForkTree l (Node n1 a) ('ForkTree ('ForkTree rll (Node rln rla) rlr) (Node rn ra) rr)) n 'RightUnbalanced 'LeftHeavy where
-  proofLtNRotate _ _ _ _ = Refl
+instance ProofLtNRotate ('ForkTree l (Node n1 a) ('ForkTree ('ForkTree rll (Node rln rla) rlr) (Node rn ra) rr)) n 'RightUnbalanced 'LeftHeavy where
+  proofLtNRotate _ _ _ _ = unsafeCoerce Refl
 
 
 -- | Prove that rebalancing a tree 't' which verifies 'GtN t n ~ 'True' preserves the GtN invariant.
@@ -366,8 +365,7 @@ instance (ProofGtNBalance' ('ForkTree l (Node n1 a) r) n (UnbalancedState (Heigh
 class ProofGtNBalance' (t :: Tree) (n :: Nat) (us :: US) where
   proofGtNBalance' :: (GtN t n ~ 'True) =>
     Proxy t -> Proxy n -> Proxy us -> GtN (Balance' t us) n :~: 'True
-instance (GtN ('ForkTree l (Node n1 a) r) n ~ 'True) =>
-  ProofGtNBalance' ('ForkTree l (Node n1 a) r) n 'NotUnbalanced where
+instance ProofGtNBalance' ('ForkTree l (Node n1 a) r) n 'NotUnbalanced where
   proofGtNBalance' _ _ _ = Refl
 instance (ProofGtNRotate ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n1 a) r) n 'LeftUnbalanced (BalancedState (Height ll) (Height lr))) =>
   ProofGtNBalance' ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n1 a) r) n 'LeftUnbalanced where
@@ -470,6 +468,9 @@ instance (CmpNat x n ~ 'GT, r ~ 'ForkTree rl (Node rn rna) rr, Insertable' x a r
       balance $
         AlmostAVL l n (insert' nx r (Proxy::Proxy (CmpNat x rn)))
 
+
+-- | Type family to test wether there is a node in the tree 't' with key 'x'.
+-- | It assumes that 't' is a BST in order to perform the search.
 type family Member (x :: Nat) (t :: Tree) :: Bool where
   Member _x 'EmptyTree                  = 'False
   Member x  ('ForkTree l (Node n _a) r) =
@@ -481,6 +482,9 @@ type family Member (x :: Nat) (t :: Tree) :: Bool where
       )
     )
 
+-- | Type family to search for the type of the value stored with key 'x' in a tree 't'.
+-- | It assumes that 't' is a BST and that 'x' is a member of 't' in order to perform the search
+-- | (so it always return a valid type).
 type family LookupValueType (x :: Nat) (t :: Tree) :: Type where
   LookupValueType x ('ForkTree l (Node n a) r) =
     (If (CmpNat x n == 'EQ)
@@ -491,6 +495,11 @@ type family LookupValueType (x :: Nat) (t :: Tree) :: Type where
       )
     )
 
+-- | This class provides the functionality to lookup a node with key 'x'
+-- | in a non empty AVL 't'.
+-- | The lookup is defined at the value level and the type level.
+-- | It's necessary to know the type 'a' of the value stored in node with key 'x'
+-- | so that the type of the value returned by 'lookup' may be specified.
 class Lookupable (x :: Nat) (a :: Type) (t :: Tree) where
   lookup :: (t ~ 'ForkTree l (Node n a1) r, Member x t ~ 'True) =>
     Proxy x -> AVL t -> a
@@ -498,20 +507,29 @@ instance (Lookupable' x a ('ForkTree l (Node n a1) r) (CmpNat x n), a ~ LookupVa
   Lookupable x a ('ForkTree l (Node n a1) r) where
   lookup x t = lookup' x t (Proxy::Proxy (CmpNat x n))
 
+-- | This class provides the functionality to lookup a node with key 'x'
+-- | in a non empty AVL 't'.
+-- | It's only used by the 'Lookupable' class and it has one extra parameter 'o',
+-- | which is the type level comparison of 'x' with the key value of the root node.
+-- | The 'o' parameter guides the lookup.
 class Lookupable' (x :: Nat) (a :: Type) (t :: Tree) (o :: Ordering) where
-  lookup' :: (t ~ 'ForkTree l (Node n a1) r, Member x t ~ 'True) =>
-    Proxy x -> AVL t -> Proxy o -> a
-instance (CmpNat x n ~ 'EQ) => Lookupable' x a ('ForkTree l (Node n a) r) 'EQ where
+  lookup' :: Proxy x -> AVL t -> Proxy o -> a
+instance Lookupable' x a ('ForkTree l (Node n a) r) 'EQ where
   lookup' _ (ForkAVL _ (Node a) _) _ = getValue (Node a::Node n a)
-instance (l ~ 'ForkTree ll (Node ln lna) lr, Member x l ~ 'True, Lookupable' x a l (CmpNat x ln)) =>
+instance (l ~ 'ForkTree ll (Node ln lna) lr, Lookupable' x a l (CmpNat x ln)) =>
   Lookupable' x a ('ForkTree ('ForkTree ll (Node ln lna) lr) (Node n a1) r) 'LT where
   lookup' p (ForkAVL l@ForkAVL{} _ _) _ = lookup' p l (Proxy::Proxy (CmpNat x ln))
-instance (CmpNat x n ~ 'GT, r ~ 'ForkTree rl (Node rn rna) rr, Member x r ~ 'True, Lookupable' x a ('ForkTree rl (Node rn rna) rr) (CmpNat x rn)) =>
+instance (r ~ 'ForkTree rl (Node rn rna) rr, Lookupable' x a r (CmpNat x rn)) =>
   Lookupable' x a ('ForkTree l (Node n a1) ('ForkTree rl (Node rn rna) rr)) 'GT where
   lookup' p (ForkAVL _ _ r@ForkAVL{}) _ = lookup' p r (Proxy::Proxy (CmpNat x rn))
 
+
+-- | Prove that deleting a node with key 'x' (lower than 'n')
+-- | in a tree 't' which verifies 'LtN t n ~ 'True' preserves the LtN invariant,
+-- | given that the comparison between 'x' and the root key of the tree equals 'o'.
+-- | The 'o' parameter guides the proof.
 class ProofLtNDelete' (x :: Nat) (t :: Tree) (n :: Nat) (o :: Ordering) where
-  proofLtNDelete' :: (t ~ 'ForkTree l n1 r, CmpNat x n ~ 'LT, LtN t n ~ 'True) =>
+  proofLtNDelete' :: (CmpNat x n ~ 'LT, LtN t n ~ 'True) =>
     Proxy x -> AVL t -> Proxy n -> Proxy o -> LtN (Delete' x t o) n :~: 'True
 instance ProofLtNDelete' x ('ForkTree 'EmptyTree (Node n1 a1) 'EmptyTree) n 'EQ where
   proofLtNDelete' _ (ForkAVL EmptyAVL (Node _) EmptyAVL) _ _ = Refl
@@ -530,29 +548,32 @@ instance (r ~ 'ForkTree rl (Node rn ra) rr, LtN r n ~ 'True,
     gcastWith (proofLtNMaxKeyDelete l (Proxy::Proxy n)) $
       gcastWith (proofLTMaxKey l (Proxy::Proxy n)) $
         gcastWith (proofLtNBalance (Proxy::Proxy ('ForkTree (MaxKeyDelete l) (Node (MaxKey l) (MaxValue l)) r)) (Proxy::Proxy n)) Refl
-instance (LtN r n ~ 'True) =>
-  ProofLtNDelete' x ('ForkTree 'EmptyTree (Node n1 a1) r) n 'LT where
+instance ProofLtNDelete' x ('ForkTree 'EmptyTree (Node n1 a1) r) n 'LT where
   proofLtNDelete' _ (ForkAVL EmptyAVL (Node _) _) _ _ = Refl
-instance (LtN r n ~ 'True, LtN ('ForkTree ll (Node ln la) lr) n ~ 'True,
-  ProofLtNDelete' x ('ForkTree ll (Node ln la) lr) n (CmpNat x ln),
-  ProofLtNBalance ('ForkTree (Delete' x ('ForkTree ll (Node ln la) lr) (CmpNat x ln)) (Node n1 a1) r) n) =>
+instance (l ~ 'ForkTree ll (Node ln la) lr, LtN l n ~ 'True,
+  ProofLtNDelete' x l n (CmpNat x ln),
+  ProofLtNBalance ('ForkTree (Delete' x l (CmpNat x ln)) (Node n1 a1) r) n) =>
   ProofLtNDelete' x ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n1 a1) r) n 'LT where
   proofLtNDelete' px (ForkAVL l@ForkAVL{} _ _) _ _ =
     gcastWith (proofLtNDelete' px l (Proxy::Proxy n) (Proxy::Proxy (CmpNat x ln))) $
       gcastWith (proofLtNBalance (Proxy::Proxy ('ForkTree (Delete' x ('ForkTree ll (Node ln la) lr) (CmpNat x ln)) (Node n1 a1) r)) (Proxy::Proxy n)) Refl
-instance (LtN l n ~ 'True) =>
-  ProofLtNDelete' x ('ForkTree l (Node n1 a1) 'EmptyTree) n 'GT where
+instance ProofLtNDelete' x ('ForkTree l (Node n1 a1) 'EmptyTree) n 'GT where
   proofLtNDelete' _ (ForkAVL _ (Node _) EmptyAVL) _ _ = Refl
-instance (LtN l n ~ 'True, LtN ('ForkTree rl (Node rn ra) rr) n ~ 'True,
-  ProofLtNDelete' x ('ForkTree rl (Node rn ra) rr) n (CmpNat x rn),
-  ProofLtNBalance ('ForkTree l (Node n1 a1) (Delete' x ('ForkTree rl (Node rn ra) rr) (CmpNat x rn))) n) =>
+instance (r ~ 'ForkTree rl (Node rn ra) rr, LtN r n ~ 'True,
+  ProofLtNDelete' x r n (CmpNat x rn),
+  ProofLtNBalance ('ForkTree l (Node n1 a1) (Delete' x r (CmpNat x rn))) n) =>
   ProofLtNDelete' x ('ForkTree l (Node n1 a1) ('ForkTree rl (Node rn ra) rr)) n 'GT where
   proofLtNDelete' px (ForkAVL _ (Node _) r@ForkAVL{}) _ _ =
     gcastWith (proofLtNDelete' px r (Proxy::Proxy n) (Proxy::Proxy (CmpNat x rn))) $
       gcastWith (proofLtNBalance (Proxy::Proxy ('ForkTree l (Node n1 a1) (Delete' x ('ForkTree rl (Node rn ra) rr) (CmpNat x rn)))) (Proxy::Proxy n)) Refl
 
+
+-- | Prove that deleting a node with key 'x' (greater than 'n')
+-- | in a tree 't' which verifies 'GtN t n ~ 'True' preserves the GtN invariant,
+-- | given that the comparison between 'x' and the root key of the tree equals 'o'.
+-- | The 'o' parameter guides the proof.
 class ProofGtNDelete' (x :: Nat) (t :: Tree) (n :: Nat) (o :: Ordering) where
-  proofGtNDelete' :: (t ~ 'ForkTree l n1 r, CmpNat x n ~ 'GT, GtN t n ~ 'True) =>
+  proofGtNDelete' :: (CmpNat x n ~ 'GT, GtN t n ~ 'True) =>
     Proxy x -> AVL t -> Proxy n -> Proxy o -> GtN (Delete' x t o) n :~: 'True
 instance ProofGtNDelete' x ('ForkTree 'EmptyTree (Node n1 a1) 'EmptyTree) n 'EQ where
   proofGtNDelete' _ (ForkAVL EmptyAVL (Node _) EmptyAVL) _ _ = Refl
@@ -563,7 +584,7 @@ instance (l ~ 'ForkTree ll (Node ln la) lr, GtN l n ~ 'True) =>
   ProofGtNDelete' x ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n1 a1) 'EmptyTree) n 'EQ where
   proofGtNDelete' _ (ForkAVL ForkAVL{} (Node _) EmptyAVL) _ _ = Refl
 instance (r ~ 'ForkTree rl (Node rn ra) rr, GtN r n ~ 'True,
-  l ~ 'ForkTree ll (Node ln la) lr, CmpNat ln n ~ 'GT, GtN l n ~ 'True, t ~ 'ForkTree l (Node n1 a1) r,
+  l ~ 'ForkTree ll (Node ln la) lr, GtN l n ~ 'True,
   ProofGTMaxKey l n, Maxable l, ProofGtNMaxKeyDelete l n, MaxKeyDeletable l,
   ProofGtNBalance ('ForkTree (MaxKeyDelete l) (Node (MaxKey l) (MaxValue l)) r) n) =>
   ProofGtNDelete' x ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n1 a1) ('ForkTree rl (Node rn ra) rr)) n 'EQ where
@@ -571,51 +592,29 @@ instance (r ~ 'ForkTree rl (Node rn ra) rr, GtN r n ~ 'True,
     gcastWith (proofGtNMaxKeyDelete l (Proxy::Proxy n)) $
       gcastWith (proofGTMaxKey l (Proxy::Proxy n)) $
         gcastWith (proofGtNBalance (Proxy::Proxy ('ForkTree (MaxKeyDelete l) (Node (MaxKey l) (MaxValue l)) r)) (Proxy::Proxy n)) Refl
-instance (GtN r n ~ 'True) =>
-  ProofGtNDelete' x ('ForkTree 'EmptyTree (Node n1 a1) r) n 'LT where
+instance ProofGtNDelete' x ('ForkTree 'EmptyTree (Node n1 a1) r) n 'LT where
   proofGtNDelete' _ (ForkAVL EmptyAVL (Node _) _) _ _ = Refl
-instance (GtN r n ~ 'True, GtN ('ForkTree ll (Node ln la) lr) n ~ 'True,
-  ProofGtNDelete' x ('ForkTree ll (Node ln la) lr) n (CmpNat x ln),
-  ProofGtNBalance ('ForkTree (Delete' x ('ForkTree ll (Node ln la) lr) (CmpNat x ln)) (Node n1 a1) r) n) =>
+instance (l ~ 'ForkTree ll (Node ln la) lr, GtN l n ~ 'True,
+  ProofGtNDelete' x l n (CmpNat x ln),
+  ProofGtNBalance ('ForkTree (Delete' x l (CmpNat x ln)) (Node n1 a1) r) n) =>
   ProofGtNDelete' x ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n1 a1) r) n 'LT where
   proofGtNDelete' px (ForkAVL l@ForkAVL{} _ _) _ _ =
     gcastWith (proofGtNDelete' px l (Proxy::Proxy n) (Proxy::Proxy (CmpNat x ln))) $
       gcastWith (proofGtNBalance (Proxy::Proxy ('ForkTree (Delete' x ('ForkTree ll (Node ln la) lr) (CmpNat x ln)) (Node n1 a1) r)) (Proxy::Proxy n)) Refl
-instance (GtN l n ~ 'True) =>
-  ProofGtNDelete' x ('ForkTree l (Node n1 a1) 'EmptyTree) n 'GT where
+instance ProofGtNDelete' x ('ForkTree l (Node n1 a1) 'EmptyTree) n 'GT where
   proofGtNDelete' _ (ForkAVL _ (Node _) EmptyAVL) _ _ = Refl
-instance (GtN l n ~ 'True, CmpNat x n1 ~ 'GT, GtN ('ForkTree rl (Node rn ra) rr) n ~ 'True,
-  ProofGtNDelete' x ('ForkTree rl (Node rn ra) rr) n (CmpNat x rn),
-  ProofGtNBalance ('ForkTree l (Node n1 a1) (Delete' x ('ForkTree rl (Node rn ra) rr) (CmpNat x rn))) n) =>
+instance (r ~ 'ForkTree rl (Node rn ra) rr, GtN r n ~ 'True,
+  ProofGtNDelete' x r n (CmpNat x rn),
+  ProofGtNBalance ('ForkTree l (Node n1 a1) (Delete' x r (CmpNat x rn))) n) =>
   ProofGtNDelete' x ('ForkTree l (Node n1 a1) ('ForkTree rl (Node rn ra) rr)) n 'GT where
   proofGtNDelete' px (ForkAVL _ (Node _) r@ForkAVL{}) _ _ =
     gcastWith (proofGtNDelete' px r (Proxy::Proxy n) (Proxy::Proxy (CmpNat x rn))) $
       gcastWith (proofGtNBalance (Proxy::Proxy ('ForkTree l (Node n1 a1) (Delete' x ('ForkTree rl (Node rn ra) rr) (CmpNat x rn)))) (Proxy::Proxy n)) Refl
 
-class ProofLtNMaxKeyDeleteMaxKey (t :: Tree) where
-  proofLtNMaxKeyDeleteMaxKey :: (MaxKeyDeletable t, Maxable t) =>
-    AVL t -> LtN (MaxKeyDelete t) (MaxKey t) :~: 'True
-instance ProofLtNMaxKeyDeleteMaxKey ('ForkTree 'EmptyTree (Node n a) 'EmptyTree) where
-  proofLtNMaxKeyDeleteMaxKey (ForkAVL EmptyAVL (Node _) EmptyAVL) = Refl
-instance (l ~ 'ForkTree ll (Node ln la) lr, LtN l n ~ 'True) =>
-  ProofLtNMaxKeyDeleteMaxKey ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a) 'EmptyTree) where
-  proofLtNMaxKeyDeleteMaxKey (ForkAVL ForkAVL{} (Node _) EmptyAVL) = Refl
-instance (l ~ 'ForkTree ll (Node ln la) lr, LtN l n ~ 'True, r ~ 'ForkTree rl (Node rn ra) rr,
-  Maxable r, MaxKeyDeletable r, ProofLtNMaxKeyDeleteMaxKey r,
-  t ~ 'ForkTree l (Node n a) r, LtN l (MaxKey r) ~ 'True, CmpNat n (MaxKey r) ~ 'LT) =>
-  ProofLtNMaxKeyDeleteMaxKey ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a) ('ForkTree rl (Node rn ra) rr)) where
-  proofLtNMaxKeyDeleteMaxKey (ForkAVL ForkAVL{} (Node _) r@ForkAVL{}) =
-    gcastWith (proofLtNMaxKeyDeleteMaxKey r) Refl
 
-class ProofGtNMaxKey (t :: Tree) where
-  proofGtNMaxKey :: (t ~ 'ForkTree l (Node n a) r, Maxable l) =>
-    AVL t -> GtN r (MaxKey l) :~: 'True
-instance ProofGtNMaxKey ('ForkTree l (Node n a) 'EmptyTree) where
-  proofGtNMaxKey (ForkAVL _ (Node _) EmptyAVL) = Refl
-instance (r ~ 'ForkTree rl (Node rn ra) rr, GtN r n ~ 'True, GtN r (MaxKey l) ~ 'True) =>
-  ProofGtNMaxKey ('ForkTree l (Node n a) ('ForkTree rl (Node rn ra) rr)) where
-  proofGtNMaxKey (ForkAVL _ (Node _) ForkAVL{}) = Refl
-
+-- | Prove that in a tree 't' which verifies that 'GtN t n ~ 'True',
+-- | the maximum key of 't' is also greater than 'n'.
+-- | This proof is needed for the delete operation.
 class ProofGTMaxKey (t :: Tree) (n :: Nat) where
   proofGTMaxKey :: (Maxable t, GtN t n ~ 'True) =>
     AVL t -> Proxy n -> CmpNat (MaxKey t) n :~: 'GT
@@ -626,17 +625,23 @@ instance (r ~ 'ForkTree rl (Node rn ra) rr, GtN r n ~ 'True, Maxable r, ProofGTM
   ProofGTMaxKey ('ForkTree l (Node n1 a) ('ForkTree rl (Node rn ra) rr)) n where
   proofGTMaxKey (ForkAVL _ (Node _) r@ForkAVL{}) pn = gcastWith (proofGTMaxKey r pn) Refl
 
+-- | Prove that in a tree 't' which verifies that 'GtN t n ~ 'True',
+-- | the tree resulting from the removal of the maximum key of 't' preserves the GtN invariant.
+-- | This proof is needed for the delete operation.
 class ProofGtNMaxKeyDelete (t :: Tree) (n :: Nat) where
   proofGtNMaxKeyDelete :: (MaxKeyDeletable t, GtN t n ~ 'True) =>
     AVL t -> Proxy n -> GtN (MaxKeyDelete t) n :~: 'True
-instance (t ~ 'ForkTree l (Node n1 a) 'EmptyTree, GtN t n ~ 'True, GtN l n ~ 'True) =>
+instance (GtN l n ~ 'True) =>
   ProofGtNMaxKeyDelete ('ForkTree l (Node n1 a) 'EmptyTree) n where
   proofGtNMaxKeyDelete (ForkAVL _ (Node _) EmptyAVL) _ = Refl
-instance (t ~ 'ForkTree l (Node n1 a) 'EmptyTree, GtN t n ~ 'True, GtN l n ~ 'True,
-  r ~ 'ForkTree rl (Node rn ra) rr, ProofGtNMaxKeyDelete r n, MaxKeyDeletable r) =>
+instance (r ~ 'ForkTree rl (Node rn ra) rr, GtN r n ~ 'True,
+  ProofGtNMaxKeyDelete r n, MaxKeyDeletable r) =>
   ProofGtNMaxKeyDelete ('ForkTree l (Node n1 a) ('ForkTree rl (Node rn ra) rr)) n where
   proofGtNMaxKeyDelete (ForkAVL _ (Node _) r@ForkAVL{}) pn = gcastWith (proofGtNMaxKeyDelete r pn) Refl
 
+-- | Prove that in a tree 't' which verifies that 'LtN t n ~ 'True',
+-- | the maximum key of 't' is also less than 'n'.
+-- | This proof is needed for the delete operation.
 class ProofLTMaxKey (t :: Tree) (n :: Nat) where
   proofLTMaxKey :: (Maxable t, LtN t n ~ 'True) =>
     AVL t -> Proxy n -> CmpNat (MaxKey t) n :~: 'LT
@@ -647,17 +652,24 @@ instance (r ~ 'ForkTree rl (Node rn ra) rr, LtN r n ~ 'True, Maxable r, ProofLTM
   ProofLTMaxKey ('ForkTree l (Node n1 a) ('ForkTree rl (Node rn ra) rr)) n where
   proofLTMaxKey (ForkAVL _ (Node _) r@ForkAVL{}) pn = gcastWith (proofLTMaxKey r pn) Refl
 
+-- | Prove that in a tree 't' which verifies that 'LtN t n ~ 'True',
+-- | the tree resulting from the removal of the maximum key of 't' preserves the LtN invariant.
+-- | This proof is needed for the delete operation.
 class ProofLtNMaxKeyDelete (t :: Tree) (n :: Nat) where
   proofLtNMaxKeyDelete :: (MaxKeyDeletable t, LtN t n ~ 'True) =>
     AVL t -> Proxy n -> LtN (MaxKeyDelete t) n :~: 'True
-instance (t ~ 'ForkTree l (Node n1 a) 'EmptyTree, LtN t n ~ 'True, LtN l n ~ 'True) =>
+instance (LtN l n ~ 'True) =>
   ProofLtNMaxKeyDelete ('ForkTree l (Node n1 a) 'EmptyTree) n where
   proofLtNMaxKeyDelete (ForkAVL _ (Node _) EmptyAVL) _ = Refl
-instance (t ~ 'ForkTree l (Node n1 a) 'EmptyTree, LtN t n ~ 'True, LtN l n ~ 'True,
-  r ~ 'ForkTree rl (Node rn ra) rr, ProofLtNMaxKeyDelete r n, MaxKeyDeletable r) =>
+instance (r ~ 'ForkTree rl (Node rn ra) rr, LtN r n ~ 'True,
+  ProofLtNMaxKeyDelete r n, MaxKeyDeletable r) =>
   ProofLtNMaxKeyDelete ('ForkTree l (Node n1 a) ('ForkTree rl (Node rn ra) rr)) n where
   proofLtNMaxKeyDelete (ForkAVL _ (Node _) r@ForkAVL{}) pn = gcastWith (proofLtNMaxKeyDelete r pn) Refl
 
+
+-- | This class provides the functionality to delete the node with maximum key value
+-- | in an AVL 't'.
+-- | The deletion is defined at the value level and the type level.
 class MaxKeyDeletable (t :: Tree) where
   type MaxKeyDelete (t :: Tree) :: Tree
   maxKeyDelete :: (t ~ 'ForkTree l (Node n a1) r) =>
@@ -674,6 +686,10 @@ instance (MaxKeyDeletable ('ForkTree rl (Node rn ra) rr),
   maxKeyDelete (ForkAVL l node r@ForkAVL{}) =
     gcastWith (proofGtNMaxKeyDelete r (Proxy::Proxy n)) $ ForkAVL l node (maxKeyDelete r)
 
+-- | This class provides the functionality to get the key, type and value of the node with maximum key value
+-- | in an AVL 't'.
+-- | The lookup is defined at the value level and the type level.
+-- | Since the keys are only kept at the type level, there's no value level getter of the maximum key.
 class Maxable (t :: Tree) where
   type MaxKey (t :: Tree) :: Nat
   type MaxValue (t :: Tree) :: Type
@@ -689,6 +705,11 @@ instance Maxable ('ForkTree rl (Node rn ra) rr) =>
   type MaxValue ('ForkTree l (Node n a1) ('ForkTree rl (Node rn ra) rr)) = MaxValue ('ForkTree rl (Node rn ra) rr)
   maxValue (ForkAVL _ (Node _) r@ForkAVL{}) = maxValue r
 
+
+-- | This class provides the functionality to delete the node with key 'x'
+-- | in an AVL 't'.
+-- | The deletion is defined at the value level and the type level,
+-- | and both return AVL trees.
 class Deletable (x :: Nat) (t :: Tree) where
   type Delete (x :: Nat) (t :: Tree) :: Tree
   delete :: Proxy x -> AVL t -> AVL (Delete x t)
@@ -700,6 +721,11 @@ instance (Deletable' x ('ForkTree l (Node n a1) r) (CmpNat x n)) =>
   type Delete x ('ForkTree l (Node n a1) r) = Delete' x ('ForkTree l (Node n a1) r) (CmpNat x n)
   delete px t = delete' px t (Proxy::Proxy (CmpNat x n))
 
+-- | This class provides the functionality to delete a node with key 'x'
+-- | in a non empty AVL 't'.
+-- | It's only used by the 'Deletable' class and it has one extra parameter 'o',
+-- | which is the type level comparison of 'x' with the key value of the root node.
+-- | The 'o' parameter guides the insertion.
 class Deletable' (x :: Nat) (t :: Tree) (o :: Ordering) where
   type Delete' (x :: Nat) (t :: Tree) (o :: Ordering) :: Tree
   delete' :: Proxy x -> AVL t -> Proxy o -> AVL (Delete' x t o)
@@ -712,18 +738,17 @@ instance Deletable' x ('ForkTree 'EmptyTree (Node n a1) ('ForkTree rl (Node rn r
 instance Deletable' x ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a1) 'EmptyTree) 'EQ where
   type Delete' x ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a1) 'EmptyTree) 'EQ = ('ForkTree ll (Node ln la) lr)
   delete' _ (ForkAVL l@ForkAVL{} (Node _) EmptyAVL) _ = l
-instance (Show (MaxValue ('ForkTree ll (Node ln la) lr)), MaxKeyDeletable ('ForkTree ll (Node ln la) lr), Maxable ('ForkTree ll (Node ln la) lr),
-  Balanceable ('ForkTree (MaxKeyDelete ('ForkTree ll (Node ln la) lr)) (Node (MaxKey ('ForkTree ll (Node ln la) lr)) (MaxValue ('ForkTree ll (Node ln la) lr))) ('ForkTree rl (Node rn ra) rr)),
-  ProofLtNMaxKeyDeleteMaxKey ('ForkTree ll (Node ln la) lr),
-  ProofGtNMaxKey ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a1) ('ForkTree rl (Node rn ra) rr))) =>
+instance (l ~ 'ForkTree ll (Node ln la) lr, Show (MaxValue l), MaxKeyDeletable ('ForkTree ll (Node ln la) lr),
+  r ~ 'ForkTree rl (Node rn ra) rr,
+  Maxable ('ForkTree ll (Node ln la) lr), LtN (MaxKeyDelete l) (MaxKey l) ~ 'True,
+  GtN r (MaxKey l) ~ 'True,
+  Balanceable ('ForkTree (MaxKeyDelete ('ForkTree ll (Node ln la) lr)) (Node (MaxKey ('ForkTree ll (Node ln la) lr)) (MaxValue ('ForkTree ll (Node ln la) lr))) r)) =>
   Deletable' x ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a1) ('ForkTree rl (Node rn ra) rr)) 'EQ where
   type Delete' x ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a1) ('ForkTree rl (Node rn ra) rr)) 'EQ =
     Balance ('ForkTree (MaxKeyDelete ('ForkTree ll (Node ln la) lr)) (Node (MaxKey ('ForkTree ll (Node ln la) lr)) (MaxValue ('ForkTree ll (Node ln la) lr))) ('ForkTree rl (Node rn ra) rr))
   delete' _ t@(ForkAVL l@ForkAVL{} (Node _) r@ForkAVL{}) _ =
-    gcastWith (proofGtNMaxKey t) $
-      gcastWith (proofLtNMaxKeyDeleteMaxKey l) $
-        balance $
-          AlmostAVL (maxKeyDelete l) (Node (maxValue l)::Node (MaxKey ('ForkTree ll (Node ln la) lr)) (MaxValue ('ForkTree ll (Node ln la) lr))) r
+    balance $
+      AlmostAVL (maxKeyDelete l) (Node (maxValue l)::Node (MaxKey ('ForkTree ll (Node ln la) lr)) (MaxValue ('ForkTree ll (Node ln la) lr))) r
 instance Deletable' x ('ForkTree 'EmptyTree (Node n a1) r) 'LT where
   type Delete' x ('ForkTree 'EmptyTree (Node n a1) r) 'LT = ('ForkTree 'EmptyTree (Node n a1) r)
   delete' _ t@(ForkAVL EmptyAVL (Node _) _) _ = t

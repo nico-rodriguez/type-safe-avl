@@ -143,6 +143,7 @@ instance MaxKeyDeletable ('ForkTree rl (Node rn ra) rr) =>
   maxKeyDelete (ForkITree l node r@ForkITree{}) =
     ForkITree l node (maxKeyDelete r)
 
+
 -- | This class provides the functionality to get the key, type and value of the node with maximum key value
 -- | in a tree 't' without checking any structural invariant (BST).
 -- | The lookup is defined at the value level and the type level, and is performed
@@ -162,6 +163,7 @@ instance Maxable ('ForkTree rl (Node rn ra) rr) =>
   type MaxKey ('ForkTree l (Node n a1) ('ForkTree rl (Node rn ra) rr)) = MaxKey ('ForkTree rl (Node rn ra) rr)
   type MaxValue ('ForkTree l (Node n a1) ('ForkTree rl (Node rn ra) rr)) = MaxValue ('ForkTree rl (Node rn ra) rr)
   maxValue (ForkITree _ (Node _) r@ForkITree{}) = maxValue r
+
 
 -- | This class provides the functionality to delete the node with key 'x'
 -- | in a tree 't' without checking any structural invariant (BST).
