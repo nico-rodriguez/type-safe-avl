@@ -72,10 +72,9 @@ instance ProofIsBSTInsert' x a ('ForkTree l (Node n a1) r) (CmpNat x n) =>
 class ProofIsBSTInsert' (x :: Nat) (a :: Type) (t :: Tree) (o :: Ordering) where
   proofIsBSTInsert' :: (IsBST t ~ 'True) =>
     Node x a -> ITree t -> Proxy o -> IsBST (Insert' x a t o) :~: 'True
-instance (LtN l n ~ 'True, GtN r n ~ 'True, IsBST l ~ 'True, IsBST r ~ 'True) =>
-  ProofIsBSTInsert' x a ('ForkTree l (Node n a1) r) 'EQ where
+instance ProofIsBSTInsert' x a ('ForkTree l (Node n a1) r) 'EQ where
   proofIsBSTInsert' _ ForkITree{} _ = Refl
-instance (IsBST('ForkTree ('ForkTree 'EmptyTree (Node x a) 'EmptyTree) (Node n a1) r) ~ 'True,
+instance (CmpNat x n ~ 'LT,
   ProofIsBSTBalance ('ForkTree ('ForkTree 'EmptyTree (Node x a) 'EmptyTree) (Node n a1) r)) =>
   ProofIsBSTInsert' x a ('ForkTree 'EmptyTree (Node n a1) r) 'LT where
   proofIsBSTInsert' _ (ForkITree EmptyITree _ _) _ =
@@ -89,7 +88,7 @@ instance (l ~ 'ForkTree ll (Node ln lna) lr, CmpNat x n ~ 'LT, LtN l n ~ 'True,
     gcastWith (proofLtNInsert' node l (Proxy::Proxy n) (Proxy::Proxy (CmpNat x ln))) $
       gcastWith (proofIsBSTInsert' node l (Proxy::Proxy (CmpNat x ln))) $
         gcastWith (proofIsBSTBalance (Proxy::Proxy ('ForkTree (Insert' x a l (CmpNat x ln)) (Node n a1) r))) Refl
-instance (CmpNat x n ~ 'GT, LtN l n ~ 'True, IsBST l ~ 'True,
+instance (CmpNat x n ~ 'GT,
   ProofIsBSTBalance ('ForkTree l (Node n a1) ('ForkTree 'EmptyTree (Node x a) 'EmptyTree))) =>
   ProofIsBSTInsert' x a ('ForkTree l (Node n a1) 'EmptyTree) 'GT where
   proofIsBSTInsert' _ (ForkITree _ _ EmptyITree) _ =
@@ -111,7 +110,7 @@ instance (LtN l n ~ 'True, IsBST l ~ 'True,
 -- | The 'o' parameter guides the proof.
 class ProofLtNInsert' (x :: Nat) (a :: Type) (t :: Tree) (n :: Nat) (o :: Ordering) where
   proofLtNInsert' :: (CmpNat x n ~ 'LT, LtN t n ~ 'True) =>
-    Node x a -> ITree t -> Proxy n -> Proxy o -> LtN (Insert x a t) n :~: 'True
+    Node x a -> ITree t -> Proxy n -> Proxy o -> LtN (Insert' x a t o) n :~: 'True
 instance (CmpNat x n1 ~ 'EQ) =>
   ProofLtNInsert' x a ('ForkTree l (Node n1 a1) r) n 'EQ where
   proofLtNInsert' _ ForkITree{} _ _ = Refl
@@ -144,7 +143,7 @@ instance (CmpNat x n1 ~ 'GT, r ~ 'ForkTree rl (Node rn rna) rr, LtN r n ~ 'True,
 -- | The 'o' parameter guides the proof.
 class ProofGtNInsert' (x :: Nat) (a :: Type) (t :: Tree) (n :: Nat) (o :: Ordering) where
   proofGtNInsert' :: (CmpNat x n ~ 'GT, GtN t n ~ 'True) =>
-    Node x a -> ITree t -> Proxy n -> Proxy o -> GtN (Insert x a t) n :~: 'True
+    Node x a -> ITree t -> Proxy n -> Proxy o -> GtN (Insert' x a t o) n :~: 'True
 instance (CmpNat x n1 ~ 'EQ) =>
   ProofGtNInsert' x a ('ForkTree l (Node n1 a1) r) n 'EQ where
   proofGtNInsert' _ ForkITree{} _ _ = Refl
@@ -191,8 +190,7 @@ instance (ProofIsBSTBalance' ('ForkTree l (Node n a) r) (UnbalancedState (Height
 class ProofIsBSTBalance' (t :: Tree) (us :: US) where
   proofIsBSTBalance' :: (IsBST t ~ 'True) =>
     Proxy t -> Proxy us -> IsBST (Balance' t us) :~: 'True
-instance (IsBST ('ForkTree l (Node n a) r) ~ 'True) =>
-  ProofIsBSTBalance' ('ForkTree l (Node n a) r) 'NotUnbalanced where
+instance ProofIsBSTBalance' ('ForkTree l (Node n a) r) 'NotUnbalanced where
   proofIsBSTBalance' _ _ = Refl
 instance (ProofIsBSTRotate ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a) r) 'LeftUnbalanced (BalancedState (Height ll) (Height lr))) =>
   ProofIsBSTBalance' ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a) r) 'LeftUnbalanced where
@@ -282,33 +280,29 @@ class ProofLtNRotate (t :: Tree) (n :: Nat) (us :: US) (bs :: BS) where
     Proxy t -> Proxy n -> Proxy us -> Proxy bs -> LtN (Rotate t us bs) n :~: 'True
 
 -- | Left-Left case (Right rotation)
--- | l ~ ('ForkTree ll (Node ln la) lr), LtN l n ~ 'True, CmpNat n1 n ~ 'LT, LtN r n ~ 'True
+-- | LtN ll n ~ 'True, CmpNat ln n ~ 'LT
 instance ProofLtNRotate ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n1 a) r) n 'LeftUnbalanced 'LeftHeavy where
   proofLtNRotate _ _ _ _ = unsafeCoerce Refl
--- | l ~ ('ForkTree ll (Node ln la) lr), LtN l n ~ 'True, CmpNat n1 n ~ 'LT, LtN r n ~ 'True
+-- | LtN ll n ~ 'True, CmpNat ln n ~ 'LT
 instance ProofLtNRotate ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n1 a) r) n 'LeftUnbalanced 'Balanced where
   proofLtNRotate _ _ _ _ = unsafeCoerce Refl
 
 -- | Right-Right case (Left rotation)
--- | r ~ ('ForkTree rl (Node rn ra) rr), LtN l n ~ 'True, LtN r n ~ 'True, CmpNat n1 n ~ 'LT
+-- | CmpNat rn n ~ 'LT, LtN rr n ~ 'True
 instance ProofLtNRotate ('ForkTree l (Node n1 a) ('ForkTree rl (Node rn ra) rr)) n 'RightUnbalanced 'RightHeavy where
   proofLtNRotate _ _ _ _ = unsafeCoerce Refl
--- | r ~ ('ForkTree rl (Node rn ra) rr), LtN l n ~ 'True, LtN r n ~ 'True, CmpNat n1 n ~ 'LT
+-- | CmpNat rn n ~ 'LT, LtN rr n ~ 'True
 instance ProofLtNRotate ('ForkTree l (Node n1 a) ('ForkTree rl (Node rn ra) rr)) n 'RightUnbalanced 'Balanced where
   proofLtNRotate _ _ _ _ = unsafeCoerce Refl
 
 -- | Left-Right case (First left rotation, then right rotation)
--- | LtN lrr n ~ 'True, CmpNat lrn n ~ 'LT, CmpNat ln n ~ 'LT, LtN ll n ~ 'True, LtN lrl n ~ 'True,
--- | CmpNat n1 n ~ 'LT, LtN r n ~ 'True
-instance (LtN ll ln ~ 'True, CmpNat ln lrn ~ 'LT, LtN ll lrn ~ 'True, LtN lrl lrn ~ 'True) =>
-  ProofLtNRotate ('ForkTree ('ForkTree ll (Node ln la) ('ForkTree lrl (Node lrn lra) lrr)) (Node n1 a) r) n 'LeftUnbalanced 'RightHeavy where
+-- | CmpNat ln n ~ 'LT, CmpNat lrn n ~ 'LT, LtN ll n ~ 'True, LtN lrl n ~ 'True
+instance ProofLtNRotate ('ForkTree ('ForkTree ll (Node ln la) ('ForkTree lrl (Node lrn lra) lrr)) (Node n1 a) r) n 'LeftUnbalanced 'RightHeavy where
   proofLtNRotate _ _ _ _ = unsafeCoerce Refl
 
 -- | Right-Left case (First right rotation, then left rotation)
--- | LtN l n ~ 'True, CmpNat n rln ~ 'LT, CmpNat rln n ~ 'LT, CmpNat n1 n ~ 'LT, LtN rll n ~ 'True,
--- | CmpNat rn n ~ 'LT, LtN rr n ~ 'True, LtN rlr n ~ 'True
-instance (LtN rlr rn ~ 'True, LtN l rln ~ 'True, LtN rll rln ~ 'True) =>
-  ProofLtNRotate ('ForkTree l (Node n1 a) ('ForkTree ('ForkTree rll (Node rln rla) rlr) (Node rn ra) rr)) n 'RightUnbalanced 'LeftHeavy where
+-- | CmpNat rln n ~ 'LT, LtN rlr n ~ 'True, LtN rr n ~ 'True, CmpNat rn n ~ 'LT
+instance ProofLtNRotate ('ForkTree l (Node n1 a) ('ForkTree ('ForkTree rll (Node rln rla) rlr) (Node rn ra) rr)) n 'RightUnbalanced 'LeftHeavy where
   proofLtNRotate _ _ _ _ = unsafeCoerce Refl
 
 
@@ -348,120 +342,173 @@ class ProofGtNRotate (t :: Tree) (n :: Nat) (us::US) (bs::BS) where
     Proxy t -> Proxy n -> Proxy us -> Proxy bs -> GtN (Rotate t us bs) n :~: 'True
 
 -- | Left-Left case (Right rotation)
--- | GtN r n ~ 'True, CmpNat ln n ~ 'GT, GtN ll n ~ 'True, CmpNat n1 n ~ 'GT, GtN lr n ~ 'True
+-- | CmpNat ln n ~ 'GT, GtN ll n ~ 'True
 instance ProofGtNRotate ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n1 a) r) n 'LeftUnbalanced 'LeftHeavy where
   proofGtNRotate _ _ _ _ = unsafeCoerce Refl
--- | CmpNat ln n ~ 'GT, GtN ll n ~ 'True, CmpNat n1 n ~ 'GT, GtN r n ~ 'True, GtN lr n ~ 'True
+-- | GtN ll n ~ 'True, CmpNat ln n ~ 'GT
 instance ProofGtNRotate ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n1 a) r) n 'LeftUnbalanced 'Balanced where
   proofGtNRotate _ _ _ _ = unsafeCoerce Refl
 
 -- | Right-Right case (Left rotation)
--- | CmpNat n1 n ~ 'GT, GtN rl n ~ 'True, GtN rr n ~ 'True, GtN l n ~ 'True
+-- | CmpNat rn n ~ 'GT, GtN rr n ~ 'True
 instance ProofGtNRotate ('ForkTree l (Node n1 a) ('ForkTree rl (Node rn ra) rr)) n 'RightUnbalanced 'RightHeavy where
   proofGtNRotate _ _ _ _ = unsafeCoerce Refl
--- | CmpNat n1 n ~ 'GT, GtN rl n ~ 'True, GtN rr n ~ 'True, GtN l n ~ 'True
+-- | CmpNat rn n ~ 'GT, GtN rr n ~ 'True
 instance ProofGtNRotate ('ForkTree l (Node n1 a) ('ForkTree rl (Node rn ra) rr)) n 'RightUnbalanced 'Balanced where
   proofGtNRotate _ _ _ _ = unsafeCoerce Refl
 
 -- | Left-Right case (First left rotation, then right rotation)
--- | CmpNat ln n ~ 'GT, GtN ll n ~ 'True, CmpNat n1 n ~ 'GT, GtN r n ~ 'True
+-- | CmpNat ln n ~ 'GT, CmpNat lrn n ~ 'GT, GtN ll n ~ 'True, GtN lrl n ~ 'True
 instance ProofGtNRotate ('ForkTree ('ForkTree ll (Node ln la) ('ForkTree lrl (Node lrn lra) lrr)) (Node n1 a) r) n 'LeftUnbalanced 'RightHeavy where
   proofGtNRotate _ _ _ _ = unsafeCoerce Refl
 
 -- | Right-Left case (First right rotation, then left rotation)
--- | CmpNat n1 n ~ 'GT, CmpNat rn n ~ 'GT, GtN rr n ~ 'True, GtN l n ~ 'True
+-- | CmpNat rln n ~ 'GT, GtN rlr n ~ 'True, GtN rr n ~ 'True, CmpNat rn n ~ 'GT
 instance ProofGtNRotate ('ForkTree l (Node n1 a) ('ForkTree ('ForkTree rll (Node rln rla) rlr) (Node rn ra) rr)) n 'RightUnbalanced 'LeftHeavy where
   proofGtNRotate _ _ _ _ = unsafeCoerce Refl
 
 
+-- | Prove that applying a rebalancing (a composition of rotations)
+-- | to an almost AVL tree returns an AVL tree.
+-- | An almost AVL tree is a tree `t ~ 'ForkTree l (Node n a) r` which verifies
+-- | 'IsAVL l ~ 'True && IsAVL r ~ 'True && LtN l n ~ 'True && GtN r n ~ 'True'.
+class ProofIsAVLBalance (t :: Tree) where
+  proofIsAVLBalance :: Proxy t -> IsAVL (Balance t) :~: 'True
+instance ProofIsAVLBalance 'EmptyTree where
+  proofIsAVLBalance _ = Refl
+instance (IsAVL l ~ 'True, IsAVL r ~ 'True, LtN l n ~ 'True, GtN r n ~ 'True,
+  ProofIsAVLBalance' ('ForkTree l (Node n a) r) (UnbalancedState (Height l) (Height r))) =>
+  ProofIsAVLBalance ('ForkTree l (Node n a) r) where
+  proofIsAVLBalance pt = gcastWith (proofIsAVLBalance' pt (Proxy::Proxy (UnbalancedState (Height l) (Height r)))) Refl
+
+-- | Prove that applying a rebalancing (a composition of rotations)
+-- | to an almost AVL tree returns an AVL, given the comparison 'us' of the heights of the left and right sub trees.
+-- | An almost AVL tree is a tree `t ~ 'ForkTree l (Node n a) r` which verifies
+-- | 'IsAVL l ~ 'True && IsAVL r ~ 'True && LtN l n ~ 'True && GtN r n ~ 'True'.
+-- | This is called only from ProofIsAVLBalance.
+-- | The 'us' parameter guides the proof.
 class ProofIsAVLBalance' (t :: Tree) (us::US) where
-  proofIsAVLBalance' :: Proxy t -> Proxy us -> IsAVL (Balance' t us) :~: 'True
-instance (IsAVL ('ForkTree l (Node n a) r) ~ 'True) =>
-  ProofIsAVLBalance' ('ForkTree l (Node n a) r) 'NotUnbalanced where
-  proofIsAVLBalance' _ _ = Refl
+  proofIsAVLBalance' :: (t ~ 'ForkTree l (Node n a) r, IsAVL l ~ 'True, IsAVL r ~ 'True, LtN l n ~ 'True, GtN r n ~ 'True) =>
+    Proxy t -> Proxy us -> IsAVL (Balance' t us) :~: 'True
+-- | BalancedHeights (Height l) (Height r) ~ 'True
+instance ProofIsAVLBalance' ('ForkTree l (Node n a) r) 'NotUnbalanced where
+  proofIsAVLBalance' _ _ = unsafeCoerce Refl
 instance (ProofIsAVLRotate ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a) r) 'LeftUnbalanced (BalancedState (Height ll) (Height lr))) =>
   ProofIsAVLBalance' ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a) r) 'LeftUnbalanced where
   proofIsAVLBalance' pt pus = gcastWith (proofIsAVLRotate pt pus (Proxy::Proxy (BalancedState (Height ll) (Height lr)))) Refl
-instance ProofIsAVLRotate ('ForkTree l (Node n a) ('ForkTree rl (Node rn ra) rr)) 'RightUnbalanced (BalancedState (Height rl) (Height rr)) =>
+instance (ProofIsAVLRotate ('ForkTree l (Node n a) ('ForkTree rl (Node rn ra) rr)) 'RightUnbalanced (BalancedState (Height rl) (Height rr))) =>
   ProofIsAVLBalance' ('ForkTree l (Node n a) ('ForkTree rl (Node rn ra) rr)) 'RightUnbalanced where
   proofIsAVLBalance' pt pus = gcastWith (proofIsAVLRotate pt pus (Proxy::Proxy (BalancedState (Height rl) (Height rr)))) Refl
 
+
+-- | Prove that applying a rotation
+-- | to an almost AVL tree returns an AVL tree.
+-- | An almost AVL tree is a tree `t ~ 'ForkTree l (Node n a) r` which verifies
+-- | 'IsAVL l ~ 'True && IsAVL r ~ 'True && LtN l n ~ 'True && GtN r n ~ 'True'.
+-- | Each instance needs some set of hypotesis. However, all these are deduced from the facts
+-- | that 'IsBST t ~ 'True' and 'IsAVL t ~ 'True'.
+-- | However, the compiler is not able to infer this. Instead of requesting these hypotesis in the context of
+-- | every instance (which would increase the computational effort), unsafeCoerce is used.
+-- | The hypotesis that the compiler needs are commented within the code.
 class ProofIsAVLRotate (t :: Tree) (us::US) (bs::BS) where
-  proofIsAVLRotate :: Proxy t -> Proxy us -> Proxy bs -> IsAVL (Rotate t us bs) :~: 'True
+  proofIsAVLRotate :: (t ~ 'ForkTree l (Node n a) r, IsAVL l ~ 'True, IsAVL r ~ 'True, LtN l n ~ 'True, GtN r n ~ 'True) =>
+    Proxy t -> Proxy us -> Proxy bs -> IsAVL (Rotate t us bs) :~: 'True
 -- | Left-Left case (Right rotation)
-instance (IsAVL ll ~ 'True, IsAVL lr ~ 'True, IsAVL r ~ 'True,
-  BalancedHeights (Height lr) (Height r) ~ 'True, BalancedHeights (Height ll) (1 + If (Height lr <=? Height r) (Height r) (Height lr)) ~ 'True) =>
-  ProofIsAVLRotate ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a) r) 'LeftUnbalanced 'LeftHeavy where
-  proofIsAVLRotate _ _ _ = Refl
-instance (IsAVL ll ~ 'True, IsAVL lr ~ 'True, IsAVL r ~ 'True,
-  BalancedHeights (Height ll) (1 + If (Height lr <=? Height r) (Height r) (Height lr)) ~ 'True, BalancedHeights (Height lr) (Height r) ~ 'True) =>
-  ProofIsAVLRotate ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a) r) 'LeftUnbalanced 'Balanced where
-  proofIsAVLRotate _ _ _ = Refl
+-- | IsAVL ll ~ 'True, IsAVL lr ~ 'True, BalancedHeights (Height lr) (Height r) ~ 'True,
+-- | BalancedHeights (Height ll) (1 + If (Height lr <=? Height r) (Height r) (Height lr)) ~ 'True
+instance ProofIsAVLRotate ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a) r) 'LeftUnbalanced 'LeftHeavy where
+  proofIsAVLRotate _ _ _ = unsafeCoerce Refl
+-- | IsAVL ll ~ 'True, IsAVL lr ~ 'True, BalancedHeights (Height lr) (Height r) ~ 'True,
+-- | BalancedHeights (Height ll) (1 + If (Height lr <=? Height r) (Height r) (Height lr)) ~ 'True
+instance ProofIsAVLRotate ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a) r) 'LeftUnbalanced 'Balanced where
+  proofIsAVLRotate _ _ _ = unsafeCoerce Refl
+
 -- | Right-Right case (Left rotation)
-instance (IsAVL l ~ 'True, IsAVL rl ~ 'True, IsAVL rr ~ 'True,
-  BalancedHeights (1 + If (Height l <=? Height rl) (Height rl) (Height l)) (Height rr) ~ 'True, BalancedHeights (Height l) (Height rl) ~ 'True) =>
-  ProofIsAVLRotate ('ForkTree l (Node n a) ('ForkTree rl (Node rn ra) rr)) 'RightUnbalanced 'RightHeavy where
-  proofIsAVLRotate _ _ _ = Refl
-instance (IsAVL l ~ 'True, IsAVL rl ~ 'True, IsAVL rr ~ 'True,
-  BalancedHeights (1 + If (Height l <=? Height rl) (Height rl) (Height l)) (Height rr) ~ 'True, BalancedHeights (Height l) (Height rl) ~ 'True) =>
-  ProofIsAVLRotate ('ForkTree l (Node n a) ('ForkTree rl (Node rn ra) rr)) 'RightUnbalanced 'Balanced where
-  proofIsAVLRotate _ _ _ = Refl
+-- | IsAVL rl ~ 'True, IsAVL rr ~ 'True, BalancedHeights (Height l) (Height rl) ~ 'True,
+-- | BalancedHeights (1 + If (Height l <=? Height rl) (Height rl) (Height l)) (Height rr) ~ 'True
+instance ProofIsAVLRotate ('ForkTree l (Node n a) ('ForkTree rl (Node rn ra) rr)) 'RightUnbalanced 'RightHeavy where
+  proofIsAVLRotate _ _ _ = unsafeCoerce Refl
+-- | IsAVL rl ~ 'True, IsAVL rr ~ 'True, BalancedHeights (Height l) (Height rl) ~ 'True,
+-- | BalancedHeights (1 + If (Height l <=? Height rl) (Height rl) (Height l)) (Height rr) ~ 'True
+instance ProofIsAVLRotate ('ForkTree l (Node n a) ('ForkTree rl (Node rn ra) rr)) 'RightUnbalanced 'Balanced where
+  proofIsAVLRotate _ _ _ = unsafeCoerce Refl
+
 -- | Left-Right case (First left rotation, then right rotation)
-instance (IsAVL ll ~ 'True, IsAVL lrl ~ 'True, IsAVL lrr ~ 'True, IsAVL r ~ 'True,
-  BalancedHeights (1 + If (Height ll <=? Height lrl) (Height lrl) (Height ll)) (1 + If (Height lrr <=? Height r) (Height r) (Height lrr)) ~ 'True,
-  BalancedHeights (Height ll) (Height lrl) ~ 'True, BalancedHeights (Height lrr) (Height r) ~ 'True) =>
-  ProofIsAVLRotate ('ForkTree ('ForkTree ll (Node ln la) ('ForkTree lrl (Node lrn lra) lrr)) (Node n a) r) 'LeftUnbalanced 'RightHeavy where
-  proofIsAVLRotate _ _ _ = Refl
+-- | IsAVL ll ~ 'True, IsAVL lrl ~ 'True, IsAVL lrr ~ 'True,
+-- | BalancedHeights (Height ll) (Height lrl) ~ 'True, BalancedHeights (Height lrr) (Height r) ~ 'True,
+-- | BalancedHeights (1 + If (Height ll <=? Height lrl) (Height lrl) (Height ll)) (1 + If (Height lrr <=? Height r) (Height r) (Height lrr)) ~ 'True
+instance ProofIsAVLRotate ('ForkTree ('ForkTree ll (Node ln la) ('ForkTree lrl (Node lrn lra) lrr)) (Node n a) r) 'LeftUnbalanced 'RightHeavy where
+  proofIsAVLRotate _ _ _ = unsafeCoerce Refl
+
 -- | Right-Left case (First right rotation, then left rotation)
-instance (IsAVL l ~ 'True, IsAVL rll ~ 'True, IsAVL rlr ~ 'True, IsAVL rr ~ 'True,
-  BalancedHeights (1 + If (Height l <=? Height rll) (Height rll) (Height l)) (1 + If (Height rlr <=? Height rr) (Height rr) (Height rlr)) ~ 'True,
-  BalancedHeights (Height l) (Height rll) ~ 'True, BalancedHeights (Height rlr) (Height rr) ~ 'True) =>
-  ProofIsAVLRotate ('ForkTree l (Node n a) ('ForkTree ('ForkTree rll (Node rln rla) rlr) (Node rn ra) rr)) 'RightUnbalanced 'LeftHeavy where
-  proofIsAVLRotate _ _ _ = Refl
+-- | IsAVL rll ~ 'True, IsAVL rlr ~ 'True, IsAVL rr ~ 'True,
+-- | BalancedHeights (Height l) (Height rll) ~ 'True, BalancedHeights (Height rlr) (Height rr) ~ 'True
+-- | BalancedHeights (1 + If (Height l <=? Height rll) (Height rll) (Height l)) (1 + If (Height rlr <=? Height rr) (Height rr) (Height rlr)) ~ 'True
+instance ProofIsAVLRotate ('ForkTree l (Node n a) ('ForkTree ('ForkTree rll (Node rln rla) rlr) (Node rn ra) rr)) 'RightUnbalanced 'LeftHeavy where
+  proofIsAVLRotate _ _ _ = unsafeCoerce Refl
 
+
+-- | Prove that inserting a node with key 'x' and element value 'a'
+-- | in an AVL tree preserves the AVL condition.
 class ProofIsAVLInsert (x :: Nat) (a :: Type) (t :: Tree) where
-  proofIsAVLInsert :: (IsAVL t ~ 'True) =>
-    Node x a -> ITree t -> IsAVL (Insert x a t) :~: 'True
+  proofIsAVLInsert :: Node x a -> AVL t -> IsAVL (Insert x a t) :~: 'True
 instance ProofIsAVLInsert x a 'EmptyTree where
-  proofIsAVLInsert _ EmptyITree = Refl
+  proofIsAVLInsert _ (AVL EmptyITree) = Refl
 instance ProofIsAVLInsert' x a ('ForkTree l (Node n a1) r) (CmpNat x n) => ProofIsAVLInsert x a ('ForkTree l (Node n a1) r) where
-  proofIsAVLInsert node t = proofIsAVLInsert' node t (Proxy::Proxy (CmpNat x n))
+  proofIsAVLInsert node (AVL t) = proofIsAVLInsert' node t (Proxy::Proxy (CmpNat x n))
 
+-- | Prove that inserting a node with key 'x' and element value 'a'
+-- | in an AVL tree preserves the AVL condition, given that the comparison between
+-- | 'x' and the root key of the tree equals 'o'.
+-- | The AVL invariant was already check when proofIsBSTInsert was called before.
+-- | The 'o' parameter guides the proof.
 class ProofIsAVLInsert' (x :: Nat) (a :: Type) (t :: Tree) (o :: Ordering) where
-  proofIsAVLInsert' :: (t ~ 'ForkTree l (Node n a1) r) => Node x a -> ITree t -> Proxy o -> IsAVL (Insert' x a t o) :~: 'True
-instance (IsAVL l ~ 'True, IsAVL r ~ 'True, BalancedHeights (Height l) (Height r) ~ ' True) =>
-  ProofIsAVLInsert' x a ('ForkTree l (Node n a1) r) 'EQ where
+  proofIsAVLInsert' :: (IsAVL t ~ 'True) =>
+    Node x a -> ITree t -> Proxy o -> IsAVL (Insert' x a t o) :~: 'True
+instance ProofIsAVLInsert' x a ('ForkTree l (Node n a1) r) 'EQ where
   proofIsAVLInsert' _ ForkITree{} _ = Refl
-instance (l ~ 'EmptyTree, ProofIsAVLBalance' ('ForkTree ('ForkTree 'EmptyTree (Node x a) 'EmptyTree) (Node n a1) r) (UnbalancedState 1 (Height r))) =>
+instance (ProofIsAVLBalance ('ForkTree ('ForkTree 'EmptyTree (Node x a) 'EmptyTree) (Node n a1) r)) =>
   ProofIsAVLInsert' x a ('ForkTree 'EmptyTree (Node n a1) r) 'LT where
-  proofIsAVLInsert' _ (ForkITree EmptyITree _ _) _ =  gcastWith (proofIsAVLBalance' (Proxy::Proxy ('ForkTree ('ForkTree 'EmptyTree (Node x a) 'EmptyTree) (Node n a1) r)) (Proxy::Proxy (UnbalancedState 1 (Height r)))) Refl
-instance (l ~ 'ForkTree ll (Node ln lna) lr, ProofIsAVLInsert' x a l (CmpNat x ln),
-  ProofIsAVLBalance' ('ForkTree (Insert' x a l (CmpNat x ln)) (Node n a1) r) (UnbalancedState (Height (Insert' x a ('ForkTree ll (Node ln lna) lr) (CmpNat x ln))) (Height r))) =>
+  proofIsAVLInsert' _ (ForkITree EmptyITree _ _) _ =
+    gcastWith (proofIsAVLBalance (Proxy::Proxy ('ForkTree ('ForkTree 'EmptyTree (Node x a) 'EmptyTree) (Node n a1) r))) Refl
+instance (l ~ 'ForkTree ll (Node ln lna) lr, IsAVL l ~ 'True,
+  ProofIsAVLInsert' x a l (CmpNat x ln),
+  ProofIsAVLBalance ('ForkTree (Insert' x a l (CmpNat x ln)) (Node n a1) r)) =>
   ProofIsAVLInsert' x a ('ForkTree ('ForkTree ll (Node ln lna) lr) (Node n a1) r) 'LT where
   proofIsAVLInsert' node (ForkITree l@ForkITree{} _ _) _ =
     gcastWith (proofIsAVLInsert' node l (Proxy::Proxy (CmpNat x ln))) $
-      gcastWith (proofIsAVLBalance' (Proxy::Proxy ('ForkTree (Insert' x a l (CmpNat x ln)) (Node n a1) r)) (Proxy::Proxy (UnbalancedState (Height (Insert' x a ('ForkTree ll (Node ln lna) lr) (CmpNat x ln))) (Height r)))) Refl
-instance (r ~ 'EmptyTree, ProofIsAVLBalance' ('ForkTree l (Node n a1) ('ForkTree 'EmptyTree (Node x a) 'EmptyTree)) (UnbalancedState (Height l) 1)) =>
+      gcastWith (proofIsAVLBalance (Proxy::Proxy ('ForkTree (Insert' x a l (CmpNat x ln)) (Node n a1) r))) Refl
+instance (ProofIsAVLBalance ('ForkTree l (Node n a1) ('ForkTree 'EmptyTree (Node x a) 'EmptyTree))) =>
   ProofIsAVLInsert' x a ('ForkTree l (Node n a1) 'EmptyTree) 'GT where
-  proofIsAVLInsert' _ (ForkITree _ _ EmptyITree) _ = gcastWith (proofIsAVLBalance' (Proxy::Proxy ('ForkTree l (Node n a1) ('ForkTree 'EmptyTree (Node x a) 'EmptyTree))) (Proxy::Proxy (UnbalancedState (Height l) 1))) Refl
-instance (r ~ 'ForkTree rl (Node rn rna) rr, ProofIsAVLInsert' x a r (CmpNat x rn),
-  ProofIsAVLBalance' ('ForkTree l (Node n a1) (Insert' x a ('ForkTree rl (Node rn rna) rr) (CmpNat x rn))) (UnbalancedState (Height l) (Height (Insert' x a ('ForkTree rl (Node rn rna) rr) (CmpNat x rn))))) =>
+  proofIsAVLInsert' _ (ForkITree _ _ EmptyITree) _ =
+    gcastWith (proofIsAVLBalance (Proxy::Proxy ('ForkTree l (Node n a1) ('ForkTree 'EmptyTree (Node x a) 'EmptyTree)))) Refl
+instance (r ~ 'ForkTree rl (Node rn rna) rr, IsAVL r ~ 'True,
+  ProofIsAVLInsert' x a r (CmpNat x rn), IsAVL (MaxKeyDelete l) ~ 'True,
+  ProofIsAVLBalance ('ForkTree l (Node n a1) (Insert' x a ('ForkTree rl (Node rn rna) rr) (CmpNat x rn)))) =>
   ProofIsAVLInsert' x a ('ForkTree l (Node n a1) ('ForkTree rl (Node rn rna) rr)) 'GT where
   proofIsAVLInsert' node (ForkITree _ _ r@ForkITree{}) _ =
     gcastWith (proofIsAVLInsert' node r (Proxy::Proxy (CmpNat x rn))) $
-      gcastWith (proofIsAVLBalance' (Proxy::Proxy ('ForkTree l (Node n a1) (Insert' x a ('ForkTree rl (Node rn rna) rr) (CmpNat x rn)))) (Proxy::Proxy (UnbalancedState (Height l) (Height (Insert' x a ('ForkTree rl (Node rn rna) rr) (CmpNat x rn)))))) Refl
+      gcastWith (proofIsAVLBalance (Proxy::Proxy ('ForkTree l (Node n a1) (Insert' x a ('ForkTree rl (Node rn rna) rr) (CmpNat x rn))))) Refl
 
+
+-- | Prove that deleting a node with key 'x'
+-- | in an AVL tree preserves the AVL condition.
 class ProofIsBSTDelete (x :: Nat) (t :: Tree) where
   proofIsBSTDelete :: (IsBST t ~ 'True) =>
-    Proxy x -> ITree t -> IsBST (Delete x t) :~: 'True
+    Proxy x -> BST t -> IsBST (Delete x t) :~: 'True
 instance ProofIsBSTDelete x 'EmptyTree where
-  proofIsBSTDelete _ EmptyITree = Refl
+  proofIsBSTDelete _ (BST EmptyITree) = Refl
 instance ProofIsBSTDelete' x ('ForkTree l (Node n a1) r) (CmpNat x n) =>
   ProofIsBSTDelete x ('ForkTree l (Node n a1) r) where
-  proofIsBSTDelete px t@ForkITree{} = proofIsBSTDelete' px t (Proxy::Proxy (CmpNat x n))
+  proofIsBSTDelete px (BST t@ForkITree{}) = proofIsBSTDelete' px t (Proxy::Proxy (CmpNat x n))
 
+-- | Prove that inserting a node with key 'x' and element value 'a'
+-- | in an AVL tree preserves the AVL condition, given that the comparison between
+-- | 'x' and the root key of the tree equals 'o'.
+-- | The AVL invariant was already check when proofIsBSTInsert was called before.
+-- | The 'o' parameter guides the proof.
 class ProofIsBSTDelete' (x :: Nat) (t :: Tree) (o :: Ordering) where
-  proofIsBSTDelete' :: (t ~ 'ForkTree l (Node n a1) r) =>
+  proofIsBSTDelete' :: (IsBST t ~ 'True) =>
     Proxy x -> ITree t -> Proxy o -> IsBST (Delete' x t o) :~: 'True
 instance ProofIsBSTDelete' x ('ForkTree 'EmptyTree (Node n a1) 'EmptyTree) 'EQ where
   proofIsBSTDelete' _ (ForkITree EmptyITree (Node _) EmptyITree) _ = Refl
@@ -472,18 +519,14 @@ instance (IsBST ll ~ 'True, IsBST lr ~ 'True, LtN ll ln ~ 'True, GtN lr ln ~ 'Tr
   ProofIsBSTDelete' x ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a1) 'EmptyTree) 'EQ where
   proofIsBSTDelete' _ (ForkITree ForkITree{} (Node _) EmptyITree) _ = Refl
 instance (l ~ 'ForkTree ll (Node ln la) lr, IsBST l ~ 'True, MaxKeyDeletable l, ProofMaxKeyDeleteIsBST l,
-  r ~ 'ForkTree rl (Node rn ra) rr, IsBST r ~ 'True,
-  ProofLtNMaxKeyDeleteMaxKey l, Maxable l,
-  t ~ 'ForkTree l (Node n a1) r, IsBST t ~ 'True, ProofGtNMaxKey t,
+  r ~ 'ForkTree rl (Node rn ra) rr, IsBST r ~ 'True, LtN (MaxKeyDelete l) (MaxKey l) ~ 'True,
+  Maxable l, t ~ 'ForkTree l (Node n a1) r, GtN r (MaxKey l) ~ 'True,
   ProofIsBSTBalance ('ForkTree (MaxKeyDelete l) (Node (MaxKey l) (MaxValue l)) r)) =>
   ProofIsBSTDelete' x ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a1) ('ForkTree rl (Node rn ra) rr)) 'EQ where
   proofIsBSTDelete' _ t@(ForkITree l@ForkITree{} (Node _) ForkITree{}) _ =
-    gcastWith (proofGtNMaxKey t) $
-      gcastWith (proofLtNMaxKeyDeleteMaxKey l) $
-        gcastWith (proofMaxKeyDeleteIsBST l) $
-          gcastWith (proofIsBSTBalance (Proxy::Proxy ('ForkTree (MaxKeyDelete l) (Node (MaxKey l) (MaxValue l)) r))) Refl
-instance (IsBST r ~ 'True, GtN r n ~ 'True) =>
-  ProofIsBSTDelete' x ('ForkTree 'EmptyTree (Node n a1) r) 'LT where
+    gcastWith (proofMaxKeyDeleteIsBST l) $
+      gcastWith (proofIsBSTBalance (Proxy::Proxy ('ForkTree (MaxKeyDelete l) (Node (MaxKey l) (MaxValue l)) r))) Refl
+instance ProofIsBSTDelete' x ('ForkTree 'EmptyTree (Node n a1) r) 'LT where
   proofIsBSTDelete' _ (ForkITree EmptyITree (Node _) _) _ = Refl
 instance (IsBST r ~ 'True, GtN r n ~ 'True, LtN ('ForkTree ll (Node ln la) lr) n ~ 'True, ProofIsBSTDelete' x ('ForkTree ll (Node ln la) lr) (CmpNat x ln),
   CmpNat x n ~ 'LT, ProofLtNDelete' x ('ForkTree ll (Node ln la) lr) n (CmpNat x ln),
@@ -493,8 +536,7 @@ instance (IsBST r ~ 'True, GtN r n ~ 'True, LtN ('ForkTree ll (Node ln la) lr) n
     gcastWith (proofLtNDelete' px l (Proxy::Proxy n) (Proxy::Proxy (CmpNat x ln))) $
       gcastWith (proofIsBSTDelete' px l (Proxy::Proxy (CmpNat x ln))) $
         gcastWith (proofIsBSTBalance (Proxy::Proxy ('ForkTree (Delete' x ('ForkTree ll (Node ln la) lr) (CmpNat x ln)) (Node n a1) r))) Refl
-instance (IsBST l ~ 'True, LtN l n ~ 'True) =>
-  ProofIsBSTDelete' x ('ForkTree l (Node n a1) 'EmptyTree) 'GT where
+instance ProofIsBSTDelete' x ('ForkTree l (Node n a1) 'EmptyTree) 'GT where
   proofIsBSTDelete' _ (ForkITree _ (Node _) EmptyITree) _ = Refl
 instance (IsBST l ~ 'True, LtN l n ~ 'True, ProofIsBSTDelete' x ('ForkTree rl (Node rn ra) rr) (CmpNat x rn),
   CmpNat x n ~ 'GT, GtN ('ForkTree rl (Node rn ra) rr) n ~ 'True, ProofGtNDelete' x ('ForkTree rl (Node rn ra) rr) n (CmpNat x rn),
@@ -505,18 +547,23 @@ instance (IsBST l ~ 'True, LtN l n ~ 'True, ProofIsBSTDelete' x ('ForkTree rl (N
       gcastWith (proofIsBSTDelete' px r (Proxy::Proxy (CmpNat x rn))) $
         gcastWith (proofIsBSTBalance (Proxy::Proxy ('ForkTree l (Node n a1) (Delete' x ('ForkTree rl (Node rn ra) rr) (CmpNat x rn))))) Refl
 
+
+-- | Prove that deleting a node with key 'x' (lower than 'n')
+-- | in a tree 't' which verifies 'LtN t n ~ 'True' preserves the LtN invariant,
+-- | given that the comparison between 'x' and the root key of the tree equals 'o'.
+-- | The 'o' parameter guides the proof.
 class ProofLtNDelete' (x :: Nat) (t :: Tree) (n :: Nat) (o :: Ordering) where
-  proofLtNDelete' :: (t ~ 'ForkTree l n1 r, CmpNat x n ~ 'LT, LtN t n ~ 'True) =>
+  proofLtNDelete' :: (CmpNat x n ~ 'LT, LtN t n ~ 'True) =>
     Proxy x -> ITree t -> Proxy n -> Proxy o -> LtN (Delete' x t o) n :~: 'True
 instance ProofLtNDelete' x ('ForkTree 'EmptyTree (Node n1 a1) 'EmptyTree) n 'EQ where
   proofLtNDelete' _ (ForkITree EmptyITree (Node _) EmptyITree) _ _ = Refl
-instance (r ~ 'ForkTree rl (Node rn ra) rr, IsBST r ~ 'True, LtN r n ~ 'True) =>
+instance (r ~ 'ForkTree rl (Node rn ra) rr, LtN r n ~ 'True) =>
   ProofLtNDelete' x ('ForkTree 'EmptyTree (Node n1 a1) ('ForkTree rl (Node rn ra) rr)) n 'EQ where
   proofLtNDelete' _ (ForkITree EmptyITree (Node _) ForkITree{}) _ _ = Refl
-instance (l ~ 'ForkTree ll (Node ln la) lr, IsBST l ~ 'True, LtN l n ~ 'True) =>
+instance (l ~ 'ForkTree ll (Node ln la) lr, LtN l n ~ 'True) =>
   ProofLtNDelete' x ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n1 a1) 'EmptyTree) n 'EQ where
   proofLtNDelete' _ (ForkITree ForkITree{} (Node _) EmptyITree) _ _ = Refl
-instance (r ~ 'ForkTree rl (Node rn ra) rr, IsBST r ~ 'True, LtN r n ~ 'True,
+instance (r ~ 'ForkTree rl (Node rn ra) rr, LtN r n ~ 'True,
   l ~ 'ForkTree ll (Node ln la) lr, LtN l n ~ 'True, ProofLTMaxKey l n, Maxable l,
   ProofLtNMaxKeyDelete l n, MaxKeyDeletable l,
   ProofLtNBalance ('ForkTree (MaxKeyDelete l) (Node (MaxKey l) (MaxValue l)) r) n) =>
@@ -525,40 +572,43 @@ instance (r ~ 'ForkTree rl (Node rn ra) rr, IsBST r ~ 'True, LtN r n ~ 'True,
     gcastWith (proofLtNMaxKeyDelete l (Proxy::Proxy n)) $
       gcastWith (proofLTMaxKey l (Proxy::Proxy n)) $
         gcastWith (proofLtNBalance (Proxy::Proxy ('ForkTree (MaxKeyDelete l) (Node (MaxKey l) (MaxValue l)) r)) (Proxy::Proxy n)) Refl
-instance (IsBST r ~ 'True, LtN r n ~ 'True) =>
-  ProofLtNDelete' x ('ForkTree 'EmptyTree (Node n1 a1) r) n 'LT where
+instance ProofLtNDelete' x ('ForkTree 'EmptyTree (Node n1 a1) r) n 'LT where
   proofLtNDelete' _ (ForkITree EmptyITree (Node _) _) _ _ = Refl
-instance (IsBST r ~ 'True, LtN r n ~ 'True, LtN ('ForkTree ll (Node ln la) lr) n ~ 'True, CmpNat n1 n ~ 'LT,
-  ProofLtNDelete' x ('ForkTree ll (Node ln la) lr) n (CmpNat x ln),
-  ProofLtNBalance ('ForkTree (Delete' x ('ForkTree ll (Node ln la) lr) (CmpNat x ln)) (Node n1 a1) r) n) =>
+instance (l ~ 'ForkTree ll (Node ln la) lr, LtN l n ~ 'True,
+  ProofLtNDelete' x l n (CmpNat x ln),
+  ProofLtNBalance ('ForkTree (Delete' x l (CmpNat x ln)) (Node n1 a1) r) n) =>
   ProofLtNDelete' x ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n1 a1) r) n 'LT where
   proofLtNDelete' px (ForkITree l@ForkITree{} _ _) _ _ =
     gcastWith (proofLtNDelete' px l (Proxy::Proxy n) (Proxy::Proxy (CmpNat x ln))) $
       gcastWith (proofLtNBalance (Proxy::Proxy ('ForkTree (Delete' x ('ForkTree ll (Node ln la) lr) (CmpNat x ln)) (Node n1 a1) r)) (Proxy::Proxy n)) Refl
-instance (IsBST l ~ 'True, LtN l n ~ 'True) =>
-  ProofLtNDelete' x ('ForkTree l (Node n1 a1) 'EmptyTree) n 'GT where
+instance ProofLtNDelete' x ('ForkTree l (Node n1 a1) 'EmptyTree) n 'GT where
   proofLtNDelete' _ (ForkITree _ (Node _) EmptyITree) _ _ = Refl
-instance (IsBST l ~ 'True, LtN l n ~ 'True, CmpNat x n1 ~ 'GT, CmpNat n1 n ~ 'LT, LtN ('ForkTree rl (Node rn ra) rr) n ~ 'True,
-  ProofLtNDelete' x ('ForkTree rl (Node rn ra) rr) n (CmpNat x rn),
-  ProofLtNBalance ('ForkTree l (Node n1 a1) (Delete' x ('ForkTree rl (Node rn ra) rr) (CmpNat x rn))) n) =>
+instance (r ~ 'ForkTree rl (Node rn ra) rr, LtN r n ~ 'True,
+  ProofLtNDelete' x r n (CmpNat x rn),
+  ProofLtNBalance ('ForkTree l (Node n1 a1) (Delete' x r (CmpNat x rn))) n) =>
   ProofLtNDelete' x ('ForkTree l (Node n1 a1) ('ForkTree rl (Node rn ra) rr)) n 'GT where
   proofLtNDelete' px (ForkITree _ (Node _) r@ForkITree{}) _ _ =
     gcastWith (proofLtNDelete' px r (Proxy::Proxy n) (Proxy::Proxy (CmpNat x rn))) $
       gcastWith (proofLtNBalance (Proxy::Proxy ('ForkTree l (Node n1 a1) (Delete' x ('ForkTree rl (Node rn ra) rr) (CmpNat x rn)))) (Proxy::Proxy n)) Refl
 
+
+-- | Prove that deleting a node with key 'x' (greater than 'n')
+-- | in a tree 't' which verifies 'GtN t n ~ 'True' preserves the GtN invariant,
+-- | given that the comparison between 'x' and the root key of the tree equals 'o'.
+-- | The 'o' parameter guides the proof.
 class ProofGtNDelete' (x :: Nat) (t :: Tree) (n :: Nat) (o :: Ordering) where
-  proofGtNDelete' :: (t ~ 'ForkTree l n1 r, CmpNat x n ~ 'GT, GtN t n ~ 'True) =>
+  proofGtNDelete' :: (CmpNat x n ~ 'GT, GtN t n ~ 'True) =>
     Proxy x -> ITree t -> Proxy n -> Proxy o -> GtN (Delete' x t o) n :~: 'True
 instance ProofGtNDelete' x ('ForkTree 'EmptyTree (Node n1 a1) 'EmptyTree) n 'EQ where
   proofGtNDelete' _ (ForkITree EmptyITree (Node _) EmptyITree) _ _ = Refl
-instance (r ~ 'ForkTree rl (Node rn ra) rr, IsBST r ~ 'True, GtN r n ~ 'True) =>
+instance (r ~ 'ForkTree rl (Node rn ra) rr, GtN r n ~ 'True) =>
   ProofGtNDelete' x ('ForkTree 'EmptyTree (Node n1 a1) ('ForkTree rl (Node rn ra) rr)) n 'EQ where
   proofGtNDelete' _ (ForkITree EmptyITree (Node _) ForkITree{}) _ _ = Refl
-instance (l ~ 'ForkTree ll (Node ln la) lr, IsBST l ~ 'True, GtN l n ~ 'True) =>
+instance (l ~ 'ForkTree ll (Node ln la) lr, GtN l n ~ 'True) =>
   ProofGtNDelete' x ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n1 a1) 'EmptyTree) n 'EQ where
   proofGtNDelete' _ (ForkITree ForkITree{} (Node _) EmptyITree) _ _ = Refl
-instance (r ~ 'ForkTree rl (Node rn ra) rr, IsBST r ~ 'True, GtN r n ~ 'True,
-  l ~ 'ForkTree ll (Node ln la) lr, CmpNat ln n ~ 'GT, GtN l n ~ 'True, t ~ 'ForkTree l (Node n1 a1) r,
+instance (r ~ 'ForkTree rl (Node rn ra) rr, GtN r n ~ 'True,
+  l ~ 'ForkTree ll (Node ln la) lr, GtN l n ~ 'True,
   ProofGTMaxKey l n, Maxable l, ProofGtNMaxKeyDelete l n, MaxKeyDeletable l,
   ProofGtNBalance ('ForkTree (MaxKeyDelete l) (Node (MaxKey l) (MaxValue l)) r) n) =>
   ProofGtNDelete' x ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n1 a1) ('ForkTree rl (Node rn ra) rr)) n 'EQ where
@@ -566,67 +616,50 @@ instance (r ~ 'ForkTree rl (Node rn ra) rr, IsBST r ~ 'True, GtN r n ~ 'True,
     gcastWith (proofGtNMaxKeyDelete l (Proxy::Proxy n)) $
       gcastWith (proofGTMaxKey l (Proxy::Proxy n)) $
         gcastWith (proofGtNBalance (Proxy::Proxy ('ForkTree (MaxKeyDelete l) (Node (MaxKey l) (MaxValue l)) r)) (Proxy::Proxy n)) Refl
-instance (IsBST r ~ 'True, GtN r n ~ 'True) =>
-  ProofGtNDelete' x ('ForkTree 'EmptyTree (Node n1 a1) r) n 'LT where
+instance ProofGtNDelete' x ('ForkTree 'EmptyTree (Node n1 a1) r) n 'LT where
   proofGtNDelete' _ (ForkITree EmptyITree (Node _) _) _ _ = Refl
-instance (IsBST r ~ 'True, GtN r n ~ 'True, GtN ('ForkTree ll (Node ln la) lr) n ~ 'True, CmpNat n1 n ~ 'GT,
-  ProofGtNDelete' x ('ForkTree ll (Node ln la) lr) n (CmpNat x ln),
-  ProofGtNBalance ('ForkTree (Delete' x ('ForkTree ll (Node ln la) lr) (CmpNat x ln)) (Node n1 a1) r) n) =>
+instance (l ~ 'ForkTree ll (Node ln la) lr, GtN l n ~ 'True,
+  ProofGtNDelete' x l n (CmpNat x ln),
+  ProofGtNBalance ('ForkTree (Delete' x l (CmpNat x ln)) (Node n1 a1) r) n) =>
   ProofGtNDelete' x ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n1 a1) r) n 'LT where
   proofGtNDelete' px (ForkITree l@ForkITree{} _ _) _ _ =
     gcastWith (proofGtNDelete' px l (Proxy::Proxy n) (Proxy::Proxy (CmpNat x ln))) $
       gcastWith (proofGtNBalance (Proxy::Proxy ('ForkTree (Delete' x ('ForkTree ll (Node ln la) lr) (CmpNat x ln)) (Node n1 a1) r)) (Proxy::Proxy n)) Refl
-instance (IsBST l ~ 'True, GtN l n ~ 'True) =>
-  ProofGtNDelete' x ('ForkTree l (Node n1 a1) 'EmptyTree) n 'GT where
+instance ProofGtNDelete' x ('ForkTree l (Node n1 a1) 'EmptyTree) n 'GT where
   proofGtNDelete' _ (ForkITree _ (Node _) EmptyITree) _ _ = Refl
-instance (IsBST l ~ 'True, GtN l n ~ 'True, CmpNat x n1 ~ 'GT, CmpNat n1 n ~ 'GT, GtN ('ForkTree rl (Node rn ra) rr) n ~ 'True,
-  ProofGtNDelete' x ('ForkTree rl (Node rn ra) rr) n (CmpNat x rn),
-  ProofGtNBalance ('ForkTree l (Node n1 a1) (Delete' x ('ForkTree rl (Node rn ra) rr) (CmpNat x rn))) n) =>
+instance (r ~ 'ForkTree rl (Node rn ra) rr, GtN ('ForkTree rl (Node rn ra) rr) n ~ 'True,
+  ProofGtNDelete' x r n (CmpNat x rn),
+  ProofGtNBalance ('ForkTree l (Node n1 a1) (Delete' x r (CmpNat x rn))) n) =>
   ProofGtNDelete' x ('ForkTree l (Node n1 a1) ('ForkTree rl (Node rn ra) rr)) n 'GT where
   proofGtNDelete' px (ForkITree _ (Node _) r@ForkITree{}) _ _ =
     gcastWith (proofGtNDelete' px r (Proxy::Proxy n) (Proxy::Proxy (CmpNat x rn))) $
       gcastWith (proofGtNBalance (Proxy::Proxy ('ForkTree l (Node n1 a1) (Delete' x ('ForkTree rl (Node rn ra) rr) (CmpNat x rn)))) (Proxy::Proxy n)) Refl
 
+
+-- | Prove that deleting the node with maximum key value
+-- | in a BST 't' preserves the BST invariant.
+-- | This proof is needed for the delete operation.
 class ProofMaxKeyDeleteIsBST (t :: Tree) where
-  proofMaxKeyDeleteIsBST :: (IsBST t ~ 'True, t ~ 'ForkTree l (Node n a) r, MaxKeyDeletable t) =>
+  proofMaxKeyDeleteIsBST :: (IsBST t ~ 'True, MaxKeyDeletable t) =>
     ITree t -> IsBST (MaxKeyDelete t) :~: 'True
+instance ProofMaxKeyDeleteIsBST 'EmptyTree where
+  proofMaxKeyDeleteIsBST EmptyITree = Refl
 instance ProofMaxKeyDeleteIsBST ('ForkTree 'EmptyTree (Node n a) 'EmptyTree) where
   proofMaxKeyDeleteIsBST (ForkITree EmptyITree (Node _) EmptyITree) = Refl
 instance (l ~ 'ForkTree ll (Node ln la) lr, IsBST l ~ 'True) =>
   ProofMaxKeyDeleteIsBST ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a) 'EmptyTree) where
   proofMaxKeyDeleteIsBST (ForkITree ForkITree{} (Node _) EmptyITree) = Refl
-instance (l ~ 'ForkTree ll (Node ln la) lr, IsBST l ~ 'True, r ~ 'ForkTree rl (Node rn ra) rr, t ~ 'ForkTree l (Node n a) r, IsBST r ~ 'True,
-  LtN l n ~ 'True, ProofMaxKeyDeleteIsBST r, MaxKeyDeletable r,
-  ProofGtNMaxKeyDelete r n) =>
+instance (l ~ 'ForkTree ll (Node ln la) lr, IsBST l ~ 'True, LtN l n ~ 'True,
+  r ~ 'ForkTree rl (Node rn ra) rr, IsBST r ~ 'True,
+  ProofMaxKeyDeleteIsBST r, MaxKeyDeletable r, ProofGtNMaxKeyDelete r n) =>
   ProofMaxKeyDeleteIsBST ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a) ('ForkTree rl (Node rn ra) rr)) where
-  proofMaxKeyDeleteIsBST (ForkITree ForkITree{} (Node _) r@ForkITree{}) = gcastWith (proofGtNMaxKeyDelete r (Proxy::Proxy n)) (gcastWith (proofMaxKeyDeleteIsBST r) Refl)
+  proofMaxKeyDeleteIsBST (ForkITree ForkITree{} (Node _) r@ForkITree{}) =
+    gcastWith (proofGtNMaxKeyDelete r (Proxy::Proxy n)) $
+      gcastWith (proofMaxKeyDeleteIsBST r) Refl
 
-class ProofLtNMaxKeyDeleteMaxKey (t :: Tree) where
-  proofLtNMaxKeyDeleteMaxKey :: (IsBST t ~ 'True, MaxKeyDeletable t, Maxable t) =>
-    ITree t -> LtN (MaxKeyDelete t) (MaxKey t) :~: 'True
-instance ProofLtNMaxKeyDeleteMaxKey ('ForkTree 'EmptyTree (Node n a) 'EmptyTree) where
-  proofLtNMaxKeyDeleteMaxKey (ForkITree EmptyITree (Node _) EmptyITree) = Refl
-instance (l ~ 'ForkTree ll (Node ln la) lr, LtN l n ~ 'True) =>
-  ProofLtNMaxKeyDeleteMaxKey ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a) 'EmptyTree) where
-  proofLtNMaxKeyDeleteMaxKey (ForkITree ForkITree{} (Node _) EmptyITree) = Refl
-instance (l ~ 'ForkTree ll (Node ln la) lr, LtN l n ~ 'True, r ~ 'ForkTree rl (Node rn ra) rr, IsBST r ~ 'True,
-  Maxable r, MaxKeyDeletable r, ProofLtNMaxKeyDeleteMaxKey r,
-  t ~ 'ForkTree l (Node n a) r,
-  GtN r n ~ 'True, CmpNat ln (MaxKey r) ~ 'LT, LtN ll (MaxKey r) ~ 'True, LtN lr (MaxKey r) ~ 'True,
-  CmpNat n (MaxKey r) ~ 'LT) =>
-  ProofLtNMaxKeyDeleteMaxKey ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a) ('ForkTree rl (Node rn ra) rr)) where
-  proofLtNMaxKeyDeleteMaxKey (ForkITree ForkITree{} (Node _) r@ForkITree{}) =
-    gcastWith (proofLtNMaxKeyDeleteMaxKey r) Refl
-
-class ProofGtNMaxKey (t :: Tree) where
-  proofGtNMaxKey :: (t ~ 'ForkTree l (Node n a) r, IsBST t ~ 'True, Maxable l) =>
-    ITree t -> GtN r (MaxKey l) :~: 'True
-instance ProofGtNMaxKey ('ForkTree l (Node n a) 'EmptyTree) where
-  proofGtNMaxKey (ForkITree _ (Node _) EmptyITree) = Refl
-instance (r ~ 'ForkTree rl (Node rn ra) rr, GtN r n ~ 'True, CmpNat rn (MaxKey l) ~ 'GT, GtN rl (MaxKey l) ~ 'True, GtN rr (MaxKey l) ~ 'True) =>
-  ProofGtNMaxKey ('ForkTree l (Node n a) ('ForkTree rl (Node rn ra) rr)) where
-  proofGtNMaxKey (ForkITree _ (Node _) ForkITree{}) = Refl
-
+-- | Prove that in a tree 't' which verifies that 'GtN t n ~ 'True',
+-- | the maximum key of 't' is also greater than 'n'.
+-- | This proof is needed for the delete operation.
 class ProofGTMaxKey (t :: Tree) (n :: Nat) where
   proofGTMaxKey :: (Maxable t, GtN t n ~ 'True) =>
     ITree t -> Proxy n -> CmpNat (MaxKey t) n :~: 'GT
@@ -637,17 +670,23 @@ instance (r ~ 'ForkTree rl (Node rn ra) rr, GtN r n ~ 'True, Maxable r, ProofGTM
   ProofGTMaxKey ('ForkTree l (Node n1 a) ('ForkTree rl (Node rn ra) rr)) n where
   proofGTMaxKey (ForkITree _ (Node _) r@ForkITree{}) pn = gcastWith (proofGTMaxKey r pn) Refl
 
+-- | Prove that in a tree 't' which verifies that 'GtN t n ~ 'True',
+-- | the tree resulting from the removal of the maximum key of 't' preserves the GtN invariant.
+-- | This proof is needed for the delete operation.
 class ProofGtNMaxKeyDelete (t :: Tree) (n :: Nat) where
   proofGtNMaxKeyDelete :: (MaxKeyDeletable t, GtN t n ~ 'True) =>
     ITree t -> Proxy n -> GtN (MaxKeyDelete t) n :~: 'True
-instance (t ~ 'ForkTree l (Node n1 a) 'EmptyTree, GtN t n ~ 'True, GtN l n ~ 'True) =>
+instance (GtN l n ~ 'True) =>
   ProofGtNMaxKeyDelete ('ForkTree l (Node n1 a) 'EmptyTree) n where
   proofGtNMaxKeyDelete (ForkITree _ (Node _) EmptyITree) _ = Refl
-instance (t ~ 'ForkTree l (Node n1 a) 'EmptyTree, GtN t n ~ 'True, GtN l n ~ 'True,
-  r ~ 'ForkTree rl (Node rn ra) rr, ProofGtNMaxKeyDelete r n, MaxKeyDeletable r) =>
+instance (r ~ 'ForkTree rl (Node rn ra) rr, GtN r n ~ 'True,
+  ProofGtNMaxKeyDelete r n, MaxKeyDeletable r) =>
   ProofGtNMaxKeyDelete ('ForkTree l (Node n1 a) ('ForkTree rl (Node rn ra) rr)) n where
   proofGtNMaxKeyDelete (ForkITree _ (Node _) r@ForkITree{}) pn = gcastWith (proofGtNMaxKeyDelete r pn) Refl
 
+-- | Prove that in a tree 't' which verifies that 'LtN t n ~ 'True',
+-- | the maximum key of 't' is also less than 'n'.
+-- | This proof is needed for the delete operation.
 class ProofLTMaxKey (t :: Tree) (n :: Nat) where
   proofLTMaxKey :: (Maxable t, LtN t n ~ 'True) =>
     ITree t -> Proxy n -> CmpNat (MaxKey t) n :~: 'LT
@@ -658,50 +697,62 @@ instance (r ~ 'ForkTree rl (Node rn ra) rr, LtN r n ~ 'True, Maxable r, ProofLTM
   ProofLTMaxKey ('ForkTree l (Node n1 a) ('ForkTree rl (Node rn ra) rr)) n where
   proofLTMaxKey (ForkITree _ (Node _) r@ForkITree{}) pn = gcastWith (proofLTMaxKey r pn) Refl
 
+-- | Prove that in a tree 't' which verifies that 'LtN t n ~ 'True',
+-- | the tree resulting from the removal of the maximum key of 't' preserves the LtN invariant.
+-- | This proof is needed for the delete operation.
 class ProofLtNMaxKeyDelete (t :: Tree) (n :: Nat) where
   proofLtNMaxKeyDelete :: (MaxKeyDeletable t, LtN t n ~ 'True) =>
     ITree t -> Proxy n -> LtN (MaxKeyDelete t) n :~: 'True
-instance (t ~ 'ForkTree l (Node n1 a) 'EmptyTree, LtN t n ~ 'True, LtN l n ~ 'True) =>
+instance (LtN l n ~ 'True) =>
   ProofLtNMaxKeyDelete ('ForkTree l (Node n1 a) 'EmptyTree) n where
   proofLtNMaxKeyDelete (ForkITree _ (Node _) EmptyITree) _ = Refl
-instance (t ~ 'ForkTree l (Node n1 a) 'EmptyTree, LtN t n ~ 'True, LtN l n ~ 'True,
-  r ~ 'ForkTree rl (Node rn ra) rr, ProofLtNMaxKeyDelete r n, MaxKeyDeletable r) =>
+instance (r ~ 'ForkTree rl (Node rn ra) rr, LtN r n ~ 'True,
+  ProofLtNMaxKeyDelete r n, MaxKeyDeletable r) =>
   ProofLtNMaxKeyDelete ('ForkTree l (Node n1 a) ('ForkTree rl (Node rn ra) rr)) n where
   proofLtNMaxKeyDelete (ForkITree _ (Node _) r@ForkITree{}) pn = gcastWith (proofLtNMaxKeyDelete r pn) Refl
 
-class ProofIsAVLDelete (x :: Nat) (t :: Tree) where
-  proofIsAVLDelete :: (IsAVL t ~ 'True) =>
-    Proxy x -> ITree t -> IsAVL (Delete x t) :~: 'True
-instance ProofIsAVLDelete x 'EmptyTree where
-  proofIsAVLDelete _ EmptyITree = Refl
-instance ProofIsAVLDelete' x ('ForkTree l (Node n a1) r) (CmpNat x n) => ProofIsAVLDelete x ('ForkTree l (Node n a1) r) where
-  proofIsAVLDelete px t = proofIsAVLDelete' px t (Proxy::Proxy (CmpNat x n))
 
+-- | Prove that deleting a node with key 'x'
+-- | in an AVL tree preserves the AVL condition.
+class ProofIsAVLDelete (x :: Nat) (t :: Tree) where
+  proofIsAVLDelete :: Proxy x -> AVL t -> IsAVL (Delete x t) :~: 'True
+instance ProofIsAVLDelete x 'EmptyTree where
+  proofIsAVLDelete _ (AVL EmptyITree) = Refl
+instance ProofIsAVLDelete' x ('ForkTree l (Node n a1) r) (CmpNat x n) =>
+  ProofIsAVLDelete x ('ForkTree l (Node n a1) r) where
+  proofIsAVLDelete px (AVL t) = proofIsAVLDelete' px t (Proxy::Proxy (CmpNat x n))
+
+-- | Prove that deleting a node with key 'x'
+-- | in an AVL tree preserves the AVL condition, given that the comparison between
+-- | 'x' and the root key of the tree equals 'o'.
+-- | The AVL invariant was already check when proofIsBSTDelete was called before.
+-- | The 'o' parameter guides the proof.
 class ProofIsAVLDelete' (x :: Nat) (t :: Tree) (o :: Ordering) where
-  proofIsAVLDelete' :: (t ~ 'ForkTree l (Node n a1) r) => Proxy x -> ITree t -> Proxy o -> IsAVL (Delete' x t o) :~: 'True
+  proofIsAVLDelete' :: (IsAVL t ~ 'True) =>
+    Proxy x -> ITree t -> Proxy o -> IsAVL (Delete' x t o) :~: 'True
 instance ProofIsAVLDelete' x ('ForkTree 'EmptyTree (Node n a1) 'EmptyTree) 'EQ where
   proofIsAVLDelete' _ (ForkITree EmptyITree (Node _) EmptyITree) _ = Refl
-instance (BalancedHeights (Height rl) (Height rr) ~ 'True, IsAVL rl ~ 'True, IsAVL rr ~ 'True) =>
+instance (r ~ 'ForkTree rl (Node rn ra) rr, IsAVL r ~ 'True) =>
   ProofIsAVLDelete' x ('ForkTree 'EmptyTree (Node n a1) ('ForkTree rl (Node rn ra) rr)) 'EQ where
   proofIsAVLDelete' _ (ForkITree EmptyITree (Node _) ForkITree{}) _ = Refl
-instance (BalancedHeights (Height ll) (Height lr) ~ 'True, IsAVL ll ~ 'True, IsAVL lr ~ 'True) =>
+instance (l ~ 'ForkTree ll (Node ln la) lr, IsAVL l ~ 'True) =>
   ProofIsAVLDelete' x ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a1) 'EmptyTree) 'EQ where
   proofIsAVLDelete' _ (ForkITree ForkITree{} (Node _) EmptyITree) _ = Refl
-instance (ProofIsAVLBalance' ('ForkTree (MaxKeyDelete ('ForkTree ll (Node ln la) lr)) (Node (MaxKey ('ForkTree ll (Node ln la) lr)) (MaxValue ('ForkTree ll (Node ln la) lr))) ('ForkTree rl (Node rn ra) rr)) (UnbalancedState (Height (MaxKeyDelete ('ForkTree ll (Node ln la) lr))) (1 + If (Height rl <=? Height rr) (Height rr) (Height rl)))) =>
+instance (l ~ 'ForkTree ll (Node ln la) lr, IsAVL (MaxKeyDelete l) ~ 'True,
+  r ~ 'ForkTree rl (Node rn ra) rr,
+  ProofIsAVLBalance ('ForkTree (MaxKeyDelete l) (Node (MaxKey l) (MaxValue l)) r)) =>
   ProofIsAVLDelete' x ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a1) ('ForkTree rl (Node rn ra) rr)) 'EQ where
   proofIsAVLDelete' _ (ForkITree ForkITree{} (Node _) ForkITree{}) _ =
-    gcastWith (proofIsAVLBalance' (Proxy::Proxy ('ForkTree (MaxKeyDelete ('ForkTree ll (Node ln la) lr)) (Node (MaxKey ('ForkTree ll (Node ln la) lr)) (MaxValue ('ForkTree ll (Node ln la) lr))) ('ForkTree rl (Node rn ra) rr))) (Proxy::Proxy (UnbalancedState (Height (MaxKeyDelete ('ForkTree ll (Node ln la) lr))) (1 + If (Height rl <=? Height rr) (Height rr) (Height rl))))) Refl
-instance (IsAVL ('ForkTree 'EmptyTree (Node n a1) r) ~ 'True) =>
-  ProofIsAVLDelete' x ('ForkTree 'EmptyTree (Node n a1) r) 'LT where
+    gcastWith (proofIsAVLBalance (Proxy::Proxy ('ForkTree (MaxKeyDelete l) (Node (MaxKey l) (MaxValue l)) r))) Refl
+instance ProofIsAVLDelete' x ('ForkTree 'EmptyTree (Node n a1) r) 'LT where
   proofIsAVLDelete' _ (ForkITree EmptyITree (Node _) _) _ = Refl
-instance (ProofIsAVLBalance' ('ForkTree (Delete' x ('ForkTree ll (Node ln la) lr) (CmpNat x ln)) (Node n a1) r) (UnbalancedState (Height (Delete' x ('ForkTree ll (Node ln la) lr) (CmpNat x ln))) (Height r))) =>
+instance (ProofIsAVLBalance ('ForkTree (Delete' x ('ForkTree ll (Node ln la) lr) (CmpNat x ln)) (Node n a1) r)) =>
   ProofIsAVLDelete' x ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a1) r) 'LT where
   proofIsAVLDelete' _ (ForkITree ForkITree{} _ _) _ =
-    gcastWith (proofIsAVLBalance' (Proxy::Proxy ('ForkTree (Delete' x ('ForkTree ll (Node ln la) lr) (CmpNat x ln)) (Node n a1) r)) (Proxy::Proxy (UnbalancedState (Height (Delete' x ('ForkTree ll (Node ln la) lr) (CmpNat x ln))) (Height r)))) Refl
-instance (IsAVL ('ForkTree l (Node n a1) 'EmptyTree) ~ 'True) =>
-  ProofIsAVLDelete' x ('ForkTree l (Node n a1) 'EmptyTree) 'GT where
+    gcastWith (proofIsAVLBalance (Proxy::Proxy ('ForkTree (Delete' x ('ForkTree ll (Node ln la) lr) (CmpNat x ln)) (Node n a1) r))) Refl
+instance ProofIsAVLDelete' x ('ForkTree l (Node n a1) 'EmptyTree) 'GT where
   proofIsAVLDelete' _ (ForkITree _ (Node _) EmptyITree) _ = Refl
-instance (ProofIsAVLBalance' ('ForkTree l (Node n a1) (Delete' x ('ForkTree rl (Node rn ra) rr) (CmpNat x rn))) (UnbalancedState (Height l) (Height (Delete' x ('ForkTree rl (Node rn ra) rr) (CmpNat x rn))))) =>
+instance (ProofIsAVLBalance ('ForkTree l (Node n a1) (Delete' x ('ForkTree rl (Node rn ra) rr) (CmpNat x rn)))) =>
   ProofIsAVLDelete' x ('ForkTree l (Node n a1) ('ForkTree rl (Node rn ra) rr)) 'GT where
   proofIsAVLDelete' _ (ForkITree _ _ ForkITree{}) _ =
-    gcastWith (proofIsAVLBalance' (Proxy::Proxy ('ForkTree l (Node n a1) (Delete' x ('ForkTree rl (Node rn ra) rr) (CmpNat x rn)))) (Proxy::Proxy (UnbalancedState (Height l) (Height (Delete' x ('ForkTree rl (Node rn ra) rr) (CmpNat x rn)))))) Refl
+    gcastWith (proofIsAVLBalance (Proxy::Proxy ('ForkTree l (Node n a1) (Delete' x ('ForkTree rl (Node rn ra) rr) (CmpNat x rn))))) Refl

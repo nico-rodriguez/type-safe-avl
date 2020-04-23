@@ -131,7 +131,7 @@ instance Rotateable ('ForkTree l (Node n a) ('ForkTree rl (Node rn ra) rr)) 'Rig
 
 -- | This class provides the functionality to apply a rotation to
 -- | a tree 't' without checking any structural invariant (BST/AVL).
--- | The insertion is defined at the value level and the type level;
+-- | The rotation is defined at the value level and the type level;
 -- | the checking of the BST/AVL invariant is performed after the insertion.
 class Rotateable (t :: Tree) (us :: US) (bs :: BS) where
   type Rotate (t :: Tree) (us :: US) (bs :: BS) :: Tree
