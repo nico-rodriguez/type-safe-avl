@@ -10,7 +10,10 @@
 {-# LANGUAGE TypeOperators         #-}
 {-# LANGUAGE UndecidableInstances  #-}
 
-module ITree (Tree(..), ITree(..)) where
+module ITree (
+  Tree(EmptyTree,ForkTree),
+  ITree(EmptyITree,ForkITree))
+where
 
 import           Data.Kind (Type)
 import           Node      (Node (Node))
