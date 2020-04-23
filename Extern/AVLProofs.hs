@@ -1,4 +1,5 @@
 {-# LANGUAGE DataKinds             #-}
+{-# LANGUAGE ExplicitNamespaces    #-}
 {-# LANGUAGE FlexibleContexts      #-}
 {-# LANGUAGE FlexibleInstances     #-}
 {-# LANGUAGE GADTs                 #-}
@@ -18,7 +19,7 @@ module Extern.AVLProofs (
 
 import           Data.Kind            (Type)
 import           Data.Proxy           (Proxy (Proxy))
-import           Data.Type.Bool       (type (&&), If)
+import           Data.Type.Bool       (type (&&))
 import           Data.Type.Equality   ((:~:) (Refl), gcastWith)
 import           Extern.AVLOperations (BS (Balanced, LeftHeavy, RightHeavy),
                                        Balance, Balance', BalancedHeights,
@@ -26,10 +27,10 @@ import           Extern.AVLOperations (BS (Balanced, LeftHeavy, RightHeavy),
                                        Insert, Insert', Rotate,
                                        US (LeftUnbalanced, NotUnbalanced, RightUnbalanced),
                                        UnbalancedState)
-import           Extern.BSTOperations (MaxKey, MaxKeyDeletable (), MaxKeyDelete,
-                                       MaxValue (), Maxable)
-import           Extern.BSTProofs     (GtN, IsBST, LtN, BST(BST))
-import           GHC.TypeNats         (type (+), type (<=?), CmpNat, Nat)
+import           Extern.BSTOperations (MaxKey, MaxKeyDeletable, MaxKeyDelete,
+                                       MaxValue, Maxable)
+import           Extern.BSTProofs     (BST (BST), GtN, IsBST, LtN)
+import           GHC.TypeNats         (CmpNat, Nat)
 import           ITree                (ITree (EmptyITree, ForkITree),
                                        Tree (EmptyTree, ForkTree))
 import           Node                 (Node (Node))
@@ -519,12 +520,11 @@ instance (IsBST rl ~ 'True, IsBST rr ~ 'True, LtN rl rn ~ 'True, GtN rr rn ~ 'Tr
 instance (IsBST ll ~ 'True, IsBST lr ~ 'True, LtN ll ln ~ 'True, GtN lr ln ~ 'True) =>
   ProofIsBSTDelete' x ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a1) 'EmptyTree) 'EQ where
   proofIsBSTDelete' _ (ForkITree ForkITree{} (Node _) EmptyITree) _ = Refl
-instance (l ~ 'ForkTree ll (Node ln la) lr, IsBST l ~ 'True, MaxKeyDeletable l, ProofMaxKeyDeleteIsBST l,
-  r ~ 'ForkTree rl (Node rn ra) rr, IsBST r ~ 'True, LtN (MaxKeyDelete l) (MaxKey l) ~ 'True,
-  Maxable l, t ~ 'ForkTree l (Node n a1) r, GtN r (MaxKey l) ~ 'True,
-  ProofIsBSTBalance ('ForkTree (MaxKeyDelete l) (Node (MaxKey l) (MaxValue l)) r)) =>
+instance (l ~ 'ForkTree ll (Node ln la) lr, IsBST l ~ 'True, MaxKeyDeletable l,
+  r ~ 'ForkTree rl (Node rn ra) rr, IsBST r ~ 'True, LtN (MaxKeyDelete l) (MaxKey l) ~ 'True, GtN r (MaxKey l) ~ 'True,
+  ProofIsBSTBalance ('ForkTree (MaxKeyDelete l) (Node (MaxKey l) (MaxValue l)) r), ProofMaxKeyDeleteIsBST l) =>
   ProofIsBSTDelete' x ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a1) ('ForkTree rl (Node rn ra) rr)) 'EQ where
-  proofIsBSTDelete' _ t@(ForkITree l@ForkITree{} (Node _) ForkITree{}) _ =
+  proofIsBSTDelete' _ (ForkITree l@ForkITree{} (Node _) ForkITree{}) _ =
     gcastWith (proofMaxKeyDeleteIsBST l) $
       gcastWith (proofIsBSTBalance (Proxy::Proxy ('ForkTree (MaxKeyDelete l) (Node (MaxKey l) (MaxValue l)) r))) Refl
 instance ProofIsBSTDelete' x ('ForkTree 'EmptyTree (Node n a1) r) 'LT where

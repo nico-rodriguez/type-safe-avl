@@ -1,12 +1,15 @@
-{-# LANGUAGE DataKinds #-}
+{-# LANGUAGE DataKinds          #-}
+{-# LANGUAGE ExplicitNamespaces #-}
+
+{-# OPTIONS_GHC -Wno-missing-signatures #-}
+{-# OPTIONS_GHC -Wno-missing-exported-signatures #-}
+
 
 module Intern.Examples where
 
-import           Data.Proxy
-import           Intern.AVL
-import           Intern.BST
-import           ITree
-import           Node
+import           Data.Proxy (Proxy (Proxy))
+import           Intern.AVL (deleteAVL, emptyAVL, insertAVL, lookupAVL)
+import           Intern.BST (deleteBST, emptyBST, insertBST, lookupBST)
 
 p0 :: Proxy 0
 p0 = Proxy

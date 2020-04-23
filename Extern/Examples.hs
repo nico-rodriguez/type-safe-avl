@@ -1,15 +1,15 @@
-{-# LANGUAGE DataKinds #-}
+{-# LANGUAGE DataKinds          #-}
+{-# LANGUAGE ExplicitNamespaces #-}
 
 {-# OPTIONS_GHC -Wno-missing-signatures #-}
+{-# OPTIONS_GHC -Wno-missing-exported-signatures #-}
 
 
 module Extern.Examples where
 
-import           Data.Proxy (Proxy(Proxy))
-import           Extern.AVL (emptyAVL, insertAVL, lookupAVL, deleteAVL)
-import           Extern.BST (emptyBST, insertBST, lookupBST, deleteBST)
-import           ITree (ITree(EmptyITree))
-import           Node (mkNode)
+import           Data.Proxy (Proxy (Proxy))
+import           Extern.AVL (deleteAVL, emptyAVL, insertAVL, lookupAVL)
+import           Extern.BST (deleteBST, emptyBST, insertBST, lookupBST)
 
 p0 = Proxy :: Proxy 0
 p1 = Proxy :: Proxy 1

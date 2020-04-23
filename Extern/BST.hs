@@ -9,17 +9,18 @@ module Extern.BST (
   deleteBST
 ) where
 
-import           Data.Proxy (Proxy)
-import           Data.Type.Equality (gcastWith)
-import           Extern.BSTOperations (Insertable(Insert,insert),
-                                      Member, Lookupable(lookup),
-                                      Deletable(Delete,delete))
-import           Extern.BSTProofs (BST(BST), ProofIsBSTInsert(proofIsBSTInsert),
-                                  ProofIsBSTDelete(proofIsBSTDelete))
-import           ITree (Tree(EmptyTree,ForkTree),
-                        ITree(EmptyITree))
-import           Node (Node,mkNode)
-import           Prelude              hiding (lookup)
+import           Data.Proxy           (Proxy)
+import           Data.Type.Equality   (gcastWith)
+import           Extern.BSTOperations (Deletable (Delete, delete),
+                                       Insertable (Insert, insert),
+                                       Lookupable (lookup), Member)
+import           Extern.BSTProofs     (BST (BST),
+                                       ProofIsBSTDelete (proofIsBSTDelete),
+                                       ProofIsBSTInsert (proofIsBSTInsert))
+import           ITree                (ITree (EmptyITree),
+                                       Tree (EmptyTree, ForkTree))
+import           Node                 (Node, mkNode)
+import           Prelude              (Bool (True), ($))
 
 emptyBST :: BST 'EmptyTree
 emptyBST = BST EmptyITree

@@ -26,7 +26,7 @@ import           ITree              (Tree (EmptyTree, ForkTree))
 import           Node               (Node (Node), getValue)
 import           Prelude            (Bool (False, True), Ordering (EQ, GT, LT),
                                      Show (show), String, ($), (++))
-import Unsafe.Coerce (unsafeCoerce)
+import           Unsafe.Coerce      (unsafeCoerce)
 
 
 -- | Check if all elements of the tree are strictly less than x
@@ -746,7 +746,7 @@ instance (l ~ 'ForkTree ll (Node ln la) lr, Show (MaxValue l), MaxKeyDeletable (
   Deletable' x ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a1) ('ForkTree rl (Node rn ra) rr)) 'EQ where
   type Delete' x ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a1) ('ForkTree rl (Node rn ra) rr)) 'EQ =
     Balance ('ForkTree (MaxKeyDelete ('ForkTree ll (Node ln la) lr)) (Node (MaxKey ('ForkTree ll (Node ln la) lr)) (MaxValue ('ForkTree ll (Node ln la) lr))) ('ForkTree rl (Node rn ra) rr))
-  delete' _ t@(ForkAVL l@ForkAVL{} (Node _) r@ForkAVL{}) _ =
+  delete' _ (ForkAVL l@ForkAVL{} (Node _) r@ForkAVL{}) _ =
     balance $
       AlmostAVL (maxKeyDelete l) (Node (maxValue l)::Node (MaxKey ('ForkTree ll (Node ln la) lr)) (MaxValue ('ForkTree ll (Node ln la) lr))) r
 instance Deletable' x ('ForkTree 'EmptyTree (Node n a1) r) 'LT where

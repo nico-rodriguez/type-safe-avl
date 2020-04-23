@@ -19,8 +19,9 @@ import           Extern.AVLProofs     (AVL (AVL),
                                        ProofIsBSTDelete (proofIsBSTDelete),
                                        ProofIsBSTInsert (proofIsBSTInsert))
 import           Extern.BSTOperations (Lookupable (lookup), Member)
-import           Extern.BSTProofs     (BST(BST))
-import           ITree                (ITree (EmptyITree), Tree (EmptyTree, ForkTree))
+import           Extern.BSTProofs     (BST (BST))
+import           ITree                (ITree (EmptyITree),
+                                       Tree (EmptyTree, ForkTree))
 import           Node                 (Node, mkNode)
 import           Prelude              (Bool (True), ($))
 

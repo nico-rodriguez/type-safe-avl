@@ -1,4 +1,5 @@
 {-# LANGUAGE DataKinds             #-}
+{-# LANGUAGE ExplicitNamespaces    #-}
 {-# LANGUAGE FlexibleContexts      #-}
 {-# LANGUAGE FlexibleInstances     #-}
 {-# LANGUAGE GADTs                 #-}
@@ -15,24 +16,26 @@ module Intern.BSTOperations (
   Deletable(Delete, delete)
 ) where
 
-import           Data.Kind (Type)
-import           Data.Proxy (Proxy(Proxy))
-import           Data.Type.Bool (type (&&), If)
-import           Data.Type.Equality (type (==), (:~:) (Refl), gcastWith)
-import           GHC.TypeNats (CmpNat, Nat)
-import           ITree (Tree(EmptyTree,ForkTree))
-import           Node (Node(Node), getValue)
+import           Data.Kind          (Type)
+import           Data.Proxy         (Proxy (Proxy))
+import           Data.Type.Bool     (type (&&), If)
+import           Data.Type.Equality ((:~:) (Refl), type (==), gcastWith)
+import           GHC.TypeNats       (CmpNat, Nat)
+import           ITree              (Tree (EmptyTree, ForkTree))
+import           Node               (Node (Node), getValue)
+import           Prelude            (Bool (False, True), Ordering (EQ, GT, LT),
+                                     Show (show), String, ($), (++))
 
 
 -- | Check if all elements of the tree are strictly less than x
 type family LtN (l :: Tree) (x :: Nat) :: Bool where
-  LtN 'EmptyTree        x = 'True
-  LtN ('ForkTree l (Node n a) r) x = CmpNat n x == 'LT && LtN l x && LtN r x
+  LtN 'EmptyTree        _x = 'True
+  LtN ('ForkTree l (Node n _a) r) x = CmpNat n x == 'LT && LtN l x && LtN r x
 
 -- | Check if all elements of the tree are strictly greater than x
 type family GtN (r :: Tree) (x :: Nat) :: Bool where
-  GtN 'EmptyTree        x = 'True
-  GtN ('ForkTree l (Node n a) r) x = CmpNat n x == 'GT && GtN l x && GtN r x
+  GtN 'EmptyTree        _x = 'True
+  GtN ('ForkTree l (Node n _a) r) x = CmpNat n x == 'GT && GtN l x && GtN r x
 
 -- | Constructor of BSTs. Given two BST trees and an arbitrary node,
 -- | it tests wether the key of the node verifies the LtN and GtN invariants
@@ -164,8 +167,8 @@ instance (CmpNat x n ~ 'GT, r ~ 'ForkTree rl (Node rn rna) rr, Insertable' x a r
 -- | Type family to test wether there is a node in the tree 't' with key 'x'.
 -- | It assumes that 't' is a BST in order to perform the search.
 type family Member (x :: Nat) (t :: Tree) :: Bool where
-  Member x 'EmptyTree = 'False
-  Member x ('ForkTree l (Node n a) r) =
+  Member _x 'EmptyTree = 'False
+  Member x ('ForkTree l (Node n _a) r) =
     (If (CmpNat x n == 'EQ)
       'True
       (If (CmpNat x n == 'LT)
@@ -437,7 +440,7 @@ instance (l ~ 'ForkTree ll (Node ln la) lr, Show (MaxValue l), MaxKeyDeletable l
     'ForkTree (MaxKeyDelete ('ForkTree ll (Node ln la) lr))
       (Node (MaxKey ('ForkTree ll (Node ln la) lr)) (MaxValue ('ForkTree ll (Node ln la) lr)))
       ('ForkTree rl (Node rn ra) rr)
-  delete' _ t@(ForkBST l@ForkBST{} (Node _) r@ForkBST{}) _ =
+  delete' _ (ForkBST l@ForkBST{} (Node _) r@ForkBST{}) _ =
     gcastWith (proofLtNMaxKeyDelete l (Proxy::Proxy n)) $
       gcastWith (proofLTMaxKey l (Proxy::Proxy n)) $
         ForkBST (maxKeyDelete l)

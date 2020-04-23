@@ -1,4 +1,5 @@
 {-# LANGUAGE DataKinds             #-}
+{-# LANGUAGE ExplicitNamespaces    #-}
 {-# LANGUAGE GADTs                 #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 
@@ -10,12 +11,12 @@ module Intern.AVL (
 ) where
 
 import           Data.Proxy           (Proxy)
-import           Intern.AVLOperations (AVL (EmptyAVL, ForkAVL),
+import           Intern.AVLOperations (AVL (EmptyAVL),
                                        Deletable (Delete, delete),
                                        Insertable (Insert, insert),
                                        Lookupable (lookup), Member)
 import           ITree                (Tree (EmptyTree, ForkTree))
-import           Node                 (Node,mkNode)
+import           Node                 (Node, mkNode)
 import           Prelude              (Bool (True))
 
 

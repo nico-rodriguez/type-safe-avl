@@ -1,4 +1,5 @@
 {-# LANGUAGE DataKinds             #-}
+{-# LANGUAGE ExplicitNamespaces    #-}
 {-# LANGUAGE GADTs                 #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 
@@ -9,13 +10,14 @@ module Intern.BST (
   deleteBST
 ) where
 
-import           Data.Proxy (Proxy)
-import           Intern.BSTOperations (BST(EmptyBST), Insertable(Insert,insert),
-                                      Member, Lookupable(lookup),
-                                      Deletable(Delete,delete))
-import           ITree                 (Tree(EmptyTree,ForkTree))
-import           Node  (Node, mkNode)
-import           Prelude              hiding (lookup)
+import           Data.Proxy           (Proxy)
+import           Intern.BSTOperations (BST (EmptyBST),
+                                       Deletable (Delete, delete),
+                                       Insertable (Insert, insert),
+                                       Lookupable (lookup), Member)
+import           ITree                (Tree (EmptyTree, ForkTree))
+import           Node                 (Node, mkNode)
+import           Prelude              (Bool (True))
 
 emptyBST :: BST 'EmptyTree
 emptyBST = EmptyBST
