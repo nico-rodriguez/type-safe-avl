@@ -1,29 +1,30 @@
 {-# LANGUAGE DataKinds             #-}
 {-# LANGUAGE ExplicitNamespaces    #-}
-{-# LANGUAGE FlexibleContexts      #-}
 {-# LANGUAGE FlexibleInstances     #-}
 {-# LANGUAGE KindSignatures        #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE ScopedTypeVariables   #-}
-{-# LANGUAGE Trustworthy           #-}
 {-# LANGUAGE TypeFamilies          #-}
 {-# LANGUAGE TypeOperators         #-}
-{-# LANGUAGE UndecidableInstances  #-}
 
-module Benchmarking.FullExtern.Operations where
+module FullExtern.BST (
+  ProofIsBST(proofIsBST),
+  BST (BST),
+  ITree (EmptyITree),
+  insert, lookup, delete
+) where
 
 import           Data.Proxy           (Proxy (Proxy))
-import           Data.Type.Equality   ((:~:) (Refl), type (==), gcastWith)
-import           Extern.AVLOperations (BalancedHeights,
-                                       Deletable (Delete, delete), Height,
-                                       Insertable (Insert, insert))
-import           Extern.AVLProofs     (AVL (AVL), IsAVL)
-import           Extern.BSTProofs     (GtN, IsBST, LtN)
-import           GHC.TypeLits         (type (-), CmpNat, Nat)
+import           Data.Type.Equality   ((:~:) (Refl), gcastWith)
+import           Extern.BSTOperations (Insertable(insert),
+                                      Lookupable(lookup),
+                                      Deletable(delete))
+import           Extern.BSTProofs     (GtN, IsBST, LtN, BST (BST))
+import           GHC.TypeLits         (CmpNat, Nat)
 import           ITree                (ITree (EmptyITree, ForkITree),
                                        Tree (EmptyTree, ForkTree))
 import           Node                 (Node)
-import           Prelude              (Bool (True), Ordering (EQ, GT, LT), ($))
+import           Prelude              (Bool (True), Ordering (GT, LT), ($))
 
 
 class ProofLtN (t::Tree) (n::Nat) where
@@ -57,15 +58,3 @@ instance (ProofLtN l n, ProofGtN r n, ProofIsBST l, ProofIsBST r) =>
       gcastWith (proofGtN r (Proxy::Proxy n)) $
         gcastWith (proofIsBST r) $
           gcastWith (proofIsBST l) Refl
-
-class ProofIsAVL (t::Tree) where
-  proofIsAVL :: ITree t -> IsAVL t :~: 'True
-instance ProofIsAVL 'EmptyTree where
-  proofIsAVL EmptyITree = Refl
-instance (BalancedHeights (Height l) (Height r) ~ 'True, ProofLtN l n, ProofGtN r n, ProofIsAVL l, ProofIsAVL r) =>
-  ProofIsAVL ('ForkTree l (Node n a) r) where
-  proofIsAVL (ForkITree l _ r) =
-    gcastWith (proofLtN l (Proxy::Proxy n)) $
-      gcastWith (proofGtN r (Proxy::Proxy n)) $
-        gcastWith (proofIsAVL r) $
-          gcastWith (proofIsAVL l) Refl

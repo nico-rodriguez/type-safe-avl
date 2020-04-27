@@ -11,6 +11,7 @@
 
 module Extern.AVLProofs (
   AVL(AVL),
+  IsAVL,
   ProofIsAVLInsert(proofIsAVLInsert),
   ProofIsAVLDelete(proofIsAVLDelete),
   ProofIsBSTInsert(proofIsBSTInsert),
