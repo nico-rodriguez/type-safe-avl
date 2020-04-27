@@ -13,8 +13,10 @@ One Paragraph of project description goes here
 
 ## Prerequisites
 
-    ghc (>= 8.4.3)  # GHC Haskell compiler
-    make (>=4.2.1)  # GNU Make
+```Shell
+ghc (>= 8.4.3)  # GHC Haskell compiler
+make (>=4.2.1)  # GNU Make
+```
 
 No external Haskell libraries are needed.
 
@@ -22,45 +24,49 @@ No external Haskell libraries are needed.
 
 To get a running copy of the project, simply clone this repository:
 
-    git clone https://github.com/nico-rodriguez/balanced-binary-search-tree.git
+```Shell
+git clone https://github.com/nico-rodriguez/balanced-binary-search-tree.git
+```
 
 ## Project Structure
 
-    balanced-binary-search-tree
-    │   README.md
-    │   Makefile
-    │   benchmark.sh
-    │   ITree.hs
-    │   Node.hs
-    │
-    └───Benchmark
-    │   │
-    │   └───Extern
-    │   │
-    │   └───FullExtern
-    │   │
-    │   └───Intern
-    │
-    └───Extern
-    │   │   AVL.hs
-    │   │   AVLOperations.hs
-    │   │   AVLProofs.hs
-    │   │   BST.hs
-    │   │   BSTOperations.hs
-    │   │   BSTProofs.hs
-    │   │   Examples.hs
-    │
-    └───FullExtern
-    │   │   AVL.hs
-    │   │   BST.hs
-    │   │   Examples.hs
-    │
-    └───Intern
-        │   AVL.hs
-        │   AVLOperations.hs
-        │   BST.hs
-        │   BSTOperations.hs
-        │   Examples.hs
+```Shell
+balanced-binary-search-tree
+│   README.md
+│   Makefile
+│   benchmark.sh
+│   ITree.hs
+│   Node.hs
+│
+└───Benchmark
+│   │
+│   └───Extern
+│   │
+│   └───FullExtern
+│   │
+│   └───Intern
+│
+└───Extern
+│   │   AVL.hs
+│   │   AVLOperations.hs
+│   │   AVLProofs.hs
+│   │   BST.hs
+│   │   BSTOperations.hs
+│   │   BSTProofs.hs
+│   │   Examples.hs
+│
+└───FullExtern
+│   │   AVL.hs
+│   │   BST.hs
+│   │   Examples.hs
+│
+└───Intern
+    │   AVL.hs
+    │   AVLOperations.hs
+    │   BST.hs
+    │   BSTOperations.hs
+    │   Examples.hs
+```
 
 - `ITree.hs` implements the `Tree` and `ITree` data types.
 
@@ -120,41 +126,47 @@ For the full externalist approach, the interface is
 
 ## Examples
 
-For more usage examples of the externalist and internalist approaches, see `Examples.hs` inside `Extern`/`Inter` folder respectively.
+For more usage examples see the `Examples.hs` file for each approach.
 
 ### Extern
 
-    import Proxy (Proxy(Proxy))
-    import Extern.BST (emptyBST,insertBST,lookupBST,deleteBST)
-    import Extern.AVL (emptyAVL,insertAVL,lookupAVL,deleteAVL)
+```haskell
+import Proxy (Proxy(Proxy))
+import Extern.BST (emptyBST,insertBST,lookupBST,deleteBST)
+import Extern.AVL (emptyAVL,insertAVL,lookupAVL,deleteAVL)
 
-    bste = emptyBST
-    
-    # Insert value 'f' with key 4
-    bst1 = insertBST (Proxy::Proxy 4) 'f' bste
-    # Insert value [1,2] with key 2
-    bst2 = insertBST (Proxy::Proxy 2) [1,2] bst1
-    
-    # list = [1,2]
-    list = lookupBST (Proxy::Proxy 2) bst2
-    # Following line gives error at compile time because bst2 doesn't have key 3 
-    # lookupBST (Proxy::Proxy 3) bst2
+bste = emptyBST
 
-    # Delete node with key 4
-    bst3 = deleteBST (Proxy::Proxy 4) bst 2
-    # Following line gives error at compile time because bst2 doesn't have key 1 
-    # deleteBST (Proxy::Proxy 1) bst2
+# Insert value 'f' with key 4
+bst1 = insertBST (Proxy::Proxy 4) 'f' bste
+# Insert value [1,2] with key 2
+bst2 = insertBST (Proxy::Proxy 2) [1,2] bst1
+
+# list = [1,2]
+list = lookupBST (Proxy::Proxy 2) bst2
+# Following line gives error at compile time because bst2 doesn't have key 3
+# lookupBST (Proxy::Proxy 3) bst2
+
+# Delete node with key 4
+bst3 = deleteBST (Proxy::Proxy 4) bst 2
+# Following line gives error at compile time because bst2 doesn't have key 1
+# deleteBST (Proxy::Proxy 1) bst2
+```
 
 The previous example used BST tree. For using AVL trees just replace
 
-    emptyBST -> emptyAVL
-    insertBST -> insertAVL
-    lookupBST -> lookupAVL
-    deleteBST -> deleteAVL
+```Shell
+emptyBST -> emptyAVL
+insertBST -> insertAVL
+lookupBST -> lookupAVL
+deleteBST -> deleteAVL
+```
 
 Notice that operations for BST may only be applied to BST trees, and operations for AVL trees may only be applied for AVL trees. For instance, this is not possible (gives error at compile time):
 
-    insertAVL (Proxy::Proxy 5) bst2
+```haskell
+insertAVL (Proxy::Proxy 5) bst2
+```
 
 because `bst2` is not an AVL tree.
 
@@ -162,17 +174,43 @@ because `bst2` is not an AVL tree.
 
 A full externalist approach means grouping the operations and only perform the check of the invariants at the end (instead of checking the invariants after each operation)
 
-    # TODO: add code
+```haskell
+import           Data.Proxy (Proxy (Proxy))
+import           Data.Type.Equality   (gcastWith)
+import           FullExtern.AVL (delete, ITree(EmptyITree), insert, lookup, AVL(AVL),
+                                ProofIsAVL(proofIsAVL))
+import           Node (mkNode)
+
+-- Insert four values in a row and check the BST and AVL invariants at the end
+avl = gcastWith (proofIsAVL t) $ gcastWith (proofIsBST t) $ AVL t
+    where
+        t = insert (mkNode (Proxy::Proxy 4) 'f') $ insert (mkNode (Proxy::Proxy 3) True) $ insert (mkNode (Proxy::Proxy 5) [1,2,3]) $ EmptyTree
+
+-- For performing a lookup, it's necessary to take the ITree 't' out of the AVL constructor
+l1' = case avl of
+    AVL t -> lookup (Proxy::Proxy 3) t
+
+-- | Error at compile time: key 1 is not in the tree avl
+-- err = case avl of
+--     AVL t -> lookup p1 t
+-- For performing deletions, it's necessary to take the ITree 't' out of the AVL constructor
+avlt2 = case avl of
+AVL t -> gcastWith (proofIsAVL t') $ gcastWith (proofIsBST t') $ AVL t'
+            where
+                t' = delete (Proxy::Proxy 3) $ delete (Proxy::Proxy 4) $ delete (Proxy::Proxy 5) $ t
+```
 
 ### Intern
 
 For using the internalist approach, the code example for the externalist approach works, with the only difference in the import list:
 
-    import Intern.BST (emptyBST,insertBST,lookupBST,deleteBST)
-    # Instead of import Extern.BST (emptyBST,insertBST,lookupBST,deleteBST)
-    
-    import Intern.AVL (emptyAVL,insertAVL,lookupAVL,deleteAVL)
-    # Instead of import Extern.AVL (emptyAVL,insertAVL,lookupAVL,deleteAVL)
+```haskell
+import Intern.BST (emptyBST,insertBST,lookupBST,deleteBST)
+-- Instead of import Extern.BST (emptyBST,insertBST,lookupBST,deleteBST)
+
+import Intern.AVL (emptyAVL,insertAVL,lookupAVL,deleteAVL)
+-- Instead of import Extern.AVL (emptyAVL,insertAVL,lookupAVL,deleteAVL)
+```
 
 ## Benchmark
 
