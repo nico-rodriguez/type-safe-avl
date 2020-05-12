@@ -258,7 +258,7 @@ instance (l ~ 'ForkTree ll (Node ln la) lr, GtN l n ~ 'True) =>
 instance (l ~ 'ForkTree ll (Node ln la) lr, GtN l n ~ 'True,
   r ~ 'ForkTree rl (Node rn ra) rr, GtN r n ~ 'True,
   ProofGTMaxKey l n, Maxable l, ProofGtNMaxKeyDelete l n, MaxKeyDeletable l) =>
-  ProofGtNDelete' x ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n1 a1) ('ForkTree rl (Node rn ra) rr)) n 'EQ where
+  ProofGtNDelete' x ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n1 a1) r) n 'EQ where
   proofGtNDelete' _ (ForkITree l@ForkITree{} (Node _) ForkITree{}) _ _ =
     gcastWith (proofGtNMaxKeyDelete l (Proxy::Proxy n)) $
       gcastWith (proofGTMaxKey l (Proxy::Proxy n)) Refl
