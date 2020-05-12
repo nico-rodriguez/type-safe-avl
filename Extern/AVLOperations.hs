@@ -59,8 +59,8 @@ type family BalancedHeights (h1 :: Nat) (h2 :: Nat) :: Bool where
 
 
 -- | Data type that represents the state of unbalance of the sub trees:
--- | - LeftUnbalanced: tree is unbalanced because left sub tree is unbalanced.
--- | - RightUnbalanced: tree is unbalanced because right sub tree is unbalanced.
+-- | - LeftUnbalanced: height(left sub tree) = height(right sub tree) + 2.
+-- | - RightUnbalanced: height(right sub tree) = height(leftt sub tree) + 2.
 -- | - NotUnbalanced: tree is not unbalanced.
 data US = LeftUnbalanced | RightUnbalanced | NotUnbalanced
 
