@@ -7,13 +7,14 @@
 
 module Data.Tree.AVL.FullExtern.Examples where
 
-import           Data.Proxy (Proxy (Proxy))
-import           Data.Type.Equality   (gcastWith)
-import           Data.Tree.AVL.FullExtern (delete, ITree(EmptyITree), insert, lookup, AVL(AVL),
-                                ProofIsAVL(proofIsAVL))
-import           Data.Tree.Node (mkNode)
-import           Data.Tree.BST.FullExtern (BST(BST), ProofIsBST(proofIsBST))
-import           Prelude (Int, Float, ($), Bool (True,False))
+import           Data.Proxy               (Proxy (Proxy))
+import           Data.Tree.AVL.FullExtern (AVL (AVL), ITree (EmptyITree),
+                                           ProofIsAVL (proofIsAVL), delete,
+                                           insert, lookup)
+import           Data.Tree.BST.FullExtern (BST (BST), ProofIsBST (proofIsBST))
+import           Data.Tree.Node           (mkNode)
+import           Data.Type.Equality       (gcastWith)
+import           Prelude                  (Bool (False, True), Float, Int, ($))
 
 
 p0 = Proxy :: Proxy 0

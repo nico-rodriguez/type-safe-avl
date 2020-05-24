@@ -7,8 +7,9 @@
 
 module Intern.Examples where
 
-import           Data.Proxy (Proxy (Proxy))
-import           Data.Tree.BST.Intern (deleteBST, emptyBST, insertBST, lookupBST)
+import           Data.Proxy           (Proxy (Proxy))
+import           Data.Tree.BST.Intern (deleteBST, emptyBST, insertBST,
+                                       lookupBST)
 
 p0 :: Proxy 0
 p0 = Proxy

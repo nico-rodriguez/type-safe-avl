@@ -18,19 +18,21 @@ module Data.Tree.AVL.Extern.Operations (
   UnbalancedState
 ) where
 
-import           Data.Kind            (Type)
-import           Data.Proxy           (Proxy (Proxy))
-import           Data.Type.Bool       (If)
-import           Data.Tree.BST.Extern.Operations (MaxKey, MaxKeyDeletable (maxKeyDelete),
-                                       MaxKeyDelete, MaxValue (maxValue),
-                                       Maxable)
-import           GHC.TypeNats         (type (+), type (-), type (<=?), CmpNat,
-                                       Nat)
-import           Data.Tree.ITree                (ITree (EmptyITree, ForkITree),
-                                       Tree (EmptyTree, ForkTree))
-import           Data.Tree.Node                 (Node (Node))
-import           Prelude              (Bool (False, True),
-                                       Ordering (EQ, GT, LT), Show, ($))
+import           Data.Kind                       (Type)
+import           Data.Proxy                      (Proxy (Proxy))
+import           Data.Tree.BST.Extern.Operations (MaxKey,
+                                                  MaxKeyDeletable (maxKeyDelete),
+                                                  MaxKeyDelete,
+                                                  MaxValue (maxValue), Maxable)
+import           Data.Tree.ITree                 (ITree (EmptyITree, ForkITree),
+                                                  Tree (EmptyTree, ForkTree))
+import           Data.Tree.Node                  (Node (Node))
+import           Data.Type.Bool                  (If)
+import           GHC.TypeNats                    (type (+), type (-),
+                                                  type (<=?), CmpNat, Nat)
+import           Prelude                         (Bool (False, True),
+                                                  Ordering (EQ, GT, LT), Show,
+                                                  ($))
 
 
 -- | Get the maximun between two type level natural numbers.

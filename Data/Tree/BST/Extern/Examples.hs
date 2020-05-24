@@ -7,8 +7,9 @@
 
 module Data.Tree.BST.Extern.Examples where
 
-import           Data.Proxy (Proxy (Proxy))
-import           Data.Tree.BST.Extern (deleteBST, emptyBST, insertBST, lookupBST)
+import           Data.Proxy           (Proxy (Proxy))
+import           Data.Tree.BST.Extern (deleteBST, emptyBST, insertBST,
+                                       lookupBST)
 
 p0 = Proxy :: Proxy 0
 p1 = Proxy :: Proxy 1

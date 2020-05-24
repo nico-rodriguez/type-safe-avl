@@ -18,12 +18,12 @@ module Data.Tree.AVL.Intern.Operations (
 
 import           Data.Kind          (Type)
 import           Data.Proxy         (Proxy (Proxy))
+import           Data.Tree.ITree    (Tree (EmptyTree, ForkTree))
+import           Data.Tree.Node     (Node (Node), getValue)
 import           Data.Type.Bool     (type (&&), If)
 import           Data.Type.Equality ((:~:) (Refl), type (==), gcastWith)
 import           GHC.TypeLits       (type (+), type (-), type (<=?), CmpNat,
                                      Nat)
-import           Data.Tree.ITree              (Tree (EmptyTree, ForkTree))
-import           Data.Tree.Node               (Node (Node), getValue)
 import           Prelude            (Bool (False, True), Ordering (EQ, GT, LT),
                                      Show (show), String, ($), (++))
 import           Unsafe.Coerce      (unsafeCoerce)

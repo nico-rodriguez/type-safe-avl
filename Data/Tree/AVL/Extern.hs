@@ -9,21 +9,20 @@ module Data.Tree.AVL.Extern (
   deleteAVL
 ) where
 
-import           Data.Proxy           (Proxy)
-import           Data.Type.Equality   (gcastWith)
+import           Data.Proxy                      (Proxy)
 import           Data.Tree.AVL.Extern.Operations (Deletable (Delete, delete),
-                                       Insertable (Insert, insert))
-import           Data.Tree.AVL.Extern.Proofs     (AVL (AVL),
-                                       ProofIsAVLDelete (proofIsAVLDelete),
-                                       ProofIsAVLInsert (proofIsAVLInsert),
-                                       ProofIsBSTDelete (proofIsBSTDelete),
-                                       ProofIsBSTInsert (proofIsBSTInsert))
+                                                  Insertable (Insert, insert))
+import           Data.Tree.AVL.Extern.Proofs     (AVL (AVL), ProofIsAVLDelete (proofIsAVLDelete),
+                                                  ProofIsAVLInsert (proofIsAVLInsert),
+                                                  ProofIsBSTDelete (proofIsBSTDelete),
+                                                  ProofIsBSTInsert (proofIsBSTInsert))
 import           Data.Tree.BST.Extern.Operations (Lookupable (lookup), Member)
 import           Data.Tree.BST.Extern.Proofs     (BST (BST))
-import           Data.Tree.ITree                (ITree (EmptyITree),
-                                       Tree (EmptyTree, ForkTree))
-import           Data.Tree.Node                 (Node, mkNode)
-import           Prelude              (Bool (True), ($))
+import           Data.Tree.ITree                 (ITree (EmptyITree),
+                                                  Tree (EmptyTree, ForkTree))
+import           Data.Tree.Node                  (Node, mkNode)
+import           Data.Type.Equality              (gcastWith)
+import           Prelude                         (Bool (True), ($))
 
 
 emptyAVL :: AVL 'EmptyTree

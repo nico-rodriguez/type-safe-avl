@@ -1,9 +1,9 @@
-{-# LANGUAGE DataKinds             #-}
-{-# LANGUAGE GADTs                 #-}
-{-# LANGUAGE KindSignatures        #-}
-{-# LANGUAGE ExplicitNamespaces    #-}
-{-# LANGUAGE ScopedTypeVariables   #-}
-{-# LANGUAGE StandaloneDeriving    #-}
+{-# LANGUAGE DataKinds           #-}
+{-# LANGUAGE ExplicitNamespaces  #-}
+{-# LANGUAGE GADTs               #-}
+{-# LANGUAGE KindSignatures      #-}
+{-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE StandaloneDeriving  #-}
 
 module Data.Tree.AVL.Unsafe (
   emptyAVL,
@@ -12,10 +12,11 @@ module Data.Tree.AVL.Unsafe (
   deleteAVL
 ) where
 
-import           Data.Kind            (Type)
-import           Prelude              (Bool (False, True), Int, max, compare, (+), (-),
-                                       Ordering (EQ, GT, LT), Show, ($), Maybe (Just,Nothing))
-import          Unsafe.Coerce (unsafeCoerce)
+import           Data.Kind     (Type)
+import           Prelude       (Bool (False, True), Int, Maybe (Just, Nothing),
+                                Ordering (EQ, GT, LT), Show, compare, max, ($),
+                                (+), (-))
+import           Unsafe.Coerce (unsafeCoerce)
 
 
 data Node :: Type where
@@ -32,7 +33,7 @@ emptyAVL = E
 
 -- | Get the height of a tree.
 height :: AVL -> Int
-height E = 0
+height E                  = 0
 height (F l (Node _ _) r) = 1 + max (height l) (height r)
 
 -- | Check if two natural numbers,
@@ -140,9 +141,9 @@ lookupAVL' x (F _ _ r@(F _ (Node rn _) _)) GT = lookupAVL' x r (compare x rn)
 
 -- | Delete the node with the maximum key value.
 maxKeyDelete :: AVL -> AVL
-maxKeyDelete E = E
+maxKeyDelete E                  = E
 maxKeyDelete (F l (Node _ _) E) = l
-maxKeyDelete (F l node r@F{}) = F l node (maxKeyDelete r)
+maxKeyDelete (F l node r@F{})   = F l node (maxKeyDelete r)
 
 
 -- | Get the node with maximum key value.
@@ -155,7 +156,7 @@ maxNode (F _ (Node _ _) r@F{}) = maxNode r
 -- | Delete the node with the given key.
 -- | If the key is not in the tree, return the same tree.
 deleteAVL :: Int -> AVL -> AVL
-deleteAVL _ E = E
+deleteAVL _ E                    = E
 deleteAVL x t@(F _ (Node n _) _) = deleteAVL' x t (compare x n)
 
 deleteAVL' :: Int -> AVL -> Ordering -> AVL

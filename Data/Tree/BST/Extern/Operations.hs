@@ -18,12 +18,12 @@ module Data.Tree.BST.Extern.Operations (
 
 import           Data.Kind          (Type)
 import           Data.Proxy         (Proxy (Proxy))
+import           Data.Tree.ITree    (ITree (EmptyITree, ForkITree),
+                                     Tree (EmptyTree, ForkTree))
+import           Data.Tree.Node     (Node (Node), getValue)
 import           Data.Type.Bool     (If)
 import           Data.Type.Equality (type (==))
 import           GHC.TypeNats       (CmpNat, Nat)
-import           Data.Tree.ITree              (ITree (EmptyITree, ForkITree),
-                                     Tree (EmptyTree, ForkTree))
-import           Data.Tree.Node               (Node (Node), getValue)
 import           Prelude            (Bool (False, True), Ordering (EQ, GT, LT),
                                      Show)
 

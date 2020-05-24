@@ -10,14 +10,14 @@ module Data.Tree.BST.Intern (
   deleteBST
 ) where
 
-import           Data.Proxy           (Proxy)
+import           Data.Proxy                      (Proxy)
 import           Data.Tree.BST.Intern.Operations (BST (EmptyBST),
-                                       Deletable (Delete, delete),
-                                       Insertable (Insert, insert),
-                                       Lookupable (lookup), Member)
-import           Data.Tree.ITree                (Tree (EmptyTree, ForkTree))
-import           Data.Tree.Node                 (Node, mkNode)
-import           Prelude              (Bool (True))
+                                                  Deletable (Delete, delete),
+                                                  Insertable (Insert, insert),
+                                                  Lookupable (lookup), Member)
+import           Data.Tree.ITree                 (Tree (EmptyTree, ForkTree))
+import           Data.Tree.Node                  (Node, mkNode)
+import           Prelude                         (Bool (True))
 
 emptyBST :: BST 'EmptyTree
 emptyBST = EmptyBST

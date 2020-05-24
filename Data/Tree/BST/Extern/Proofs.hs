@@ -16,18 +16,22 @@ module Data.Tree.BST.Extern.Proofs (
   ProofIsBSTDelete(proofIsBSTDelete)
 ) where
 
-import           Data.Kind            (Type)
-import           Data.Proxy           (Proxy (Proxy))
-import           Data.Type.Bool       (type (&&))
-import           Data.Type.Equality   ((:~:) (Refl), type (==), gcastWith)
-import           Data.Tree.BST.Extern.Operations (Delete, Delete', Insert, Insert', MaxKey,
-                                       MaxKeyDeletable, MaxKeyDelete, Maxable)
-import           GHC.TypeNats         (CmpNat, Nat)
-import           Data.Tree.ITree                (ITree (EmptyITree, ForkITree),
-                                       Tree (EmptyTree, ForkTree))
-import           Data.Tree.Node                 (Node (Node))
-import           Prelude              (Bool (True), Ordering (EQ, GT, LT),
-                                       Show (show), ($), (++))
+import           Data.Kind                       (Type)
+import           Data.Proxy                      (Proxy (Proxy))
+import           Data.Tree.BST.Extern.Operations (Delete, Delete', Insert,
+                                                  Insert', MaxKey,
+                                                  MaxKeyDeletable, MaxKeyDelete,
+                                                  Maxable)
+import           Data.Tree.ITree                 (ITree (EmptyITree, ForkITree),
+                                                  Tree (EmptyTree, ForkTree))
+import           Data.Tree.Node                  (Node (Node))
+import           Data.Type.Bool                  (type (&&))
+import           Data.Type.Equality              ((:~:) (Refl), type (==),
+                                                  gcastWith)
+import           GHC.TypeNats                    (CmpNat, Nat)
+import           Prelude                         (Bool (True),
+                                                  Ordering (EQ, GT, LT),
+                                                  Show (show), ($), (++))
 
 
 -- | Check if all elements of the tree are strictly less than x

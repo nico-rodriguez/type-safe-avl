@@ -18,26 +18,30 @@ module Data.Tree.AVL.Extern.Proofs (
   ProofIsBSTDelete(proofIsBSTDelete)
 ) where
 
-import           Data.Kind            (Type)
-import           Data.Proxy           (Proxy (Proxy))
-import           Data.Type.Bool       (type (&&))
-import           Data.Type.Equality   ((:~:) (Refl), gcastWith)
+import           Data.Kind                       (Type)
+import           Data.Proxy                      (Proxy (Proxy))
 import           Data.Tree.AVL.Extern.Operations (BS (Balanced, LeftHeavy, RightHeavy),
-                                       Balance, Balance', BalancedHeights,
-                                       BalancedState, Delete, Delete', Height,
-                                       Insert, Insert', Rotate,
-                                       US (LeftUnbalanced, NotUnbalanced, RightUnbalanced),
-                                       UnbalancedState)
-import           Data.Tree.BST.Extern.Operations (MaxKey, MaxKeyDeletable, MaxKeyDelete,
-                                       MaxValue, Maxable)
+                                                  Balance, Balance',
+                                                  BalancedHeights,
+                                                  BalancedState, Delete,
+                                                  Delete', Height, Insert,
+                                                  Insert', Rotate,
+                                                  US (LeftUnbalanced, NotUnbalanced, RightUnbalanced),
+                                                  UnbalancedState)
+import           Data.Tree.BST.Extern.Operations (MaxKey, MaxKeyDeletable,
+                                                  MaxKeyDelete, MaxValue,
+                                                  Maxable)
 import           Data.Tree.BST.Extern.Proofs     (BST (BST), GtN, IsBST, LtN)
-import           GHC.TypeNats         (CmpNat, Nat)
-import           Data.Tree.ITree                (ITree (EmptyITree, ForkITree),
-                                       Tree (EmptyTree, ForkTree))
-import           Data.Tree.Node                 (Node (Node))
-import           Prelude              (Bool (True), Ordering (EQ, GT, LT),
-                                       Show (show), ($), (++))
-import           Unsafe.Coerce        (unsafeCoerce)
+import           Data.Tree.ITree                 (ITree (EmptyITree, ForkITree),
+                                                  Tree (EmptyTree, ForkTree))
+import           Data.Tree.Node                  (Node (Node))
+import           Data.Type.Bool                  (type (&&))
+import           Data.Type.Equality              ((:~:) (Refl), gcastWith)
+import           GHC.TypeNats                    (CmpNat, Nat)
+import           Prelude                         (Bool (True),
+                                                  Ordering (EQ, GT, LT),
+                                                  Show (show), ($), (++))
+import           Unsafe.Coerce                   (unsafeCoerce)
 
 
 -- | Check if tree is AVL by comparing the differences in the heights of all sub trees pairs

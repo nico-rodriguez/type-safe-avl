@@ -15,20 +15,20 @@ module Data.Tree.AVL.FullExtern (
   insert, lookup, delete
 ) where
 
-import           Data.Proxy           (Proxy (Proxy))
-import           Data.Type.Equality   ((:~:) (Refl), gcastWith)
+import           Data.Proxy                      (Proxy (Proxy))
 import           Data.Tree.AVL.Extern.Operations (BalancedHeights,
-                                       Deletable (delete), Height,
-                                       Insertable (insert)
-                                      )
-import           Data.Tree.BST.Extern.Operations (Lookupable(lookup))
+                                                  Deletable (delete), Height,
+                                                  Insertable (insert))
 import           Data.Tree.AVL.Extern.Proofs     (AVL (AVL), IsAVL)
+import           Data.Tree.BST.Extern.Operations (Lookupable (lookup))
 import           Data.Tree.BST.Extern.Proofs     (GtN, IsBST, LtN)
-import           GHC.TypeLits         (CmpNat, Nat)
-import           Data.Tree.ITree                (ITree (EmptyITree, ForkITree),
-                                       Tree (EmptyTree, ForkTree))
-import           Data.Tree.Node                 (Node)
-import           Prelude              (Bool (True), Ordering (GT, LT), ($))
+import           Data.Tree.ITree                 (ITree (EmptyITree, ForkITree),
+                                                  Tree (EmptyTree, ForkTree))
+import           Data.Tree.Node                  (Node)
+import           Data.Type.Equality              ((:~:) (Refl), gcastWith)
+import           GHC.TypeLits                    (CmpNat, Nat)
+import           Prelude                         (Bool (True),
+                                                  Ordering (GT, LT), ($))
 
 
 class ProofLtN (t::Tree) (n::Nat) where

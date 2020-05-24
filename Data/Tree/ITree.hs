@@ -1,15 +1,15 @@
-{-# LANGUAGE DataKinds             #-}
-{-# LANGUAGE GADTs                 #-}
-{-# LANGUAGE KindSignatures        #-}
+{-# LANGUAGE DataKinds      #-}
+{-# LANGUAGE GADTs          #-}
+{-# LANGUAGE KindSignatures #-}
 
 module Data.Tree.ITree (
   Tree(EmptyTree,ForkTree),
   ITree(EmptyITree,ForkITree))
 where
 
-import           Data.Kind (Type)
-import           Data.Tree.Node      (Node (Node))
-import           Prelude   (Show (show), String, (++))
+import           Data.Kind      (Type)
+import           Data.Tree.Node (Node (Node))
+import           Prelude        (Show (show), String, (++))
 
 data Tree :: Type where
   EmptyTree :: Tree

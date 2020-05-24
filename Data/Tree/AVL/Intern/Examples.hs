@@ -7,8 +7,9 @@
 
 module Data.Tree.AVL.Intern.Examples where
 
-import           Data.Proxy (Proxy (Proxy))
-import           Data.Tree.AVL.Intern (deleteAVL, emptyAVL, insertAVL, lookupAVL)
+import           Data.Proxy           (Proxy (Proxy))
+import           Data.Tree.AVL.Intern (deleteAVL, emptyAVL, insertAVL,
+                                       lookupAVL)
 
 p0 :: Proxy 0
 p0 = Proxy

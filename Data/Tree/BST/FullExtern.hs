@@ -14,17 +14,18 @@ module Data.Tree.BST.FullExtern (
   insert, lookup, delete
 ) where
 
-import           Data.Proxy           (Proxy (Proxy))
-import           Data.Type.Equality   ((:~:) (Refl), gcastWith)
-import           Data.Tree.BST.Extern.Operations (Insertable(insert),
-                                      Lookupable(lookup),
-                                      Deletable(delete))
-import           Data.Tree.BST.Extern.Proofs     (GtN, IsBST, LtN, BST (BST))
-import           GHC.TypeLits         (CmpNat, Nat)
-import           Data.Tree.ITree                (ITree (EmptyITree, ForkITree),
-                                       Tree (EmptyTree, ForkTree))
-import           Data.Tree.Node                 (Node)
-import           Prelude              (Bool (True), Ordering (GT, LT), ($))
+import           Data.Proxy                      (Proxy (Proxy))
+import           Data.Tree.BST.Extern.Operations (Deletable (delete),
+                                                  Insertable (insert),
+                                                  Lookupable (lookup))
+import           Data.Tree.BST.Extern.Proofs     (BST (BST), GtN, IsBST, LtN)
+import           Data.Tree.ITree                 (ITree (EmptyITree, ForkITree),
+                                                  Tree (EmptyTree, ForkTree))
+import           Data.Tree.Node                  (Node)
+import           Data.Type.Equality              ((:~:) (Refl), gcastWith)
+import           GHC.TypeLits                    (CmpNat, Nat)
+import           Prelude                         (Bool (True),
+                                                  Ordering (GT, LT), ($))
 
 
 class ProofLtN (t::Tree) (n::Nat) where

@@ -7,11 +7,13 @@
 
 module Data.Tree.BST.FullExtern.Examples where
 
-import           Data.Proxy (Proxy (Proxy))
-import           Data.Type.Equality   (gcastWith)
-import           Data.Tree.Node (mkNode)
-import           Data.Tree.BST.FullExtern (BST(BST), delete, ITree(EmptyITree), insert, lookup, ProofIsBST(proofIsBST))
-import           Prelude (Int, Float, ($), Bool (True,False))
+import           Data.Proxy               (Proxy (Proxy))
+import           Data.Tree.BST.FullExtern (BST (BST), ITree (EmptyITree),
+                                           ProofIsBST (proofIsBST), delete,
+                                           insert, lookup)
+import           Data.Tree.Node           (mkNode)
+import           Data.Type.Equality       (gcastWith)
+import           Prelude                  (Bool (False, True), Float, Int, ($))
 
 
 p0 = Proxy :: Proxy 0

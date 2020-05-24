@@ -7,8 +7,9 @@
 
 module Data.Tree.AVL.Extern.Examples where
 
-import           Data.Proxy (Proxy (Proxy))
-import           Data.Tree.AVL.Extern (deleteAVL, emptyAVL, insertAVL, lookupAVL)
+import           Data.Proxy           (Proxy (Proxy))
+import           Data.Tree.AVL.Extern (deleteAVL, emptyAVL, insertAVL,
+                                       lookupAVL)
 
 p0 = Proxy :: Proxy 0
 p1 = Proxy :: Proxy 1
