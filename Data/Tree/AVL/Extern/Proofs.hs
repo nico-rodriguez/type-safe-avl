@@ -9,7 +9,7 @@
 {-# LANGUAGE TypeOperators         #-}
 {-# LANGUAGE UndecidableInstances  #-}
 
-module Extern.AVLProofs (
+module Data.Tree.AVL.Extern.Proofs (
   AVL(AVL),
   IsAVL,
   ProofIsAVLInsert(proofIsAVLInsert),
@@ -22,19 +22,19 @@ import           Data.Kind            (Type)
 import           Data.Proxy           (Proxy (Proxy))
 import           Data.Type.Bool       (type (&&))
 import           Data.Type.Equality   ((:~:) (Refl), gcastWith)
-import           Extern.AVLOperations (BS (Balanced, LeftHeavy, RightHeavy),
+import           Data.Tree.AVL.Extern.Operations (BS (Balanced, LeftHeavy, RightHeavy),
                                        Balance, Balance', BalancedHeights,
                                        BalancedState, Delete, Delete', Height,
                                        Insert, Insert', Rotate,
                                        US (LeftUnbalanced, NotUnbalanced, RightUnbalanced),
                                        UnbalancedState)
-import           Extern.BSTOperations (MaxKey, MaxKeyDeletable, MaxKeyDelete,
+import           Data.Tree.BST.Extern.Operations (MaxKey, MaxKeyDeletable, MaxKeyDelete,
                                        MaxValue, Maxable)
-import           Extern.BSTProofs     (BST (BST), GtN, IsBST, LtN)
+import           Data.Tree.BST.Extern.Proofs     (BST (BST), GtN, IsBST, LtN)
 import           GHC.TypeNats         (CmpNat, Nat)
-import           ITree                (ITree (EmptyITree, ForkITree),
+import           Data.Tree.ITree                (ITree (EmptyITree, ForkITree),
                                        Tree (EmptyTree, ForkTree))
-import           Node                 (Node (Node))
+import           Data.Tree.Node                 (Node (Node))
 import           Prelude              (Bool (True), Ordering (EQ, GT, LT),
                                        Show (show), ($), (++))
 import           Unsafe.Coerce        (unsafeCoerce)

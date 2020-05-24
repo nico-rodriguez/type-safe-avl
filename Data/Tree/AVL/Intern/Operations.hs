@@ -9,7 +9,7 @@
 {-# LANGUAGE TypeOperators         #-}
 {-# LANGUAGE UndecidableInstances  #-}
 
-module Intern.AVLOperations (
+module Data.Tree.AVL.Intern.Operations (
   AVL(EmptyAVL,ForkAVL),
   Insertable(Insert,insert),
   Member, Lookupable(lookup),
@@ -22,8 +22,8 @@ import           Data.Type.Bool     (type (&&), If)
 import           Data.Type.Equality ((:~:) (Refl), type (==), gcastWith)
 import           GHC.TypeLits       (type (+), type (-), type (<=?), CmpNat,
                                      Nat)
-import           ITree              (Tree (EmptyTree, ForkTree))
-import           Node               (Node (Node), getValue)
+import           Data.Tree.ITree              (Tree (EmptyTree, ForkTree))
+import           Data.Tree.Node               (Node (Node), getValue)
 import           Prelude            (Bool (False, True), Ordering (EQ, GT, LT),
                                      Show (show), String, ($), (++))
 import           Unsafe.Coerce      (unsafeCoerce)

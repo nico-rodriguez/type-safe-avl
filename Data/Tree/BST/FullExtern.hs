@@ -7,7 +7,7 @@
 {-# LANGUAGE TypeFamilies          #-}
 {-# LANGUAGE TypeOperators         #-}
 
-module FullExtern.BST (
+module Data.Tree.BST.FullExtern (
   ProofIsBST(proofIsBST),
   BST (BST),
   ITree (EmptyITree),
@@ -16,14 +16,14 @@ module FullExtern.BST (
 
 import           Data.Proxy           (Proxy (Proxy))
 import           Data.Type.Equality   ((:~:) (Refl), gcastWith)
-import           Extern.BSTOperations (Insertable(insert),
+import           Data.Tree.BST.Extern.Operations (Insertable(insert),
                                       Lookupable(lookup),
                                       Deletable(delete))
-import           Extern.BSTProofs     (GtN, IsBST, LtN, BST (BST))
+import           Data.Tree.BST.Extern.Proofs     (GtN, IsBST, LtN, BST (BST))
 import           GHC.TypeLits         (CmpNat, Nat)
-import           ITree                (ITree (EmptyITree, ForkITree),
+import           Data.Tree.ITree                (ITree (EmptyITree, ForkITree),
                                        Tree (EmptyTree, ForkTree))
-import           Node                 (Node)
+import           Data.Tree.Node                 (Node)
 import           Prelude              (Bool (True), Ordering (GT, LT), ($))
 
 

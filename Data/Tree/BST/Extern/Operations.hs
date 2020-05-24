@@ -8,7 +8,7 @@
 {-# LANGUAGE TypeOperators         #-}
 {-# LANGUAGE UndecidableInstances  #-}
 
-module Extern.BSTOperations (
+module Data.Tree.BST.Extern.Operations (
   Insertable(Insert, insert), Insertable'(Insert', insert'),
   Member,
   Lookupable(lookup),
@@ -21,9 +21,9 @@ import           Data.Proxy         (Proxy (Proxy))
 import           Data.Type.Bool     (If)
 import           Data.Type.Equality (type (==))
 import           GHC.TypeNats       (CmpNat, Nat)
-import           ITree              (ITree (EmptyITree, ForkITree),
+import           Data.Tree.ITree              (ITree (EmptyITree, ForkITree),
                                      Tree (EmptyTree, ForkTree))
-import           Node               (Node (Node), getValue)
+import           Data.Tree.Node               (Node (Node), getValue)
 import           Prelude            (Bool (False, True), Ordering (EQ, GT, LT),
                                      Show)
 

@@ -1,6 +1,6 @@
-# Project Title
+# Type Safe BST and AVL trees
 
-One Paragraph of project description goes here
+Implementation of type safe BST and AVL trees, following four different approaches: unsafe, full externalist, externalist and internalist.
 
 ## Summary
 
@@ -33,52 +33,55 @@ git clone https://github.com/nico-rodriguez/balanced-binary-search-tree.git
 ```Shell
 balanced-binary-search-tree
 │   README.md
-│   Makefile
-│   benchmark.sh
-│   ITree.hs
-│   Node.hs
-│
-└───Benchmark
-│   │
-│   └───Extern
-│   │
-│   └───FullExtern
-│   │
-│   └───Intern
-│
-└───Extern
-│   │   AVL.hs
-│   │   AVLOperations.hs
-│   │   AVLProofs.hs
-│   │   BST.hs
-│   │   BSTOperations.hs
-│   │   BSTProofs.hs
-│   │   Examples.hs
-│
-└───FullExtern
-│   │   AVL.hs
-│   │   BST.hs
-│   │   Examples.hs
-│
-└───Intern
-    │   AVL.hs
-    │   AVLOperations.hs
-    │   BST.hs
-    │   BSTOperations.hs
-    │   Examples.hs
+└───Data/Tree
+    │   ITree.hs
+    │   Node.hs
+    └───AVL
+    │   │   FullExtern.hs
+    │   └───FullExtern
+    │   │   │   Examples.hs
+    │   │   Extern.hs
+    │   └───Extern
+    │   │   │   Operations.hs
+    │   │   │   Proofs.hs
+    │   │   │   Examples.hs
+    │   │   Intern.hs
+    │   └───Intern
+    │   │   │   Operations.hs
+    │   │   │   Examples.hs
+    │   │   Unsafe.hs
+    │   └───Unsafe
+    │   │   │   Examples.hs
+    └───BST
+        │   FullExtern.hs
+        └───FullExtern
+        │   │   Examples.hs
+        │   Extern.hs
+        └───Extern
+        │   │   Operations.hs
+        │   │   Proofs.hs
+        │   │   Examples.hs
+        │   Intern.hs
+        └───Intern
+            │   Operations.hs
+            │   Examples.hs
 ```
 
 - `ITree.hs` implements the `Tree` and `ITree` data types.
 
 - `Node.hs` implements the nodes of the trees.
 
-- `Extern` contains the implementation of AVL trees and its operations for the externalist approach; likewise, `Intern` folder contains the implementation for the internalist approach. Notice that there isn't a `BSTProofs.hs` neither a `AVLProofs.hs` inside `Inter`. That's because the proofs and operations in the internalist approach are implemented together (in `BSTOperations.hs` and `AVLOperations.hs`).
+- Structure of `Data/Tree/AVL` and `Data/Tree/BST` is similar.
 
-- `FullExtern` contains the implementation of the full externalist approach. It provides functionality for performing operations over trees and checking the invariants at the end.
+- `Data/Tree/AVL/Unsafe.hs` contains an unsafe implementation of AVL trees (notice there's not an unsafe implementation of BST only). This code was extracted and refactored from that in `Data/Tree/AVL/Extern/Operations.hs`, 'un-lifting' the type level computations to the value level.
 
-- `Extern`, `FullExtern` and `Intern` have an `Examples.hs` with usage examples of the BST/AVL operations.
+- `FullExtern.hs` contains the implementation of the full externalist approach. It provides functionality for performing operations over trees and checking the invariants at the end.
 
-- `Extern`, `FullExtern` and `Intern` have a `BST.hs` and `AVL.hs`. These are the main modules for the BST/AVL trees and their operations. In order to use BST/AVL trees, only these modules need to be imported (and only import them for one approach; for instance, do not import `AVL.hs` from both `Extern` and `Inter` since it would cause an error due to duplicated names).
+- `Extern.hs` provides the implementation of BST/AVL trees and its operations for the externalist approach; likewise, `Intern` folder contains the implementation for the internalist approach. Notice that there isn't a `Proofs.hs` inside `Inter`. That's because the proofs and operations in the internalist approach are implemented together (in `Operations.hs`).
+
+- `Unsafe`, `FullExtern`, `Extern`, and `Intern` have an `Examples.hs` with usage examples of the BST/AVL operations.
+
+- In order to use BST/AVL trees, only one of `Usafe.hs`, `FullExtern.hs`, `Extern.hs` or `Intern.hs` need to be imported.
 
 ## Interface
 
@@ -128,12 +131,42 @@ For the full externalist approach, the interface is
 
 For more usage examples see the `Examples.hs` file for each approach.
 
+### Full Extern
+
+A full externalist approach means grouping the operations and only perform the check of the invariants at the end (instead of checking the invariants after each operation)
+
+```haskell
+import           Data.Proxy (Proxy (Proxy))
+import           Data.Type.Equality   (gcastWith)
+import           Data.Tree.AVL.FullExtern (delete, ITree(EmptyITree), insert, lookup, AVL(AVL),
+                                ProofIsAVL(proofIsAVL))
+import           Data.Tree.Node (mkNode)
+
+-- Insert four values in a row and check the BST and AVL invariants at the end
+avl = gcastWith (proofIsAVL t) $ gcastWith (proofIsBST t) $ AVL t
+    where
+        t = insert (mkNode (Proxy::Proxy 4) 'f') $ insert (mkNode (Proxy::Proxy 3) True) $ insert (mkNode (Proxy::Proxy 5) [1,2,3]) $ EmptyTree
+
+-- For performing a lookup, it's necessary to take the ITree 't' out of the AVL constructor
+l1' = case avl of
+    AVL t -> lookup (Proxy::Proxy 3) t
+
+-- | Error at compile time: key 1 is not in the tree avl
+-- err = case avl of
+--     AVL t -> lookup p1 t
+-- For performing deletions, it's necessary to take the ITree 't' out of the AVL constructor
+avlt2 = case avl of
+AVL t -> gcastWith (proofIsAVL t') $ gcastWith (proofIsBST t') $ AVL t'
+            where
+                t' = delete (Proxy::Proxy 3) $ delete (Proxy::Proxy 4) $ delete (Proxy::Proxy 5) $ t
+```
+
 ### Extern
 
 ```haskell
 import Proxy (Proxy(Proxy))
-import Extern.BST (emptyBST,insertBST,lookupBST,deleteBST)
-import Extern.AVL (emptyAVL,insertAVL,lookupAVL,deleteAVL)
+import Data.Tree.BST.Extern (emptyBST,insertBST,lookupBST,deleteBST)
+import Data.Tree.AVL.Extern (emptyAVL,insertAVL,lookupAVL,deleteAVL)
 
 bste = emptyBST
 
@@ -170,46 +203,16 @@ insertAVL (Proxy::Proxy 5) bst2
 
 because `bst2` is not an AVL tree.
 
-### Full Extern
-
-A full externalist approach means grouping the operations and only perform the check of the invariants at the end (instead of checking the invariants after each operation)
-
-```haskell
-import           Data.Proxy (Proxy (Proxy))
-import           Data.Type.Equality   (gcastWith)
-import           FullExtern.AVL (delete, ITree(EmptyITree), insert, lookup, AVL(AVL),
-                                ProofIsAVL(proofIsAVL))
-import           Node (mkNode)
-
--- Insert four values in a row and check the BST and AVL invariants at the end
-avl = gcastWith (proofIsAVL t) $ gcastWith (proofIsBST t) $ AVL t
-    where
-        t = insert (mkNode (Proxy::Proxy 4) 'f') $ insert (mkNode (Proxy::Proxy 3) True) $ insert (mkNode (Proxy::Proxy 5) [1,2,3]) $ EmptyTree
-
--- For performing a lookup, it's necessary to take the ITree 't' out of the AVL constructor
-l1' = case avl of
-    AVL t -> lookup (Proxy::Proxy 3) t
-
--- | Error at compile time: key 1 is not in the tree avl
--- err = case avl of
---     AVL t -> lookup p1 t
--- For performing deletions, it's necessary to take the ITree 't' out of the AVL constructor
-avlt2 = case avl of
-AVL t -> gcastWith (proofIsAVL t') $ gcastWith (proofIsBST t') $ AVL t'
-            where
-                t' = delete (Proxy::Proxy 3) $ delete (Proxy::Proxy 4) $ delete (Proxy::Proxy 5) $ t
-```
-
 ### Intern
 
 For using the internalist approach, the code example for the externalist approach works, with the only difference in the import list:
 
 ```haskell
-import Intern.BST (emptyBST,insertBST,lookupBST,deleteBST)
--- Instead of import Extern.BST (emptyBST,insertBST,lookupBST,deleteBST)
+import Data.Tree.BST.Intern (emptyBST,insertBST,lookupBST,deleteBST)
+-- Instead of import Data.Tree.BST.Extern (emptyBST,insertBST,lookupBST,deleteBST)
 
-import Intern.AVL (emptyAVL,insertAVL,lookupAVL,deleteAVL)
--- Instead of import Extern.AVL (emptyAVL,insertAVL,lookupAVL,deleteAVL)
+import Data.Tree.AVL.Intern (emptyAVL,insertAVL,lookupAVL,deleteAVL)
+-- Instead of import Data.Tree.AVL.Extern (emptyAVL,insertAVL,lookupAVL,deleteAVL)
 ```
 
 ## Benchmark

@@ -3,7 +3,7 @@
 {-# LANGUAGE GADTs                 #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 
-module Intern.AVL (
+module Data.Tree.AVL.Intern (
   emptyAVL,
   insertAVL,
   lookupAVL,
@@ -11,12 +11,12 @@ module Intern.AVL (
 ) where
 
 import           Data.Proxy           (Proxy)
-import           Intern.AVLOperations (AVL (EmptyAVL),
+import           Data.Tree.AVL.Intern.Operations (AVL (EmptyAVL),
                                        Deletable (Delete, delete),
                                        Insertable (Insert, insert),
                                        Lookupable (lookup), Member)
-import           ITree                (Tree (EmptyTree, ForkTree))
-import           Node                 (Node, mkNode)
+import           Data.Tree.ITree                (Tree (EmptyTree, ForkTree))
+import           Data.Tree.Node                 (Node, mkNode)
 import           Prelude              (Bool (True))
 
 

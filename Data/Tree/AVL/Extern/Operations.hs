@@ -8,7 +8,7 @@
 {-# LANGUAGE TypeOperators         #-}
 {-# LANGUAGE UndecidableInstances  #-}
 
-module Extern.AVLOperations (
+module Data.Tree.AVL.Extern.Operations (
   BS(Balanced,LeftHeavy,RightHeavy),
   Balance, Balance', BalancedHeights,
   BalancedState, Height,
@@ -21,14 +21,14 @@ module Extern.AVLOperations (
 import           Data.Kind            (Type)
 import           Data.Proxy           (Proxy (Proxy))
 import           Data.Type.Bool       (If)
-import           Extern.BSTOperations (MaxKey, MaxKeyDeletable (maxKeyDelete),
+import           Data.Tree.BST.Extern.Operations (MaxKey, MaxKeyDeletable (maxKeyDelete),
                                        MaxKeyDelete, MaxValue (maxValue),
                                        Maxable)
 import           GHC.TypeNats         (type (+), type (-), type (<=?), CmpNat,
                                        Nat)
-import           ITree                (ITree (EmptyITree, ForkITree),
+import           Data.Tree.ITree                (ITree (EmptyITree, ForkITree),
                                        Tree (EmptyTree, ForkTree))
-import           Node                 (Node (Node))
+import           Data.Tree.Node                 (Node (Node))
 import           Prelude              (Bool (False, True),
                                        Ordering (EQ, GT, LT), Show, ($))
 

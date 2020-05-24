@@ -1,10 +1,11 @@
 {-# LANGUAGE DataKinds          #-}
 {-# LANGUAGE GADTs              #-}
-{-# LANGUAGE PolyKinds          #-}
+
+{-# LANGUAGE KindSignatures     #-}
 {-# LANGUAGE RankNTypes         #-}
 {-# LANGUAGE StandaloneDeriving #-}
 
-module Node (Node(Node), mkNode, getValue) where
+module Data.Tree.Node (Node(Node), mkNode, getValue) where
 
 import           Data.Kind    (Type)
 import           Data.Proxy   (Proxy)

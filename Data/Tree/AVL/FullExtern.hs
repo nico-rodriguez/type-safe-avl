@@ -7,7 +7,7 @@
 {-# LANGUAGE TypeFamilies          #-}
 {-# LANGUAGE TypeOperators         #-}
 
-module FullExtern.AVL (
+module Data.Tree.AVL.FullExtern (
   ProofIsBST(proofIsBST),
   ProofIsAVL(proofIsAVL),
   AVL (AVL),
@@ -17,17 +17,17 @@ module FullExtern.AVL (
 
 import           Data.Proxy           (Proxy (Proxy))
 import           Data.Type.Equality   ((:~:) (Refl), gcastWith)
-import           Extern.AVLOperations (BalancedHeights,
+import           Data.Tree.AVL.Extern.Operations (BalancedHeights,
                                        Deletable (delete), Height,
                                        Insertable (insert)
                                       )
-import           Extern.BSTOperations (Lookupable(lookup))
-import           Extern.AVLProofs     (AVL (AVL), IsAVL)
-import           Extern.BSTProofs     (GtN, IsBST, LtN)
+import           Data.Tree.BST.Extern.Operations (Lookupable(lookup))
+import           Data.Tree.AVL.Extern.Proofs     (AVL (AVL), IsAVL)
+import           Data.Tree.BST.Extern.Proofs     (GtN, IsBST, LtN)
 import           GHC.TypeLits         (CmpNat, Nat)
-import           ITree                (ITree (EmptyITree, ForkITree),
+import           Data.Tree.ITree                (ITree (EmptyITree, ForkITree),
                                        Tree (EmptyTree, ForkTree))
-import           Node                 (Node)
+import           Data.Tree.Node                 (Node)
 import           Prelude              (Bool (True), Ordering (GT, LT), ($))
 
 

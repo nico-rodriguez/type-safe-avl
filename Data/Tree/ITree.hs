@@ -1,22 +1,14 @@
 {-# LANGUAGE DataKinds             #-}
-{-# LANGUAGE FlexibleContexts      #-}
-{-# LANGUAGE FlexibleInstances     #-}
 {-# LANGUAGE GADTs                 #-}
-{-# LANGUAGE IncoherentInstances   #-}
-{-# LANGUAGE MultiParamTypeClasses #-}
-{-# LANGUAGE PolyKinds             #-}
-{-# LANGUAGE ScopedTypeVariables   #-}
-{-# LANGUAGE TypeFamilies          #-}
-{-# LANGUAGE TypeOperators         #-}
-{-# LANGUAGE UndecidableInstances  #-}
+{-# LANGUAGE KindSignatures        #-}
 
-module ITree (
+module Data.Tree.ITree (
   Tree(EmptyTree,ForkTree),
   ITree(EmptyITree,ForkITree))
 where
 
 import           Data.Kind (Type)
-import           Node      (Node (Node))
+import           Data.Tree.Node      (Node (Node))
 import           Prelude   (Show (show), String, (++))
 
 data Tree :: Type where

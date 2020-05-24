@@ -2,7 +2,7 @@
 {-# LANGUAGE GADTs                 #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 
-module Extern.BST (
+module Data.Tree.BST.Extern (
   emptyBST,
   insertBST,
   lookupBST,
@@ -11,15 +11,15 @@ module Extern.BST (
 
 import           Data.Proxy           (Proxy)
 import           Data.Type.Equality   (gcastWith)
-import           Extern.BSTOperations (Deletable (Delete, delete),
+import           Data.Tree.BST.Extern.Operations (Deletable (Delete, delete),
                                        Insertable (Insert, insert),
                                        Lookupable (lookup), Member)
-import           Extern.BSTProofs     (BST (BST),
+import           Data.Tree.BST.Extern.Proofs     (BST (BST),
                                        ProofIsBSTDelete (proofIsBSTDelete),
                                        ProofIsBSTInsert (proofIsBSTInsert))
-import           ITree                (ITree (EmptyITree),
+import           Data.Tree.ITree                (ITree (EmptyITree),
                                        Tree (EmptyTree, ForkTree))
-import           Node                 (Node, mkNode)
+import           Data.Tree.Node                 (Node, mkNode)
 import           Prelude              (Bool (True), ($))
 
 emptyBST :: BST 'EmptyTree

@@ -2,7 +2,7 @@
 {-# LANGUAGE GADTs                 #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 
-module Extern.AVL (
+module Data.Tree.AVL.Extern (
   emptyAVL,
   insertAVL,
   lookupAVL,
@@ -11,18 +11,18 @@ module Extern.AVL (
 
 import           Data.Proxy           (Proxy)
 import           Data.Type.Equality   (gcastWith)
-import           Extern.AVLOperations (Deletable (Delete, delete),
+import           Data.Tree.AVL.Extern.Operations (Deletable (Delete, delete),
                                        Insertable (Insert, insert))
-import           Extern.AVLProofs     (AVL (AVL),
+import           Data.Tree.AVL.Extern.Proofs     (AVL (AVL),
                                        ProofIsAVLDelete (proofIsAVLDelete),
                                        ProofIsAVLInsert (proofIsAVLInsert),
                                        ProofIsBSTDelete (proofIsBSTDelete),
                                        ProofIsBSTInsert (proofIsBSTInsert))
-import           Extern.BSTOperations (Lookupable (lookup), Member)
-import           Extern.BSTProofs     (BST (BST))
-import           ITree                (ITree (EmptyITree),
+import           Data.Tree.BST.Extern.Operations (Lookupable (lookup), Member)
+import           Data.Tree.BST.Extern.Proofs     (BST (BST))
+import           Data.Tree.ITree                (ITree (EmptyITree),
                                        Tree (EmptyTree, ForkTree))
-import           Node                 (Node, mkNode)
+import           Data.Tree.Node                 (Node, mkNode)
 import           Prelude              (Bool (True), ($))
 
 

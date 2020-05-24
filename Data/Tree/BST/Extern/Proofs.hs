@@ -9,7 +9,7 @@
 {-# LANGUAGE TypeOperators         #-}
 {-# LANGUAGE UndecidableInstances  #-}
 
-module Extern.BSTProofs (
+module Data.Tree.BST.Extern.Proofs (
   LtN, GtN, IsBST,
   BST(BST),
   ProofIsBSTInsert(proofIsBSTInsert),
@@ -20,12 +20,12 @@ import           Data.Kind            (Type)
 import           Data.Proxy           (Proxy (Proxy))
 import           Data.Type.Bool       (type (&&))
 import           Data.Type.Equality   ((:~:) (Refl), type (==), gcastWith)
-import           Extern.BSTOperations (Delete, Delete', Insert, Insert', MaxKey,
+import           Data.Tree.BST.Extern.Operations (Delete, Delete', Insert, Insert', MaxKey,
                                        MaxKeyDeletable, MaxKeyDelete, Maxable)
 import           GHC.TypeNats         (CmpNat, Nat)
-import           ITree                (ITree (EmptyITree, ForkITree),
+import           Data.Tree.ITree                (ITree (EmptyITree, ForkITree),
                                        Tree (EmptyTree, ForkTree))
-import           Node                 (Node (Node))
+import           Data.Tree.Node                 (Node (Node))
 import           Prelude              (Bool (True), Ordering (EQ, GT, LT),
                                        Show (show), ($), (++))
 
