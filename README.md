@@ -89,6 +89,22 @@ Both externalist and internalist approaches have a common interface for manipula
 
 ### BST trees (some function constraints omitted)
 
+The interface for the full externalist approach is
+
+- `EmptyITree :: ITree 'EmptyTree`.
+
+- `insert :: Node x a -> ITree t -> ITree (Insert x a t)`.
+
+- `lookup :: (t ~ 'ForkTree l (Node n a1) r, Member x t ~ 'True) => Proxy x -> ITree t -> a`.
+
+- `delete :: Proxy x -> ITree t ->  (Delete x t)`.
+
+- `BST :: (IsBST t ~ 'True) => ITree t -> BST t`.
+
+- `proofIsBST :: ITree t -> IsBST t :~: 'True`.
+
+The following is the interface for BST tree for externalist and internalist approaches
+
 - `emptyBST :: BST 'EmptyTree`, an empty BST tree.
 
 - `insertBST :: Proxy x -> a -> BST t -> BST (Insert x a t)`, inserts a value of type `a` with key `x` in a BST of type `BST t`. If the tree already has a node with key `x`, the value is updated.
@@ -99,15 +115,15 @@ Both externalist and internalist approaches have a common interface for manipula
 
 ### AVL trees (some function constraints omitted)
 
-- `emptyAVL :: AVL 'EmptyTree`.
+For the unsafe approach, the interface is
 
-- `insertAVL :: Proxy x -> a -> AVL t -> AVL (Insert x a t)`.
+- `emptyAVL :: AVL`.
 
-- `lookupAVL :: (t ~ 'ForkTree l (Node n a1) r, Member x t ~ 'True) => Proxy x -> AVL t -> a`.
+- `insertAVL :: Show a => Int -> a -> AVL -> AVL`.
 
-- `deleteAVL :: Proxy x -> AVL t -> AVL (Delete x t)`.
+- `lookupAVL :: Int -> AVL -> Maybe a`.
 
-Analogous comments hold for the AVL interface.
+- `deleteAVL :: Int -> AVL -> AVL`.
 
 For the full externalist approach, the interface is
 
@@ -119,13 +135,21 @@ For the full externalist approach, the interface is
 
 - `delete :: Proxy x -> ITree t ->  (Delete x t)`.
 
-- `AVL :: (IsBST t ~ 'True, IsAVL t ~ 'True) => ITree t -> AVL t`
+- `AVL :: (IsBST t ~ 'True, IsAVL t ~ 'True) => ITree t -> AVL t`.
 
-- `BST :: (IsBST t ~ 'True) => ITree t -> BST t`
+- `proofIsBST :: ITree t -> IsBST t :~: 'True`.
 
-- `proofIsBST :: ITree t -> IsBST t :~: 'True`
+- `proofIsAVL :: ITree t -> IsAVL t :~: 'True`.
 
-- `proofIsAVL :: ITree t -> IsAVL t :~: 'True`
+For the externalist and internalist approaches, the interface is
+
+- `emptyAVL :: AVL 'EmptyTree`.
+
+- `insertAVL :: Proxy x -> a -> AVL t -> AVL (Insert x a t)`.
+
+- `lookupAVL :: (t ~ 'ForkTree l (Node n a1) r, Member x t ~ 'True) => Proxy x -> AVL t -> a`.
+
+- `deleteAVL :: Proxy x -> AVL t -> AVL (Delete x t)`.
 
 ## Examples
 
