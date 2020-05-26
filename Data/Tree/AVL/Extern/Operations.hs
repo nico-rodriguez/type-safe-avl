@@ -144,17 +144,9 @@ instance Rotateable ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a) r) 'Lef
   type Rotate ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a) r) 'LeftUnbalanced 'LeftHeavy =
     ('ForkTree ll (Node ln la) ('ForkTree lr (Node n a) r))
   rotate (ForkITree (ForkITree ll lnode lr) xnode r) _ _ = ForkITree ll lnode (ForkITree lr xnode r)
-instance Rotateable ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a) r) 'LeftUnbalanced 'Balanced where
-  type Rotate ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a) r) 'LeftUnbalanced 'Balanced =
-    ('ForkTree ll (Node ln la) ('ForkTree lr (Node n a) r))
-  rotate (ForkITree (ForkITree ll lnode lr) xnode r) _ _ = ForkITree ll lnode (ForkITree lr xnode r)
 -- | Right-Right case (Left rotation)
 instance Rotateable ('ForkTree l (Node n a) ('ForkTree rl (Node rn ra) rr)) 'RightUnbalanced 'RightHeavy where
   type Rotate ('ForkTree l (Node n a) ('ForkTree rl (Node rn ra) rr)) 'RightUnbalanced 'RightHeavy =
-    ('ForkTree ('ForkTree l (Node n a) rl) (Node rn ra) rr)
-  rotate (ForkITree l xnode (ForkITree rl rnode rr)) _ _ = ForkITree (ForkITree l xnode rl) rnode rr
-instance Rotateable ('ForkTree l (Node n a) ('ForkTree rl (Node rn ra) rr)) 'RightUnbalanced 'Balanced where
-  type Rotate ('ForkTree l (Node n a) ('ForkTree rl (Node rn ra) rr)) 'RightUnbalanced 'Balanced =
     ('ForkTree ('ForkTree l (Node n a) rl) (Node rn ra) rr)
   rotate (ForkITree l xnode (ForkITree rl rnode rr)) _ _ = ForkITree (ForkITree l xnode rl) rnode rr
 -- | Left-Right case (First left rotation, then right rotation)

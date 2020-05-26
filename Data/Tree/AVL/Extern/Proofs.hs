@@ -223,19 +223,11 @@ class ProofIsBSTRotate (t :: Tree) (us :: US) (bs :: BS) where
 -- | GtN lr ln ~ 'True, GtN r ln ~ 'True
 instance ProofIsBSTRotate ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a) r) 'LeftUnbalanced 'LeftHeavy where
   proofIsBSTRotate _ _ _ = unsafeCoerce Refl
--- | IsBST ll ~ 'True, IsBST lr ~ 'True, IsBST r ~ 'True, LtN lr n ~ 'True, GtN r n ~ 'True, LtN ll ln ~ 'True, CmpNat n ln ~ 'GT,
--- | GtN lr ln ~ 'True, GtN r ln ~ 'True
-instance ProofIsBSTRotate ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a) r) 'LeftUnbalanced 'Balanced where
-  proofIsBSTRotate _ _ _ = unsafeCoerce Refl
 
 -- | Right-Right case (Left rotation)
 -- | IsBST l ~ 'True, IsBST rl ~ 'True, LtN l n ~ 'True, GtN rl n ~ 'True, IsBST rr ~ 'True, CmpNat n rn ~ 'LT, LtN l rn ~ 'True,
 -- | LtN rl rn ~ 'True, GtN rr rn ~ 'True
 instance ProofIsBSTRotate ('ForkTree l (Node n a) ('ForkTree rl (Node rn ra) rr)) 'RightUnbalanced 'RightHeavy where
-  proofIsBSTRotate _ _ _ = unsafeCoerce Refl
--- | IsBST l ~ 'True, IsBST rl ~ 'True, LtN l n ~ 'True, GtN rl n ~ 'True, IsBST rr ~ 'True, CmpNat n rn ~ 'LT, LtN l rn ~ 'True,
--- | LtN rl rn ~ 'True, GtN rr rn ~ 'True
-instance ProofIsBSTRotate ('ForkTree l (Node n a) ('ForkTree rl (Node rn ra) rr)) 'RightUnbalanced 'Balanced where
   proofIsBSTRotate _ _ _ = unsafeCoerce Refl
 
 -- | Left-Right case (First left rotation, then right rotation)
@@ -290,16 +282,10 @@ class ProofLtNRotate (t :: Tree) (n :: Nat) (us :: US) (bs :: BS) where
 -- | LtN ll n ~ 'True, CmpNat ln n ~ 'LT
 instance ProofLtNRotate ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n1 a) r) n 'LeftUnbalanced 'LeftHeavy where
   proofLtNRotate _ _ _ _ = unsafeCoerce Refl
--- | LtN ll n ~ 'True, CmpNat ln n ~ 'LT
-instance ProofLtNRotate ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n1 a) r) n 'LeftUnbalanced 'Balanced where
-  proofLtNRotate _ _ _ _ = unsafeCoerce Refl
 
 -- | Right-Right case (Left rotation)
 -- | CmpNat rn n ~ 'LT, LtN rr n ~ 'True
 instance ProofLtNRotate ('ForkTree l (Node n1 a) ('ForkTree rl (Node rn ra) rr)) n 'RightUnbalanced 'RightHeavy where
-  proofLtNRotate _ _ _ _ = unsafeCoerce Refl
--- | CmpNat rn n ~ 'LT, LtN rr n ~ 'True
-instance ProofLtNRotate ('ForkTree l (Node n1 a) ('ForkTree rl (Node rn ra) rr)) n 'RightUnbalanced 'Balanced where
   proofLtNRotate _ _ _ _ = unsafeCoerce Refl
 
 -- | Left-Right case (First left rotation, then right rotation)
@@ -352,16 +338,10 @@ class ProofGtNRotate (t :: Tree) (n :: Nat) (us::US) (bs::BS) where
 -- | CmpNat ln n ~ 'GT, GtN ll n ~ 'True
 instance ProofGtNRotate ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n1 a) r) n 'LeftUnbalanced 'LeftHeavy where
   proofGtNRotate _ _ _ _ = unsafeCoerce Refl
--- | GtN ll n ~ 'True, CmpNat ln n ~ 'GT
-instance ProofGtNRotate ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n1 a) r) n 'LeftUnbalanced 'Balanced where
-  proofGtNRotate _ _ _ _ = unsafeCoerce Refl
 
 -- | Right-Right case (Left rotation)
 -- | CmpNat rn n ~ 'GT, GtN rr n ~ 'True
 instance ProofGtNRotate ('ForkTree l (Node n1 a) ('ForkTree rl (Node rn ra) rr)) n 'RightUnbalanced 'RightHeavy where
-  proofGtNRotate _ _ _ _ = unsafeCoerce Refl
--- | CmpNat rn n ~ 'GT, GtN rr n ~ 'True
-instance ProofGtNRotate ('ForkTree l (Node n1 a) ('ForkTree rl (Node rn ra) rr)) n 'RightUnbalanced 'Balanced where
   proofGtNRotate _ _ _ _ = unsafeCoerce Refl
 
 -- | Left-Right case (First left rotation, then right rotation)
@@ -425,19 +405,11 @@ class ProofIsAVLRotate (t :: Tree) (us::US) (bs::BS) where
 -- | BalancedHeights (Height ll) (1 + If (Height lr <=? Height r) (Height r) (Height lr)) ~ 'True
 instance ProofIsAVLRotate ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a) r) 'LeftUnbalanced 'LeftHeavy where
   proofIsAVLRotate _ _ _ = unsafeCoerce Refl
--- | IsAVL ll ~ 'True, IsAVL lr ~ 'True, BalancedHeights (Height lr) (Height r) ~ 'True,
--- | BalancedHeights (Height ll) (1 + If (Height lr <=? Height r) (Height r) (Height lr)) ~ 'True
-instance ProofIsAVLRotate ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a) r) 'LeftUnbalanced 'Balanced where
-  proofIsAVLRotate _ _ _ = unsafeCoerce Refl
 
 -- | Right-Right case (Left rotation)
 -- | IsAVL rl ~ 'True, IsAVL rr ~ 'True, BalancedHeights (Height l) (Height rl) ~ 'True,
 -- | BalancedHeights (1 + If (Height l <=? Height rl) (Height rl) (Height l)) (Height rr) ~ 'True
 instance ProofIsAVLRotate ('ForkTree l (Node n a) ('ForkTree rl (Node rn ra) rr)) 'RightUnbalanced 'RightHeavy where
-  proofIsAVLRotate _ _ _ = unsafeCoerce Refl
--- | IsAVL rl ~ 'True, IsAVL rr ~ 'True, BalancedHeights (Height l) (Height rl) ~ 'True,
--- | BalancedHeights (1 + If (Height l <=? Height rl) (Height rl) (Height l)) (Height rr) ~ 'True
-instance ProofIsAVLRotate ('ForkTree l (Node n a) ('ForkTree rl (Node rn ra) rr)) 'RightUnbalanced 'Balanced where
   proofIsAVLRotate _ _ _ = unsafeCoerce Refl
 
 -- | Left-Right case (First left rotation, then right rotation)

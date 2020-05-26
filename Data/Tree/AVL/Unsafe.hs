@@ -97,10 +97,8 @@ balance' t@(F _ (Node _ _) (F rl (Node _ _) rr)) RightUnbalanced = rotate t Righ
 rotate :: AVL -> US -> BS -> AVL
 -- | Left-Left case (Right rotation)
 rotate (F (F ll lnode lr) xnode r) LeftUnbalanced LeftHeavy = F ll lnode (F lr xnode r)
-rotate (F (F ll lnode lr) xnode r) LeftUnbalanced Balanced = F ll lnode (F lr xnode r)
 -- | Right-Right case (Left rotation)
 rotate (F l xnode (F rl rnode rr)) RightUnbalanced RightHeavy = F (F l xnode rl) rnode rr
-rotate (F l xnode (F rl rnode rr)) RightUnbalanced Balanced = F (F l xnode rl) rnode rr
 -- | Left-Right case (First left rotation, then right rotation)
 rotate (F (F ll lnode (F lrl lrnode lrr)) xnode r) LeftUnbalanced RightHeavy =
     F (F ll lnode lrl) lrnode (F lrr xnode r)
