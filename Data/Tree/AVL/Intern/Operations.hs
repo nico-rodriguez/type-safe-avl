@@ -178,12 +178,26 @@ instance (CmpNat n ln ~ 'GT, GtN r ln ~ 'True, LtN lr n ~ 'True,
   type Rotate ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a) r) 'LeftUnbalanced 'LeftHeavy =
     ('ForkTree ll (Node ln la) ('ForkTree lr (Node n a) r))
   rotate (AlmostAVL (ForkAVL ll lnode lr) xnode r) _ _ = ForkAVL ll lnode (ForkAVL lr xnode r)
+instance (CmpNat n ln ~ 'GT, GtN r ln ~ 'True, LtN lr n ~ 'True,
+  BalancedHeights (Height ll) (1 + If (Height lr <=? Height r) (Height r) (Height lr)) ~ 'True,
+  BalancedHeights (Height lr) (Height r) ~ 'True) =>
+  Rotateable ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a) r) 'LeftUnbalanced 'Balanced where
+  type Rotate ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a) r) 'LeftUnbalanced 'Balanced =
+    ('ForkTree ll (Node ln la) ('ForkTree lr (Node n a) r))
+  rotate (AlmostAVL (ForkAVL ll lnode lr) xnode r) _ _ = ForkAVL ll lnode (ForkAVL lr xnode r)
 -- | Right-Right case (Left rotation)
 instance (CmpNat n rn ~ 'LT, LtN l rn ~ 'True, GtN rl n ~ 'True,
   BalancedHeights (1 + If (Height l <=? Height rl) (Height rl) (Height l)) (Height rr) ~ 'True,
   BalancedHeights (Height l) (Height rl) ~ 'True) =>
   Rotateable ('ForkTree l (Node n a) ('ForkTree rl (Node rn ra) rr)) 'RightUnbalanced 'RightHeavy where
   type Rotate ('ForkTree l (Node n a) ('ForkTree rl (Node rn ra) rr)) 'RightUnbalanced 'RightHeavy =
+    ('ForkTree ('ForkTree l (Node n a) rl) (Node rn ra) rr)
+  rotate (AlmostAVL l xnode (ForkAVL rl rnode rr)) _ _ = ForkAVL (ForkAVL l xnode rl) rnode rr
+instance (CmpNat n rn ~ 'LT, LtN l rn ~ 'True, GtN rl n ~ 'True,
+  BalancedHeights (1 + If (Height l <=? Height rl) (Height rl) (Height l)) (Height rr) ~ 'True,
+  BalancedHeights (Height l) (Height rl) ~ 'True) =>
+  Rotateable ('ForkTree l (Node n a) ('ForkTree rl (Node rn ra) rr)) 'RightUnbalanced 'Balanced where
+  type Rotate ('ForkTree l (Node n a) ('ForkTree rl (Node rn ra) rr)) 'RightUnbalanced 'Balanced =
     ('ForkTree ('ForkTree l (Node n a) rl) (Node rn ra) rr)
   rotate (AlmostAVL l xnode (ForkAVL rl rnode rr)) _ _ = ForkAVL (ForkAVL l xnode rl) rnode rr
 -- | Left-Right case (First left rotation, then right rotation)
@@ -312,10 +326,16 @@ class ProofLtNRotate (t :: Tree) (n :: Nat) (us::US) (bs::BS) where
 -- | LtN ll n ~ 'True, CmpNat ln n ~ 'LT
 instance ProofLtNRotate ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n1 a) r) n 'LeftUnbalanced 'LeftHeavy where
   proofLtNRotate _ _ _ _ = unsafeCoerce Refl
+-- | LtN ll n ~ 'True, CmpNat ln n ~ 'LT
+instance ProofLtNRotate ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n1 a) r) n 'LeftUnbalanced 'Balanced where
+  proofLtNRotate _ _ _ _ = unsafeCoerce Refl
 
 -- | Right-Right case (Left rotation)
 -- | CmpNat rn n ~ 'LT, LtN rr n ~ 'True
 instance ProofLtNRotate ('ForkTree l (Node n1 a) ('ForkTree rl (Node rn ra) rr)) n 'RightUnbalanced 'RightHeavy where
+  proofLtNRotate _ _ _ _ = unsafeCoerce Refl
+-- | CmpNat rn n ~ 'LT, LtN rr n ~ 'True
+instance ProofLtNRotate ('ForkTree l (Node n1 a) ('ForkTree rl (Node rn ra) rr)) n 'RightUnbalanced 'Balanced where
   proofLtNRotate _ _ _ _ = unsafeCoerce Refl
 
 -- | Left-Right case (First left rotation, then right rotation)
@@ -368,10 +388,15 @@ class ProofGtNRotate (t :: Tree) (n :: Nat) (us::US) (bs::BS) where
 -- | CmpNat ln n ~ 'GT, GtN ll n ~ 'True
 instance ProofGtNRotate ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n1 a) r) n 'LeftUnbalanced 'LeftHeavy where
   proofGtNRotate _ _ _ _ = unsafeCoerce Refl
+instance ProofGtNRotate ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n1 a) r) n 'LeftUnbalanced 'Balanced where
+  proofGtNRotate _ _ _ _ = unsafeCoerce Refl
 
 -- | Right-Right case (Left rotation)
 -- | CmpNat rn n ~ 'GT, GtN rr n ~ 'True
 instance ProofGtNRotate ('ForkTree l (Node n1 a) ('ForkTree rl (Node rn ra) rr)) n 'RightUnbalanced 'RightHeavy where
+  proofGtNRotate _ _ _ _ = unsafeCoerce Refl
+-- | CmpNat rn n ~ 'GT, GtN rr n ~ 'True
+instance ProofGtNRotate ('ForkTree l (Node n1 a) ('ForkTree rl (Node rn ra) rr)) n 'RightUnbalanced 'Balanced where
   proofGtNRotate _ _ _ _ = unsafeCoerce Refl
 
 -- | Left-Right case (First left rotation, then right rotation)
@@ -610,9 +635,11 @@ instance (GtN l n ~ 'True) =>
   ProofGtNMaxKeyDelete ('ForkTree l (Node n1 a) 'EmptyTree) n where
   proofGtNMaxKeyDelete (ForkAVL _ (Node _) EmptyAVL) _ = Refl
 instance (r ~ 'ForkTree rl (Node rn ra) rr, GtN r n ~ 'True,
-  ProofGtNMaxKeyDelete r n, MaxKeyDeletable r) =>
+  ProofGtNMaxKeyDelete r n, MaxKeyDeletable r,
+  ProofGtNBalance ('ForkTree l (Node n1 a) (MaxKeyDelete r)) n) =>
   ProofGtNMaxKeyDelete ('ForkTree l (Node n1 a) ('ForkTree rl (Node rn ra) rr)) n where
-  proofGtNMaxKeyDelete (ForkAVL _ (Node _) r@ForkAVL{}) pn = gcastWith (proofGtNMaxKeyDelete r pn) Refl
+  proofGtNMaxKeyDelete (ForkAVL _ (Node _) r@ForkAVL{}) pn = gcastWith (proofGtNMaxKeyDelete r pn) $
+      gcastWith (proofGtNBalance (Proxy::Proxy ('ForkTree l (Node n1 a) (MaxKeyDelete r))) pn) Refl
 
 -- | Prove that in a tree 't' which verifies that 'LtN t n ~ 'True',
 -- | the maximum key of 't' is also less than 'n'.
@@ -637,9 +664,12 @@ instance (LtN l n ~ 'True) =>
   ProofLtNMaxKeyDelete ('ForkTree l (Node n1 a) 'EmptyTree) n where
   proofLtNMaxKeyDelete (ForkAVL _ (Node _) EmptyAVL) _ = Refl
 instance (r ~ 'ForkTree rl (Node rn ra) rr, LtN r n ~ 'True,
-  ProofLtNMaxKeyDelete r n, MaxKeyDeletable r) =>
+  ProofLtNMaxKeyDelete r n, MaxKeyDeletable r,
+  ProofLtNBalance ('ForkTree l (Node n1 a) (MaxKeyDelete r)) n) =>
   ProofLtNMaxKeyDelete ('ForkTree l (Node n1 a) ('ForkTree rl (Node rn ra) rr)) n where
-  proofLtNMaxKeyDelete (ForkAVL _ (Node _) r@ForkAVL{}) pn = gcastWith (proofLtNMaxKeyDelete r pn) Refl
+  proofLtNMaxKeyDelete (ForkAVL _ (Node _) r@ForkAVL{}) pn =
+    gcastWith (proofLtNMaxKeyDelete r pn) $
+      gcastWith (proofLtNBalance (Proxy::Proxy ('ForkTree l (Node n1 a) (MaxKeyDelete r))) pn) Refl
 
 
 -- | This class provides the functionality to delete the node with maximum key value
@@ -654,12 +684,14 @@ instance MaxKeyDeletable ('ForkTree l (Node n a1) 'EmptyTree) where
   maxKeyDelete (ForkAVL l (Node _) EmptyAVL) = l
 instance (MaxKeyDeletable ('ForkTree rl (Node rn ra) rr),
   ProofGtNMaxKeyDelete ('ForkTree rl (Node rn ra) rr) n,
-  BalancedHeights (Height l) (Height (MaxKeyDelete ('ForkTree rl (Node rn ra) rr))) ~ 'True) =>
+  -- BalancedHeights (Height l) (Height (MaxKeyDelete ('ForkTree rl (Node rn ra) rr))) ~ 'True,
+  Balanceable ('ForkTree l (Node n a1) (MaxKeyDelete ('ForkTree rl (Node rn ra) rr)))) =>
   MaxKeyDeletable ('ForkTree l (Node n a1) ('ForkTree rl (Node rn ra) rr)) where
   type MaxKeyDelete ('ForkTree l (Node n a1) ('ForkTree rl (Node rn ra) rr)) =
-    ('ForkTree l (Node n a1) (MaxKeyDelete ('ForkTree rl (Node rn ra) rr)))
+    Balance ('ForkTree l (Node n a1) (MaxKeyDelete ('ForkTree rl (Node rn ra) rr)))
   maxKeyDelete (ForkAVL l node r@ForkAVL{}) =
-    gcastWith (proofGtNMaxKeyDelete r (Proxy::Proxy n)) $ ForkAVL l node (maxKeyDelete r)
+    gcastWith (proofGtNMaxKeyDelete r (Proxy::Proxy n)) $
+      balance $ AlmostAVL l node (maxKeyDelete r)
 
 -- | This class provides the functionality to get the key, type and value of the node with maximum key value
 -- | in an AVL 't'.

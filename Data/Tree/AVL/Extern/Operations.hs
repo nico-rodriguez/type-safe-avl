@@ -13,6 +13,7 @@ module Data.Tree.AVL.Extern.Operations (
   Balance, Balance', BalancedHeights,
   BalancedState, Height,
   Insertable(Insert,insert), Insert',
+  MaxKeyDeletable(MaxKeyDelete,maxKeyDelete),
   Deletable(Delete,delete), Delete',
   Rotate, US(LeftUnbalanced,NotUnbalanced,RightUnbalanced),
   UnbalancedState
@@ -21,9 +22,7 @@ module Data.Tree.AVL.Extern.Operations (
 import           Data.Kind                       (Type)
 import           Data.Proxy                      (Proxy (Proxy))
 import           Data.Tree.BST.Extern.Operations (MaxKey,
-                                                  MaxKeyDeletable (maxKeyDelete),
-                                                  MaxKeyDelete,
-                                                  MaxValue (maxValue), Maxable)
+                                                  MaxValue (maxValue), Maxable, MaxKey)
 import           Data.Tree.ITree                 (ITree (EmptyITree, ForkITree),
                                                   Tree (EmptyTree, ForkTree))
 import           Data.Tree.Node                  (Node (Node))
@@ -144,9 +143,17 @@ instance Rotateable ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a) r) 'Lef
   type Rotate ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a) r) 'LeftUnbalanced 'LeftHeavy =
     ('ForkTree ll (Node ln la) ('ForkTree lr (Node n a) r))
   rotate (ForkITree (ForkITree ll lnode lr) xnode r) _ _ = ForkITree ll lnode (ForkITree lr xnode r)
+instance Rotateable ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a) r) 'LeftUnbalanced 'Balanced where
+  type Rotate ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a) r) 'LeftUnbalanced 'Balanced =
+    ('ForkTree ll (Node ln la) ('ForkTree lr (Node n a) r))
+  rotate (ForkITree (ForkITree ll lnode lr) xnode r) _ _ = ForkITree ll lnode (ForkITree lr xnode r)
 -- | Right-Right case (Left rotation)
 instance Rotateable ('ForkTree l (Node n a) ('ForkTree rl (Node rn ra) rr)) 'RightUnbalanced 'RightHeavy where
   type Rotate ('ForkTree l (Node n a) ('ForkTree rl (Node rn ra) rr)) 'RightUnbalanced 'RightHeavy =
+    ('ForkTree ('ForkTree l (Node n a) rl) (Node rn ra) rr)
+  rotate (ForkITree l xnode (ForkITree rl rnode rr)) _ _ = ForkITree (ForkITree l xnode rl) rnode rr
+instance Rotateable ('ForkTree l (Node n a) ('ForkTree rl (Node rn ra) rr)) 'RightUnbalanced 'Balanced where
+  type Rotate ('ForkTree l (Node n a) ('ForkTree rl (Node rn ra) rr)) 'RightUnbalanced 'Balanced =
     ('ForkTree ('ForkTree l (Node n a) rl) (Node rn ra) rr)
   rotate (ForkITree l xnode (ForkITree rl rnode rr)) _ _ = ForkITree (ForkITree l xnode rl) rnode rr
 -- | Left-Right case (First left rotation, then right rotation)
@@ -214,6 +221,29 @@ instance (r ~ 'ForkTree rl (Node rn rna) rr, Insertable' x a r (CmpNat x rn),
     Balance ('ForkTree l (Node n a1) (Insert' x a ('ForkTree rl (Node rn rna) rr) (CmpNat x rn)))
   insert' (Node a) (ForkITree l n r@ForkITree{}) _ =
     balance (ForkITree l n (insert' (Node a::Node x a) r (Proxy::Proxy (CmpNat x rn))))
+
+
+-- | This class provides the functionality to delete the node with maximum key value
+-- | in a tree 't' without checking any structural invariant (BST).
+-- | The deletion is defined at the value level and the type level, and is performed
+-- | as if the tree is a BST; the checking of the BST invariant is performed after the deletion.
+class MaxKeyDeletable (t :: Tree) where
+  type MaxKeyDelete (t :: Tree) :: Tree
+  maxKeyDelete :: (t ~ 'ForkTree l (Node n a1) r) =>
+    ITree t -> ITree (MaxKeyDelete t)
+instance MaxKeyDeletable 'EmptyTree where
+  type MaxKeyDelete 'EmptyTree = 'EmptyTree
+  maxKeyDelete EmptyITree = EmptyITree
+instance MaxKeyDeletable ('ForkTree l (Node n a1) 'EmptyTree) where
+  type MaxKeyDelete ('ForkTree l (Node n a1) 'EmptyTree) = l
+  maxKeyDelete (ForkITree l (Node _) EmptyITree) = l
+instance (r ~ 'ForkTree rl (Node rn ra) rr, MaxKeyDeletable ('ForkTree rl (Node rn ra) rr),
+  Balanceable ('ForkTree l (Node n a1) (MaxKeyDelete r))) =>
+  MaxKeyDeletable ('ForkTree l (Node n a1) ('ForkTree rl (Node rn ra) rr)) where
+  type MaxKeyDelete ('ForkTree l (Node n a1) ('ForkTree rl (Node rn ra) rr)) =
+    Balance ('ForkTree l (Node n a1) (MaxKeyDelete ('ForkTree rl (Node rn ra) rr)))
+  maxKeyDelete (ForkITree l node r@ForkITree{}) =
+    balance $ ForkITree l node (maxKeyDelete r)
 
 
 -- | This class provides the functionality to delete the node with key 'x'

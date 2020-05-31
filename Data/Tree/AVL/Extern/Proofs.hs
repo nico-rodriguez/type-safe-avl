@@ -23,21 +23,22 @@ import           Data.Proxy                      (Proxy (Proxy))
 import           Data.Tree.AVL.Extern.Operations (BS (Balanced, LeftHeavy, RightHeavy),
                                                   Balance, Balance',
                                                   BalancedHeights,
+                                                  MaxKeyDeletable(MaxKeyDelete,maxKeyDelete),
                                                   BalancedState, Delete,
                                                   Delete', Height, Insert,
                                                   Insert', Rotate,
                                                   US (LeftUnbalanced, NotUnbalanced, RightUnbalanced),
                                                   UnbalancedState)
-import           Data.Tree.BST.Extern.Operations (MaxKey, MaxKeyDeletable,
-                                                  MaxKeyDelete, MaxValue,
+import           Data.Tree.BST.Extern.Operations (MaxKey,
+                                                  MaxValue,
                                                   Maxable)
 import           Data.Tree.BST.Extern.Proofs     (BST (BST), GtN, IsBST, LtN)
 import           Data.Tree.ITree                 (ITree (EmptyITree, ForkITree),
                                                   Tree (EmptyTree, ForkTree))
 import           Data.Tree.Node                  (Node (Node))
-import           Data.Type.Bool                  (type (&&))
+import           Data.Type.Bool                  (type (&&), If)
 import           Data.Type.Equality              ((:~:) (Refl), gcastWith)
-import           GHC.TypeNats                    (CmpNat, Nat)
+import           GHC.TypeNats                    (CmpNat, Nat, type(+), type(<=?))
 import           Prelude                         (Bool (True),
                                                   Ordering (EQ, GT, LT),
                                                   Show (show), ($), (++))
@@ -223,11 +224,19 @@ class ProofIsBSTRotate (t :: Tree) (us :: US) (bs :: BS) where
 -- | GtN lr ln ~ 'True, GtN r ln ~ 'True
 instance ProofIsBSTRotate ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a) r) 'LeftUnbalanced 'LeftHeavy where
   proofIsBSTRotate _ _ _ = unsafeCoerce Refl
+-- | IsBST ll ~ 'True, IsBST lr ~ 'True, IsBST r ~ 'True, LtN lr n ~ 'True, GtN r n ~ 'True, LtN ll ln ~ 'True, CmpNat n ln ~ 'GT,
+-- | GtN lr ln ~ 'True, GtN r ln ~ 'True
+instance ProofIsBSTRotate ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a) r) 'LeftUnbalanced 'Balanced where
+  proofIsBSTRotate _ _ _ = unsafeCoerce Refl
 
 -- | Right-Right case (Left rotation)
 -- | IsBST l ~ 'True, IsBST rl ~ 'True, LtN l n ~ 'True, GtN rl n ~ 'True, IsBST rr ~ 'True, CmpNat n rn ~ 'LT, LtN l rn ~ 'True,
 -- | LtN rl rn ~ 'True, GtN rr rn ~ 'True
 instance ProofIsBSTRotate ('ForkTree l (Node n a) ('ForkTree rl (Node rn ra) rr)) 'RightUnbalanced 'RightHeavy where
+  proofIsBSTRotate _ _ _ = unsafeCoerce Refl
+-- | IsBST l ~ 'True, IsBST rl ~ 'True, LtN l n ~ 'True, GtN rl n ~ 'True, IsBST rr ~ 'True, CmpNat n rn ~ 'LT, LtN l rn ~ 'True,
+-- | LtN rl rn ~ 'True, GtN rr rn ~ 'True
+instance ProofIsBSTRotate ('ForkTree l (Node n a) ('ForkTree rl (Node rn ra) rr)) 'RightUnbalanced 'Balanced where
   proofIsBSTRotate _ _ _ = unsafeCoerce Refl
 
 -- | Left-Right case (First left rotation, then right rotation)
@@ -282,10 +291,16 @@ class ProofLtNRotate (t :: Tree) (n :: Nat) (us :: US) (bs :: BS) where
 -- | LtN ll n ~ 'True, CmpNat ln n ~ 'LT
 instance ProofLtNRotate ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n1 a) r) n 'LeftUnbalanced 'LeftHeavy where
   proofLtNRotate _ _ _ _ = unsafeCoerce Refl
+-- | LtN ll n ~ 'True, CmpNat ln n ~ 'LT
+instance ProofLtNRotate ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n1 a) r) n 'LeftUnbalanced 'Balanced where
+  proofLtNRotate _ _ _ _ = unsafeCoerce Refl
 
 -- | Right-Right case (Left rotation)
 -- | CmpNat rn n ~ 'LT, LtN rr n ~ 'True
 instance ProofLtNRotate ('ForkTree l (Node n1 a) ('ForkTree rl (Node rn ra) rr)) n 'RightUnbalanced 'RightHeavy where
+  proofLtNRotate _ _ _ _ = unsafeCoerce Refl
+-- | CmpNat rn n ~ 'LT, LtN rr n ~ 'True
+instance ProofLtNRotate ('ForkTree l (Node n1 a) ('ForkTree rl (Node rn ra) rr)) n 'RightUnbalanced 'Balanced where
   proofLtNRotate _ _ _ _ = unsafeCoerce Refl
 
 -- | Left-Right case (First left rotation, then right rotation)
@@ -338,10 +353,16 @@ class ProofGtNRotate (t :: Tree) (n :: Nat) (us::US) (bs::BS) where
 -- | CmpNat ln n ~ 'GT, GtN ll n ~ 'True
 instance ProofGtNRotate ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n1 a) r) n 'LeftUnbalanced 'LeftHeavy where
   proofGtNRotate _ _ _ _ = unsafeCoerce Refl
+-- | GtN ll n ~ 'True, CmpNat ln n ~ 'GT
+instance ProofGtNRotate ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n1 a) r) n 'LeftUnbalanced 'Balanced where
+  proofGtNRotate _ _ _ _ = unsafeCoerce Refl
 
 -- | Right-Right case (Left rotation)
 -- | CmpNat rn n ~ 'GT, GtN rr n ~ 'True
 instance ProofGtNRotate ('ForkTree l (Node n1 a) ('ForkTree rl (Node rn ra) rr)) n 'RightUnbalanced 'RightHeavy where
+  proofGtNRotate _ _ _ _ = unsafeCoerce Refl
+-- | CmpNat rn n ~ 'GT, GtN rr n ~ 'True
+instance ProofGtNRotate ('ForkTree l (Node n1 a) ('ForkTree rl (Node rn ra) rr)) n 'RightUnbalanced 'Balanced where
   proofGtNRotate _ _ _ _ = unsafeCoerce Refl
 
 -- | Left-Right case (First left rotation, then right rotation)
@@ -405,11 +426,19 @@ class ProofIsAVLRotate (t :: Tree) (us::US) (bs::BS) where
 -- | BalancedHeights (Height ll) (1 + If (Height lr <=? Height r) (Height r) (Height lr)) ~ 'True
 instance ProofIsAVLRotate ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a) r) 'LeftUnbalanced 'LeftHeavy where
   proofIsAVLRotate _ _ _ = unsafeCoerce Refl
+-- | IsAVL ll ~ 'True, IsAVL lr ~ 'True, BalancedHeights (Height lr) (Height r) ~ 'True,
+-- | BalancedHeights (Height ll) (1 + If (Height lr <=? Height r) (Height r) (Height lr)) ~ 'True
+instance ProofIsAVLRotate ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a) r) 'LeftUnbalanced 'Balanced where
+  proofIsAVLRotate _ _ _ = unsafeCoerce Refl
 
 -- | Right-Right case (Left rotation)
 -- | IsAVL rl ~ 'True, IsAVL rr ~ 'True, BalancedHeights (Height l) (Height rl) ~ 'True,
 -- | BalancedHeights (1 + If (Height l <=? Height rl) (Height rl) (Height l)) (Height rr) ~ 'True
 instance ProofIsAVLRotate ('ForkTree l (Node n a) ('ForkTree rl (Node rn ra) rr)) 'RightUnbalanced 'RightHeavy where
+  proofIsAVLRotate _ _ _ = unsafeCoerce Refl
+-- | IsAVL rl ~ 'True, IsAVL rr ~ 'True, BalancedHeights (Height l) (Height rl) ~ 'True,
+-- | BalancedHeights (1 + If (Height l <=? Height rl) (Height rl) (Height l)) (Height rr) ~ 'True
+instance ProofIsAVLRotate ('ForkTree l (Node n a) ('ForkTree rl (Node rn ra) rr)) 'RightUnbalanced 'Balanced where
   proofIsAVLRotate _ _ _ = unsafeCoerce Refl
 
 -- | Left-Right case (First left rotation, then right rotation)
@@ -499,11 +528,13 @@ instance (IsBST ll ~ 'True, IsBST lr ~ 'True, LtN ll ln ~ 'True, GtN lr ln ~ 'Tr
   proofIsBSTDelete' _ (ForkITree ForkITree{} (Node _) EmptyITree) _ = Refl
 instance (l ~ 'ForkTree ll (Node ln la) lr, IsBST l ~ 'True, MaxKeyDeletable l,
   r ~ 'ForkTree rl (Node rn ra) rr, IsBST r ~ 'True, LtN (MaxKeyDelete l) (MaxKey l) ~ 'True, GtN r (MaxKey l) ~ 'True,
-  ProofIsBSTBalance ('ForkTree (MaxKeyDelete l) (Node (MaxKey l) (MaxValue l)) r), ProofMaxKeyDeleteIsBST l) =>
+  ProofIsBSTBalance' ('ForkTree (MaxKeyDelete l) (Node (MaxKey l) (MaxValue l)) r) (UnbalancedState (Height (MaxKeyDelete l)) (1 + If (Height rl <=? Height rr) (Height rr) (Height rl))),
+  IsBST (Balance' ('ForkTree (MaxKeyDelete l) (Node (MaxKey l) (MaxValue l)) r) (UnbalancedState (Height (MaxKeyDelete l)) (1 + If (Height rl <=? Height rr) (Height rr) (Height rl)))) ~ 'True,
+  ProofMaxKeyDeleteIsBST l) =>
   ProofIsBSTDelete' x ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a1) ('ForkTree rl (Node rn ra) rr)) 'EQ where
   proofIsBSTDelete' _ (ForkITree l@ForkITree{} (Node _) ForkITree{}) _ =
     gcastWith (proofMaxKeyDeleteIsBST l) $
-      gcastWith (proofIsBSTBalance (Proxy::Proxy ('ForkTree (MaxKeyDelete l) (Node (MaxKey l) (MaxValue l)) r))) Refl
+      gcastWith (proofIsBSTBalance' (Proxy::Proxy ('ForkTree (MaxKeyDelete l) (Node (MaxKey l) (MaxValue l)) r)) (Proxy::Proxy (UnbalancedState (Height (MaxKeyDelete l)) (1 + If (Height rl <=? Height rr) (Height rr) (Height rl))))) Refl
 instance ProofIsBSTDelete' x ('ForkTree 'EmptyTree (Node n a1) r) 'LT where
   proofIsBSTDelete' _ (ForkITree EmptyITree (Node _) _) _ = Refl
 instance (IsBST r ~ 'True, GtN r n ~ 'True, LtN ('ForkTree ll (Node ln la) lr) n ~ 'True, ProofIsBSTDelete' x ('ForkTree ll (Node ln la) lr) (CmpNat x ln),
@@ -629,11 +660,14 @@ instance (l ~ 'ForkTree ll (Node ln la) lr, IsBST l ~ 'True) =>
   proofMaxKeyDeleteIsBST (ForkITree ForkITree{} (Node _) EmptyITree) = Refl
 instance (l ~ 'ForkTree ll (Node ln la) lr, IsBST l ~ 'True, LtN l n ~ 'True,
   r ~ 'ForkTree rl (Node rn ra) rr, IsBST r ~ 'True,
-  ProofMaxKeyDeleteIsBST r, MaxKeyDeletable r, ProofGtNMaxKeyDelete r n) =>
+  ProofMaxKeyDeleteIsBST r, MaxKeyDeletable r, ProofGtNMaxKeyDelete r n,
+  ProofIsBSTBalance ('ForkTree l (Node n a) (MaxKeyDelete r))) =>
   ProofMaxKeyDeleteIsBST ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a) ('ForkTree rl (Node rn ra) rr)) where
   proofMaxKeyDeleteIsBST (ForkITree ForkITree{} (Node _) r@ForkITree{}) =
     gcastWith (proofGtNMaxKeyDelete r (Proxy::Proxy n)) $
-      gcastWith (proofMaxKeyDeleteIsBST r) Refl
+      gcastWith (proofMaxKeyDeleteIsBST r) $
+        gcastWith (proofIsBSTBalance (Proxy::Proxy ('ForkTree l (Node n a) (MaxKeyDelete r)))) Refl
+
 
 -- | Prove that in a tree 't' which verifies that 'GtN t n ~ 'True',
 -- | the maximum key of 't' is also greater than 'n'.
@@ -658,9 +692,12 @@ instance (GtN l n ~ 'True) =>
   ProofGtNMaxKeyDelete ('ForkTree l (Node n1 a) 'EmptyTree) n where
   proofGtNMaxKeyDelete (ForkITree _ (Node _) EmptyITree) _ = Refl
 instance (r ~ 'ForkTree rl (Node rn ra) rr, GtN r n ~ 'True,
-  ProofGtNMaxKeyDelete r n, MaxKeyDeletable r) =>
+  ProofGtNMaxKeyDelete r n, MaxKeyDeletable r,
+  ProofGtNBalance ('ForkTree l (Node n1 a) (MaxKeyDelete r)) n) =>
   ProofGtNMaxKeyDelete ('ForkTree l (Node n1 a) ('ForkTree rl (Node rn ra) rr)) n where
-  proofGtNMaxKeyDelete (ForkITree _ (Node _) r@ForkITree{}) pn = gcastWith (proofGtNMaxKeyDelete r pn) Refl
+  proofGtNMaxKeyDelete (ForkITree _ (Node _) r@ForkITree{}) pn =
+    gcastWith (proofGtNMaxKeyDelete r pn) $
+      gcastWith (proofGtNBalance (Proxy::Proxy ('ForkTree l (Node n1 a) (MaxKeyDelete r))) (Proxy::Proxy n)) Refl
 
 -- | Prove that in a tree 't' which verifies that 'LtN t n ~ 'True',
 -- | the maximum key of 't' is also less than 'n'.
@@ -685,9 +722,36 @@ instance (LtN l n ~ 'True) =>
   ProofLtNMaxKeyDelete ('ForkTree l (Node n1 a) 'EmptyTree) n where
   proofLtNMaxKeyDelete (ForkITree _ (Node _) EmptyITree) _ = Refl
 instance (r ~ 'ForkTree rl (Node rn ra) rr, LtN r n ~ 'True,
-  ProofLtNMaxKeyDelete r n, MaxKeyDeletable r) =>
+  ProofLtNMaxKeyDelete r n, MaxKeyDeletable r,
+  ProofLtNBalance ('ForkTree l (Node n1 a) (MaxKeyDelete r)) n) =>
   ProofLtNMaxKeyDelete ('ForkTree l (Node n1 a) ('ForkTree rl (Node rn ra) rr)) n where
-  proofLtNMaxKeyDelete (ForkITree _ (Node _) r@ForkITree{}) pn = gcastWith (proofLtNMaxKeyDelete r pn) Refl
+  proofLtNMaxKeyDelete (ForkITree _ (Node _) r@ForkITree{}) pn =
+    gcastWith (proofLtNMaxKeyDelete r pn) $
+      gcastWith (proofLtNBalance (Proxy::Proxy ('ForkTree l (Node n1 a) (MaxKeyDelete r))) (Proxy::Proxy n)) Refl
+
+
+-- | Prove that deleting the node with maximum key value
+-- | in a BST 't' preserves the BST invariant.
+-- | This proof is needed for the delete operation.
+class ProofMaxKeyDeleteIsAVL (t :: Tree) where
+  proofMaxKeyDeleteIsAVL :: (IsAVL t ~ 'True, MaxKeyDeletable t) =>
+    ITree t -> IsAVL (MaxKeyDelete t) :~: 'True
+instance ProofMaxKeyDeleteIsAVL 'EmptyTree where
+  proofMaxKeyDeleteIsAVL EmptyITree = Refl
+instance ProofMaxKeyDeleteIsAVL ('ForkTree 'EmptyTree (Node n a) 'EmptyTree) where
+  proofMaxKeyDeleteIsAVL (ForkITree EmptyITree (Node _) EmptyITree) = Refl
+instance (l ~ 'ForkTree ll (Node ln la) lr, IsAVL l ~ 'True) =>
+  ProofMaxKeyDeleteIsAVL ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a) 'EmptyTree) where
+  proofMaxKeyDeleteIsAVL (ForkITree ForkITree{} (Node _) EmptyITree) = Refl
+instance (l ~ 'ForkTree ll (Node ln la) lr, IsAVL l ~ 'True, LtN l n ~ 'True,
+  r ~ 'ForkTree rl (Node rn ra) rr, IsAVL r ~ 'True,
+  BalancedHeights (1 + If (Height ll <=? Height lr) (Height lr) (Height ll)) (Height (MaxKeyDelete ('ForkTree rl (Node rn ra) rr))) ~ 'True,
+  ProofMaxKeyDeleteIsAVL r, MaxKeyDeletable r, ProofGtNMaxKeyDelete r n,
+  ProofIsAVLBalance ('ForkTree l (Node n a) (MaxKeyDelete r))) =>
+  ProofMaxKeyDeleteIsAVL ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a) ('ForkTree rl (Node rn ra) rr)) where
+  proofMaxKeyDeleteIsAVL (ForkITree ForkITree{} (Node _) r@ForkITree{}) =
+    gcastWith (proofMaxKeyDeleteIsAVL r) $
+      gcastWith (proofIsAVLBalance (Proxy::Proxy ('ForkTree l (Node n a) (MaxKeyDelete r)))) Refl
 
 
 -- | Prove that deleting a node with key 'x'
