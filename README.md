@@ -38,32 +38,47 @@ balanced-binary-search-tree
     │   Node.hs
     └───AVL
     │   │   FullExtern.hs
+    │   │   Extern.hs
+    │   │   Intern.hs
+    │   │   Unsafe.hs
+    │   │   Invariants.hs
     │   └───FullExtern
     │   │   │   Examples.hs
-    │   │   Extern.hs
     │   └───Extern
-    │   │   │   Operations.hs
-    │   │   │   Proofs.hs
+    │   │   │   Constructor.hs
+    │   │   │   Balance.hs, BalanceProofs.hs
+    │   │   │   Insert.hs, InsertProofs.hs
+    │   │   │   Lookup.hs
+    │   │   │   Delete.hs, DeleteProofs.hs
     │   │   │   Examples.hs
-    │   │   Intern.hs
     │   └───Intern
-    │   │   │   Operations.hs
+    │   │   │   Constructor.hs
+    │   │   │   Balance.hs
+    │   │   │   Insert.hs
+    │   │   │   Lookup.hs
+    │   │   │   Delete.hs
     │   │   │   Examples.hs
-    │   │   Unsafe.hs
     │   └───Unsafe
-    │   │   │   Examples.hs
+    │       │   Examples.hs
     └───BST
         │   FullExtern.hs
+        │   Extern.hs
+        │   Intern.hs
+        │   Invariants.hs
+        │   Utils.hs
         └───FullExtern
         │   │   Examples.hs
-        │   Extern.hs
-        └───Extern
-        │   │   Operations.hs
-        │   │   Proofs.hs
+        │   └───Extern
+        │   │   Constructor.hs
+        │   │   Insert.hs, InsertProofs.hs
+        │   │   Lookup.hs
+        │   │   Delete.hs, DeleteProofs.hs
         │   │   Examples.hs
-        │   Intern.hs
         └───Intern
-            │   Operations.hs
+            │   Constructor.hs
+            │   Insert.hs
+            │   Lookup.hs
+            │   Delete.hs
             │   Examples.hs
 ```
 
@@ -73,11 +88,11 @@ balanced-binary-search-tree
 
 - Structure of `Data/Tree/AVL` and `Data/Tree/BST` is similar.
 
-- `Data/Tree/AVL/Unsafe.hs` contains an unsafe implementation of AVL trees (notice there's not an unsafe implementation of BST only). This code was extracted and refactored from that in `Data/Tree/AVL/Extern/Operations.hs`, 'un-lifting' the type level computations to the value level.
+- `Data/Tree/AVL/Unsafe.hs` contains an unsafe implementation of AVL trees (notice there's not an unsafe implementation of BST only). This code was extracted and refactored from that in `Data/Tree/AVL/Extern/{Balance,Insert,Lookup,Delete}.hs`, 'un-lifting' the type level computations to the value level.
 
 - `FullExtern.hs` contains the implementation of the full externalist approach. It provides functionality for performing operations over trees and checking the invariants at the end.
 
-- `Extern.hs` provides the implementation of BST/AVL trees and its operations for the externalist approach; likewise, `Intern` folder contains the implementation for the internalist approach. Notice that there isn't a `Proofs.hs` inside `Inter`. That's because the proofs and operations in the internalist approach are implemented together (in `Operations.hs`).
+- `Extern.hs` provides the implementation of BST/AVL trees and its operations for the externalist approach; likewise, `Intern` folder contains the implementation for the internalist approach. Notice that there isn't a `*Proofs.hs` inside `Intern`. That's because the proofs and operations in the internalist approach are implemented together (in `{Balance,Insert,Lookup,Delete}.hs`).
 
 - `Unsafe`, `FullExtern`, `Extern`, and `Intern` have an `Examples.hs` with usage examples of the BST/AVL operations.
 
