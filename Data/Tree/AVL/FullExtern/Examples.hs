@@ -11,7 +11,7 @@ import           Data.Proxy               (Proxy (Proxy))
 import           Data.Tree.AVL.FullExtern (AVL (AVL), ITree (EmptyITree),
                                            ProofIsAVL (proofIsAVL), delete,
                                            insert, lookup)
-import           Data.Tree.BST.FullExtern (BST (BST), ProofIsBST (proofIsBST))
+import           Data.Tree.BST.FullExtern (ProofIsBST (proofIsBST))
 import           Data.Tree.Node           (mkNode)
 import           Data.Type.Equality       (gcastWith)
 import           Prelude                  (Bool (False, True), Float, Int, ($))

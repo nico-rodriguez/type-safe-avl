@@ -10,6 +10,8 @@ module Intern.Examples where
 import           Data.Proxy           (Proxy (Proxy))
 import           Data.Tree.BST.Intern (deleteBST, emptyBST, insertBST,
                                        lookupBST)
+import           Prelude              (Bool (False, True), Float, Int, Show,
+                                       String)
 
 p0 :: Proxy 0
 p0 = Proxy

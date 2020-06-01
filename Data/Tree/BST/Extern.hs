@@ -9,17 +9,19 @@ module Data.Tree.BST.Extern (
   deleteBST
 ) where
 
-import           Data.Proxy                      (Proxy)
-import           Data.Tree.BST.Extern.Operations (Deletable (Delete, delete),
-                                                  Insertable (Insert, insert),
-                                                  Lookupable (lookup), Member)
-import           Data.Tree.BST.Extern.Proofs     (BST (BST), ProofIsBSTDelete (proofIsBSTDelete),
-                                                  ProofIsBSTInsert (proofIsBSTInsert))
-import           Data.Tree.ITree                 (ITree (EmptyITree),
-                                                  Tree (EmptyTree, ForkTree))
-import           Data.Tree.Node                  (Node, mkNode)
-import           Data.Type.Equality              (gcastWith)
-import           Prelude                         (Bool (True), ($))
+import           Data.Proxy                        (Proxy)
+import           Data.Tree.BST.Extern.Constructor  (BST (BST))
+import           Data.Tree.BST.Extern.Delete       (Deletable (Delete, delete))
+import           Data.Tree.BST.Extern.DeleteProofs (ProofIsBSTDelete (proofIsBSTDelete))
+import           Data.Tree.BST.Extern.Insert       (Insertable (Insert, insert))
+import           Data.Tree.BST.Extern.InsertProofs (ProofIsBSTInsert (proofIsBSTInsert))
+import           Data.Tree.BST.Extern.Lookup       (Lookupable (lookup))
+import           Data.Tree.BST.Utils               (Member)
+import           Data.Tree.ITree                   (ITree (EmptyITree),
+                                                    Tree (EmptyTree, ForkTree))
+import           Data.Tree.Node                    (Node, mkNode)
+import           Data.Type.Equality                (gcastWith)
+import           Prelude                           (Bool (True), ($))
 
 emptyBST :: BST 'EmptyTree
 emptyBST = BST EmptyITree

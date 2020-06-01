@@ -1,7 +1,6 @@
-{-# LANGUAGE DataKinds             #-}
-{-# LANGUAGE ExplicitNamespaces    #-}
-{-# LANGUAGE GADTs                 #-}
-{-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE DataKinds          #-}
+{-# LANGUAGE ExplicitNamespaces #-}
+{-# LANGUAGE GADTs              #-}
 
 module Data.Tree.BST.Intern (
   emptyBST,
@@ -10,14 +9,15 @@ module Data.Tree.BST.Intern (
   deleteBST
 ) where
 
-import           Data.Proxy                      (Proxy)
-import           Data.Tree.BST.Intern.Operations (BST (EmptyBST),
-                                                  Deletable (Delete, delete),
-                                                  Insertable (Insert, insert),
-                                                  Lookupable (lookup), Member)
-import           Data.Tree.ITree                 (Tree (EmptyTree, ForkTree))
-import           Data.Tree.Node                  (Node, mkNode)
-import           Prelude                         (Bool (True))
+import           Data.Proxy                       (Proxy)
+import           Data.Tree.BST.Intern.Constructor (BST (EmptyBST))
+import           Data.Tree.BST.Intern.Delete      (Deletable (Delete, delete))
+import           Data.Tree.BST.Intern.Insert      (Insertable (Insert, insert))
+import           Data.Tree.BST.Intern.Lookup      (Lookupable (lookup))
+import           Data.Tree.BST.Utils              (Member)
+import           Data.Tree.ITree                  (Tree (EmptyTree, ForkTree))
+import           Data.Tree.Node                   (Node, mkNode)
+import           Prelude                          (Bool (True))
 
 emptyBST :: BST 'EmptyTree
 emptyBST = EmptyBST

@@ -1,7 +1,6 @@
 {-# LANGUAGE DataKinds             #-}
 {-# LANGUAGE ExplicitNamespaces    #-}
 {-# LANGUAGE FlexibleInstances     #-}
-{-# LANGUAGE KindSignatures        #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE ScopedTypeVariables   #-}
 {-# LANGUAGE TypeFamilies          #-}
@@ -9,23 +8,26 @@
 
 module Data.Tree.BST.FullExtern (
   ProofIsBST(proofIsBST),
+  ProofLtN(proofLtN),
+  ProofGtN(proofGtN),
   BST (BST),
   ITree (EmptyITree),
   insert, lookup, delete
 ) where
 
-import           Data.Proxy                      (Proxy (Proxy))
-import           Data.Tree.BST.Extern.Operations (Deletable (delete),
-                                                  Insertable (insert),
-                                                  Lookupable (lookup))
-import           Data.Tree.BST.Extern.Proofs     (BST (BST), GtN, IsBST, LtN)
-import           Data.Tree.ITree                 (ITree (EmptyITree, ForkITree),
-                                                  Tree (EmptyTree, ForkTree))
-import           Data.Tree.Node                  (Node)
-import           Data.Type.Equality              ((:~:) (Refl), gcastWith)
-import           GHC.TypeLits                    (CmpNat, Nat)
-import           Prelude                         (Bool (True),
-                                                  Ordering (GT, LT), ($))
+import           Data.Proxy                       (Proxy (Proxy))
+import           Data.Tree.BST.Extern.Constructor (BST (BST))
+import           Data.Tree.BST.Extern.Delete      (Deletable (delete))
+import           Data.Tree.BST.Extern.Insert      (Insertable (insert))
+import           Data.Tree.BST.Extern.Lookup      (Lookupable (lookup))
+import           Data.Tree.BST.Invariants         (GtN, IsBST, LtN)
+import           Data.Tree.ITree                  (ITree (EmptyITree, ForkITree),
+                                                   Tree (EmptyTree, ForkTree))
+import           Data.Tree.Node                   (Node)
+import           Data.Type.Equality               ((:~:) (Refl), gcastWith)
+import           GHC.TypeLits                     (CmpNat, Nat)
+import           Prelude                          (Bool (True),
+                                                   Ordering (GT, LT), ($))
 
 
 class ProofLtN (t::Tree) (n::Nat) where

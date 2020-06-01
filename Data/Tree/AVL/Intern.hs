@@ -10,14 +10,15 @@ module Data.Tree.AVL.Intern (
   deleteAVL
 ) where
 
-import           Data.Proxy                      (Proxy)
-import           Data.Tree.AVL.Intern.Operations (AVL (EmptyAVL),
-                                                  Deletable (Delete, delete),
-                                                  Insertable (Insert, insert),
-                                                  Lookupable (lookup), Member)
-import           Data.Tree.ITree                 (Tree (EmptyTree, ForkTree))
-import           Data.Tree.Node                  (Node, mkNode)
-import           Prelude                         (Bool (True))
+import           Data.Proxy                       (Proxy)
+import           Data.Tree.AVL.Intern.Constructor (AVL (EmptyAVL))
+import           Data.Tree.AVL.Intern.Delete      (Deletable (Delete, delete))
+import           Data.Tree.AVL.Intern.Insert      (Insertable (Insert, insert))
+import           Data.Tree.AVL.Intern.Lookup      (Lookupable (lookup))
+import           Data.Tree.BST.Utils              (Member)
+import           Data.Tree.ITree                  (Tree (EmptyTree, ForkTree))
+import           Data.Tree.Node                   (Node, mkNode)
+import           Prelude                          (Bool (True))
 
 
 emptyAVL :: AVL 'EmptyTree

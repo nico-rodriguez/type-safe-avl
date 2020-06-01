@@ -10,6 +10,8 @@ module Data.Tree.BST.Extern.Examples where
 import           Data.Proxy           (Proxy (Proxy))
 import           Data.Tree.BST.Extern (deleteBST, emptyBST, insertBST,
                                        lookupBST)
+import           Prelude              (Bool (False, True), Float, Int, Show,
+                                       String)
 
 p0 = Proxy :: Proxy 0
 p1 = Proxy :: Proxy 1
