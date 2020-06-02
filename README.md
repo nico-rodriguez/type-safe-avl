@@ -88,6 +88,8 @@ balanced-binary-search-tree
 
 - Structure of `Data/Tree/AVL` and `Data/Tree/BST` is similar.
 
+- `Data/Tree/{BST,AVL}/Invariants.hs` implements the BST,AVL invariants, like what it means for a tree to be BST,AVL.
+
 - `Data/Tree/AVL/Unsafe.hs` contains an unsafe implementation of AVL trees (notice there's not an unsafe implementation of BST only). This code was extracted and refactored from that in `Data/Tree/AVL/Extern/{Balance,Insert,Lookup,Delete}.hs`, 'un-lifting' the type level computations to the value level.
 
 - `FullExtern.hs` contains the implementation of the full externalist approach. It provides functionality for performing operations over trees and checking the invariants at the end.
