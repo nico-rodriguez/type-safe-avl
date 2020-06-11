@@ -1,9 +1,7 @@
 {-# LANGUAGE DataKinds            #-}
 {-# LANGUAGE ExplicitNamespaces   #-}
-{-# LANGUAGE FlexibleInstances    #-}
 {-# LANGUAGE TypeFamilies         #-}
 {-# LANGUAGE TypeOperators        #-}
-{-# LANGUAGE UndecidableInstances #-}
 
 module Data.Tree.AVL.InvariantsProofs (
     proofBalancedHeightsSym,
@@ -30,15 +28,15 @@ proofBalancedHeightsSym _ _ = unsafeCoerce Refl
 
 -- | The left sub tree of an AVL is also an AVL
 -- | forall (l,r::Tree) (n::Nat) (a::Type), IsAVL ('ForkTree l (Node n a) r) -> IsAVL l
-proofIsAVLLeft :: (IsAVL ('ForkTree l (Node n a) r) ~ 'True) =>
-    Proxy ('ForkTree l (Node n a) r) -> IsAVL l :~: 'True
-proofIsAVLLeft _ = unsafeCoerce Refl
+proofIsAVLLeft ::
+    Proxy ('ForkTree l (Node n a) r) -> IsAVL ('ForkTree l (Node n a) r) :~: 'True -> IsAVL l :~: 'True
+proofIsAVLLeft _ _ = unsafeCoerce Refl
 
 -- | The right sub tree of an AVL is also an AVL
 -- | forall (l,r::Tree) (n::Nat) (a::Type), IsAVL ('ForkTree l (Node n a) r) -> IsAVL r
-proofIsAVLRight :: (IsAVL ('ForkTree l (Node n a) r) ~ 'True) =>
-    Proxy ('ForkTree l (Node n a) r) -> IsAVL r :~: 'True
-proofIsAVLRight _ = unsafeCoerce Refl
+proofIsAVLRight ::
+    Proxy ('ForkTree l (Node n a) r) -> IsAVL ('ForkTree l (Node n a) r) :~: 'True -> IsAVL r :~: 'True
+proofIsAVLRight _ _ = unsafeCoerce Refl
 
 
 -- | The heights of the left and right sub trees of an AVL are balanced
