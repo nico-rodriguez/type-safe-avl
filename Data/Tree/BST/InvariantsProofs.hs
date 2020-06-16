@@ -8,7 +8,8 @@ module Data.Tree.BST.InvariantsProofs (
   proofIsBSTLtN, proofIsBSTGtN,
   proofIsBSTLeftSubTree, proofIsBSTRightSubTree,
   proofLtNLeftSubTree, proofLtNLT, proofLtNRightSubTree,
-  proofGtNLeftSubTree, proofGtNGT, proofGtNRightSubTree
+  proofGtNLeftSubTree, proofGtNGT, proofGtNRightSubTree,
+  proofLtNLTLtN, proofGtNGTGtN
 ) where
 
 import           Data.Proxy         (Proxy)
@@ -89,3 +90,16 @@ proofGtNGT _ _ _ = unsafeCoerce Refl
 proofGtNRightSubTree ::
     Proxy ('ForkTree l (Node n a) r) -> Proxy n' -> GtN ('ForkTree l (Node n a) r) n' :~: 'True -> GtN r n' :~: 'True
 proofGtNRightSubTree _ _ _ = unsafeCoerce Refl
+
+
+-- | If all keys in a tree are lesser than a given Nat n which is lesser than another Nat n',
+-- | then all keys of the tree are lesser than n'
+-- | forall (t::Tree) (n,n'::Nat), LtN t n && CmpNat n n' ~ 'LT -> LtN t n'
+proofLtNLTLtN :: Proxy t -> Proxy n -> Proxy n' -> LtN t n :~: 'True -> CmpNat n n' :~: 'LT -> LtN t n' :~: 'True
+proofLtNLTLtN _ _ _ _ _ = unsafeCoerce Refl
+
+-- | If all keys in a tree are greater than a given Nat n which is greater than another Nat n',
+-- | then all keys of the tree are greater than n'
+-- | forall (t::Tree) (n,n'::Nat), GtN t n && CmpNat n n' ~ 'GT -> GtN t n'
+proofGtNGTGtN :: Proxy t -> Proxy n -> Proxy n' -> GtN t n :~: 'True -> CmpNat n n' :~: 'GT -> GtN t n' :~: 'True
+proofGtNGTGtN _ _ _ _ _ = unsafeCoerce Refl
