@@ -6,17 +6,15 @@
 module Data.Tree.AVL.InvariantsProofs (
     proofBalancedHeightsSym,
     proofAVLBalancedHeights,
-    proofIsAVLLeft, proofIsAVLRight
+    proofIsAVLLeftSubTree, proofIsAVLRightSubTree
 ) where
 
 import           Data.Proxy      (Proxy)
-import           Data.Tree.ITree (Tree (EmptyTree, ForkTree))
+import           Data.Tree.ITree (Tree (ForkTree))
 import           Data.Tree.Node  (Node)
 import           Data.Tree.AVL.Invariants (Height, BalancedHeights, IsAVL)
-import           Data.Type.Bool  (type (&&), If)
 import           Data.Type.Equality ((:~:)(Refl))
-import           GHC.TypeNats    (type (+), type (-), type (<=?), Nat)
-import           Prelude         (Bool (False, True), undefined)
+import           Prelude         (Bool (True))
 import           Unsafe.Coerce   (unsafeCoerce)
 
 
@@ -28,15 +26,15 @@ proofBalancedHeightsSym _ _ = unsafeCoerce Refl
 
 -- | The left sub tree of an AVL is also an AVL
 -- | forall (l,r::Tree) (n::Nat) (a::Type), IsAVL ('ForkTree l (Node n a) r) -> IsAVL l
-proofIsAVLLeft ::
+proofIsAVLLeftSubTree ::
     Proxy ('ForkTree l (Node n a) r) -> IsAVL ('ForkTree l (Node n a) r) :~: 'True -> IsAVL l :~: 'True
-proofIsAVLLeft _ _ = unsafeCoerce Refl
+proofIsAVLLeftSubTree _ _ = unsafeCoerce Refl
 
 -- | The right sub tree of an AVL is also an AVL
 -- | forall (l,r::Tree) (n::Nat) (a::Type), IsAVL ('ForkTree l (Node n a) r) -> IsAVL r
-proofIsAVLRight ::
+proofIsAVLRightSubTree ::
     Proxy ('ForkTree l (Node n a) r) -> IsAVL ('ForkTree l (Node n a) r) :~: 'True -> IsAVL r :~: 'True
-proofIsAVLRight _ _ = unsafeCoerce Refl
+proofIsAVLRightSubTree _ _ = unsafeCoerce Refl
 
 
 -- | The heights of the left and right sub trees of an AVL are balanced
