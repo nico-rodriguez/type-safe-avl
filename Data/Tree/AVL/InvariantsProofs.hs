@@ -1,7 +1,7 @@
-{-# LANGUAGE DataKinds            #-}
-{-# LANGUAGE ExplicitNamespaces   #-}
-{-# LANGUAGE TypeFamilies         #-}
-{-# LANGUAGE TypeOperators        #-}
+{-# LANGUAGE DataKinds          #-}
+{-# LANGUAGE ExplicitNamespaces #-}
+{-# LANGUAGE TypeFamilies       #-}
+{-# LANGUAGE TypeOperators      #-}
 
 module Data.Tree.AVL.InvariantsProofs (
     proofBalancedHeightsSym,
@@ -9,13 +9,13 @@ module Data.Tree.AVL.InvariantsProofs (
     proofIsAVLLeftSubTree, proofIsAVLRightSubTree
 ) where
 
-import           Data.Proxy      (Proxy)
-import           Data.Tree.ITree (Tree (ForkTree))
-import           Data.Tree.Node  (Node)
-import           Data.Tree.AVL.Invariants (Height, BalancedHeights, IsAVL)
-import           Data.Type.Equality ((:~:)(Refl))
-import           Prelude         (Bool (True))
-import           Unsafe.Coerce   (unsafeCoerce)
+import           Data.Proxy               (Proxy)
+import           Data.Tree.AVL.Invariants (BalancedHeights, Height, IsAVL)
+import           Data.Tree.ITree          (Tree (ForkTree))
+import           Data.Tree.Node           (Node)
+import           Data.Type.Equality       ((:~:) (Refl))
+import           Prelude                  (Bool (True))
+import           Unsafe.Coerce            (unsafeCoerce)
 
 
 -- | Symmetry of BalancedHeights

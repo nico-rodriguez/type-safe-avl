@@ -9,8 +9,8 @@ module Data.NatProofs (
 
 import           Data.Proxy      (Proxy)
 import           Data.Type.Equality ((:~:)(Refl))
-import           GHC.TypeNats    (type (+), type (-), type (<=?), Nat, CmpNat)
-import           Prelude         (Bool (False, True), Ordering(LT,GT), undefined)
+import           GHC.TypeNats    (CmpNat)
+import           Prelude         (Ordering(LT,GT))
 import           Unsafe.Coerce   (unsafeCoerce)
 
 

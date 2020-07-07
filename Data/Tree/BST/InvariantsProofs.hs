@@ -1,8 +1,8 @@
-{-# LANGUAGE DataKinds            #-}
-{-# LANGUAGE ExplicitNamespaces   #-}
-{-# LANGUAGE RankNTypes           #-}
-{-# LANGUAGE TypeFamilies         #-}
-{-# LANGUAGE TypeOperators        #-}
+{-# LANGUAGE DataKinds          #-}
+{-# LANGUAGE ExplicitNamespaces #-}
+{-# LANGUAGE RankNTypes         #-}
+{-# LANGUAGE TypeFamilies       #-}
+{-# LANGUAGE TypeOperators      #-}
 
 module Data.Tree.BST.InvariantsProofs (
   proofIsBSTLtN, proofIsBSTGtN,
@@ -12,14 +12,14 @@ module Data.Tree.BST.InvariantsProofs (
   proofLtNLTLtN, proofGtNGTGtN
 ) where
 
-import           Data.Proxy         (Proxy)
-import           Data.Tree.ITree    (Tree (ForkTree))
-import           Data.Tree.Node     (Node)
-import           Data.Tree.BST.Invariants (LtN, GtN, IsBST)
-import           Data.Type.Equality ((:~:)(Refl))
-import           GHC.TypeNats       (CmpNat)
-import           Prelude            (Bool (True), Ordering (GT, LT))
-import           Unsafe.Coerce      (unsafeCoerce)
+import           Data.Proxy               (Proxy)
+import           Data.Tree.BST.Invariants (GtN, IsBST, LtN)
+import           Data.Tree.ITree          (Tree (ForkTree))
+import           Data.Tree.Node           (Node)
+import           Data.Type.Equality       ((:~:) (Refl))
+import           GHC.TypeNats             (CmpNat)
+import           Prelude                  (Bool (True), Ordering (GT, LT))
+import           Unsafe.Coerce            (unsafeCoerce)
 
 
 -- | In a BST, the keys on the left sub tree are lesser than the key of the root
