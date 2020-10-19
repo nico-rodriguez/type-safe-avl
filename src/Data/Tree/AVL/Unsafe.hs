@@ -13,7 +13,7 @@ module Data.Tree.AVL.Unsafe (
 ) where
 
 import           Data.Kind     (Type)
-import           Prelude       (Bool (False, True), Int, Maybe (Just, Nothing),
+import           Prelude       (Int, Maybe (Just, Nothing),
                                 Ordering (EQ, GT, LT), Show, compare, max, ($),
                                 (+), (-))
 import           Unsafe.Coerce (unsafeCoerce)
@@ -35,17 +35,6 @@ emptyAVL = E
 height :: AVL -> Int
 height E                  = 0
 height (F l (Node _ _) r) = 1 + max (height l) (height r)
-
--- | Check if two natural numbers,
--- | that represent the heights of some left and right sub trees,
--- | differ at most in one (i.e., the tree is balanced).
-balancedHeights :: Int -> Int -> Bool
-balancedHeights 0   0   = True
-balancedHeights 1   0   = True
-balancedHeights _h1 0   = False
-balancedHeights 0   1   = True
-balancedHeights 0   _h2 = False
-balancedHeights h1  h2  = balancedHeights (h1-1) (h2-1)
 
 
 -- | Data type that represents the state of unbalance of the sub trees:
@@ -113,15 +102,15 @@ rotate (F l xnode (F (F rll rlnode rlr) rnode rr)) RightUnbalanced LeftHeavy =
 -- | If the key is already present in the tree, update the value.
 insertAVL :: Show a => Int -> a -> AVL -> AVL
 insertAVL x v E                    = F E (Node x v) E
-insertAVL x' v' t@(F _ (Node x v) _) = insertAVL' (Node x' v') t (compare x' x)
+insertAVL x' v' t@(F _ (Node x _) _) = insertAVL' (Node x' v') t (compare x' x)
 
 insertAVL' :: Node -> AVL -> Ordering -> AVL
 insertAVL' (Node x v') (F l (Node _ _) r) EQ = F l (Node x v') r
 insertAVL' n' (F E n r) LT = balance (F (F E n' E) n r)
-insertAVL' n'@(Node x v) (F l@(F ll (Node ln lv) lr) n r) _ =
+insertAVL' n'@(Node x _) (F l@(F _ (Node ln _) _) n r) _ =
     balance (F (insertAVL' n' l (compare x ln)) n r)
-insertAVL' n'@(Node x v) (F l n E) GT = balance (F l n (F E n' E))
-insertAVL' n'@(Node x v) (F l n r@(F rl (Node rn rv) rr)) GT =
+insertAVL' n'@(Node _ _) (F l n E) GT = balance (F l n (F E n' E))
+insertAVL' n'@(Node x _) (F l n r@(F _ (Node rn _) _)) GT =
     balance (F l n (insertAVL' n' r (compare x rn)))
 
 
@@ -134,7 +123,7 @@ lookupAVL x t@(F _ (Node n _) _) = lookupAVL' x t (compare x n)
 
 lookupAVL' :: Int -> AVL -> Ordering -> Maybe a
 lookupAVL' _ E                             _  = Nothing
-lookupAVL' _ (F _ n@(Node _ v) _)          EQ = unsafeCoerce $ Just v
+lookupAVL' _ (F _ (Node _ v) _)            EQ = unsafeCoerce $ Just v
 lookupAVL' x (F l@(F _ (Node ln _) _) _ _) LT = lookupAVL' x l (compare x ln)
 lookupAVL' x (F _ _ r@(F _ (Node rn _) _)) GT = lookupAVL' x r (compare x rn)
 
@@ -154,12 +143,6 @@ maxNode E                      = Nothing
 maxNode (F _ n@(Node _ _) E)   = Just n
 maxNode (F _ (Node _ _) r@F{}) = maxNode r
 
--- | Get the node with maximum key value.
--- | It returns Nothing if tree is empty.
-maxKey :: AVL -> Maybe Int
-maxKey E                      = Nothing
-maxKey (F _ n@(Node x _) E)   = Just x
-maxKey (F _ (Node _ _) r@F{}) = maxKey r
 
 -- | Delete the node with the given key.
 -- | If the key is not in the tree, return the same tree.
@@ -172,9 +155,8 @@ deleteAVL' _ (F E (Node _ _) E)       EQ = E
 deleteAVL' _ (F E (Node _ _) r@F{})     EQ = r
 deleteAVL' _ (F l@F{} (Node _ _) E)     EQ = l
 deleteAVL' _ (F l@F{} (Node _ _) r@F{}) EQ =
-    balance $ F (deleteAVL mKey l) mNode r
+    balance $ F (maxKeyDelete l) mNode r
     where Just mNode = maxNode l
-          Just mKey = maxKey l
 deleteAVL' _ t@(F E (Node _ _) _)             LT = t
 deleteAVL' x (F l@(F _ (Node ln _) _) node r) LT = balance $ F (deleteAVL' x l (compare x ln)) node r
 deleteAVL' _ t@(F _ (Node _ _) E)             GT = t
