@@ -14,8 +14,8 @@ module Data.Tree.AVL.Unsafe (
 
 import           Data.Kind     (Type)
 import           Prelude       (Int, Maybe (Just, Nothing),
-                                Ordering (EQ, GT, LT), Show, compare, max, ($),
-                                (+), (-))
+                                Ordering (EQ, GT, LT), Show,
+                                compare, max, ($), (+), (-))
 import           Unsafe.Coerce (unsafeCoerce)
 
 
@@ -24,9 +24,9 @@ data Node :: Type where
 deriving instance Show Node
 
 data AVL :: Type where
-    E :: AVL
-    F :: AVL -> Node -> AVL -> AVL
-    deriving Show
+  E :: AVL
+  F :: AVL -> Node -> AVL -> AVL
+  deriving Show
 
 emptyAVL :: AVL
 emptyAVL = E
@@ -78,18 +78,20 @@ balance t@(F l (Node _ _) r) = balance' t (unbalancedState (height l) (height r)
 
 balance' :: AVL -> US -> AVL
 balance' t@(F _ (Node _ _) _) NotUnbalanced = t
-balance' t@(F (F ll (Node _ _) lr) (Node _ _) _) LeftUnbalanced = rotate t LeftUnbalanced (balancedState (height ll) (height lr))
-balance' t@(F _ (Node _ _) (F rl (Node _ _) rr)) RightUnbalanced = rotate t RightUnbalanced (balancedState (height rl) (height rr))
+balance' t@(F (F ll (Node _ _) lr) (Node _ _) _) LeftUnbalanced  =
+  rotate t LeftUnbalanced (balancedState (height ll) (height lr))
+balance' t@(F _ (Node _ _) (F rl (Node _ _) rr)) RightUnbalanced =
+  rotate t RightUnbalanced (balancedState (height rl) (height rr))
 
 
 -- | Apply a rotation to a tree.
 rotate :: AVL -> US -> BS -> AVL
 -- | Left-Left case (Right rotation)
 rotate (F (F ll lnode lr) xnode r) LeftUnbalanced LeftHeavy = F ll lnode (F lr xnode r)
-rotate (F (F ll lnode lr) xnode r) LeftUnbalanced Balanced = F ll lnode (F lr xnode r)
+rotate (F (F ll lnode lr) xnode r) LeftUnbalanced Balanced  = F ll lnode (F lr xnode r)
 -- | Right-Right case (Left rotation)
 rotate (F l xnode (F rl rnode rr)) RightUnbalanced RightHeavy = F (F l xnode rl) rnode rr
-rotate (F l xnode (F rl rnode rr)) RightUnbalanced Balanced = F (F l xnode rl) rnode rr
+rotate (F l xnode (F rl rnode rr)) RightUnbalanced Balanced   = F (F l xnode rl) rnode rr
 -- | Left-Right case (First left rotation, then right rotation)
 rotate (F (F ll lnode (F lrl lrnode lrr)) xnode r) LeftUnbalanced RightHeavy =
     F (F ll lnode lrl) lrnode (F lrr xnode r)
@@ -108,10 +110,10 @@ insertAVL' :: Node -> AVL -> Ordering -> AVL
 insertAVL' (Node x v') (F l (Node _ _) r) EQ = F l (Node x v') r
 insertAVL' n' (F E n r) LT = balance (F (F E n' E) n r)
 insertAVL' n'@(Node x _) (F l@(F _ (Node ln _) _) n r) _ =
-    balance (F (insertAVL' n' l (compare x ln)) n r)
+  balance (F (insertAVL' n' l (compare x ln)) n r)
 insertAVL' n'@(Node _ _) (F l n E) GT = balance (F l n (F E n' E))
 insertAVL' n'@(Node x _) (F l n r@(F _ (Node rn _) _)) GT =
-    balance (F l n (insertAVL' n' r (compare x rn)))
+  balance (F l n (insertAVL' n' r (compare x rn)))
 
 
 -- | Lookup the given key in the tree.
@@ -133,7 +135,7 @@ maxKeyDelete :: AVL -> AVL
 maxKeyDelete E                  = E
 maxKeyDelete (F l (Node _ _) E) = l
 maxKeyDelete (F l node r@F{})   =
-    balance $ F l node (maxKeyDelete r)
+  balance $ F l node (maxKeyDelete r)
 
 
 -- | Get the node with maximum key value.
@@ -151,13 +153,15 @@ deleteAVL _ E                    = E
 deleteAVL x t@(F _ (Node n _) _) = deleteAVL' x t (compare x n)
 
 deleteAVL' :: Int -> AVL -> Ordering -> AVL
-deleteAVL' _ (F E (Node _ _) E)       EQ = E
+deleteAVL' _ (F E (Node _ _) E)         EQ = E
 deleteAVL' _ (F E (Node _ _) r@F{})     EQ = r
 deleteAVL' _ (F l@F{} (Node _ _) E)     EQ = l
 deleteAVL' _ (F l@F{} (Node _ _) r@F{}) EQ =
-    balance $ F (maxKeyDelete l) mNode r
+  balance $ F (maxKeyDelete l) mNode r
     where Just mNode = maxNode l
 deleteAVL' _ t@(F E (Node _ _) _)             LT = t
-deleteAVL' x (F l@(F _ (Node ln _) _) node r) LT = balance $ F (deleteAVL' x l (compare x ln)) node r
+deleteAVL' x (F l@(F _ (Node ln _) _) node r) LT =
+  balance $ F (deleteAVL' x l (compare x ln)) node r
 deleteAVL' _ t@(F _ (Node _ _) E)             GT = t
-deleteAVL' x (F l node r@(F _ (Node rn _) _)) GT = balance $ F l node (deleteAVL' x r (compare x rn))
+deleteAVL' x (F l node r@(F _ (Node rn _) _)) GT =
+  balance $ F l node (deleteAVL' x r (compare x rn))
