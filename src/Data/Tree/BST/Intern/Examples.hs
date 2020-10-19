@@ -5,7 +5,7 @@
 {-# OPTIONS_GHC -Wno-missing-exported-signatures #-}
 
 
-module Intern.Examples where
+module Data.Tree.BST.Intern.Examples where
 
 import           Data.Proxy           (Proxy (Proxy))
 import           Data.Tree.BST.Intern (deleteBST, emptyBST, insertBST,
