@@ -38,7 +38,7 @@ instance ProofIsAVL 'EmptyTree where
 instance (BalancedHeights (Height l) (Height r) ~ 'True, ProofLtN l n, ProofGtN r n, ProofIsAVL l, ProofIsAVL r) =>
   ProofIsAVL ('ForkTree l (Node n a) r) where
   proofIsAVL (ForkITree l _ r) =
-    gcastWith (proofLtN l (Proxy::Proxy n)) $
-      gcastWith (proofGtN r (Proxy::Proxy n)) $
-        gcastWith (proofIsAVL r) $
-          gcastWith (proofIsAVL l) Refl
+    gcastWith (proofLtN l (Proxy::Proxy n)) $ -- GtN l n ~ 'True
+    gcastWith (proofGtN r (Proxy::Proxy n)) $ -- GtN r n ~ 'True
+    gcastWith (proofIsAVL r) $                -- IsAVL r ~ 'True
+    gcastWith (proofIsAVL l) Refl             -- IsAVL l ~ 'True
