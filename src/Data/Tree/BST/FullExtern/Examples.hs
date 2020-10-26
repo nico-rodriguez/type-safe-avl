@@ -10,10 +10,8 @@ module Data.Tree.BST.FullExtern.Examples where
 
 import           Data.Proxy               (Proxy (Proxy))
 import           Data.Tree.BST.FullExtern (BST (BST), ITree (EmptyITree),
-                                           ProofIsBST (proofIsBST), delete,
-                                           insert, lookup)
+                                           delete, insert, lookup)
 import           Data.Tree.Node           (mkNode)
-import           Data.Type.Equality       (gcastWith)
 import           Prelude                  (Bool (False, True), Float, Int, ($))
 
 
@@ -29,9 +27,12 @@ p7 = Proxy :: Proxy 7
 
 emptyTree = EmptyITree
 
-bst = gcastWith (proofIsBST t) $ BST t
-    where
-        t = insert (mkNode p4 'f') $ insert (mkNode p2 (4::Int)) $ insert (mkNode p6 "lala") $ insert (mkNode p3 True) $ insert (mkNode p5 ([1,2,3]::[Int])) $ insert (mkNode p0 (1.8::Float)) $ insert (mkNode p7 [False]) emptyTree
+bst = BST t
+  where
+    t = insert (mkNode p4 'f') $ insert (mkNode p2 (4::Int)) $
+        insert (mkNode p6 "lala") $ insert (mkNode p3 True) $
+        insert (mkNode p5 ([1,2,3]::[Int])) $ insert (mkNode p0 (1.8::Float)) $
+        insert (mkNode p7 [False]) emptyTree
 
 l1 = case bst of
     BST t -> lookup p6 t
@@ -41,6 +42,7 @@ l1 = case bst of
 --     BST t -> lookup p1 t
 
 bst2 = case bst of
-    BST t -> gcastWith (proofIsBST t') $ BST t'
-                where
-                    t' = delete p7 $ delete p4 $ delete p1 $ delete p0 $ delete p2 $ delete p6 $ delete p5 $ delete p3 t
+  BST t -> BST t'
+    where
+      t' =  delete p7 $ delete p4 $ delete p1 $ delete p0 $
+            delete p2 $ delete p6 $ delete p5 $ delete p3 t
