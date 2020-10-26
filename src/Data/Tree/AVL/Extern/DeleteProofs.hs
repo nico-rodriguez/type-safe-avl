@@ -24,7 +24,7 @@ import           Data.Tree.AVL.Extern.Constructor   (AVL (AVL))
 import           Data.Tree.AVL.Extern.Delete        (Deletable (Delete),
                                                      Deletable' (Delete'),
                                                      MaxKeyDeletable (MaxKeyDelete))
-import           Data.Tree.AVL.Invariants           (Height, IsAVL)
+import           Data.Tree.AVL.Invariants           (IsAVL)
 
 import           Data.Tree.AVL.InvariantsProofs     (proofIsAVLLeftSubTree,
                                                      proofIsAVLRightSubTree)
