@@ -54,7 +54,6 @@ extra-source-files:
 library
     -- Modules exported by the library.
     exposed-modules:
-        Data.NatProofs
         Data.Tree.ITree
         Data.Tree.Node
         Data.Tree.BST.Extern
@@ -62,7 +61,6 @@ library
         Data.Tree.BST.Intern
         Data.Tree.BST.Invariants
         Data.Tree.BST.Utils
-        Data.Tree.BST.InvariantsProofs
         Data.Tree.BST.Intern.Delete
         Data.Tree.BST.Intern.Constructor
         Data.Tree.BST.Intern.Insert
@@ -80,7 +78,6 @@ library
         Data.Tree.AVL.FullExtern
         Data.Tree.AVL.Intern
         Data.Tree.AVL.Invariants
-        Data.Tree.AVL.InvariantsProofs
         Data.Tree.AVL.Unsafe
         Data.Tree.AVL.Unsafe.Examples
         Data.Tree.AVL.Intern.Balance

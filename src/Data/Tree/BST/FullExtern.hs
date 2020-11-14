@@ -7,12 +7,12 @@
 {-# LANGUAGE TypeOperators         #-}
 
 module Data.Tree.BST.FullExtern (
-  BST (BST),
+  BST (BST), mkBST,
   ITree (EmptyITree),
   insert, lookup, delete
 ) where
 
-import           Data.Tree.BST.Extern.Constructor (BST (BST))
+import           Data.Tree.BST.Extern.Constructor (BST (BST), mkBST)
 import           Data.Tree.BST.Extern.Delete      (Deletable (delete))
 import           Data.Tree.BST.Extern.Insert      (Insertable (insert))
 import           Data.Tree.BST.Extern.Lookup      (Lookupable (lookup))

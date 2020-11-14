@@ -29,7 +29,7 @@ class Insertable (x :: Nat) (a :: Type) (t :: Tree) where
   insert :: Node x a -> ITree t -> ITree (Insert x a t)
 instance Show a => Insertable x a 'EmptyTree where
   type Insert x a 'EmptyTree = 'ForkTree 'EmptyTree (Node x a) 'EmptyTree
-  insert (Node a) EmptyITree         = ForkITree EmptyITree (Node a::Node x a) EmptyITree
+  insert (Node a) EmptyITree = ForkITree EmptyITree (Node a::Node x a) EmptyITree
 instance Insertable' x a ('ForkTree l (Node n a1) r) (CmpNat x n) => Insertable x a ('ForkTree l (Node n a1) r) where
   type Insert x a ('ForkTree l (Node n a1) r) = Insert' x a ('ForkTree l (Node n a1) r) (CmpNat x n)
   insert n t = insert' n t (Proxy::Proxy (CmpNat x n))
