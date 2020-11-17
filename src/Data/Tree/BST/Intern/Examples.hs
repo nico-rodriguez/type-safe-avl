@@ -1,7 +1,11 @@
 {-# LANGUAGE DataKinds          #-}
+{-# LANGUAGE DerivingStrategies #-}
 {-# LANGUAGE ExplicitNamespaces #-}
 
+{-# LANGUAGE Safe               #-}
+
 {-# OPTIONS_GHC -Wno-missing-signatures #-}
+{-# OPTIONS_GHC -Wno-missing-export-lists #-}
 {-# OPTIONS_GHC -Wno-missing-exported-signatures #-}
 
 
@@ -41,7 +45,7 @@ bst6 = insertBST p0 (1.8::Float) bst5
 bst7 = insertBST p7 [False] bst6
 
 data SomeData = SD
-  deriving (Show)
+  deriving stock (Show)
 
 bst8 = insertBST p7 SD bst7
 

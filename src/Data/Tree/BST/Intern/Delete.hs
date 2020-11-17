@@ -8,6 +8,8 @@
 {-# LANGUAGE TypeOperators         #-}
 {-# LANGUAGE UndecidableInstances  #-}
 
+{-# LANGUAGE Safe                  #-}
+
 module Data.Tree.BST.Intern.Delete (
   Deletable(Delete, delete)
 ) where

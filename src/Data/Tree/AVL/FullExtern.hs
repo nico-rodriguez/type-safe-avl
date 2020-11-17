@@ -6,13 +6,15 @@
 {-# LANGUAGE TypeFamilies          #-}
 {-# LANGUAGE TypeOperators         #-}
 
+{-# LANGUAGE Safe                  #-}
+
 module Data.Tree.AVL.FullExtern (
-  AVL (AVL),
+  AVL (AVL), mkAVL,
   ITree (EmptyITree),
   insert, lookup, delete
 ) where
 
-import           Data.Tree.AVL.Extern.Constructor (AVL (AVL))
+import           Data.Tree.AVL.Extern.Constructor (AVL (AVL), mkAVL)
 import           Data.Tree.AVL.Extern.Delete      (Deletable (delete))
 import           Data.Tree.AVL.Extern.Insert      (Insertable (insert))
 import           Data.Tree.BST.Extern.Lookup      (Lookupable (lookup))

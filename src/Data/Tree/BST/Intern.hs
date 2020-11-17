@@ -2,6 +2,8 @@
 {-# LANGUAGE ExplicitNamespaces #-}
 {-# LANGUAGE GADTs              #-}
 
+{-# LANGUAGE Safe               #-}
+
 module Data.Tree.BST.Intern (
   emptyBST,
   insertBST,

@@ -8,6 +8,8 @@
 {-# LANGUAGE TypeOperators         #-}
 {-# LANGUAGE UndecidableInstances  #-}
 
+{-# LANGUAGE Safe                  #-}
+
 module Data.Tree.BST.Extern.InsertProofs (
   ProofIsBSTInsert(proofIsBSTInsert)
 ) where
@@ -17,7 +19,7 @@ import           Data.Proxy                       (Proxy (Proxy))
 import           Data.Tree.BST.Extern.Constructor (BST (BST))
 import           Data.Tree.BST.Extern.Insert      (Insertable (Insert),
                                                    Insertable' (Insert'))
-import           Data.Tree.BST.Invariants         (GtN, LtN, IsBSTT(..))
+import           Data.Tree.BST.Invariants         (GtN, LtN, IsBSTT(EmptyIsBSTT,ForkIsBSTT))
 import           Data.Tree.ITree                  (Tree (EmptyTree, ForkTree))
 import           Data.Tree.Node                   (Node)
 import           Data.Type.Equality               ((:~:) (Refl), gcastWith)

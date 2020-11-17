@@ -7,6 +7,8 @@
 {-# LANGUAGE TypeFamilies          #-}
 {-# LANGUAGE UndecidableInstances  #-}
 
+{-# LANGUAGE Safe                  #-}
+
 module Data.Tree.AVL.Extern.Insert (
   Insertable(Insert,insert), Insertable'(Insert')
 ) where

@@ -2,6 +2,8 @@
 {-# LANGUAGE GADTs          #-}
 {-# LANGUAGE KindSignatures #-}
 
+{-# LANGUAGE Safe           #-}
+
 module Data.Tree.ITree (
   Tree(EmptyTree,ForkTree),
   ITree(EmptyITree,ForkITree))

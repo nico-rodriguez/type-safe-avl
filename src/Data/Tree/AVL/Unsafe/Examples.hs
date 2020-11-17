@@ -1,7 +1,10 @@
 {-# LANGUAGE DataKinds          #-}
 {-# LANGUAGE ExplicitNamespaces #-}
 
+{-# LANGUAGE Safe               #-}
+
 {-# OPTIONS_GHC -Wno-missing-signatures #-}
+{-# OPTIONS_GHC -Wno-missing-export-lists #-}
 {-# OPTIONS_GHC -Wno-missing-exported-signatures #-}
 
 
@@ -10,6 +13,7 @@ module Data.Tree.AVL.Unsafe.Examples where
 import           Data.Proxy           (Proxy (Proxy))
 import           Data.Tree.AVL.Unsafe (deleteAVL, emptyAVL, insertAVL,
                                        lookupAVL)
+import           Prelude              (Int, Float, Maybe, Bool(True,False))
 
 p0 = Proxy :: Proxy 0
 p1 = Proxy :: Proxy 1
@@ -33,9 +37,11 @@ avlt8 = insertAVL 75 'a' avlt7
 avlt9 = insertAVL 80 'a' avlt8
 avlt10 = insertAVL 90 'a' avlt9
 
-l1' = lookupAVL 30 avlt8
+l1 :: Maybe a
+l1 = lookupAVL 30 avlt8
 
 -- | Nothing: key 10 is not in the tree avlt8
+n :: Maybe a
 n = lookupAVL 10 avlt8
 
 avlt11 = deleteAVL 20 avlt8

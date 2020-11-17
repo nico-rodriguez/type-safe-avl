@@ -4,6 +4,8 @@
 {-# LANGUAGE TypeOperators        #-}
 {-# LANGUAGE UndecidableInstances #-}
 
+{-# LANGUAGE Safe                 #-}
+
 module Data.Tree.BST.Utils (
   Member,
   LookupValueType

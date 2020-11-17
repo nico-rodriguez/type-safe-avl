@@ -7,6 +7,8 @@
 {-# LANGUAGE TypeOperators        #-}
 {-# LANGUAGE UndecidableInstances #-}
 
+{-# LANGUAGE Safe                 #-}
+
 module Data.Tree.BST.Invariants (
   LtN, GtN, IsBST, IsBSTT(..), IsBSTC(..)
 ) where
@@ -48,6 +50,6 @@ class IsBSTC (t :: Tree) where
 
 instance IsBSTC 'EmptyTree where
   isBSTT = EmptyIsBSTT
-instance (IsBSTC l, IsBSTC r, LtN l n ~ 'True, GtN r n ~ 'True)
-  => IsBSTC ('ForkTree l (Node n a) r) where
+instance (IsBSTC l, IsBSTC r, LtN l n ~ 'True, GtN r n ~ 'True) =>
+  IsBSTC ('ForkTree l (Node n a) r) where
   isBSTT = ForkIsBSTT isBSTT (undefined::Node n a) isBSTT

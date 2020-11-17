@@ -28,7 +28,7 @@ homepage:
     https://github.com/nico-rodriguez/balanced-binary-search-tree
 
 -- A URL where users can report bugs.
--- bug-reports:
+bug-reports: https://github.com/nico-rodriguez/balanced-binary-search-tree/issues
 
 -- The license under which the package is released.
 license:            GPL-3.0-only
@@ -41,6 +41,9 @@ author:             Nicolás Rodríguez
 
 -- An email address to which users can send suggestions, bug reports, and patches.
 maintainer:         18080513+nico-rodriguez@users.noreply.github.com
+
+-- The stability level of the package, e.g. alpha, experimental, provisional, stable.
+stability:          stable
 
 -- A copyright notice.
 -- copyright:
@@ -102,9 +105,9 @@ library
     -- LANGUAGE extensions used by modules in this package.
     other-extensions:
         DataKinds ExplicitNamespaces TypeFamilies TypeOperators GADTs
-        KindSignatures StandaloneDeriving MultiParamTypeClasses
+        KindSignatures Safe StandaloneDeriving MultiParamTypeClasses
         FlexibleInstances ScopedTypeVariables UndecidableInstances
-        RankNTypes FlexibleContexts
+        RankNTypes FlexibleContexts Trustworthy DerivingStrategies
 
     -- Other library packages from which modules are imported.
     build-depends:    base ^>=4.14.1.0
@@ -114,3 +117,5 @@ library
 
     -- Base language which the package is written in.
     default-language: Haskell2010
+
+    --ghc-options: -Wall -Weverything

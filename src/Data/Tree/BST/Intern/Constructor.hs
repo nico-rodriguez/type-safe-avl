@@ -3,6 +3,8 @@
 {-# LANGUAGE GADTs              #-}
 {-# LANGUAGE TypeFamilies       #-}
 
+{-# LANGUAGE Safe               #-}
+
 module Data.Tree.BST.Intern.Constructor (
   BST(EmptyBST,ForkBST),
 ) where

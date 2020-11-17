@@ -1,7 +1,10 @@
 {-# LANGUAGE DataKinds          #-}
 {-# LANGUAGE ExplicitNamespaces #-}
 
+{-# LANGUAGE Safe               #-}
+
 {-# OPTIONS_GHC -Wno-missing-signatures #-}
+{-# OPTIONS_GHC -Wno-missing-export-lists #-}
 {-# OPTIONS_GHC -Wno-missing-exported-signatures #-}
 
 
@@ -33,6 +36,7 @@ avlt7 = insertAVL (Proxy::Proxy 70) [False] avlt6
 avlt8 = insertAVL (Proxy::Proxy 75) 'a' avlt7
 avlt9 = insertAVL (Proxy::Proxy 80) 'a' avlt8
 avlt10 = insertAVL (Proxy::Proxy 90) 'a' avlt9
+
 l1' :: String
 l1' = lookupAVL (Proxy::Proxy 30) avlt8
 

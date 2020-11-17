@@ -7,6 +7,8 @@
 {-# LANGUAGE TypeFamilies          #-}
 {-# LANGUAGE UndecidableInstances  #-}
 
+{-# LANGUAGE Safe                  #-}
+
 module Data.Tree.AVL.Intern.Lookup (
   Lookupable(lookup)
 ) where

@@ -2,6 +2,8 @@
 {-# LANGUAGE GADTs                 #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 
+{-# LANGUAGE Safe                  #-}
+
 module Data.Tree.BST.Extern (
   emptyBST,
   insertBST,

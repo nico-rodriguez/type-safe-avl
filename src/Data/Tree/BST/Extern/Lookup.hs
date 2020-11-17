@@ -7,6 +7,8 @@
 {-# LANGUAGE TypeFamilies          #-}
 {-# LANGUAGE UndecidableInstances  #-}
 
+{-# LANGUAGE Safe                  #-}
+
 module Data.Tree.BST.Extern.Lookup (
   Lookupable(lookup)
 ) where

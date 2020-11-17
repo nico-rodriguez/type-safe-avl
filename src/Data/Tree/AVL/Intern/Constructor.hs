@@ -3,6 +3,8 @@
 {-# LANGUAGE GADTs              #-}
 {-# LANGUAGE TypeFamilies       #-}
 
+{-# LANGUAGE Safe               #-}
+
 module Data.Tree.AVL.Intern.Constructor (
   AVL(EmptyAVL,ForkAVL),
   AlmostAVL(NullAVL, AlmostAVL)

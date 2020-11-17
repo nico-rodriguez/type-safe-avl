@@ -8,6 +8,8 @@
 {-# LANGUAGE TypeOperators         #-}
 {-# LANGUAGE UndecidableInstances  #-}
 
+{-# LANGUAGE Safe                  #-}
+
 module Data.Tree.AVL.Intern.Insert (
   Insertable(Insert,insert)
 ) where
@@ -20,10 +22,6 @@ import           Data.Tree.AVL.Intern.Balance     (Balanceable (Balance, balance
 import           Data.Tree.AVL.Intern.Constructor (AVL (EmptyAVL, ForkAVL),
                                                    AlmostAVL (AlmostAVL))
 import           Data.Tree.BST.Invariants         (GtN, LtN)
-import           Data.Tree.BST.InvariantsProofs   (proofGtNLeftSubTree,
-                                                   proofGtNRightSubTree,
-                                                   proofLtNLeftSubTree,
-                                                   proofLtNRightSubTree)
 import           Data.Tree.ITree                  (Tree (EmptyTree, ForkTree))
 import           Data.Tree.Node                   (Node (Node))
 import           Data.Type.Equality               ((:~:) (Refl), gcastWith)
@@ -43,28 +41,32 @@ class ProofLtNInsert' (x :: Nat) (a :: Type) (t :: Tree) (n :: Nat) (o :: Orderi
 instance (CmpNat x n1 ~ 'EQ) =>
   ProofLtNInsert' x a ('ForkTree l (Node n1 a1) r) n 'EQ where
   proofLtNInsert' _ ForkAVL{} _ _ = Refl
-instance (CmpNat x n1 ~ 'LT, ProofLtNBalance ('ForkTree ('ForkTree 'EmptyTree (Node x a) 'EmptyTree) (Node n1 a1) r) n) =>
+instance (CmpNat x n1 ~ 'LT, ProofLtNBalance ('ForkTree ('ForkTree 'EmptyTree (Node x a) 'EmptyTree) (Node n1 a1) r) n, Show a) =>
   ProofLtNInsert' x a ('ForkTree 'EmptyTree (Node n1 a1) r) n 'LT where
-  proofLtNInsert' _ (ForkAVL EmptyAVL _ _) pn _ =
-    gcastWith (proofLtNBalance (Proxy::Proxy ('ForkTree ('ForkTree 'EmptyTree (Node x a) 'EmptyTree) (Node n1 a1) r)) pn) Refl
-instance (CmpNat x n1 ~ 'LT, l ~ 'ForkTree ll (Node ln lna) lr,
-  ProofLtNInsert' x a l n (CmpNat x ln), ProofLtNBalance ('ForkTree (Insert' x a l (CmpNat x ln)) (Node n1 a1) r) n) =>
+  proofLtNInsert' node (ForkAVL _ node' r) pn _ =
+    gcastWith (proofLtNBalance (AlmostAVL (ForkAVL EmptyAVL node EmptyAVL) node' r) pn) Refl
+instance (CmpNat x n1 ~ 'LT, l ~ 'ForkTree ll (Node ln lna) lr, o ~ CmpNat x ln, LtN l n ~ 'True, ProofLtNInsert' x a l n1 o,
+  ProofLtNInsert' x a l n o, ProofLtNBalance ('ForkTree (Insert' x a l o) (Node n1 a1) r) n, Insertable x a l) =>
   ProofLtNInsert' x a ('ForkTree ('ForkTree ll (Node ln lna) lr) (Node n1 a1) r) n 'LT where
-  proofLtNInsert' node (ForkAVL l@ForkAVL{} _ _) pn _ =
-    gcastWith (proofLtNLeftSubTree (Proxy::Proxy ('ForkTree l (Node n1 a1) r)) pn Refl) $
-    gcastWith (proofLtNInsert' node l pn (Proxy::Proxy (CmpNat x ln))) $
-    gcastWith (proofLtNBalance (Proxy::Proxy ('ForkTree (Insert' x a l (CmpNat x ln)) (Node n1 a1) r)) pn) Refl
-instance (CmpNat x n1 ~ 'GT, ProofLtNBalance ('ForkTree l (Node n1 a1) ('ForkTree 'EmptyTree (Node x a) 'EmptyTree)) n) =>
+  proofLtNInsert' node (ForkAVL l node' r) pn _ =
+    gcastWith (proofLtNInsert' node l pn (Proxy::Proxy o)) $
+    gcastWith (proofLtNInsert' node l (Proxy::Proxy n1) (Proxy::Proxy o)) $
+    gcastWith (proofLtNBalance (AlmostAVL l' node' r) pn) Refl
+      where
+        l' = insert node l
+instance (CmpNat x n1 ~ 'GT, ProofLtNBalance ('ForkTree l (Node n1 a1) ('ForkTree 'EmptyTree (Node x a) 'EmptyTree)) n, Show a) =>
   ProofLtNInsert' x a ('ForkTree l (Node n1 a1) 'EmptyTree) n 'GT where
-  proofLtNInsert' _ (ForkAVL _ _ EmptyAVL) pn _ =
-    gcastWith (proofLtNBalance (Proxy::Proxy ('ForkTree l (Node n1 a1) ('ForkTree 'EmptyTree (Node x a) 'EmptyTree))) pn) Refl
-instance (CmpNat x n1 ~ 'GT, r ~ 'ForkTree rl (Node rn rna) rr, ProofLtNInsert' x a r n (CmpNat x rn),
-  ProofLtNBalance ('ForkTree l (Node n1 a1) (Insert' x a ('ForkTree rl (Node rn rna) rr) (CmpNat x rn))) n) =>
+  proofLtNInsert' node (ForkAVL l node' _) pn _ =
+    gcastWith (proofLtNBalance (AlmostAVL l node' (ForkAVL EmptyAVL node EmptyAVL)) pn) Refl
+instance (CmpNat x n1 ~ 'GT, r ~ 'ForkTree rl (Node rn rna) rr, o ~ CmpNat x rn, ProofLtNInsert' x a r n o, LtN r n ~ 'True, Insertable x a r,
+  ProofLtNBalance ('ForkTree l (Node n1 a1) (Insert' x a ('ForkTree rl (Node rn rna) rr) o)) n, ProofGtNInsert' x a r n1 o) =>
   ProofLtNInsert' x a ('ForkTree l (Node n1 a1) ('ForkTree rl (Node rn rna) rr)) n 'GT where
-  proofLtNInsert' node (ForkAVL _ _ r@ForkAVL{}) pn _ =
-    gcastWith (proofLtNRightSubTree (Proxy::Proxy ('ForkTree l (Node n1 a1) r)) pn Refl) $
-    gcastWith (proofLtNInsert' node r pn (Proxy::Proxy (CmpNat x rn))) $
-    gcastWith (proofLtNBalance (Proxy::Proxy ('ForkTree l (Node n1 a1) (Insert' x a r (CmpNat x rn)))) pn) Refl
+  proofLtNInsert' node (ForkAVL l node' r) pn _ =
+    gcastWith (proofLtNInsert' node r pn (Proxy::Proxy o)) $
+    gcastWith (proofGtNInsert' node r (Proxy::Proxy n1) (Proxy::Proxy o)) $
+    gcastWith (proofLtNBalance (AlmostAVL l node' r') pn) Refl
+      where
+        r' = insert node r
 
 -- | Prove that inserting a node with key 'x' (greater than 'n') and element value 'a'
 -- | in an AVL 't' which verifies 'GtN t n ~ 'True' preserves the GtN invariant,
@@ -76,28 +78,32 @@ class ProofGtNInsert' (x :: Nat) (a :: Type) (t :: Tree) (n :: Nat) (o :: Orderi
 instance (CmpNat x n1 ~ 'EQ) =>
   ProofGtNInsert' x a ('ForkTree l (Node n1 a1) r) n 'EQ where
   proofGtNInsert' _ ForkAVL{} _ _ = Refl
-instance (CmpNat x n1 ~ 'LT, ProofGtNBalance ('ForkTree ('ForkTree 'EmptyTree (Node x a) 'EmptyTree) (Node n1 a1) r) n) =>
+instance (CmpNat x n1 ~ 'LT, ProofGtNBalance ('ForkTree ('ForkTree 'EmptyTree (Node x a) 'EmptyTree) (Node n1 a1) r) n, Show a) =>
   ProofGtNInsert' x a ('ForkTree 'EmptyTree (Node n1 a1) r) n 'LT where
-  proofGtNInsert' _ (ForkAVL EmptyAVL _ _) pn _ =
-    gcastWith (proofGtNBalance (Proxy::Proxy ('ForkTree ('ForkTree 'EmptyTree (Node x a) 'EmptyTree) (Node n1 a1) r)) pn) Refl
-instance (CmpNat x n1 ~ 'LT, l ~ 'ForkTree ll (Node ln lna) lr, ProofGtNInsert' x a l n (CmpNat x ln),
-  ProofGtNBalance ('ForkTree (Insert' x a ('ForkTree ll (Node ln lna) lr) (CmpNat x ln)) (Node n1 a1) r) n) =>
+  proofGtNInsert' node (ForkAVL _ node' r) pn _ =
+    gcastWith (proofGtNBalance (AlmostAVL (ForkAVL EmptyAVL node EmptyAVL) node' r) pn) Refl
+instance (CmpNat x n1 ~ 'LT, l ~ 'ForkTree ll (Node ln lna) lr, o ~ CmpNat x ln, ProofGtNInsert' x a l n o, GtN l n ~ 'True, Insertable x a l,
+  ProofGtNBalance ('ForkTree (Insert' x a ('ForkTree ll (Node ln lna) lr) o) (Node n1 a1) r) n, ProofLtNInsert' x a l n1 o) =>
   ProofGtNInsert' x a ('ForkTree ('ForkTree ll (Node ln lna) lr) (Node n1 a1) r) n 'LT where
-  proofGtNInsert' x (ForkAVL l@ForkAVL{} _ _) pn _ =
-    gcastWith (proofGtNLeftSubTree (Proxy::Proxy ('ForkTree l (Node n1 a1) r)) pn Refl) $
-    gcastWith (proofGtNInsert' x l pn (Proxy::Proxy (CmpNat x ln))) $
-    gcastWith (proofGtNBalance (Proxy::Proxy ('ForkTree (Insert' x a l (CmpNat x ln)) (Node n1 a1) r)) pn) Refl
-instance (CmpNat x n1 ~ 'GT, ProofGtNBalance ('ForkTree l (Node n1 a1) ('ForkTree 'EmptyTree (Node x a) 'EmptyTree)) n) =>
+  proofGtNInsert' node (ForkAVL l node' r) pn _ =
+    gcastWith (proofGtNInsert' node l pn (Proxy::Proxy o)) $
+    gcastWith (proofLtNInsert' node l (Proxy::Proxy n1) (Proxy::Proxy o)) $
+    gcastWith (proofGtNBalance (AlmostAVL l' node' r) pn) Refl
+      where
+        l' = insert node l
+instance (CmpNat x n1 ~ 'GT, ProofGtNBalance ('ForkTree l (Node n1 a1) ('ForkTree 'EmptyTree (Node x a) 'EmptyTree)) n, Show a) =>
   ProofGtNInsert' x a ('ForkTree l (Node n1 a1) 'EmptyTree) n 'GT where
-  proofGtNInsert' _ (ForkAVL _ _ EmptyAVL) pn _ =
-    gcastWith (proofGtNBalance (Proxy::Proxy ('ForkTree l (Node n1 a1) ('ForkTree 'EmptyTree (Node x a) 'EmptyTree))) pn) Refl
-instance (CmpNat x n1 ~ 'GT, r ~ 'ForkTree rl (Node rn rna) rr, ProofGtNInsert' x a r n (CmpNat x rn),
-  ProofGtNBalance ('ForkTree l (Node n1 a1) (Insert' x a ('ForkTree rl (Node rn rna) rr) (CmpNat x rn))) n) =>
+  proofGtNInsert' node (ForkAVL l node' _) pn _ =
+    gcastWith (proofGtNBalance (AlmostAVL l node' (ForkAVL EmptyAVL node EmptyAVL)) pn) Refl
+instance (CmpNat x n1 ~ 'GT, r ~ 'ForkTree rl (Node rn rna) rr, o ~ CmpNat x rn, ProofGtNInsert' x a r n o, GtN r n ~ 'True, Insertable x a r,
+  ProofGtNBalance ('ForkTree l (Node n1 a1) (Insert' x a ('ForkTree rl (Node rn rna) rr) o)) n, ProofGtNInsert' x a r n1 o) =>
   ProofGtNInsert' x a ('ForkTree l (Node n1 a1) ('ForkTree rl (Node rn rna) rr)) n 'GT where
-  proofGtNInsert' x (ForkAVL _ _ r@ForkAVL{}) pn _ =
-    gcastWith (proofGtNRightSubTree (Proxy::Proxy ('ForkTree l (Node n1 a1) r)) pn Refl) $
-    gcastWith (proofGtNInsert' x r pn (Proxy::Proxy (CmpNat x rn))) $
-    gcastWith (proofGtNBalance (Proxy::Proxy ('ForkTree l (Node n1 a1) (Insert' x a r (CmpNat x rn)))) pn) Refl
+  proofGtNInsert' node (ForkAVL l node' r) pn _ =
+    gcastWith (proofGtNInsert' node r pn (Proxy::Proxy o)) $
+    gcastWith (proofGtNInsert' node r (Proxy::Proxy n1) (Proxy::Proxy o)) $
+    gcastWith (proofGtNBalance (AlmostAVL l node' r') pn) Refl
+      where
+        r' = insert node r
 
 
 -- | This class provides the functionality to insert a node with key 'x' and value type 'a'

@@ -3,6 +3,8 @@
 {-# LANGUAGE GADTs                 #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 
+{-# LANGUAGE Safe                  #-}
+
 module Data.Tree.AVL.Intern (
   emptyAVL,
   insertAVL,

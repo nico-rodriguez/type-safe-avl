@@ -1,9 +1,15 @@
 {-# LANGUAGE DataKinds           #-}
+{-# LANGUAGE DerivingStrategies  #-}
 {-# LANGUAGE ExplicitNamespaces  #-}
 {-# LANGUAGE GADTs               #-}
 {-# LANGUAGE KindSignatures      #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE StandaloneDeriving  #-}
+
+{-# LANGUAGE Trustworthy         #-}
+
+{-# OPTIONS_GHC -Wno-incomplete-patterns     #-}
+{-# OPTIONS_GHC -Wno-incomplete-uni-patterns #-}
 
 module Data.Tree.AVL.Unsafe (
   emptyAVL,
@@ -21,16 +27,16 @@ import           Unsafe.Coerce (unsafeCoerce)
 
 data Node :: Type where
   Node :: Show a => Int -> a -> Node
-deriving instance Show Node
+deriving stock instance Show Node
 
 data AVL :: Type where
   E :: AVL
   F :: AVL -> Node -> AVL -> AVL
-  deriving Show
+  deriving stock Show
 
 data AlmostAVL :: Type where
   FF :: AVL -> Node -> AVL -> AlmostAVL
-  deriving Show
+  deriving stock Show
 
 emptyAVL :: AVL
 emptyAVL = E

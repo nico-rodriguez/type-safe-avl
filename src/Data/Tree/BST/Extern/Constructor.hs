@@ -3,12 +3,14 @@
 {-# LANGUAGE GADTs              #-}
 {-# LANGUAGE TypeFamilies       #-}
 
+{-# LANGUAGE Safe               #-}
+
 module Data.Tree.BST.Extern.Constructor (
   BST(BST), mkBST
 ) where
 
 import           Data.Kind                (Type)
-import           Data.Tree.BST.Invariants (IsBSTT, IsBSTC(..))
+import           Data.Tree.BST.Invariants (IsBSTT, IsBSTC(isBSTT))
 import           Data.Tree.ITree          (ITree, Tree)
 import           Prelude                  (Show (show), (++))
 

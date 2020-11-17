@@ -7,6 +7,8 @@
 {-# LANGUAGE TypeFamilies          #-}
 {-# LANGUAGE UndecidableInstances  #-}
 
+{-# LANGUAGE Safe                  #-}
+
 module Data.Tree.BST.Extern.Delete (
   Maxable(MaxKey, MaxValue, maxValue),
   MaxKeyDeletable(MaxKeyDelete,maxKeyDelete),

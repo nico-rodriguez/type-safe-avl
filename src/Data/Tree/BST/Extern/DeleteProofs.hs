@@ -8,6 +8,8 @@
 {-# LANGUAGE TypeOperators         #-}
 {-# LANGUAGE UndecidableInstances  #-}
 
+{-# LANGUAGE Safe               #-}
+
 module Data.Tree.BST.Extern.DeleteProofs (
   ProofIsBSTDelete(proofIsBSTDelete)
 ) where
@@ -18,7 +20,7 @@ import           Data.Tree.BST.Extern.Delete      (Deletable (Delete),
                                                    Deletable' (Delete'),
                                                    MaxKeyDeletable (MaxKeyDelete, MaxKeyDelete),
                                                    Maxable (MaxKey, MaxValue))
-import           Data.Tree.BST.Invariants         (GtN, IsBSTT(..), LtN)
+import           Data.Tree.BST.Invariants         (GtN, IsBSTT(EmptyIsBSTT,ForkIsBSTT), LtN)
 import           Data.Tree.ITree                  (ITree (EmptyITree, ForkITree),
                                                    Tree (EmptyTree, ForkTree))
 import           Data.Tree.Node                   (Node (Node))
@@ -124,7 +126,7 @@ instance (GtN ('ForkTree ll (Node ln la) lr) n ~ 'True) =>
   ProofGtNDelete' x ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n1 a1) 'EmptyTree) n 'EQ where
   proofGtNDelete' _ (ForkIsBSTT ForkIsBSTT{} (Node _) EmptyIsBSTT) _ _ = Refl
 instance (l ~ 'ForkTree ll (Node ln la) lr, r ~ 'ForkTree rl (Node rn ra) rr,
-  GtN l n ~ 'True, GtN r n ~ 'True, ProofGTMaxKey l n, Maxable l, ProofGtNMaxKeyDelete l n) =>
+  GtN l n ~ 'True, GtN r n ~ 'True, ProofGTMaxKey l n, ProofGtNMaxKeyDelete l n) =>
   ProofGtNDelete' x ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n1 a1) r) n 'EQ where
   proofGtNDelete' _ (ForkIsBSTT l@ForkIsBSTT{} (Node _) ForkIsBSTT{}) pn _ =
     gcastWith (proofGtNMaxKeyDelete l pn) $

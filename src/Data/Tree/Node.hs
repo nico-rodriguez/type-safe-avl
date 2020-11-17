@@ -1,7 +1,10 @@
 {-# LANGUAGE DataKinds          #-}
+{-# LANGUAGE DerivingStrategies #-}
 {-# LANGUAGE GADTs              #-}
 {-# LANGUAGE KindSignatures     #-}
 {-# LANGUAGE StandaloneDeriving #-}
+
+{-# LANGUAGE Safe                  #-}
 
 module Data.Tree.Node (Node(Node), mkNode, getValue) where
 
@@ -12,7 +15,7 @@ import           Prelude      (Show)
 
 data Node :: Nat -> Type -> Type where
   Node :: a -> Node k a
-deriving instance Show a => Show (Node k a)
+deriving stock instance Show a => Show (Node k a)
 
 mkNode :: Proxy k -> a -> Node k a
 mkNode _ = Node

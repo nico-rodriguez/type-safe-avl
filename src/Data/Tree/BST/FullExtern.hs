@@ -6,6 +6,8 @@
 {-# LANGUAGE TypeFamilies          #-}
 {-# LANGUAGE TypeOperators         #-}
 
+{-# LANGUAGE Safe                  #-}
+
 module Data.Tree.BST.FullExtern (
   BST (BST), mkBST,
   ITree (EmptyITree),
