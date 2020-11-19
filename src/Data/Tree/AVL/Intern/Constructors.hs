@@ -5,7 +5,7 @@
 
 {-# LANGUAGE Safe               #-}
 
-module Data.Tree.AVL.Intern.Constructor (
+module Data.Tree.AVL.Intern.Constructors (
   AVL(EmptyAVL,ForkAVL),
   AlmostAVL(NullAVL, AlmostAVL)
 ) where

@@ -16,7 +16,7 @@ module Data.Tree.BST.Intern.Insert (
 
 import           Data.Kind                        (Type)
 import           Data.Proxy                       (Proxy (Proxy))
-import           Data.Tree.BST.Intern.Constructor (BST (EmptyBST, ForkBST))
+import           Data.Tree.BST.Intern.Constructors (BST (EmptyBST, ForkBST))
 import           Data.Tree.BST.Invariants         (GtN, LtN)
 import           Data.Tree.ITree                  (Tree (EmptyTree, ForkTree))
 import           Data.Tree.Node                   (Node, mkNode, getValue)

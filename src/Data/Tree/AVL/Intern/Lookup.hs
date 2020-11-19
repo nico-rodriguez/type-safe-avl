@@ -15,7 +15,7 @@ module Data.Tree.AVL.Intern.Lookup (
 
 import           Data.Kind                        (Type)
 import           Data.Proxy                       (Proxy (Proxy))
-import           Data.Tree.AVL.Intern.Constructor (AVL (ForkAVL))
+import           Data.Tree.AVL.Intern.Constructors (AVL (ForkAVL))
 import           Data.Tree.BST.Utils              (LookupValueType, Member)
 import           Data.Tree.ITree                  (Tree (ForkTree))
 import           Data.Tree.Node                   (Node, getValue)

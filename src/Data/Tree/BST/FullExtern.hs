@@ -14,7 +14,7 @@ module Data.Tree.BST.FullExtern (
   insert, lookup, delete
 ) where
 
-import           Data.Tree.BST.Extern.Constructor (BST (BST), mkBST)
+import           Data.Tree.BST.Extern.Constructors (BST (BST), mkBST)
 import           Data.Tree.BST.Extern.Delete      (Deletable (delete))
 import           Data.Tree.BST.Extern.Insert      (Insertable (insert))
 import           Data.Tree.BST.Extern.Lookup      (Lookupable (lookup))

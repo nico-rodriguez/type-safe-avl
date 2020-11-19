@@ -17,7 +17,7 @@ module Data.Tree.AVL.Intern.Balance (
 ) where
 
 import           Data.Proxy                       (Proxy (Proxy))
-import           Data.Tree.AVL.Intern.Constructor (AVL (EmptyAVL, ForkAVL), AlmostAVL (AlmostAVL, NullAVL))
+import           Data.Tree.AVL.Intern.Constructors (AVL (EmptyAVL, ForkAVL), AlmostAVL (AlmostAVL, NullAVL))
 import           Data.Tree.AVL.Invariants         (BS (Balanced, LeftHeavy, RightHeavy),
                                                    BalancedHeights, BalancedState, Height,
                                                    US (LeftUnbalanced, NotUnbalanced, RightUnbalanced),

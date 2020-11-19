@@ -12,7 +12,7 @@ module Data.Tree.BST.Intern (
 ) where
 
 import           Data.Proxy                       (Proxy)
-import           Data.Tree.BST.Intern.Constructor (BST (EmptyBST))
+import           Data.Tree.BST.Intern.Constructors (BST (EmptyBST))
 import           Data.Tree.BST.Intern.Delete      (Deletable (Delete, delete))
 import           Data.Tree.BST.Intern.Insert      (Insertable (Insert, insert))
 import           Data.Tree.BST.Intern.Lookup      (Lookupable (lookup))

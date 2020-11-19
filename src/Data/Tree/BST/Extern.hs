@@ -12,8 +12,7 @@ module Data.Tree.BST.Extern (
 ) where
 
 import           Data.Proxy                        (Proxy)
-import           Data.Tree.BST.Invariants          (IsBSTT (EmptyIsBSTT))
-import           Data.Tree.BST.Extern.Constructor  (BST (BST))
+import           Data.Tree.BST.Extern.Constructors  (BST (BST), IsBSTT (EmptyIsBSTT))
 import           Data.Tree.BST.Extern.Delete       (Deletable (Delete, delete))
 import           Data.Tree.BST.Extern.DeleteProofs (ProofIsBSTDelete (proofIsBSTDelete))
 import           Data.Tree.BST.Extern.Insert       (Insertable (Insert, insert))

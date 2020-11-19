@@ -23,8 +23,9 @@ import           Data.Tree.AVL.Extern.BalanceProofs (ProofGtNBalance (proofGtNBa
                                                      ProofLtNBalance (proofLtNBalance))
 import           Data.Tree.AVL.Extern.Insert        (Insert',
                                                      Insertable (Insert))
-import           Data.Tree.AVL.Invariants           (IsAVLT(EmptyIsAVLT,ForkIsAVLT), IsAlmostAVLT(ForkIsAlmostAVLT))
-import           Data.Tree.BST.Invariants           (GtN, IsBSTT(EmptyIsBSTT,ForkIsBSTT), LtN)
+import           Data.Tree.AVL.Extern.Constructors   (IsAVLT(EmptyIsAVLT,ForkIsAVLT), IsAlmostAVLT(ForkIsAlmostAVLT))
+import           Data.Tree.BST.Invariants           (GtN, LtN)
+import           Data.Tree.BST.Extern.Constructors   (IsBSTT(EmptyIsBSTT,ForkIsBSTT))
 import           Data.Tree.ITree                    (Tree (EmptyTree, ForkTree))
 import           Data.Tree.Node                     (Node, mkNode, getValue)
 import           Data.Type.Equality                 ((:~:) (Refl), gcastWith)

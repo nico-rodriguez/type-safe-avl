@@ -22,10 +22,12 @@ import           Data.Tree.AVL.Extern.Balance   (Balanceable (Balance),
                                                  Balanceable' (Balance'),
                                                  Rotateable (Rotate))
 import           Data.Tree.AVL.Invariants       (BS (Balanced, LeftHeavy, RightHeavy),
-                                                 BalancedState, Height, IsAVLT(EmptyIsAVLT,ForkIsAVLT), IsAlmostAVLT(ForkIsAlmostAVLT),
+                                                 BalancedState, Height,
                                                  US (LeftUnbalanced, NotUnbalanced, RightUnbalanced),
                                                  UnbalancedState, BalancedHeights)
-import           Data.Tree.BST.Invariants       (GtN, IsBSTT(EmptyIsBSTT,ForkIsBSTT), LtN)
+import           Data.Tree.AVL.Extern.Constructors (IsAVLT(EmptyIsAVLT,ForkIsAVLT), IsAlmostAVLT(ForkIsAlmostAVLT))
+import           Data.Tree.BST.Invariants       (GtN, LtN)
+import           Data.Tree.BST.Extern.Constructors (IsBSTT(EmptyIsBSTT,ForkIsBSTT))
 import           Data.Tree.ITree                (Tree (EmptyTree, ForkTree))
 import           Data.Tree.Node                 (Node)
 import           Data.Type.Equality             ((:~:) (Refl), gcastWith)

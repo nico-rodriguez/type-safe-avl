@@ -5,7 +5,7 @@
 
 {-# LANGUAGE Safe               #-}
 
-module Data.Tree.BST.Intern.Constructor (
+module Data.Tree.BST.Intern.Constructors (
   BST(EmptyBST,ForkBST),
 ) where
 

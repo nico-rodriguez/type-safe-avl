@@ -13,7 +13,7 @@ module Data.Tree.AVL.Intern (
 ) where
 
 import           Data.Proxy                       (Proxy)
-import           Data.Tree.AVL.Intern.Constructor (AVL (EmptyAVL))
+import           Data.Tree.AVL.Intern.Constructors (AVL (EmptyAVL))
 import           Data.Tree.AVL.Intern.Delete      (Deletable (Delete, delete))
 import           Data.Tree.AVL.Intern.Insert      (Insertable (Insert, insert))
 import           Data.Tree.AVL.Intern.Lookup      (Lookupable (lookup))

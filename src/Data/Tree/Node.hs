@@ -4,7 +4,7 @@
 {-# LANGUAGE KindSignatures     #-}
 {-# LANGUAGE StandaloneDeriving #-}
 
-{-# LANGUAGE Safe                  #-}
+{-# LANGUAGE Safe               #-}
 
 module Data.Tree.Node (Node, mkNode, getValue) where
 

@@ -15,12 +15,12 @@ module Data.Tree.BST.Extern.DeleteProofs (
 ) where
 
 import           Data.Proxy                       (Proxy (Proxy))
-import           Data.Tree.BST.Extern.Constructor (BST (BST))
+import           Data.Tree.BST.Extern.Constructors (BST (BST), IsBSTT(EmptyIsBSTT,ForkIsBSTT))
 import           Data.Tree.BST.Extern.Delete      (Deletable (Delete),
                                                    Deletable' (Delete'),
                                                    MaxKeyDeletable (MaxKeyDelete, MaxKeyDelete),
                                                    Maxable (MaxKey, MaxValue))
-import           Data.Tree.BST.Invariants         (GtN, IsBSTT(EmptyIsBSTT,ForkIsBSTT), LtN)
+import           Data.Tree.BST.Invariants         (GtN, LtN)
 import           Data.Tree.ITree                  (Tree (EmptyTree, ForkTree))
 import           Data.Tree.Node                   (Node)
 import           Data.Type.Equality               ((:~:) (Refl), gcastWith)

@@ -16,10 +16,10 @@ module Data.Tree.BST.Extern.InsertProofs (
 
 import           Data.Kind                        (Type)
 import           Data.Proxy                       (Proxy (Proxy))
-import           Data.Tree.BST.Extern.Constructor (BST (BST))
+import           Data.Tree.BST.Extern.Constructors (BST (BST), IsBSTT(EmptyIsBSTT,ForkIsBSTT))
 import           Data.Tree.BST.Extern.Insert      (Insertable (Insert),
                                                    Insertable' (Insert'))
-import           Data.Tree.BST.Invariants         (GtN, LtN, IsBSTT(EmptyIsBSTT,ForkIsBSTT))
+import           Data.Tree.BST.Invariants         (GtN, LtN)
 import           Data.Tree.ITree                  (Tree (EmptyTree, ForkTree))
 import           Data.Tree.Node                   (Node, mkNode, getValue)
 import           Data.Type.Equality               ((:~:) (Refl), gcastWith)

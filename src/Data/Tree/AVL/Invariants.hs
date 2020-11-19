@@ -14,16 +14,13 @@ module Data.Tree.AVL.Invariants (
   Height, BalancedHeights,
   US(LeftUnbalanced,NotUnbalanced,RightUnbalanced),
   UnbalancedState,
-  IsAVL, IsAVLT(..), IsAVLC(..),
-  IsAlmostAVLT(..)
 ) where
 
-import           Data.Kind       (Type)
 import           Data.Tree.ITree (Tree (EmptyTree, ForkTree))
 import           Data.Tree.Node  (Node)
-import           Data.Type.Bool  (type (&&), If)
+import           Data.Type.Bool  (If)
 import           GHC.TypeNats    (type (+), type (-), type (<=?), Nat)
-import           Prelude         (Bool (False, True), undefined)
+import           Prelude         (Bool (False, True))
 
 
 -- | Get the maximun between two type level natural numbers.
@@ -83,32 +80,3 @@ type family BalancedState (h1 :: Nat) (h2 :: Nat) :: BS where
   BalancedState 1 0   = 'LeftHeavy
   BalancedState 0 1   = 'RightHeavy
   BalancedState h1 h2 = BalancedState (h1-1) (h2-1)
-
-
--- | Check if tree is AVL by comparing the differences in the heights of all sub trees pairs
--- | It doesn't check if the tree is BST, IsBST is used for that.
-type family IsAVL (t :: Tree) :: Bool where
-  IsAVL 'EmptyTree                   = 'True
-  IsAVL ('ForkTree l (Node _n _a) r) =
-    BalancedHeights (Height l) (Height r) && IsAVL l && IsAVL r
-
--- | Proof term which shows that `t` is an AVL
-data IsAVLT :: Tree -> Type where
-  EmptyIsAVLT :: IsAVLT 'EmptyTree
-  ForkIsAVLT  :: (BalancedHeights (Height l) (Height r) ~ 'True) =>
-    IsAVLT l -> Node n a -> IsAVLT r -> IsAVLT ('ForkTree l (Node n a) r)
-
--- | Class for constructing the proof term IsAVLT
-class IsAVLC (t :: Tree) where
-  isAVLT :: IsAVLT t
-
-instance IsAVLC 'EmptyTree where
-  isAVLT = EmptyIsAVLT
-instance (IsAVLC l, IsAVLC r, BalancedHeights (Height l) (Height r) ~ 'True) =>
-  IsAVLC ('ForkTree l (Node n a) r) where
-  isAVLT = ForkIsAVLT isAVLT (undefined::Node n a) isAVLT
-
--- | Proof term which shows that `t` is a BST
-data IsAlmostAVLT :: Tree -> Type where
-  EmptyIsAlmostAVLT :: IsAlmostAVLT 'EmptyTree
-  ForkIsAlmostAVLT  :: IsAVLT l -> Node n a -> IsAVLT r -> IsAlmostAVLT ('ForkTree l (Node n a) r)

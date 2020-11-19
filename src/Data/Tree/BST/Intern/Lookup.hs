@@ -15,7 +15,7 @@ module Data.Tree.BST.Intern.Lookup (
 
 import           Data.Kind                        (Type)
 import           Data.Proxy                       (Proxy (Proxy))
-import           Data.Tree.BST.Intern.Constructor (BST (ForkBST))
+import           Data.Tree.BST.Intern.Constructors (BST (ForkBST))
 import           Data.Tree.BST.Utils              (LookupValueType, Member)
 import           Data.Tree.ITree                  (Tree (ForkTree))
 import           Data.Tree.Node                   (Node, getValue)
