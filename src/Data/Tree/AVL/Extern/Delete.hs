@@ -19,7 +19,7 @@ import           Data.Tree.AVL.Extern.Balance (Balanceable (Balance, balance))
 import           Data.Tree.BST.Extern.Delete  (Maxable (MaxKey, MaxValue, maxValue))
 import           Data.Tree.ITree              (ITree (EmptyITree, ForkITree),
                                                Tree (EmptyTree, ForkTree))
-import           Data.Tree.Node               (Node (Node))
+import           Data.Tree.Node               (Node, mkNode)
 import           GHC.TypeNats                 (CmpNat, Nat)
 import           Prelude                      (Ordering (EQ, GT, LT), Show, ($))
 
@@ -38,12 +38,12 @@ instance MaxKeyDeletable 'EmptyTree where
 instance MaxKeyDeletable ('ForkTree l (Node n a1) 'EmptyTree) where
   type MaxKeyDelete ('ForkTree l (Node n a1) 'EmptyTree) = l
   maxKeyDelete (ForkITree l _ _) = l
-instance (r ~ 'ForkTree rl (Node rn ra) rr, MaxKeyDeletable r,
-  Balanceable ('ForkTree l (Node n a1) (MaxKeyDelete r))) =>
+instance (r ~ 'ForkTree rl (Node rn ra) rr,
+  MaxKeyDeletable r, Balanceable ('ForkTree l (Node n a1) (MaxKeyDelete r))) =>
   MaxKeyDeletable ('ForkTree l (Node n a1) ('ForkTree rl (Node rn ra) rr)) where
   type MaxKeyDelete ('ForkTree l (Node n a1) ('ForkTree rl (Node rn ra) rr)) =
     Balance ('ForkTree l (Node n a1) (MaxKeyDelete ('ForkTree rl (Node rn ra) rr)))
-  maxKeyDelete (ForkITree l node r@ForkITree{}) =
+  maxKeyDelete (ForkITree l node r) =
     balance $ ForkITree l node (maxKeyDelete r)
 
 
@@ -57,7 +57,8 @@ class Deletable (x :: Nat) (t :: Tree) where
 instance Deletable x 'EmptyTree where
   type Delete x 'EmptyTree = 'EmptyTree
   delete _ _ = EmptyITree
-instance (o ~ CmpNat x n, Deletable' x ('ForkTree l (Node n a1) r) o) =>
+instance (o ~ CmpNat x n,
+  Deletable' x ('ForkTree l (Node n a1) r) o) =>
   Deletable x ('ForkTree l (Node n a1) r) where
   type Delete x ('ForkTree l (Node n a1) r) = Delete' x ('ForkTree l (Node n a1) r) (CmpNat x n)
   delete px t = delete' px t (Proxy::Proxy o)
@@ -74,20 +75,22 @@ instance Deletable' x ('ForkTree 'EmptyTree (Node n a1) 'EmptyTree) 'EQ where
   type Delete' x ('ForkTree 'EmptyTree (Node n a1) 'EmptyTree) 'EQ = 'EmptyTree
   delete' _ _ _ = EmptyITree
 instance Deletable' x ('ForkTree 'EmptyTree (Node n a1) ('ForkTree rl (Node rn ra) rr)) 'EQ where
-  type Delete' x ('ForkTree 'EmptyTree (Node n a1) ('ForkTree rl (Node rn ra) rr)) 'EQ = ('ForkTree rl (Node rn ra) rr)
+  type Delete' x ('ForkTree 'EmptyTree (Node n a1) ('ForkTree rl (Node rn ra) rr)) 'EQ = 'ForkTree rl (Node rn ra) rr
   delete' _ (ForkITree _ _ r) _ = r
 instance Deletable' x ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a1) 'EmptyTree) 'EQ where
-  type Delete' x ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a1) 'EmptyTree) 'EQ = ('ForkTree ll (Node ln la) lr)
+  type Delete' x ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a1) 'EmptyTree) 'EQ = 'ForkTree ll (Node ln la) lr
   delete' _ (ForkITree l _ _) _ = l
-instance (l ~ 'ForkTree ll (Node ln la) lr, Show (MaxValue l), MaxKeyDeletable l, Maxable l,
-  Balanceable ('ForkTree (MaxKeyDelete l) (Node (MaxKey l) (MaxValue l)) ('ForkTree rl (Node rn ra) rr))) =>
+instance (l ~ 'ForkTree ll (Node ln la) lr, r ~ 'ForkTree rl (Node rn ra) rr,
+  Show (MaxValue l), MaxKeyDeletable l, Maxable l, Balanceable ('ForkTree (MaxKeyDelete l) (Node (MaxKey l) (MaxValue l)) r)) =>
   Deletable' x ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a1) ('ForkTree rl (Node rn ra) rr)) 'EQ where
   type Delete' x ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a1) ('ForkTree rl (Node rn ra) rr)) 'EQ =
     Balance ('ForkTree (MaxKeyDelete ('ForkTree ll (Node ln la) lr)) (Node (MaxKey ('ForkTree ll (Node ln la) lr)) (MaxValue ('ForkTree ll (Node ln la) lr))) ('ForkTree rl (Node rn ra) rr))
   delete' _ (ForkITree l _ r) _ =
-    balance $ ForkITree (maxKeyDelete l) (Node (maxValue l)::Node (MaxKey l) (MaxValue l)) r
+    balance $ ForkITree (maxKeyDelete l) node r
+      where
+        node = mkNode (Proxy::Proxy (MaxKey l)) (maxValue l)
 instance Deletable' x ('ForkTree 'EmptyTree (Node n a1) r) 'LT where
-  type Delete' x ('ForkTree 'EmptyTree (Node n a1) r) 'LT = ('ForkTree 'EmptyTree (Node n a1) r)
+  type Delete' x ('ForkTree 'EmptyTree (Node n a1) r) 'LT = 'ForkTree 'EmptyTree (Node n a1) r
   delete' _ t _ = t
 instance (l ~ 'ForkTree ll (Node ln la) lr, o ~ CmpNat x ln, Deletable' x l o,
   Balanceable ('ForkTree (Delete' x l (CmpNat x ln)) (Node n a1) r)) =>
@@ -98,8 +101,8 @@ instance (l ~ 'ForkTree ll (Node ln la) lr, o ~ CmpNat x ln, Deletable' x l o,
 instance Deletable' x ('ForkTree l (Node n a1) 'EmptyTree) 'GT where
   type Delete' x ('ForkTree l (Node n a1) 'EmptyTree) 'GT = ('ForkTree l (Node n a1) 'EmptyTree)
   delete' _ t _ = t
-instance (o ~ CmpNat x rn, r ~ 'ForkTree rl (Node rn ra) rr, Deletable' x r o,
-  Balanceable ('ForkTree l (Node n a1) (Delete' x r o))) =>
+instance (o ~ CmpNat x rn, r ~ 'ForkTree rl (Node rn ra) rr,
+  Deletable' x r o, Balanceable ('ForkTree l (Node n a1) (Delete' x r o))) =>
   Deletable' x ('ForkTree l (Node n a1) ('ForkTree rl (Node rn ra) rr)) 'GT where
   type Delete' x ('ForkTree l (Node n a1) ('ForkTree rl (Node rn ra) rr)) 'GT =
     Balance ('ForkTree l (Node n a1) (Delete' x ('ForkTree rl (Node rn ra) rr) (CmpNat x rn)))

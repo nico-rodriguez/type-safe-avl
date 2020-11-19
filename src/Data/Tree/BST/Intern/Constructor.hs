@@ -12,7 +12,7 @@ module Data.Tree.BST.Intern.Constructor (
 import           Data.Kind                (Type)
 import           Data.Tree.BST.Invariants (GtN, LtN)
 import           Data.Tree.ITree          (Tree (EmptyTree, ForkTree))
-import           Data.Tree.Node           (Node (Node))
+import           Data.Tree.Node           (Node)
 import           Prelude                  (Bool (True), Show (show), String,
                                            (++))
 
@@ -28,8 +28,8 @@ data BST :: Tree -> Type where
 
 instance Show (BST t) where
   show EmptyBST         = "E"
-  show (ForkBST l n@(Node _) r)  = "F " ++ go l ++ " " ++ show n ++ " " ++ go r
+  show (ForkBST l n r)  = "F " ++ go l ++ " " ++ show n ++ " " ++ go r
     where
       go :: BST t' -> String
       go EmptyBST         = "E"
-      go (ForkBST l' n'@(Node _) r')  = "(F " ++ go l' ++ " " ++ show n' ++ " " ++ go r' ++ ")"
+      go (ForkBST l' n' r')  = "(F " ++ go l' ++ " " ++ show n' ++ " " ++ go r' ++ ")"

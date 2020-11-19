@@ -6,7 +6,7 @@
 
 {-# LANGUAGE Safe                  #-}
 
-module Data.Tree.Node (Node(Node), mkNode, getValue) where
+module Data.Tree.Node (Node, mkNode, getValue) where
 
 import           Data.Kind    (Type)
 import           Data.Proxy   (Proxy)

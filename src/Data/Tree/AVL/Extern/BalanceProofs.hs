@@ -71,21 +71,25 @@ class ProofIsBSTRotate (t :: Tree) (us :: US) (bs :: BS) where
   proofIsBSTRotate :: IsBSTT t -> Proxy us -> Proxy bs -> IsBSTT (Rotate t us bs)
 
 -- | Left-Left case (Right rotation)
-instance (l ~ 'ForkTree ll (Node ln la) lr, CmpNat n ln ~ 'GT, GtN r ln ~ 'True, LtN lr n ~ 'True) =>
+instance (l ~ 'ForkTree ll (Node ln la) lr,
+  CmpNat n ln ~ 'GT, GtN r ln ~ 'True, LtN lr n ~ 'True) =>
   ProofIsBSTRotate ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a) r) 'LeftUnbalanced 'LeftHeavy where
   proofIsBSTRotate (ForkIsBSTT (ForkIsBSTT ll lnode lr) node r) _ _ =
     ForkIsBSTT ll lnode (ForkIsBSTT lr node r)
-instance (l ~ 'ForkTree ll (Node ln la) lr, CmpNat n ln ~ 'GT, GtN r ln ~ 'True, LtN lr n ~ 'True) =>
+instance (l ~ 'ForkTree ll (Node ln la) lr,
+  CmpNat n ln ~ 'GT, GtN r ln ~ 'True, LtN lr n ~ 'True) =>
   ProofIsBSTRotate ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a) r) 'LeftUnbalanced 'Balanced where
   proofIsBSTRotate (ForkIsBSTT (ForkIsBSTT ll lnode lr) node r) _ _ =
     ForkIsBSTT ll lnode (ForkIsBSTT lr node r)
 
 -- | Right-Right case (Left rotation)
-instance (r ~ 'ForkTree rl (Node rn ra) rr, CmpNat n rn ~ 'LT, LtN l rn ~ 'True, GtN rl n ~ 'True) =>
+instance (r ~ 'ForkTree rl (Node rn ra) rr,
+  CmpNat n rn ~ 'LT, LtN l rn ~ 'True, GtN rl n ~ 'True) =>
   ProofIsBSTRotate ('ForkTree l (Node n a) ('ForkTree rl (Node rn ra) rr)) 'RightUnbalanced 'RightHeavy where
   proofIsBSTRotate (ForkIsBSTT l node (ForkIsBSTT rl rnode rr)) _ _ =
     ForkIsBSTT (ForkIsBSTT l node rl) rnode rr
-instance (r ~ 'ForkTree rl (Node rn ra) rr, CmpNat n rn ~ 'LT, LtN l rn ~ 'True, GtN rl n ~ 'True) =>
+instance (r ~ 'ForkTree rl (Node rn ra) rr,
+  CmpNat n rn ~ 'LT, LtN l rn ~ 'True, GtN rl n ~ 'True) =>
   ProofIsBSTRotate ('ForkTree l (Node n a) ('ForkTree rl (Node rn ra) rr)) 'RightUnbalanced 'Balanced where
   proofIsBSTRotate (ForkIsBSTT l node (ForkIsBSTT rl rnode rr)) _ _ =
     ForkIsBSTT (ForkIsBSTT l node rl) rnode rr
@@ -111,7 +115,8 @@ class ProofLtNBalance (t :: Tree) (n :: Nat) where
     IsBSTT t -> Proxy n -> LtN (Balance t) n :~: 'True
 instance ProofLtNBalance 'EmptyTree n where
   proofLtNBalance _ _ = Refl
-instance (us ~ UnbalancedState (Height l) (Height r), ProofLtNBalance' ('ForkTree l (Node n1 a) r) n us) =>
+instance (us ~ UnbalancedState (Height l) (Height r),
+  ProofLtNBalance' ('ForkTree l (Node n1 a) r) n us) =>
   ProofLtNBalance ('ForkTree l (Node n1 a) r) n where
   proofLtNBalance tIsBST pn = gcastWith (proofLtNBalance' tIsBST pn (Proxy::Proxy us)) Refl
 
@@ -171,9 +176,10 @@ class ProofGtNBalance (t :: Tree) (n :: Nat) where
     IsBSTT t -> Proxy n -> GtN (Balance t) n :~: 'True
 instance ProofGtNBalance 'EmptyTree n where
   proofGtNBalance _ _ = Refl
-instance (ProofGtNBalance' ('ForkTree l (Node n1 a) r) n (UnbalancedState (Height l) (Height r))) =>
+instance (us ~ UnbalancedState (Height l) (Height r),
+  ProofGtNBalance' ('ForkTree l (Node n1 a) r) n us) =>
   ProofGtNBalance ('ForkTree l (Node n1 a) r) n where
-  proofGtNBalance tIsBST pn = gcastWith (proofGtNBalance' tIsBST pn (Proxy::Proxy (UnbalancedState (Height l) (Height r)))) Refl
+  proofGtNBalance tIsBST pn = gcastWith (proofGtNBalance' tIsBST pn (Proxy::Proxy us)) Refl
 
 -- | Prove that rebalancing a tree 't' which verifies 'GtN t n ~ 'True' preserves the GtN invariant,
 -- | given the unbalanced state 'us' of the tree.
@@ -233,7 +239,8 @@ class ProofIsAVLBalance (t :: Tree) where
   proofIsAVLBalance :: IsAlmostAVLT t -> IsAVLT (Balance t)
 instance ProofIsAVLBalance 'EmptyTree where
   proofIsAVLBalance _ = EmptyIsAVLT
-instance (LtN l n ~ 'True, GtN r n ~ 'True, us ~ UnbalancedState (Height l) (Height r),
+instance (us ~ UnbalancedState (Height l) (Height r),
+  LtN l n ~ 'True, GtN r n ~ 'True,
   ProofIsAVLBalance' ('ForkTree l (Node n a) r) us) =>
   ProofIsAVLBalance ('ForkTree l (Node n a) r) where
   proofIsAVLBalance tIsAlmostAVL = proofIsAVLBalance' tIsAlmostAVL (Proxy::Proxy us)

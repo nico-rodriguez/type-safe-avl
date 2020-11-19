@@ -14,7 +14,7 @@ import           Data.Kind                (Type)
 import           Data.Tree.AVL.Invariants (BalancedHeights, Height)
 import           Data.Tree.BST.Invariants (GtN, LtN)
 import           Data.Tree.ITree          (Tree (EmptyTree, ForkTree))
-import           Data.Tree.Node           (Node (Node))
+import           Data.Tree.Node           (Node)
 import           Prelude                  (Bool (True), Show (show), String,
                                            (++))
 
@@ -30,11 +30,11 @@ data AVL :: Tree -> Type where
 
 instance Show (AVL t) where
   show EmptyAVL         = "E"
-  show (ForkAVL l n@(Node _) r)  = "F " ++ go l ++ " " ++ show n ++ " " ++ go r
+  show (ForkAVL l n r)  = "F " ++ go l ++ " " ++ show n ++ " " ++ go r
     where
       go :: AVL t' -> String
       go EmptyAVL         = "E"
-      go (ForkAVL l' n'@(Node _) r')  = "(F " ++ go l' ++ " " ++ show n' ++ " " ++ go r' ++ ")"
+      go (ForkAVL l' n' r')  = "(F " ++ go l' ++ " " ++ show n' ++ " " ++ go r' ++ ")"
 
 
 -- | Constructor of AlmostAVLs. This kind of trees arises after

@@ -40,7 +40,8 @@ class Balanceable (t :: Tree) where
 instance Balanceable 'EmptyTree where
   type Balance 'EmptyTree = 'EmptyTree
   balance NullAVL = EmptyAVL
-instance (us ~ UnbalancedState (Height l) (Height r), Balanceable' ('ForkTree l (Node n a) r) us) =>
+instance (us ~ UnbalancedState (Height l) (Height r),
+  Balanceable' ('ForkTree l (Node n a) r) us) =>
   Balanceable ('ForkTree l (Node n a) r) where
   type Balance ('ForkTree l (Node n a) r) = Balance' ('ForkTree l (Node n a) r) (UnbalancedState (Height l) (Height r))
   balance t = balance' t (Proxy::Proxy us)
@@ -55,7 +56,7 @@ class Balanceable' (t :: Tree) (us :: US) where
   balance' :: AlmostAVL t -> Proxy us -> AVL (Balance' t us)
 instance (BalancedHeights (Height l) (Height r) ~ 'True) =>
   Balanceable' ('ForkTree l (Node n a) r) 'NotUnbalanced where
-  type Balance' ('ForkTree l (Node n a) r) 'NotUnbalanced = ('ForkTree l (Node n a) r)
+  type Balance' ('ForkTree l (Node n a) r) 'NotUnbalanced = 'ForkTree l (Node n a) r
   balance' (AlmostAVL l node r) _ = ForkAVL l node r
 instance (bs ~ BalancedState (Height ll) (Height lr),
   Rotateable ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a) r) 'LeftUnbalanced bs) =>
@@ -78,55 +79,59 @@ class Rotateable (t :: Tree) (us :: US) (bs :: BS) where
   type Rotate (t :: Tree) (us :: US) (bs :: BS) :: Tree
   rotate :: AlmostAVL t -> Proxy us -> Proxy bs -> AVL (Rotate t us bs)
 -- | Left-Left case (Right rotation)
-instance (l ~ 'ForkTree ll (Node ln la) lr, CmpNat n ln ~ 'GT, GtN r ln ~ 'True, LtN lr n ~ 'True,
-  (Height lr <=? Height r) ~ 'True, BalancedHeights (Height ll) (1 + Height r) ~ 'True,
-  BalancedHeights (Height lr) (Height r) ~ 'True) =>
+instance (l ~ 'ForkTree ll (Node ln la) lr,
+  CmpNat n ln ~ 'GT, GtN r ln ~ 'True, LtN lr n ~ 'True, (Height lr <=? Height r) ~ 'True,
+  BalancedHeights (Height ll) (1 + Height r) ~ 'True, BalancedHeights (Height lr) (Height r) ~ 'True) =>
   Rotateable ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a) r) 'LeftUnbalanced 'LeftHeavy where
   type Rotate ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a) r) 'LeftUnbalanced 'LeftHeavy =
-    ('ForkTree ll (Node ln la) ('ForkTree lr (Node n a) r))
+    'ForkTree ll (Node ln la) ('ForkTree lr (Node n a) r)
   rotate (AlmostAVL (ForkAVL ll lnode lr) xnode r) _ _ =
     ForkAVL ll lnode (ForkAVL lr xnode r)
-instance (l ~ 'ForkTree ll (Node ln la) lr, CmpNat n ln ~ 'GT, GtN r ln ~ 'True, LtN lr n ~ 'True,
-  (Height lr <=? Height r) ~ 'True, BalancedHeights (Height ll) (1 + Height r) ~ 'True,
-  BalancedHeights (Height lr) (Height r) ~ 'True) =>
+instance (l ~ 'ForkTree ll (Node ln la) lr,
+  CmpNat n ln ~ 'GT, GtN r ln ~ 'True, LtN lr n ~ 'True, (Height lr <=? Height r) ~ 'True,
+  BalancedHeights (Height ll) (1 + Height r) ~ 'True, BalancedHeights (Height lr) (Height r) ~ 'True) =>
   Rotateable ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a) r) 'LeftUnbalanced 'Balanced where
   type Rotate ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a) r) 'LeftUnbalanced 'Balanced =
-    ('ForkTree ll (Node ln la) ('ForkTree lr (Node n a) r))
+    'ForkTree ll (Node ln la) ('ForkTree lr (Node n a) r)
   rotate (AlmostAVL (ForkAVL ll lnode lr) xnode r) _ _ =
     ForkAVL ll lnode (ForkAVL lr xnode r)
 -- | Right-Right case (Left rotation)
-instance (r ~ 'ForkTree rl (Node rn ra) rr, (Height l <=? Height rl) ~ 'True, CmpNat n rn ~ 'LT,
-  BalancedHeights (1 + Height rl) (Height rr) ~ 'True, LtN l rn ~ 'True, GtN rl n ~ 'True,
-  BalancedHeights (Height l) (Height rl) ~ 'True) =>
+instance (r ~ 'ForkTree rl (Node rn ra) rr,
+  (Height l <=? Height rl) ~ 'True, CmpNat n rn ~ 'LT, LtN l rn ~ 'True, GtN rl n ~ 'True,
+  BalancedHeights (1 + Height rl) (Height rr) ~ 'True, BalancedHeights (Height l) (Height rl) ~ 'True) =>
   Rotateable ('ForkTree l (Node n a) ('ForkTree rl (Node rn ra) rr)) 'RightUnbalanced 'RightHeavy where
   type Rotate ('ForkTree l (Node n a) ('ForkTree rl (Node rn ra) rr)) 'RightUnbalanced 'RightHeavy =
-    ('ForkTree ('ForkTree l (Node n a) rl) (Node rn ra) rr)
+    'ForkTree ('ForkTree l (Node n a) rl) (Node rn ra) rr
   rotate (AlmostAVL l xnode (ForkAVL rl rnode rr)) _ _ =
     ForkAVL (ForkAVL l xnode rl) rnode rr
-instance (r ~ 'ForkTree rl (Node rn ra) rr, (Height l <=? Height rl) ~ 'True, CmpNat n rn ~ 'LT,
-  BalancedHeights (1 + Height rl) (Height rr) ~ 'True, LtN l rn ~ 'True, GtN rl n ~ 'True,
-  BalancedHeights (Height l) (Height rl) ~ 'True) =>
+instance (r ~ 'ForkTree rl (Node rn ra) rr,
+  (Height l <=? Height rl) ~ 'True, CmpNat n rn ~ 'LT, LtN l rn ~ 'True, GtN rl n ~ 'True,
+  BalancedHeights (1 + Height rl) (Height rr) ~ 'True, BalancedHeights (Height l) (Height rl) ~ 'True) =>
   Rotateable ('ForkTree l (Node n a) ('ForkTree rl (Node rn ra) rr)) 'RightUnbalanced 'Balanced where
   type Rotate ('ForkTree l (Node n a) ('ForkTree rl (Node rn ra) rr)) 'RightUnbalanced 'Balanced =
-    ('ForkTree ('ForkTree l (Node n a) rl) (Node rn ra) rr)
+    'ForkTree ('ForkTree l (Node n a) rl) (Node rn ra) rr
   rotate (AlmostAVL l xnode (ForkAVL rl rnode rr)) _ _ =
     ForkAVL (ForkAVL l xnode rl) rnode rr
 -- | Left-Right case (First left rotation, then right rotation)
-instance (l ~ 'ForkTree ll (Node ln la) ('ForkTree lrl (Node lrn lra) lrr), (Height ll <=? Height lrl) ~ 'True, GtN r lrn ~ 'True, LtN ll lrn ~ 'True, LtN lrr n ~ 'True,
-  (Height lrr <=? Height r) ~ 'True, BalancedHeights (1 + Height lrl) (1 + Height r) ~ 'True, CmpNat n lrn ~ 'GT, CmpNat ln lrn ~ 'LT, GtN lrl ln ~ 'True,
-  BalancedHeights (Height ll) (Height lrl) ~ 'True, BalancedHeights (Height lrr) (Height r) ~ 'True) =>
+instance (l ~ 'ForkTree ll (Node ln la) ('ForkTree lrl (Node lrn lra) lrr),
+  (Height ll <=? Height lrl) ~ 'True, GtN r lrn ~ 'True, LtN ll lrn ~ 'True, LtN lrr n ~ 'True,
+  (Height lrr <=? Height r) ~ 'True, CmpNat n lrn ~ 'GT, CmpNat ln lrn ~ 'LT, GtN lrl ln ~ 'True,
+  BalancedHeights (1 + Height lrl) (1 + Height r) ~ 'True, BalancedHeights (Height ll) (Height lrl) ~ 'True,
+  BalancedHeights (Height lrr) (Height r) ~ 'True) =>
   Rotateable ('ForkTree ('ForkTree ll (Node ln la) ('ForkTree lrl (Node lrn lra) lrr)) (Node n a) r) 'LeftUnbalanced 'RightHeavy where
   type Rotate ('ForkTree ('ForkTree ll (Node ln la) ('ForkTree lrl (Node lrn lra) lrr)) (Node n a) r) 'LeftUnbalanced 'RightHeavy =
-    ('ForkTree ('ForkTree ll (Node ln la) lrl) (Node lrn lra) ('ForkTree lrr (Node n a) r))
+    'ForkTree ('ForkTree ll (Node ln la) lrl) (Node lrn lra) ('ForkTree lrr (Node n a) r)
   rotate (AlmostAVL (ForkAVL ll lnode (ForkAVL lrl lrnode lrr)) xnode r) _ _ =
     ForkAVL (ForkAVL ll lnode lrl) lrnode (ForkAVL lrr xnode r)
 -- | Right-Left case (First right rotation, then left rotation)
-instance (r ~ 'ForkTree ('ForkTree rll (Node rln rla) rlr) (Node rn ra) rr, (Height l <=? Height rll) ~ 'True, CmpNat rn rln ~ 'GT, CmpNat n rln ~ 'LT, LtN l rln ~ 'True,
-  (Height rlr <=? Height rr) ~ 'True, BalancedHeights (1 + Height rll) (1 + Height rr) ~ 'True, GtN rr rln ~ 'True, GtN rll n ~ 'True, LtN rlr rn ~ 'True,
-  BalancedHeights (Height l) (Height rll) ~ 'True, BalancedHeights (Height rlr) (Height rr) ~ 'True) =>
+instance (r ~ 'ForkTree ('ForkTree rll (Node rln rla) rlr) (Node rn ra) rr,
+  (Height l <=? Height rll) ~ 'True, CmpNat rn rln ~ 'GT, CmpNat n rln ~ 'LT, LtN l rln ~ 'True,
+  (Height rlr <=? Height rr) ~ 'True, GtN rr rln ~ 'True, GtN rll n ~ 'True, LtN rlr rn ~ 'True,
+  BalancedHeights (1 + Height rll) (1 + Height rr) ~ 'True, BalancedHeights (Height l) (Height rll) ~ 'True,
+  BalancedHeights (Height rlr) (Height rr) ~ 'True) =>
   Rotateable ('ForkTree l (Node n a) ('ForkTree ('ForkTree rll (Node rln rla) rlr) (Node rn ra) rr)) 'RightUnbalanced 'LeftHeavy where
   type Rotate ('ForkTree l (Node n a) ('ForkTree ('ForkTree rll (Node rln rla) rlr) (Node rn ra) rr)) 'RightUnbalanced 'LeftHeavy =
-    ('ForkTree ('ForkTree l (Node n a) rll) (Node rln rla) ('ForkTree rlr (Node rn ra) rr))
+    'ForkTree ('ForkTree l (Node n a) rll) (Node rln rla) ('ForkTree rlr (Node rn ra) rr)
   rotate (AlmostAVL l xnode (ForkAVL (ForkAVL rll rlnode rlr) rnode rr)) _ _ =
     ForkAVL (ForkAVL l xnode rll) rlnode (ForkAVL rlr rnode rr)
 
@@ -137,9 +142,9 @@ class ProofLtNBalance (t :: Tree) (n :: Nat) where
     AlmostAVL t -> Proxy n -> LtN (Balance t) n :~: 'True
 instance ProofLtNBalance 'EmptyTree n where
   proofLtNBalance _ _ = Refl
-instance (ProofLtNBalance' ('ForkTree l (Node n1 a) r) n (UnbalancedState (Height l) (Height r))) =>
+instance (us ~ UnbalancedState (Height l) (Height r), ProofLtNBalance' ('ForkTree l (Node n1 a) r) n us) =>
   ProofLtNBalance ('ForkTree l (Node n1 a) r) n where
-  proofLtNBalance pt pn = gcastWith (proofLtNBalance' pt pn (Proxy::Proxy (UnbalancedState (Height l) (Height r)))) Refl
+  proofLtNBalance pt pn = gcastWith (proofLtNBalance' pt pn (Proxy::Proxy us)) Refl
 
 -- | Prove that rebalancing a tree 't' which verifies 'LtN t n ~ 'True' preserves the LtN invariant,
 -- | given the unbalanced state 'us' of the tree.
@@ -149,12 +154,14 @@ class ProofLtNBalance' (t :: Tree) (n :: Nat) (us :: US) where
     AlmostAVL t -> Proxy n -> Proxy us -> LtN (Balance' t us) n :~: 'True
 instance ProofLtNBalance' ('ForkTree l (Node n1 a) r) n 'NotUnbalanced where
   proofLtNBalance' _ _ _ = Refl
-instance (ProofLtNRotate ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n1 a) r) n 'LeftUnbalanced (BalancedState (Height ll) (Height lr))) =>
+instance (bs ~ BalancedState (Height ll) (Height lr),
+  ProofLtNRotate ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n1 a) r) n 'LeftUnbalanced bs) =>
   ProofLtNBalance' ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n1 a) r) n 'LeftUnbalanced where
-  proofLtNBalance' pt pn pus = gcastWith (proofLtNRotate pt pn pus (Proxy::Proxy (BalancedState (Height ll) (Height lr)))) Refl
-instance ProofLtNRotate ('ForkTree l (Node n1 a) ('ForkTree rl (Node rn ra) rr)) n 'RightUnbalanced (BalancedState (Height rl) (Height rr)) =>
+  proofLtNBalance' pt pn pus = gcastWith (proofLtNRotate pt pn pus (Proxy::Proxy bs)) Refl
+instance (bs ~ BalancedState (Height rl) (Height rr),
+  ProofLtNRotate ('ForkTree l (Node n1 a) ('ForkTree rl (Node rn ra) rr)) n 'RightUnbalanced bs) =>
   ProofLtNBalance' ('ForkTree l (Node n1 a) ('ForkTree rl (Node rn ra) rr)) n 'RightUnbalanced where
-  proofLtNBalance' pt pn pus = gcastWith (proofLtNRotate pt pn pus (Proxy::Proxy (BalancedState (Height rl) (Height rr)))) Refl
+  proofLtNBalance' pt pn pus = gcastWith (proofLtNRotate pt pn pus (Proxy::Proxy bs)) Refl
 
 
 -- | Prove that applying a rotation to a tree 't' which verifies 'LtN t n ~ 'True' preserves the LtN invariant.
@@ -197,7 +204,8 @@ class ProofGtNBalance (t :: Tree) (n :: Nat) where
     AlmostAVL t -> Proxy n -> GtN (Balance t) n :~: 'True
 instance ProofGtNBalance 'EmptyTree n where
   proofGtNBalance _ _ = Refl
-instance (us ~ UnbalancedState (Height l) (Height r), ProofGtNBalance' ('ForkTree l (Node n1 a) r) n us) =>
+instance (us ~ UnbalancedState (Height l) (Height r),
+  ProofGtNBalance' ('ForkTree l (Node n1 a) r) n us) =>
   ProofGtNBalance ('ForkTree l (Node n1 a) r) n where
   proofGtNBalance t pn = gcastWith (proofGtNBalance' t pn (Proxy::Proxy us)) Refl
 
