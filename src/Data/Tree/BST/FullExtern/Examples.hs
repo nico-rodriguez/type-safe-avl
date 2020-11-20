@@ -42,7 +42,7 @@ l1 = case bst of
 
 -- | Error: key 1 is not in the tree bst
 -- err = case bst of
---     BST t -> lookup p1 t
+--     BST t _ -> lookup p1 t
 
 bst2 = case bst of
   BST t _ -> mkBST t'
