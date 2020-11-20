@@ -16,7 +16,7 @@ module Data.Tree.BST.Intern.Insert (
 
 import           Data.Kind                        (Type)
 import           Data.Proxy                       (Proxy (Proxy))
-import           Data.Tree.BST.Intern.Constructors (BST (EmptyBST, ForkBST))
+import           Data.Tree.BST.Intern.Constructors(BST (EmptyBST, ForkBST))
 import           Data.Tree.BST.Invariants         (GtN, LtN)
 import           Data.Tree.ITree                  (Tree (EmptyTree, ForkTree))
 import           Data.Tree.Node                   (Node, mkNode, getValue)
@@ -142,8 +142,8 @@ instance (l ~ 'ForkTree ll (Node ln lna) lr, o ~ CmpNat x ln,
   CmpNat x n1 ~ 'LT, GtN l n ~ 'True,
   ProofGtNInsert' x a l n o) =>
   ProofGtNInsert' x a ('ForkTree ('ForkTree ll (Node ln lna) lr) (Node n1 a1) r) n 'LT where
-  proofGtNInsert' x (ForkBST l _ _) pn _ =
-    gcastWith (proofGtNInsert' x l pn (Proxy::Proxy o)) Refl
+  proofGtNInsert' node (ForkBST l _ _) pn _ =
+    gcastWith (proofGtNInsert' node l pn (Proxy::Proxy o)) Refl
 instance (CmpNat x n1 ~ 'GT) =>
   ProofGtNInsert' x a ('ForkTree l (Node n1 a1) 'EmptyTree) n 'GT where
   proofGtNInsert' _ _ _ _ = Refl
@@ -151,5 +151,5 @@ instance (r ~ 'ForkTree rl (Node rn rna) rr, o ~ CmpNat x rn,
   CmpNat x n1 ~ 'GT, GtN r n ~ 'True,
   ProofGtNInsert' x a r n o) =>
   ProofGtNInsert' x a ('ForkTree l (Node n1 a1) ('ForkTree rl (Node rn rna) rr)) n 'GT where
-  proofGtNInsert' x (ForkBST _ _ r) pn _ =
-    gcastWith (proofGtNInsert' x r pn (Proxy::Proxy o)) Refl
+  proofGtNInsert' node (ForkBST _ _ r) pn _ =
+    gcastWith (proofGtNInsert' node r pn (Proxy::Proxy o)) Refl

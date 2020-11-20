@@ -12,7 +12,7 @@ module Data.Tree.BST.Extern (
 ) where
 
 import           Data.Proxy                        (Proxy)
-import           Data.Tree.BST.Extern.Constructors  (BST (BST), IsBSTT (EmptyIsBSTT))
+import           Data.Tree.BST.Extern.Constructors (BST (BST), IsBSTT (EmptyIsBSTT))
 import           Data.Tree.BST.Extern.Delete       (Deletable (Delete, delete))
 import           Data.Tree.BST.Extern.DeleteProofs (ProofIsBSTDelete (proofIsBSTDelete))
 import           Data.Tree.BST.Extern.Insert       (Insertable (Insert, insert))
@@ -29,7 +29,7 @@ emptyBST = BST EmptyITree EmptyIsBSTT
 
 insertBST :: (Insertable x a t, ProofIsBSTInsert x a t) =>
   Proxy x -> a -> BST t -> BST (Insert x a t)
-insertBST x a bst@(BST t _) = BST (insert node t) (proofIsBSTInsert node bst)
+insertBST x a (BST t tIsBST) = BST (insert node t) (proofIsBSTInsert node tIsBST)
   where node = mkNode x a
 
 lookupBST :: (t ~ 'ForkTree l (Node n a1) r, Member x t ~ 'True, Lookupable x a t) =>
@@ -38,4 +38,4 @@ lookupBST p (BST t _) = lookup p t
 
 deleteBST :: (Deletable x t, ProofIsBSTDelete x t) =>
   Proxy x -> BST t -> BST (Delete x t)
-deleteBST px bst@(BST t _) = BST (delete px t) (proofIsBSTDelete px bst)
+deleteBST px (BST t tIsBST) = BST (delete px t) (proofIsBSTDelete px tIsBST)

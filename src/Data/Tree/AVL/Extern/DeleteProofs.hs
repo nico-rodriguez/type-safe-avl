@@ -11,7 +11,6 @@
 {-# LANGUAGE Safe                  #-}
 
 module Data.Tree.AVL.Extern.DeleteProofs (
-  AVL(AVL),
   IsAVLT(..),
   ProofIsAVLDelete(proofIsAVLDelete),
   ProofIsBSTDelete(proofIsBSTDelete)
@@ -22,13 +21,13 @@ import           Data.Tree.AVL.Extern.BalanceProofs (ProofGtNBalance (proofGtNBa
                                                      ProofIsAVLBalance (proofIsAVLBalance),
                                                      ProofIsBSTBalance (proofIsBSTBalance),
                                                      ProofLtNBalance (proofLtNBalance))
-import           Data.Tree.AVL.Extern.Constructors   (AVL (AVL), IsAVLT(EmptyIsAVLT,ForkIsAVLT), IsAlmostAVLT(ForkIsAlmostAVLT))
+import           Data.Tree.AVL.Extern.Constructors  (IsAVLT(EmptyIsAVLT,ForkIsAVLT), IsAlmostAVLT(ForkIsAlmostAVLT))
 import           Data.Tree.AVL.Extern.Delete        (Deletable (Delete),
                                                      Deletable' (Delete'),
                                                      MaxKeyDeletable (MaxKeyDelete))
 import           Data.Tree.BST.Extern.Delete        (MaxKey, MaxValue)
 import           Data.Tree.BST.Invariants           (GtN, LtN)
-import           Data.Tree.BST.Extern.Constructors   (IsBSTT(EmptyIsBSTT,ForkIsBSTT))
+import           Data.Tree.BST.Extern.Constructors  (IsBSTT(EmptyIsBSTT,ForkIsBSTT))
 import           Data.Tree.ITree                    (Tree (EmptyTree, ForkTree))
 import           Data.Tree.Node                     (Node)
 import           Data.Type.Equality                 ((:~:) (Refl), gcastWith)

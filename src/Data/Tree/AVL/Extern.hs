@@ -12,14 +12,14 @@ module Data.Tree.AVL.Extern (
 ) where
 
 import           Data.Proxy                        (Proxy)
-import           Data.Tree.AVL.Extern.Constructors  (AVL (AVL), IsAVLT (EmptyIsAVLT))
+import           Data.Tree.AVL.Extern.Constructors (AVL (AVL), IsAVLT (EmptyIsAVLT))
 import           Data.Tree.AVL.Extern.Delete       (Deletable (Delete, delete))
 import           Data.Tree.AVL.Extern.DeleteProofs (ProofIsAVLDelete (proofIsAVLDelete),
                                                     ProofIsBSTDelete (proofIsBSTDelete))
 import           Data.Tree.AVL.Extern.Insert       (Insertable (Insert, insert))
 import           Data.Tree.AVL.Extern.InsertProofs (ProofIsAVLInsert (proofIsAVLInsert),
                                                     ProofIsBSTInsert (proofIsBSTInsert))
-import           Data.Tree.BST.Extern.Constructors  (IsBSTT (EmptyIsBSTT))
+import           Data.Tree.BST.Extern.Constructors (IsBSTT (EmptyIsBSTT))
 import           Data.Tree.BST.Extern.Lookup       (Lookupable (lookup))
 import           Data.Tree.BST.Utils               (Member)
 import           Data.Tree.ITree                   (ITree (EmptyITree),

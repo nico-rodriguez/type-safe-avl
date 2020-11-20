@@ -16,15 +16,14 @@ module Data.Tree.BST.Intern.Delete (
 
 import           Data.Kind                        (Type)
 import           Data.Proxy                       (Proxy (Proxy))
-import           Data.Tree.BST.Intern.Constructors (BST (EmptyBST, ForkBST))
+import           Data.Tree.BST.Intern.Constructors(BST (EmptyBST, ForkBST))
 import           Data.Tree.BST.Invariants         (GtN, LtN)
 import           Data.Tree.ITree                  (Tree (EmptyTree, ForkTree))
 import           Data.Tree.Node                   (Node, mkNode, getValue)
 import           Data.Type.Equality               ((:~:) (Refl), gcastWith)
 import           GHC.TypeNats                     (CmpNat, Nat)
-import           Prelude                          (Bool (True),
-                                                   Ordering (EQ, GT, LT), Show,
-                                                   ($))
+import           Prelude                          (Bool (True), Ordering (EQ, GT, LT),
+                                                   Show, ($))
 
 
 -- | This class provides the functionality to delete the node with maximum key value

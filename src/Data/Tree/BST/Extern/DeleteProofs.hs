@@ -15,7 +15,7 @@ module Data.Tree.BST.Extern.DeleteProofs (
 ) where
 
 import           Data.Proxy                       (Proxy (Proxy))
-import           Data.Tree.BST.Extern.Constructors (BST (BST), IsBSTT(EmptyIsBSTT,ForkIsBSTT))
+import           Data.Tree.BST.Extern.Constructors(IsBSTT(EmptyIsBSTT,ForkIsBSTT))
 import           Data.Tree.BST.Extern.Delete      (Deletable (Delete),
                                                    Deletable' (Delete'),
                                                    MaxKeyDeletable (MaxKeyDelete, MaxKeyDelete),
@@ -32,13 +32,13 @@ import           Prelude                          (Bool (True), undefined,
 -- | Prove that deleting a node with key 'x'
 -- | in a BST tree preserves BST condition.
 class ProofIsBSTDelete (x :: Nat) (t :: Tree) where
-  proofIsBSTDelete :: Proxy x -> BST t -> IsBSTT (Delete x t)
+  proofIsBSTDelete :: Proxy x -> IsBSTT t -> IsBSTT (Delete x t)
 instance ProofIsBSTDelete x 'EmptyTree where
   proofIsBSTDelete _ _ = EmptyIsBSTT
 instance (o ~ CmpNat x n,
   ProofIsBSTDelete' x ('ForkTree l (Node n a1) r) o) =>
   ProofIsBSTDelete x ('ForkTree l (Node n a1) r) where
-  proofIsBSTDelete px (BST _ tIsBST) = proofIsBSTDelete' px tIsBST (Proxy::Proxy o)
+  proofIsBSTDelete px tIsBST = proofIsBSTDelete' px tIsBST (Proxy::Proxy o)
 
 -- | Prove that deleting a node with key 'x'
 -- | in a BST tree preserves BST condition, given that the comparison between

@@ -6,7 +6,7 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE StandaloneDeriving  #-}
 
-{-# LANGUAGE Trustworthy         #-}
+{-# LANGUAGE Safe                #-}
 
 {-# OPTIONS_GHC -Wno-incomplete-patterns     #-}
 {-# OPTIONS_GHC -Wno-incomplete-uni-patterns #-}

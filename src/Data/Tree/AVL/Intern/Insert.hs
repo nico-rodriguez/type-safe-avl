@@ -19,16 +19,15 @@ import           Data.Proxy                       (Proxy (Proxy))
 import           Data.Tree.AVL.Intern.Balance     (Balanceable (Balance, balance),
                                                    ProofGtNBalance (proofGtNBalance),
                                                    ProofLtNBalance (proofLtNBalance))
-import           Data.Tree.AVL.Intern.Constructors (AVL (EmptyAVL, ForkAVL),
+import           Data.Tree.AVL.Intern.Constructors(AVL (EmptyAVL, ForkAVL),
                                                    AlmostAVL (AlmostAVL))
 import           Data.Tree.BST.Invariants         (GtN, LtN)
 import           Data.Tree.ITree                  (Tree (EmptyTree, ForkTree))
 import           Data.Tree.Node                   (Node, mkNode, getValue)
 import           Data.Type.Equality               ((:~:) (Refl), gcastWith)
 import           GHC.TypeLits                     (CmpNat, Nat)
-import           Prelude                          (Bool (True),
-                                                   Ordering (EQ, GT, LT), Show,
-                                                   ($))
+import           Prelude                          (Bool (True), Ordering (EQ, GT, LT),
+                                                   Show, ($))
 
 
 -- | Prove that inserting a node with key 'x' (lower than 'n') and element value 'a'
