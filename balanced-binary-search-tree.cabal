@@ -28,7 +28,8 @@ homepage:
     https://github.com/nico-rodriguez/balanced-binary-search-tree
 
 -- A URL where users can report bugs.
-bug-reports: https://github.com/nico-rodriguez/balanced-binary-search-tree/issues
+bug-reports:
+    https://github.com/nico-rodriguez/balanced-binary-search-tree/issues
 
 -- The license under which the package is released.
 license:            GPL-3.0-only
@@ -42,17 +43,14 @@ author:             Nicolás Rodríguez
 -- An email address to which users can send suggestions, bug reports, and patches.
 maintainer:         18080513+nico-rodriguez@users.noreply.github.com
 
--- The stability level of the package, e.g. alpha, experimental, provisional, stable.
-stability:          stable
-
 -- A copyright notice.
 -- copyright:
 category:           Data
 
 -- Extra files to be distributed with the package, such as examples or a README.
 extra-source-files:
-    CHANGELOG.md
     README.md
+    CHANGELOG.md
 
 library
     -- Modules exported by the library.
@@ -104,18 +102,278 @@ library
 
     -- LANGUAGE extensions used by modules in this package.
     other-extensions:
-        DataKinds ExplicitNamespaces TypeFamilies TypeOperators GADTs
-        KindSignatures Safe StandaloneDeriving MultiParamTypeClasses
-        FlexibleInstances ScopedTypeVariables UndecidableInstances
-        RankNTypes FlexibleContexts Trustworthy DerivingStrategies
+        DataKinds GADTs KindSignatures Safe DerivingStrategies
+        StandaloneDeriving MultiParamTypeClasses ExplicitNamespaces
+        FlexibleInstances ScopedTypeVariables TypeFamilies TypeOperators
+        RankNTypes UndecidableInstances FlexibleContexts Trustworthy
 
     -- Other library packages from which modules are imported.
-    build-depends:    base ^>=4.14.1.0
+    build-depends:    base ^>=4.14.1.0, time ^>=1.9.3
+
+    -- Additional options for GHC.
+    ghc-options:      -O0 -fmax-simplifier-iterations=0
 
     -- Directories containing source files.
-    hs-source-dirs:   src
+    hs-source-dirs:   src, benchmark
 
     -- Base language which the package is written in.
     default-language: Haskell2010
 
-    ghc-options: -Wall -Weverything
+benchmark avl-unsafe
+    -- The interface type and version of the benchmark.
+    type:             exitcode-stdio-1.0
+
+    -- Other library packages from which benchmark modules are imported.
+    build-depends:    base ^>=4.14.1.0, time ^>=1.9.3, balanced-binary-search-tree ^>=0.1.0.0
+
+    -- Additional options for GHC.
+    ghc-options:      -O0 -fmax-simplifier-iterations=0
+
+    -- Directories containing source files.
+    hs-source-dirs:   benchmark
+
+    -- The entrypoint to the benchmark (relative to hs-source-dirs).
+    main-is:          AVL/Unsafe/Benchmark.hs
+
+    other-modules:
+        AVL.Unsafe.Insert.Insert10
+        AVL.Unsafe.Insert.Insert20
+        AVL.Unsafe.Insert.Insert30
+        AVL.Unsafe.Insert.Insert40
+        AVL.Unsafe.Insert.Insert50
+        AVL.Unsafe.Insert.Insert60
+        AVL.Unsafe.Insert.Insert70
+        AVL.Unsafe.Insert.Insert80
+        AVL.Unsafe.Insert.Insert90
+        AVL.Unsafe.Insert.Insert100
+        AVL.Unsafe.Lookup.Lookup10
+        AVL.Unsafe.Lookup.Lookup20
+        AVL.Unsafe.Lookup.Lookup30
+        AVL.Unsafe.Lookup.Lookup40
+        AVL.Unsafe.Lookup.Lookup50
+        AVL.Unsafe.Lookup.Lookup60
+        AVL.Unsafe.Lookup.Lookup70
+        AVL.Unsafe.Lookup.Lookup80
+        AVL.Unsafe.Lookup.Lookup90
+        AVL.Unsafe.Lookup.Lookup100
+        AVL.Unsafe.Delete.Delete10
+        AVL.Unsafe.Delete.Delete20
+        AVL.Unsafe.Delete.Delete30
+        AVL.Unsafe.Delete.Delete40
+        AVL.Unsafe.Delete.Delete50
+        AVL.Unsafe.Delete.Delete60
+        AVL.Unsafe.Delete.Delete70
+        AVL.Unsafe.Delete.Delete80
+        AVL.Unsafe.Delete.Delete90
+        AVL.Unsafe.Delete.Delete100
+
+benchmark avl-fullextern
+    -- The interface type and version of the benchmark.
+    type:             exitcode-stdio-1.0
+
+    -- Other library packages from which benchmark modules are imported.
+    build-depends:    base ^>=4.14.1.0, time ^>=1.9.3, balanced-binary-search-tree ^>=0.1.0.0
+
+    -- Additional options for GHC.
+    ghc-options:      -O0 -fmax-simplifier-iterations=0
+
+    -- Directories containing source files.
+    hs-source-dirs:   benchmark
+
+    -- The entrypoint to the benchmark (relative to hs-source-dirs).
+    main-is:          AVL/FullExtern/Benchmark.hs
+
+    other-modules:
+        AVL.FullExtern.Insert.Insert10
+        AVL.FullExtern.Insert.Insert20
+        AVL.FullExtern.Insert.Insert30
+        AVL.FullExtern.Insert.Insert40
+        AVL.FullExtern.Insert.Insert50
+        AVL.FullExtern.Insert.Insert60
+        AVL.FullExtern.Lookup.Lookup10
+        AVL.FullExtern.Lookup.Lookup20
+        AVL.FullExtern.Lookup.Lookup30
+        AVL.FullExtern.Lookup.Lookup40
+        AVL.FullExtern.Lookup.Lookup50
+        AVL.FullExtern.Lookup.Lookup60
+        AVL.FullExtern.Delete.Delete10
+        AVL.FullExtern.Delete.Delete20
+        AVL.FullExtern.Delete.Delete30
+        AVL.FullExtern.Delete.Delete40
+        AVL.FullExtern.Delete.Delete50
+        AVL.FullExtern.Delete.Delete60
+
+benchmark avl-extern
+    -- The interface type and version of the benchmark.
+    type:             exitcode-stdio-1.0
+
+    -- Other library packages from which benchmark modules are imported.
+    build-depends:    base ^>=4.14.1.0, time ^>=1.9.3, balanced-binary-search-tree ^>=0.1.0.0
+
+    -- Additional options for GHC.
+    ghc-options:      -O0 -fmax-simplifier-iterations=0
+
+    -- Directories containing source files.
+    hs-source-dirs:   benchmark
+
+    -- The entrypoint to the benchmark (relative to hs-source-dirs).
+    main-is:          AVL/Extern/Benchmark.hs
+
+    other-modules:
+        AVL.Extern.Insert.Insert10
+        AVL.Extern.Insert.Insert20
+        AVL.Extern.Insert.Insert30
+        AVL.Extern.Insert.Insert40
+        AVL.Extern.Insert.Insert50
+        AVL.Extern.Insert.Insert60
+        AVL.Extern.Lookup.Lookup10
+        AVL.Extern.Lookup.Lookup20
+        AVL.Extern.Lookup.Lookup30
+        AVL.Extern.Lookup.Lookup40
+        AVL.Extern.Lookup.Lookup50
+        AVL.Extern.Lookup.Lookup60
+        AVL.Extern.Delete.Delete10
+        AVL.Extern.Delete.Delete20
+        AVL.Extern.Delete.Delete30
+        AVL.Extern.Delete.Delete40
+        AVL.Extern.Delete.Delete50
+        AVL.Extern.Delete.Delete60
+
+benchmark avl-intern
+    -- The interface type and version of the benchmark.
+    type:             exitcode-stdio-1.0
+
+    -- Other library packages from which benchmark modules are imported.
+    build-depends:    base ^>=4.14.1.0, time ^>=1.9.3, balanced-binary-search-tree ^>=0.1.0.0
+
+    -- Additional options for GHC.
+    ghc-options:      -O0 -fmax-simplifier-iterations=0
+
+    -- Directories containing source files.
+    hs-source-dirs:   benchmark
+
+    -- The entrypoint to the benchmark (relative to hs-source-dirs).
+    main-is:          AVL/Intern/Benchmark.hs
+
+    other-modules:
+        AVL.Intern.Insert.Insert10
+        AVL.Intern.Insert.Insert20
+        AVL.Intern.Insert.Insert30
+        AVL.Intern.Insert.Insert40
+        AVL.Intern.Insert.Insert50
+        AVL.Intern.Insert.Insert60
+        AVL.Intern.Lookup.Lookup10
+        AVL.Intern.Lookup.Lookup20
+        AVL.Intern.Lookup.Lookup30
+        AVL.Intern.Lookup.Lookup40
+        AVL.Intern.Lookup.Lookup50
+        AVL.Intern.Lookup.Lookup60
+        AVL.Intern.Delete.Delete10
+        AVL.Intern.Delete.Delete20
+        AVL.Intern.Delete.Delete30
+        AVL.Intern.Delete.Delete40
+        AVL.Intern.Delete.Delete50
+        AVL.Intern.Delete.Delete60
+
+
+benchmark bst-fullextern
+    -- The interface type and version of the benchmark.
+    type:             exitcode-stdio-1.0
+
+    -- Other library packages from which benchmark modules are imported.
+    build-depends:    base ^>=4.14.1.0, time ^>=1.9.3, balanced-binary-search-tree ^>=0.1.0.0
+
+    -- Additional options for GHC.
+    ghc-options:      -O0 -fmax-simplifier-iterations=0
+
+    -- Directories containing source files.
+    hs-source-dirs:   benchmark
+
+    -- The entrypoint to the benchmark (relative to hs-source-dirs).
+    main-is:          BST/FullExtern/Benchmark.hs
+
+    other-modules:
+        BST.FullExtern.Insert.Insert10
+        BST.FullExtern.Insert.Insert20
+        BST.FullExtern.Insert.Insert30
+        BST.FullExtern.Insert.Insert40
+        BST.FullExtern.Insert.Insert50
+        BST.FullExtern.Insert.Insert60
+        BST.FullExtern.Lookup.Lookup10
+        BST.FullExtern.Lookup.Lookup20
+        BST.FullExtern.Lookup.Lookup30
+        BST.FullExtern.Lookup.Lookup40
+        BST.FullExtern.Lookup.Lookup50
+        BST.FullExtern.Lookup.Lookup60
+        BST.FullExtern.Delete.Delete10
+        BST.FullExtern.Delete.Delete20
+        BST.FullExtern.Delete.Delete30
+        BST.FullExtern.Delete.Delete40
+        BST.FullExtern.Delete.Delete50
+        BST.FullExtern.Delete.Delete60
+
+benchmark bst-extern
+    -- The interface type and version of the benchmark.
+    type:             exitcode-stdio-1.0
+
+    -- Other library packages from which benchmark modules are imported.
+    build-depends:    base ^>=4.14.1.0, time ^>=1.9.3, balanced-binary-search-tree ^>=0.1.0.0
+
+    -- Additional options for GHC.
+    ghc-options:      -O0 -fmax-simplifier-iterations=0
+
+    -- Directories containing source files.
+    hs-source-dirs:   benchmark
+
+    -- The entrypoint to the benchmark (relative to hs-source-dirs).
+    main-is:          BST/Extern/Benchmark.hs
+
+    other-modules:
+        BST.Extern.Insert.Insert10
+        BST.Extern.Insert.Insert20
+        BST.Extern.Insert.Insert30
+        BST.Extern.Insert.Insert40
+        BST.Extern.Insert.Insert50
+        BST.Extern.Lookup.Lookup10
+        BST.Extern.Lookup.Lookup20
+        BST.Extern.Lookup.Lookup30
+        BST.Extern.Lookup.Lookup40
+        BST.Extern.Lookup.Lookup50
+        BST.Extern.Delete.Delete10
+        BST.Extern.Delete.Delete20
+        BST.Extern.Delete.Delete30
+        BST.Extern.Delete.Delete40
+        BST.Extern.Delete.Delete50
+
+benchmark bst-intern
+    -- The interface type and version of the benchmark.
+    type:             exitcode-stdio-1.0
+
+    -- Other library packages from which benchmark modules are imported.
+    build-depends:    base ^>=4.14.1.0, time ^>=1.9.3, balanced-binary-search-tree ^>=0.1.0.0
+
+    -- Additional options for GHC.
+    ghc-options:      -O0 -fmax-simplifier-iterations=0
+
+    -- Directories containing source files.
+    hs-source-dirs:   benchmark
+
+    -- The entrypoint to the benchmark (relative to hs-source-dirs).
+    main-is:          BST/Intern/Benchmark.hs
+
+    other-modules:
+        BST.Intern.Insert.Insert10
+        BST.Intern.Insert.Insert20
+        BST.Intern.Insert.Insert30
+        BST.Intern.Insert.Insert40
+        BST.Intern.Insert.Insert50
+        BST.Intern.Lookup.Lookup10
+        BST.Intern.Lookup.Lookup20
+        BST.Intern.Lookup.Lookup30
+        BST.Intern.Lookup.Lookup40
+        BST.Intern.Lookup.Lookup50
+        BST.Intern.Delete.Delete10
+        BST.Intern.Delete.Delete20
+        BST.Intern.Delete.Delete30
+        BST.Intern.Delete.Delete40
+        BST.Intern.Delete.Delete50
