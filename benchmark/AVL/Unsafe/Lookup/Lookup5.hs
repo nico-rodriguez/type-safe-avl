@@ -2,19 +2,19 @@
 {-# LANGUAGE Safe      #-}
 
 
-module AVL.Unsafe.Lookup.Lookup10 (v10, main) where
+module AVL.Unsafe.Lookup.Lookup5 (v5, main) where
 
 import           Data.Time.Clock             (diffUTCTime, getCurrentTime)
 import           Data.Tree.AVL.Unsafe        (lookupAVL)
 import           Prelude                     (IO, putStrLn, return, seq, show, (++), (^))
-import           AVL.Unsafe.Insert.Insert10 (t10)
+import           AVL.Unsafe.Insert.Insert5 (t5)
 
 
-v10 = lookupAVL (2^15) t10
+v5 = lookupAVL (2^10) t5
 
 main :: IO ()
-main = do seq t10 (return ())
+main = do seq t5 (return ())
           t0 <- getCurrentTime
-          seq v10 (return ())
+          seq v5 (return ())
           t1 <- getCurrentTime
           putStrLn ("Time: " ++ show (diffUTCTime t0 t1) ++ " seconds")
