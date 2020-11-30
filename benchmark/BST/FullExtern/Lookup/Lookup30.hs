@@ -6,7 +6,8 @@ module BST.FullExtern.Lookup.Lookup30 (v30, main) where
 
 import           Data.Time.Clock                (diffUTCTime, getCurrentTime)
 import           Data.Proxy                     (Proxy (Proxy))
-import           Data.Tree.BST.FullExtern       (BST (BST), lookup)
+import           Data.Tree.BST.FullExtern       (BST (BST))
+import           Data.Tree.BST.FullExtern       (lookup)
 import           Prelude                        (IO, putStrLn, return, seq, show, (++))
 import           BST.FullExtern.Insert.Insert30 (t30)
 

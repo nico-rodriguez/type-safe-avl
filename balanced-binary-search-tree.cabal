@@ -192,18 +192,30 @@ benchmark avl-fullextern
         AVL.FullExtern.Insert.Insert40
         AVL.FullExtern.Insert.Insert50
         AVL.FullExtern.Insert.Insert60
+        AVL.FullExtern.Insert.Insert70
+        AVL.FullExtern.Insert.Insert80
+        AVL.FullExtern.Insert.Insert90
+        AVL.FullExtern.Insert.Insert100
         AVL.FullExtern.Lookup.Lookup10
         AVL.FullExtern.Lookup.Lookup20
         AVL.FullExtern.Lookup.Lookup30
         AVL.FullExtern.Lookup.Lookup40
         AVL.FullExtern.Lookup.Lookup50
         AVL.FullExtern.Lookup.Lookup60
+        AVL.FullExtern.Lookup.Lookup70
+        AVL.FullExtern.Lookup.Lookup80
+        AVL.FullExtern.Lookup.Lookup90
+        AVL.FullExtern.Lookup.Lookup100
         AVL.FullExtern.Delete.Delete10
         AVL.FullExtern.Delete.Delete20
         AVL.FullExtern.Delete.Delete30
         AVL.FullExtern.Delete.Delete40
         AVL.FullExtern.Delete.Delete50
         AVL.FullExtern.Delete.Delete60
+        AVL.FullExtern.Delete.Delete70
+        AVL.FullExtern.Delete.Delete80
+        AVL.FullExtern.Delete.Delete90
+        AVL.FullExtern.Delete.Delete100
 
 benchmark avl-extern
     -- The interface type and version of the benchmark.
@@ -349,18 +361,30 @@ benchmark bst-fullextern
         BST.FullExtern.Insert.Insert40
         BST.FullExtern.Insert.Insert50
         BST.FullExtern.Insert.Insert60
+        BST.FullExtern.Insert.Insert70
+        BST.FullExtern.Insert.Insert80
+        BST.FullExtern.Insert.Insert90
+        BST.FullExtern.Insert.Insert100
         BST.FullExtern.Lookup.Lookup10
         BST.FullExtern.Lookup.Lookup20
         BST.FullExtern.Lookup.Lookup30
         BST.FullExtern.Lookup.Lookup40
         BST.FullExtern.Lookup.Lookup50
         BST.FullExtern.Lookup.Lookup60
+        BST.FullExtern.Lookup.Lookup70
+        BST.FullExtern.Lookup.Lookup80
+        BST.FullExtern.Lookup.Lookup90
+        BST.FullExtern.Lookup.Lookup100
         BST.FullExtern.Delete.Delete10
         BST.FullExtern.Delete.Delete20
         BST.FullExtern.Delete.Delete30
         BST.FullExtern.Delete.Delete40
         BST.FullExtern.Delete.Delete50
         BST.FullExtern.Delete.Delete60
+        BST.FullExtern.Delete.Delete70
+        BST.FullExtern.Delete.Delete80
+        BST.FullExtern.Delete.Delete90
+        BST.FullExtern.Delete.Delete100
 
 benchmark bst-extern
     -- The interface type and version of the benchmark.
@@ -384,16 +408,19 @@ benchmark bst-extern
         BST.Extern.Insert.Insert30
         BST.Extern.Insert.Insert40
         BST.Extern.Insert.Insert50
+        BST.Extern.Insert.Insert60
         BST.Extern.Lookup.Lookup10
         BST.Extern.Lookup.Lookup20
         BST.Extern.Lookup.Lookup30
         BST.Extern.Lookup.Lookup40
         BST.Extern.Lookup.Lookup50
+        BST.Extern.Lookup.Lookup60
         BST.Extern.Delete.Delete10
         BST.Extern.Delete.Delete20
         BST.Extern.Delete.Delete30
         BST.Extern.Delete.Delete40
         BST.Extern.Delete.Delete50
+        BST.Extern.Delete.Delete60
 
 benchmark bst-intern
     -- The interface type and version of the benchmark.

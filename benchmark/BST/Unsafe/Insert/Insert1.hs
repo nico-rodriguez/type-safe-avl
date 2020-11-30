@@ -19,4 +19,4 @@ main :: IO ()
 main = do t0 <- getCurrentTime
           seq t1 (return ())
           t1 <- getCurrentTime
-          putStrLn ("Time: " ++ show (diffUTCTime t0 t1) ++ " seconds")
+          putStrLn ("Time: " ++ show (diffUTCTime t1 t0) ++ " seconds")
