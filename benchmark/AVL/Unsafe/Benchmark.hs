@@ -44,124 +44,124 @@ main =
         t0 <- getCurrentTime
         seq t1 (return ())
         t1 <- getCurrentTime
-        putStrLn $ "N=10: " ++ show (diffUTCTime t1 t0)
+        putStrLn $ "N=2^6: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
         seq t2 (return ())
         t1 <- getCurrentTime
-        putStrLn $ "N=20: " ++ show (diffUTCTime t1 t0)
+        putStrLn $ "N=2^7: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
         seq t3 (return ())
         t1 <- getCurrentTime
-        putStrLn $ "N=30: " ++ show (diffUTCTime t1 t0)
+        putStrLn $ "N=2^8: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
         seq t4 (return ())
         t1 <- getCurrentTime
-        putStrLn $ "N=40: " ++ show (diffUTCTime t1 t0)
+        putStrLn $ "N=2^9: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
         seq t5 (return ())
         t1 <- getCurrentTime
-        putStrLn $ "N=50: " ++ show (diffUTCTime t1 t0)
+        putStrLn $ "N=2^10: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
         seq t6 (return ())
         t1 <- getCurrentTime
-        putStrLn $ "N=60: " ++ show (diffUTCTime t1 t0)
+        putStrLn $ "N=2^11: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
         seq t7 (return ())
         t1 <- getCurrentTime
-        putStrLn $ "N=70: " ++ show (diffUTCTime t1 t0)
+        putStrLn $ "N=2^12: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
         seq t8 (return ())
         t1 <- getCurrentTime
-        putStrLn $ "N=80: " ++ show (diffUTCTime t1 t0)
+        putStrLn $ "N=2^13: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
         seq t9 (return ())
         t1 <- getCurrentTime
-        putStrLn $ "N=90: " ++ show (diffUTCTime t1 t0)
+        putStrLn $ "N=2^14: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
         seq t10 (return ())
         t1 <- getCurrentTime
-        putStrLn $ "N=100: " ++ show (diffUTCTime t1 t0)
+        putStrLn $ "N=2^15: " ++ show (diffUTCTime t1 t0)
         -- Delete
         putStrLn "DELETE"
         t0 <- getCurrentTime
         seq e1 (return ())
         t1 <- getCurrentTime
-        putStrLn $ "N=10: " ++ show (diffUTCTime t1 t0)
+        putStrLn $ "N=2^6: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
         seq e2 (return ())
         t1 <- getCurrentTime
-        putStrLn $ "N=20: " ++ show (diffUTCTime t1 t0)
+        putStrLn $ "N=2^7: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
         seq e3 (return ())
         t1 <- getCurrentTime
-        putStrLn $ "N=30: " ++ show (diffUTCTime t1 t0)
+        putStrLn $ "N=2^8: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
         seq e4 (return ())
         t1 <- getCurrentTime
-        putStrLn $ "N=40: " ++ show (diffUTCTime t1 t0)
+        putStrLn $ "N=2^9: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
         seq e5 (return ())
         t1 <- getCurrentTime
-        putStrLn $ "N=50: " ++ show (diffUTCTime t1 t0)
+        putStrLn $ "N=2^10: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
         seq e6 (return ())
         t1 <- getCurrentTime
-        putStrLn $ "N=60: " ++ show (diffUTCTime t1 t0)
+        putStrLn $ "N=2^11: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
         seq e7 (return ())
         t1 <- getCurrentTime
-        putStrLn $ "N=70: " ++ show (diffUTCTime t1 t0)
+        putStrLn $ "N=2^12: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
         seq e8 (return ())
         t1 <- getCurrentTime
-        putStrLn $ "N=80: " ++ show (diffUTCTime t1 t0)
+        putStrLn $ "N=2^13: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
         seq e9 (return ())
         t1 <- getCurrentTime
-        putStrLn $ "N=90: " ++ show (diffUTCTime t1 t0)
+        putStrLn $ "N=2^14: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
         seq e10 (return ())
         t1 <- getCurrentTime
-        putStrLn $ "N=100: " ++ show (diffUTCTime t1 t0)
+        putStrLn $ "N=2^15: " ++ show (diffUTCTime t1 t0)
         -- Lookup
         putStrLn "LOOKUP"
         t0 <- getCurrentTime
         seq v1 (return ())
         t1 <- getCurrentTime
-        putStrLn $ "N=10: " ++ show (diffUTCTime t1 t0)
+        putStrLn $ "N=2^6: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
         seq v2 (return ())
         t1 <- getCurrentTime
-        putStrLn $ "N=20: " ++ show (diffUTCTime t1 t0)
+        putStrLn $ "N=2^7: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
         seq v3 (return ())
         t1 <- getCurrentTime
-        putStrLn $ "N=30: " ++ show (diffUTCTime t1 t0)
+        putStrLn $ "N=2^8: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
         seq v4 (return ())
         t1 <- getCurrentTime
-        putStrLn $ "N=40: " ++ show (diffUTCTime t1 t0)
+        putStrLn $ "N=2^9: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
         seq v5 (return ())
         t1 <- getCurrentTime
-        putStrLn $ "N=50: " ++ show (diffUTCTime t1 t0)
+        putStrLn $ "N=2^10: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
         seq v6 (return ())
         t1 <- getCurrentTime
-        putStrLn $ "N=60: " ++ show (diffUTCTime t1 t0)
+        putStrLn $ "N=2^11: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
         seq v7 (return ())
         t1 <- getCurrentTime
-        putStrLn $ "N=70: " ++ show (diffUTCTime t1 t0)
+        putStrLn $ "N=2^12: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
         seq v8 (return ())
         t1 <- getCurrentTime
-        putStrLn $ "N=80: " ++ show (diffUTCTime t1 t0)
+        putStrLn $ "N=2^13: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
         seq v9 (return ())
         t1 <- getCurrentTime
-        putStrLn $ "N=90: " ++ show (diffUTCTime t1 t0)
+        putStrLn $ "N=2^14: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
         seq v10 (return ())
         t1 <- getCurrentTime
-        putStrLn $ "N=100: " ++ show (diffUTCTime t1 t0)
+        putStrLn $ "N=2^15: " ++ show (diffUTCTime t1 t0)
