@@ -61,6 +61,8 @@ library
         Data.Tree.BST.FullExtern
         Data.Tree.BST.Intern
         Data.Tree.BST.Invariants
+        Data.Tree.BST.Unsafe
+        Data.Tree.BST.Unsafe.Examples
         Data.Tree.BST.Utils
         Data.Tree.BST.Intern.Delete
         Data.Tree.BST.Intern.Constructors
@@ -136,36 +138,36 @@ benchmark avl-unsafe
     main-is:          AVL/Unsafe/Benchmark.hs
 
     other-modules:
+        AVL.Unsafe.Insert.Insert1
+        AVL.Unsafe.Insert.Insert2
+        AVL.Unsafe.Insert.Insert3
+        AVL.Unsafe.Insert.Insert4
+        AVL.Unsafe.Insert.Insert5
+        AVL.Unsafe.Insert.Insert6
+        AVL.Unsafe.Insert.Insert7
+        AVL.Unsafe.Insert.Insert8
+        AVL.Unsafe.Insert.Insert9
         AVL.Unsafe.Insert.Insert10
-        AVL.Unsafe.Insert.Insert20
-        AVL.Unsafe.Insert.Insert30
-        AVL.Unsafe.Insert.Insert40
-        AVL.Unsafe.Insert.Insert50
-        AVL.Unsafe.Insert.Insert60
-        AVL.Unsafe.Insert.Insert70
-        AVL.Unsafe.Insert.Insert80
-        AVL.Unsafe.Insert.Insert90
-        AVL.Unsafe.Insert.Insert100
+        AVL.Unsafe.Lookup.Lookup1
+        AVL.Unsafe.Lookup.Lookup2
+        AVL.Unsafe.Lookup.Lookup3
+        AVL.Unsafe.Lookup.Lookup4
+        AVL.Unsafe.Lookup.Lookup5
+        AVL.Unsafe.Lookup.Lookup6
+        AVL.Unsafe.Lookup.Lookup7
+        AVL.Unsafe.Lookup.Lookup8
+        AVL.Unsafe.Lookup.Lookup9
         AVL.Unsafe.Lookup.Lookup10
-        AVL.Unsafe.Lookup.Lookup20
-        AVL.Unsafe.Lookup.Lookup30
-        AVL.Unsafe.Lookup.Lookup40
-        AVL.Unsafe.Lookup.Lookup50
-        AVL.Unsafe.Lookup.Lookup60
-        AVL.Unsafe.Lookup.Lookup70
-        AVL.Unsafe.Lookup.Lookup80
-        AVL.Unsafe.Lookup.Lookup90
-        AVL.Unsafe.Lookup.Lookup100
+        AVL.Unsafe.Delete.Delete1
+        AVL.Unsafe.Delete.Delete2
+        AVL.Unsafe.Delete.Delete3
+        AVL.Unsafe.Delete.Delete4
+        AVL.Unsafe.Delete.Delete5
+        AVL.Unsafe.Delete.Delete6
+        AVL.Unsafe.Delete.Delete7
+        AVL.Unsafe.Delete.Delete8
+        AVL.Unsafe.Delete.Delete9
         AVL.Unsafe.Delete.Delete10
-        AVL.Unsafe.Delete.Delete20
-        AVL.Unsafe.Delete.Delete30
-        AVL.Unsafe.Delete.Delete40
-        AVL.Unsafe.Delete.Delete50
-        AVL.Unsafe.Delete.Delete60
-        AVL.Unsafe.Delete.Delete70
-        AVL.Unsafe.Delete.Delete80
-        AVL.Unsafe.Delete.Delete90
-        AVL.Unsafe.Delete.Delete100
 
 benchmark avl-fullextern
     -- The interface type and version of the benchmark.
@@ -275,6 +277,54 @@ benchmark avl-intern
         AVL.Intern.Delete.Delete50
         AVL.Intern.Delete.Delete60
 
+
+benchmark bst-unsafe
+    -- The interface type and version of the benchmark.
+    type:             exitcode-stdio-1.0
+
+    -- Other library packages from which benchmark modules are imported.
+    build-depends:    base ^>=4.14.1.0, time ^>=1.9.3, balanced-binary-search-tree ^>=0.1.0.0
+
+    -- Additional options for GHC.
+    ghc-options:      -O0 -fmax-simplifier-iterations=0
+
+    -- Directories containing source files.
+    hs-source-dirs:   benchmark
+
+    -- The entrypoint to the benchmark (relative to hs-source-dirs).
+    main-is:          BST/Unsafe/Benchmark.hs
+
+    other-modules:
+        BST.Unsafe.Insert.Insert1
+        BST.Unsafe.Insert.Insert2
+        BST.Unsafe.Insert.Insert3
+        BST.Unsafe.Insert.Insert4
+        BST.Unsafe.Insert.Insert5
+        BST.Unsafe.Insert.Insert6
+        BST.Unsafe.Insert.Insert7
+        BST.Unsafe.Insert.Insert8
+        BST.Unsafe.Insert.Insert9
+        BST.Unsafe.Insert.Insert10
+        BST.Unsafe.Lookup.Lookup1
+        BST.Unsafe.Lookup.Lookup2
+        BST.Unsafe.Lookup.Lookup3
+        BST.Unsafe.Lookup.Lookup4
+        BST.Unsafe.Lookup.Lookup5
+        BST.Unsafe.Lookup.Lookup6
+        BST.Unsafe.Lookup.Lookup7
+        BST.Unsafe.Lookup.Lookup8
+        BST.Unsafe.Lookup.Lookup9
+        BST.Unsafe.Lookup.Lookup10
+        BST.Unsafe.Delete.Delete1
+        BST.Unsafe.Delete.Delete2
+        BST.Unsafe.Delete.Delete3
+        BST.Unsafe.Delete.Delete4
+        BST.Unsafe.Delete.Delete5
+        BST.Unsafe.Delete.Delete6
+        BST.Unsafe.Delete.Delete7
+        BST.Unsafe.Delete.Delete8
+        BST.Unsafe.Delete.Delete9
+        BST.Unsafe.Delete.Delete10
 
 benchmark bst-fullextern
     -- The interface type and version of the benchmark.
