@@ -55,6 +55,5 @@ mkAVL t = AVL t isBSTT isAVLT
 
 -- | Proof term which shows that `t` is an AlmostAVL
 data IsAlmostAVLT :: Tree -> Type where
-  EmptyIsAlmostAVLT :: IsAlmostAVLT 'EmptyTree
   ForkIsAlmostAVLT  :: IsAVLT l -> Node n a -> IsAVLT r -> IsAlmostAVLT ('ForkTree l (Node n a) r)
 

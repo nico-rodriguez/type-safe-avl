@@ -7,7 +7,7 @@
 
 module Data.Tree.AVL.Intern.Constructors (
   AVL(EmptyAVL,ForkAVL),
-  AlmostAVL(NullAVL, AlmostAVL)
+  AlmostAVL(AlmostAVL)
 ) where
 
 import           Data.Kind                (Type)
@@ -41,6 +41,5 @@ instance Show (AVL t) where
 -- | an insertion or deletion over an AVL that may leave
 -- | the tree unbalanced.
 data AlmostAVL :: Tree -> Type where
-  NullAVL    :: AlmostAVL 'EmptyTree
   AlmostAVL  :: (Show a, LtN l n ~ 'True, GtN r n ~ 'True) =>
     AVL l -> Node n a -> AVL r -> AlmostAVL ('ForkTree l (Node n a) r)
