@@ -110,7 +110,7 @@ library
         RankNTypes UndecidableInstances FlexibleContexts Trustworthy
 
     -- Other library packages from which modules are imported.
-    build-depends:    base ^>=4.11.1.0, time ^>=1.9.3
+    build-depends:    base ^>=4.11.1.0, time ^>=1.8.0
 
     -- Additional options for GHC.
     ghc-options:      -O0 -fmax-simplifier-iterations=0
@@ -126,7 +126,7 @@ benchmark avl-unsafe
     type:             exitcode-stdio-1.0
 
     -- Other library packages from which benchmark modules are imported.
-    build-depends:    base ^>=4.11.1.0, time ^>=1.9.3, balanced-binary-search-tree ^>=0.1.0.0
+    build-depends:    base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
 
     -- Additional options for GHC.
     ghc-options:      -O0 -fmax-simplifier-iterations=0
@@ -172,7 +172,7 @@ benchmark avl-unsafe
 benchmark avl-fullextern
     type:             exitcode-stdio-1.0
 
-    build-depends:    base ^>=4.11.1.0, time ^>=1.9.3, balanced-binary-search-tree ^>=0.1.0.0
+    build-depends:    base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
 
     ghc-options:      -O0 -fmax-simplifier-iterations=0
 
@@ -215,7 +215,7 @@ benchmark avl-fullextern
 benchmark avl-extern
     type:             exitcode-stdio-1.0
 
-    build-depends:    base ^>=4.11.1.0, time ^>=1.9.3, balanced-binary-search-tree ^>=0.1.0.0
+    build-depends:    base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
 
     ghc-options:      -O0 -fmax-simplifier-iterations=0
 
@@ -246,7 +246,7 @@ benchmark avl-extern
 benchmark avl-intern
     type:             exitcode-stdio-1.0
 
-    build-depends:    base ^>=4.11.1.0, time ^>=1.9.3, balanced-binary-search-tree ^>=0.1.0.0
+    build-depends:    base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
 
     ghc-options:      -O0 -fmax-simplifier-iterations=0
 
@@ -278,7 +278,7 @@ benchmark avl-intern
 benchmark bst-unsafe
     type:             exitcode-stdio-1.0
 
-    build-depends:    base ^>=4.11.1.0, time ^>=1.9.3, balanced-binary-search-tree ^>=0.1.0.0
+    build-depends:    base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
 
     ghc-options:      -O0 -fmax-simplifier-iterations=0
 
@@ -321,7 +321,7 @@ benchmark bst-unsafe
 benchmark bst-fullextern
     type:             exitcode-stdio-1.0
 
-    build-depends:    base ^>=4.11.1.0, time ^>=1.9.3, balanced-binary-search-tree ^>=0.1.0.0
+    build-depends:    base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
 
     ghc-options:      -O0 -fmax-simplifier-iterations=0
 
@@ -364,7 +364,7 @@ benchmark bst-fullextern
 benchmark bst-extern
     type:             exitcode-stdio-1.0
 
-    build-depends:    base ^>=4.11.1.0, time ^>=1.9.3, balanced-binary-search-tree ^>=0.1.0.0
+    build-depends:    base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
 
     ghc-options:      -O0 -fmax-simplifier-iterations=0
 
@@ -395,7 +395,7 @@ benchmark bst-extern
 benchmark bst-intern
     type:             exitcode-stdio-1.0
 
-    build-depends:    base ^>=4.11.1.0, time ^>=1.9.3, balanced-binary-search-tree ^>=0.1.0.0
+    build-depends:    base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
 
     ghc-options:      -O0 -fmax-simplifier-iterations=0
 
