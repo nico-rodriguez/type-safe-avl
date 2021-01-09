@@ -14,8 +14,7 @@ Implementation of type safe BST and AVL trees, following four different approach
 ## Prerequisites
 
 ```Shell
-ghc (>= 8.4.3)  # GHC Haskell compiler
-make (>=4.2.1)  # GNU Make
+ghc (>= 8.10.2)  # GHC Haskell compiler
 ```
 
 No external Haskell libraries are needed.
@@ -33,7 +32,38 @@ git clone https://github.com/nico-rodriguez/balanced-binary-search-tree.git
 ```Shell
 balanced-binary-search-tree
 │   README.md
-└───Data/Tree
+└───benchmark
+|    └───AVL
+|    │   └───FullExtern
+|    |   |   |   Benchmark.hs
+|    │   │   │
+|    |   |   └───Insert
+|    │   │   │
+|    |   |   └───Lookup
+|    │   │   │
+|    |   |   └───Delete
+|    │   └───Extern
+|    │   │   │   ...
+|    │   └───Intern
+|    │   │   │   ...
+|    │   └───Unsafe
+|    │       │   ...
+|    └───BST
+|    │   └───FullExtern
+|    |   |   |   Benchmark.hs
+|    │   │   │
+|    |   |   └───Insert
+|    │   │   │
+|    |   |   └───Lookup
+|    │   │   │
+|    |   |   └───Delete
+|    │   └───Extern
+|    │   │   │   ...
+|    │   └───Intern
+|    │   │   │   ...
+|    │   └───Unsafe
+|    │       │   ...
+└───src/Data/Tree
     │   ITree.hs
     │   Node.hs
     └───AVL
@@ -80,6 +110,8 @@ balanced-binary-search-tree
             │   Lookup.hs
             │   Delete.hs
             │   Examples.hs
+            └───Unsafe
+                │   Examples.hs
 ```
 
 - `ITree.hs` implements the `Tree` and `ITree` data types.
@@ -258,9 +290,39 @@ import Data.Tree.AVL.Intern (emptyAVL,insertAVL,lookupAVL,deleteAVL)
 
 ## Benchmark
 
-### Break down
+### Structure
 
-TODO: Explain which benchmarks were defined
+```Shell
+balanced-binary-search-tree
+│   README.md
+└───benchmark
+|    └───AVL
+|    │   └───FullExtern
+|    |   |   |   Benchmark.hs
+|    │   │   │
+|    |   |   └───Insert
+|    │   │   │
+|    |   |   └───Lookup
+|    │   │   │
+|    |   |   └───Delete
+|    │   └───Extern
+|    │   │   │   ...
+|    │   └───Intern
+|    │   │   │   ...
+|    │   └───Unsafe
+|    │       │   ...
+|    └───BST
+|    │   ...
+```
+
+There are benchmarks for both BST and AVL trees for each approach. For instance, in the folder `benchmark/AVL/FullExtern`
+there are three folders and one source file: `Insert`, `Lookup`, `Delete` and `Benchmark.hs`.
+
+Inside each folder there are
+different source files for benchmarking each operation under several tree sizes; they're splitted in different files
+in order to be able to measure not only the running times, but also the compile times.
+
+The source files `Benchmark.hs` performs all of the benchmarks defined inside the folders `Insert`, `Lookup` and `Delete`.
 
 ### Running the benchmark
 
