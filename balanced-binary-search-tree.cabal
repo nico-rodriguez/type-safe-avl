@@ -170,19 +170,14 @@ benchmark avl-unsafe
         AVL.Unsafe.Delete.Delete10
 
 benchmark avl-fullextern
-    -- The interface type and version of the benchmark.
     type:             exitcode-stdio-1.0
 
-    -- Other library packages from which benchmark modules are imported.
     build-depends:    base ^>=4.14.1.0, time ^>=1.9.3, balanced-binary-search-tree ^>=0.1.0.0
 
-    -- Additional options for GHC.
     ghc-options:      -O0 -fmax-simplifier-iterations=0
 
-    -- Directories containing source files.
     hs-source-dirs:   benchmark
 
-    -- The entrypoint to the benchmark (relative to hs-source-dirs).
     main-is:          AVL/FullExtern/Benchmark.hs
 
     other-modules:
@@ -218,19 +213,14 @@ benchmark avl-fullextern
         AVL.FullExtern.Delete.Delete100
 
 benchmark avl-extern
-    -- The interface type and version of the benchmark.
     type:             exitcode-stdio-1.0
 
-    -- Other library packages from which benchmark modules are imported.
     build-depends:    base ^>=4.14.1.0, time ^>=1.9.3, balanced-binary-search-tree ^>=0.1.0.0
 
-    -- Additional options for GHC.
     ghc-options:      -O0 -fmax-simplifier-iterations=0
 
-    -- Directories containing source files.
     hs-source-dirs:   benchmark
 
-    -- The entrypoint to the benchmark (relative to hs-source-dirs).
     main-is:          AVL/Extern/Benchmark.hs
 
     other-modules:
@@ -254,19 +244,14 @@ benchmark avl-extern
         AVL.Extern.Delete.Delete60
 
 benchmark avl-intern
-    -- The interface type and version of the benchmark.
     type:             exitcode-stdio-1.0
 
-    -- Other library packages from which benchmark modules are imported.
     build-depends:    base ^>=4.14.1.0, time ^>=1.9.3, balanced-binary-search-tree ^>=0.1.0.0
 
-    -- Additional options for GHC.
     ghc-options:      -O0 -fmax-simplifier-iterations=0
 
-    -- Directories containing source files.
     hs-source-dirs:   benchmark
 
-    -- The entrypoint to the benchmark (relative to hs-source-dirs).
     main-is:          AVL/Intern/Benchmark.hs
 
     other-modules:
@@ -291,19 +276,14 @@ benchmark avl-intern
 
 
 benchmark bst-unsafe
-    -- The interface type and version of the benchmark.
     type:             exitcode-stdio-1.0
 
-    -- Other library packages from which benchmark modules are imported.
     build-depends:    base ^>=4.14.1.0, time ^>=1.9.3, balanced-binary-search-tree ^>=0.1.0.0
 
-    -- Additional options for GHC.
     ghc-options:      -O0 -fmax-simplifier-iterations=0
 
-    -- Directories containing source files.
     hs-source-dirs:   benchmark
 
-    -- The entrypoint to the benchmark (relative to hs-source-dirs).
     main-is:          BST/Unsafe/Benchmark.hs
 
     other-modules:
@@ -339,19 +319,14 @@ benchmark bst-unsafe
         BST.Unsafe.Delete.Delete10
 
 benchmark bst-fullextern
-    -- The interface type and version of the benchmark.
     type:             exitcode-stdio-1.0
 
-    -- Other library packages from which benchmark modules are imported.
     build-depends:    base ^>=4.14.1.0, time ^>=1.9.3, balanced-binary-search-tree ^>=0.1.0.0
 
-    -- Additional options for GHC.
     ghc-options:      -O0 -fmax-simplifier-iterations=0
 
-    -- Directories containing source files.
     hs-source-dirs:   benchmark
 
-    -- The entrypoint to the benchmark (relative to hs-source-dirs).
     main-is:          BST/FullExtern/Benchmark.hs
 
     other-modules:
@@ -387,19 +362,14 @@ benchmark bst-fullextern
         BST.FullExtern.Delete.Delete100
 
 benchmark bst-extern
-    -- The interface type and version of the benchmark.
     type:             exitcode-stdio-1.0
 
-    -- Other library packages from which benchmark modules are imported.
     build-depends:    base ^>=4.14.1.0, time ^>=1.9.3, balanced-binary-search-tree ^>=0.1.0.0
 
-    -- Additional options for GHC.
     ghc-options:      -O0 -fmax-simplifier-iterations=0
 
-    -- Directories containing source files.
     hs-source-dirs:   benchmark
 
-    -- The entrypoint to the benchmark (relative to hs-source-dirs).
     main-is:          BST/Extern/Benchmark.hs
 
     other-modules:
@@ -423,19 +393,14 @@ benchmark bst-extern
         BST.Extern.Delete.Delete60
 
 benchmark bst-intern
-    -- The interface type and version of the benchmark.
     type:             exitcode-stdio-1.0
 
-    -- Other library packages from which benchmark modules are imported.
     build-depends:    base ^>=4.14.1.0, time ^>=1.9.3, balanced-binary-search-tree ^>=0.1.0.0
 
-    -- Additional options for GHC.
     ghc-options:      -O0 -fmax-simplifier-iterations=0
 
-    -- Directories containing source files.
     hs-source-dirs:   benchmark
 
-    -- The entrypoint to the benchmark (relative to hs-source-dirs).
     main-is:          BST/Intern/Benchmark.hs
 
     other-modules:
