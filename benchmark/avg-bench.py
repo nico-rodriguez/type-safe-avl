@@ -126,7 +126,7 @@ def get_average_times(times):
   }
 
 def run_benchmark(bench_name):
-  result = run(['cabal', "bench", bench_name.lower()], capture_output=True, text=True, timeout=20)
+  result = run(['cabal', "bench", bench_name.lower()], capture_output=True, text=True)
   return get_running_times(result.stdout())
 
 def execute_benchmarks(bench_name, n):
@@ -150,7 +150,7 @@ def execute_benchmarks(bench_name, n):
 if __name__ == '__main__':
   bench_name = argv[1]
   if (len(argv) > 2):
-    n = argv[2]
+    n = int(argv[2])
   else:
     n = 5
 
