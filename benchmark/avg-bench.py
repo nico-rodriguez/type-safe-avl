@@ -4,7 +4,7 @@ from sys import argv
 from subprocess import run
 from re import compile, findall
 from itertools import product
-from multiprocessing import Pool
+from multiprocessing import Pool, cpu_count
 
 
 def valid_bench_names():
@@ -95,9 +95,13 @@ def get_average_times(times):
     }
 
 
-def run_benchmark(bench_name):
-    result = run(['cabal', "bench", bench_name.lower()],
-                 capture_output=True, text=True)
+def run_benchmark(bench_name, bench_num):
+    """
+    It executes the named benchmark using an exclusive builddir
+    (the default is dist/)
+    """
+    result = run(f"cabal bench {bench_name.lower()} --builddir dist{bench_num}",
+                 shell=True, capture_output=True, text=True)
     return get_running_times(result.stdout)
 
 
@@ -113,8 +117,9 @@ def execute_benchmarks(bench_name, n):
     the running times of a different operation. The keys are the names of each
     operation: 'INSERT', 'DELETE', 'LOOKUP'.
     """
-    with Pool(n) as p:
-        results = p.map(run_benchmark, [bench_name for _ in range(n)])
+    with Pool(cpu_count()) as p:
+        results = p.starmap(
+            run_benchmark, [(bench_name, str(i)) for i in range(n)])
         return get_average_times(results)
 
 
