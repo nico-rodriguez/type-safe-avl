@@ -25,15 +25,19 @@ def is_valid_bench_name(bench_name):
 
 
 USAGE_MESSAGE = """
-  Usage: python3 avg-bench.py [BENCH NAME] [N]
-  where BENCH NAME is necessary and must be one of:
+  Usage: python3 avg-bench.py [BENCH NAME] [N] [DEBUG]
+  where:
+  
+  * BENCH NAME is necessary and must be one of:
   - bst-unsafe, avl-unsafe
   - bst-fullextern, avl-fullextern
   - bst-extern, avl-extern
-  - bst-intern, avl-intern
-  and N is a positive integer number which indicates
+  - bst-intern, avl-intern.
+  * N (optional) is a positive integer number which indicates
   how many times to repeat the benchmark (the results
   are averaged). It defaults to 5.
+  * DEBUG (optional) is either True or False (case insensitive)
+  and enables debug printing. Defaults to False.
   """
 
 
@@ -50,22 +54,34 @@ def sanitize_arguments():
     Sanitize the command line arguments.
     Ignore any extra arguments provided.
     """
+    debug = False
+
     if (len(argv) < 2):
         exit_with_usage_msg()
+
     elif (len(argv) >= 2):
         bench_name = argv[1].strip()
         if (not is_valid_bench_name(bench_name)):
             exit_with_usage_msg()
+
         if (len(argv) > 2):
             n = argv[2].strip()
             if (not n.isdigit()):
                 exit_with_usage_msg()
             else:
                 n = int(n)
+            
+            if (len(argv) > 3):
+              debug = argv[3].strip()
+              if (debug.lower() == "true"):
+                debug = True
+              elif (debug.lower() != "false"):
+                exit_with_usage_msg()
+
         else:
             n = 5
 
-    return bench_name, n
+    return bench_name, n, debug
 
 
 def get_running_times(result, debug):
@@ -73,7 +89,7 @@ def get_running_times(result, debug):
     Parse the text results from the benchmark in order to extract the running times.
     Return a dictionary with keys 'INSERT', 'DELETE' and 'LOOKUP', and arrays as values.
     """
-    get_times_re = compile('N=[\w|^]{1,4}: (\d*\.\d*)s')
+    get_times_re = compile(r"N=[\w|^]{1,4}: (\d*\.\d*)s")
     times = get_times_re.findall(result)
     times = list(map(float, times))
     if (debug): print("get_running_times", times)
