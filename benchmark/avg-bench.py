@@ -68,7 +68,7 @@ def sanitize_arguments():
     return bench_name, n
 
 
-def get_running_times(result):
+def get_running_times(result, debug):
     """
     Parse the text results from the benchmark in order to extract the running times.
     Return a dictionary with keys 'INSERT', 'DELETE' and 'LOOKUP', and arrays as values.
@@ -76,6 +76,7 @@ def get_running_times(result):
     get_times_re = compile('N=[\w|^]{1,4}: (\d*\.\d*)s')
     times = get_times_re.findall(result)
     times = list(map(float, times))
+    if (debug): print("get_running_times", times)
     return {
         'INSERT': times[0:10],
         'DELETE': times[10:20],
@@ -95,17 +96,18 @@ def get_average_times(times):
     }
 
 
-def run_benchmark(bench_name, bench_num):
+def run_benchmark(bench_name, bench_num, debug):
     """
     It executes the named benchmark using an exclusive builddir
     (the default is dist/)
     """
     result = run(f"cabal bench {bench_name.lower()} --builddir dist{bench_num}",
                  shell=True, capture_output=True, text=True)
-    return get_running_times(result.stdout)
+    if (debug): print("run_benchmark", result)
+    return get_running_times(result.stdout, debug)
 
 
-def execute_benchmarks(bench_name, n):
+def execute_benchmarks(bench_name, n, debug):
     """
     This function repeatedly executes (in parallel) the named benchmark
     and returns the average running times.
@@ -113,19 +115,21 @@ def execute_benchmarks(bench_name, n):
     @param bench_name: the name of the benchmark to execute. Possible choices are
     [bst|avl]-[unsafe|fullextern|extern|intern]. For instance, 'bst-extern'.
     @param n: the amount of times the benchmark is executed.
+    @param debug: boolean which tells if debug printing is needed.
     @returns: the running times as a dictionary with three entries. Each entry has
     the running times of a different operation. The keys are the names of each
     operation: 'INSERT', 'DELETE', 'LOOKUP'.
     """
     with Pool(cpu_count()) as p:
         results = p.starmap(
-            run_benchmark, [(bench_name, str(i)) for i in range(n)])
+            run_benchmark, [(bench_name, str(i), debug) for i in range(n)])
+        if (debug): print("execute_benchmarks", results)
         return get_average_times(results)
 
 
 if __name__ == '__main__':
-    bench_name, n = sanitize_arguments()
+    bench_name, n, debug = sanitize_arguments()
 
-    results = execute_benchmarks(bench_name, n)
+    results = execute_benchmarks(bench_name, n, debug)
 
     print(results)
