@@ -150,7 +150,7 @@ def execute_benchmarks(bench_name, n, debug):
         results = get_average_times(results)
         if (debug):
             print("***execute_benchmarks***", results, sep="\n")
-        save_results_to_file(bench_name, results)
+        save_results_to_file(f"benchmark/{bench_name}.txt", results)
         return results
 
 
