@@ -94,7 +94,7 @@ def get_running_times(result, debug):
     times = get_times_re.findall(result)
     times = list(map(float, times))
     if (debug):
-        print("get_running_times", times)
+        print("***get_running_times***", times, sep="\n")
     return {
         'INSERT': times[0:10],
         'DELETE': times[10:20],
@@ -122,7 +122,7 @@ def run_benchmark(bench_name, bench_num, debug):
     result = run(f"cabal bench {bench_name.lower()} --builddir dist{bench_num}",
                  shell=True, capture_output=True, text=True)
     if (debug):
-        print("run_benchmark", result)
+        print("***run_benchmark***", result, sep="\n")
     return get_running_times(result.stdout, debug)
 
 
@@ -142,13 +142,16 @@ def execute_benchmarks(bench_name, n, debug):
     @returns: the running times as a dictionary with three entries.
     Each entry has the running times of a different operation.
     The keys are the names of each operation: 'INSERT', 'DELETE', 'LOOKUP'.
+    It also saves the results to a file.
     """
     with Pool(cpu_count()) as p:
         results = p.starmap(
             run_benchmark, [(bench_name, str(i), debug) for i in range(n)])
+        results = get_average_times(results)
         if (debug):
-            print("execute_benchmarks", results)
-        return get_average_times(results)
+            print("***execute_benchmarks***", results, sep="\n")
+        save_results_to_file(bench_name, results)
+        return results
 
 
 def execute_all_benchmarks(n, debug):
@@ -167,8 +170,7 @@ def execute_all_benchmarks(n, debug):
     for bench_name in valid_bench_names():
         results = execute_benchmarks(bench_name, n, debug)
         if (debug):
-            print("execute_all_benchmarks", results)
-        save_results_to_file(bench_name, results)
+            print("***execute_all_benchmarks***", results, sep="\n")
 
 
 def save_results_to_file(file_name, results):
@@ -196,4 +198,4 @@ if __name__ == '__main__':
     else:
         results = execute_benchmarks(bench_name, n, debug)
         if (debug):
-          print("main", results)
+            print("main", results)
