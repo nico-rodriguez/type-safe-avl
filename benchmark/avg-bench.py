@@ -139,17 +139,16 @@ def execute_benchmarks(bench_name, n, debug):
 
     @param debug: boolean which tells if debug printing is needed.
 
-    @returns: a tuple with the name of the benchmark and the running times
-    as a dictionary with three entries. Each entry has the running times
-    of a different operation. The keys are the names of each
-    operation: 'INSERT', 'DELETE', 'LOOKUP'.
+    @returns: the running times as a dictionary with three entries.
+    Each entry has the running times of a different operation.
+    The keys are the names of each operation: 'INSERT', 'DELETE', 'LOOKUP'.
     """
     with Pool(cpu_count()) as p:
         results = p.starmap(
             run_benchmark, [(bench_name, str(i), debug) for i in range(n)])
         if (debug):
             print("execute_benchmarks", results)
-        return (bench_name, get_average_times(results))
+        return get_average_times(results)
 
 
 def execute_all_benchmarks(n, debug):
@@ -169,9 +168,24 @@ def execute_all_benchmarks(n, debug):
         results = execute_benchmarks(bench_name, n, debug)
         if (debug):
             print("execute_all_benchmarks", results)
-        with open(f"{bench_name}.txt", "w") as f:
-            f.write(results)
+        save_results_to_file(bench_name, results)
 
+
+def save_results_to_file(file_name, results):
+    """
+    Save the results of the function execute_benchmarks to a file
+    with the following format:
+      INSERT
+      ...
+      DELETE
+      ...
+      LOOKUP
+      ...
+    """
+    with open(file_name, "w") as f:
+        for op in results.keys():
+            f.write(op)
+            f.writelines(map(str, results[op]))
 
 
 if __name__ == '__main__':
