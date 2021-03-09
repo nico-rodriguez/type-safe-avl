@@ -60,8 +60,8 @@ def sanitize_arguments():
         exit_with_usage_msg()
 
     elif (len(argv) >= 2):
-        bench_name = argv[1].strip()
-        if (not is_valid_bench_name(bench_name)):
+        bench_name = argv[1].strip().lower()
+        if (not is_valid_bench_name(bench_name) and bench_name != "all"):
             exit_with_usage_msg()
 
         if (len(argv) > 2):
@@ -70,13 +70,13 @@ def sanitize_arguments():
                 exit_with_usage_msg()
             else:
                 n = int(n)
-            
+
             if (len(argv) > 3):
-              debug = argv[3].strip()
-              if (debug.lower() == "true"):
-                debug = True
-              elif (debug.lower() != "false"):
-                exit_with_usage_msg()
+                debug = argv[3].strip().lower()
+                if (debug == "true"):
+                    debug = True
+                elif (debug != "false"):
+                    exit_with_usage_msg()
 
         else:
             n = 5
@@ -92,7 +92,8 @@ def get_running_times(result, debug):
     get_times_re = compile(r"N=[\w|^]{1,4}: (\d*\.\d*)s")
     times = get_times_re.findall(result)
     times = list(map(float, times))
-    if (debug): print("get_running_times", times)
+    if (debug):
+        print("get_running_times", times)
     return {
         'INSERT': times[0:10],
         'DELETE': times[10:20],
@@ -119,7 +120,8 @@ def run_benchmark(bench_name, bench_num, debug):
     """
     result = run(f"cabal bench {bench_name.lower()} --builddir dist{bench_num}",
                  shell=True, capture_output=True, text=True)
-    if (debug): print("run_benchmark", result)
+    if (debug):
+        print("run_benchmark", result)
     return get_running_times(result.stdout, debug)
 
 
@@ -128,24 +130,55 @@ def execute_benchmarks(bench_name, n, debug):
     This function repeatedly executes (in parallel) the named benchmark
     and returns the average running times.
 
+
     @param bench_name: the name of the benchmark to execute. Possible choices are
     [bst|avl]-[unsafe|fullextern|extern|intern]. For instance, 'bst-extern'.
+
     @param n: the amount of times the benchmark is executed.
+
     @param debug: boolean which tells if debug printing is needed.
-    @returns: the running times as a dictionary with three entries. Each entry has
-    the running times of a different operation. The keys are the names of each
+
+    @returns: a tuple with the name of the benchmark and the running times
+    as a dictionary with three entries. Each entry has the running times
+    of a different operation. The keys are the names of each
     operation: 'INSERT', 'DELETE', 'LOOKUP'.
     """
     with Pool(cpu_count()) as p:
         results = p.starmap(
             run_benchmark, [(bench_name, str(i), debug) for i in range(n)])
-        if (debug): print("execute_benchmarks", results)
-        return get_average_times(results)
+        if (debug):
+            print("execute_benchmarks", results)
+        return (bench_name, get_average_times(results))
+
+
+def execute_all_benchmarks(n, debug):
+    """
+    This function repeatedly executes (in parallel) all the benchmarks
+    and returns the average running times.
+
+    @param n: the amount of times the benchmark is executed.
+
+    @param debug: boolean which tells if debug printing is needed.
+
+    @returns: None. It writes the results to different files. The name of
+    each file is related to the benchmark name; the contents are those
+    from the function execute_benchmarks.
+    """
+    for bench_name in valid_bench_names():
+        results = execute_benchmarks(bench_name, n, debug)
+        if (debug):
+            print("execute_all_benchmarks", results)
+        with open(f"{bench_name}.txt", "w") as f:
+            f.write(results)
+
 
 
 if __name__ == '__main__':
     bench_name, n, debug = sanitize_arguments()
 
-    results = execute_benchmarks(bench_name, n, debug)
-
-    print(results)
+    if (bench_name == "all"):
+        execute_all_benchmarks(n, debug)
+    else:
+        results = execute_benchmarks(bench_name, n, debug)
+        if (debug):
+          print("main", results)
