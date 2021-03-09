@@ -28,11 +28,12 @@ USAGE_MESSAGE = """
   Usage: python3 avg-bench.py [BENCH NAME] [N] [DEBUG]
   where:
   
-  * BENCH NAME is necessary and must be one of:
+  * BENCH NAME (case insensitive) is necessary and must be one of:
   - bst-unsafe, avl-unsafe
   - bst-fullextern, avl-fullextern
   - bst-extern, avl-extern
-  - bst-intern, avl-intern.
+  - bst-intern, avl-intern,
+  - all.
   * N (optional) is a positive integer number which indicates
   how many times to repeat the benchmark (the results
   are averaged). It defaults to 5.
@@ -61,7 +62,7 @@ def sanitize_arguments():
 
     elif (len(argv) >= 2):
         bench_name = argv[1].strip().lower()
-        if (not is_valid_bench_name(bench_name) and bench_name != "all"):
+        if ((not is_valid_bench_name(bench_name)) and bench_name != "all"):
             exit_with_usage_msg()
 
         if (len(argv) > 2):
