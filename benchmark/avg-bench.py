@@ -2,7 +2,7 @@
 
 from sys import argv
 from subprocess import run
-from re import compile, findall
+from re import compile, findall, DOTALL
 from itertools import product
 from multiprocessing import Pool, cpu_count
 
@@ -90,15 +90,32 @@ def get_running_times(result, debug):
     Parse the text results from the benchmark in order to extract the running times.
     Return a dictionary with keys 'INSERT', 'DELETE' and 'LOOKUP', and arrays as values.
     """
-    get_times_re = compile(r"N=[\w|^]{1,4}: (\d*\.\d*)s")
-    times = get_times_re.findall(result)
-    times = list(map(float, times))
+    print(result)
+    get_insert_times_re = compile(r"INSERT\n(.*)\nDELETE", DOTALL)
+    get_delete_times_re = compile(r"DELETE\n(.*)\nLOOKUP", DOTALL)
+    get_lookup_times_re = compile(r"LOOKUP\n(.*)", DOTALL)
+    insert_times = get_insert_times_re.findall(result)[0]
+    delete_times = get_delete_times_re.findall(result)[0]
+    lookup_times = get_lookup_times_re.findall(result)[0]
     if (debug):
-        print("***get_running_times***", times, sep="\n")
+        print("***get_running_times***", insert_times, delete_times, lookup_times, sep="\n")
+    get_insert_times_re = compile(r"N=[\w|^]{1,4}: (\d*\.\d*)s")
+    get_delete_times_re = compile(r"N=[\w|^]{1,4}: (\d*\.\d*)s")
+    get_lookup_times_re = compile(r"N=[\w|^]{1,4}: (\d*\.\d*)s")
+    insert_times = get_insert_times_re.findall(insert_times)
+    delete_times = get_delete_times_re.findall(delete_times)
+    lookup_times = get_lookup_times_re.findall(lookup_times)
+    if (debug):
+        print("***get_running_times***", insert_times, delete_times, lookup_times, sep="\n")
+    insert_times = list(map(float, insert_times))
+    delete_times = list(map(float, delete_times))
+    lookup_times = list(map(float, lookup_times))
+    if (debug):
+        print("***get_running_times***", insert_times, delete_times, lookup_times, sep="\n")
     return {
-        'INSERT': times[0:10],
-        'DELETE': times[10:20],
-        'LOOKUP': times[20:30]
+        'INSERT': insert_times,
+        'DELETE': delete_times,
+        'LOOKUP': lookup_times
     }
 
 
