@@ -186,8 +186,8 @@ def save_results_to_file(file_name, results):
     """
     with open(file_name, "w") as f:
         for op in results.keys():
-            f.write(op)
-            f.writelines(map(str, results[op]))
+            f.write(op + "\n")
+            f.writelines(map(lambda n: str(n) + "\n", results[op]))
 
 
 if __name__ == '__main__':
