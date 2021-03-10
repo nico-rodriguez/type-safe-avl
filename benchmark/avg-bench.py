@@ -75,19 +75,19 @@ def sanitize_arguments():
             else:
                 n = int(n)
 
-        if (len(argv) > 3):
-            save_to_file = argv[3].strip().lower()
-            if (debug == "true"):
-                debug = True
-            elif (debug != "false"):
-                exit_with_usage_msg()
+            if (len(argv) > 3):
+                save_to_file = argv[3].strip().lower()
+                if (save_to_file == "true"):
+                    save_to_file = True
+                elif (save_to_file != "false"):
+                    exit_with_usage_msg()
 
-        if (len(argv) > 4):
-            debug = argv[4].strip().lower()
-            if (debug == "true"):
-                debug = True
-            elif (debug != "false"):
-                exit_with_usage_msg()
+            if (len(argv) > 4):
+                debug = argv[4].strip().lower()
+                if (debug == "true"):
+                    debug = True
+                elif (debug != "false"):
+                    exit_with_usage_msg()
 
         else:
             n = 5
