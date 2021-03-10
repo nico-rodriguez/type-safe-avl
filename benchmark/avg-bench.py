@@ -25,7 +25,7 @@ def is_valid_bench_name(bench_name):
 
 
 USAGE_MESSAGE = """
-  Usage: python3 avg-bench.py [BENCH NAME] [N] [DEBUG]
+  Usage: python3 avg-bench.py [BENCH NAME] [N] [SAVE TO FILE] [DEBUG]
   where:
   
   * BENCH NAME (case insensitive) is necessary and must be one of:
@@ -37,6 +37,8 @@ USAGE_MESSAGE = """
   * N (optional) is a positive integer number which indicates
   how many times to repeat the benchmark (the results
   are averaged). It defaults to 5.
+  * SAVE TO FILE (optional) is either True or False (case insensitive)
+  and controls whether the results are saved to a file.
   * DEBUG (optional) is either True or False (case insensitive)
   and enables debug printing. Defaults to False.
   """
@@ -55,6 +57,7 @@ def sanitize_arguments():
     Sanitize the command line arguments.
     Ignore any extra arguments provided.
     """
+    save_to_file = False
     debug = False
 
     if (len(argv) < 2):
@@ -72,17 +75,24 @@ def sanitize_arguments():
             else:
                 n = int(n)
 
-            if (len(argv) > 3):
-                debug = argv[3].strip().lower()
-                if (debug == "true"):
-                    debug = True
-                elif (debug != "false"):
-                    exit_with_usage_msg()
+        if (len(argv) > 3):
+            save_to_file = argv[3].strip().lower()
+            if (debug == "true"):
+                debug = True
+            elif (debug != "false"):
+                exit_with_usage_msg()
+
+        if (len(argv) > 4):
+            debug = argv[4].strip().lower()
+            if (debug == "true"):
+                debug = True
+            elif (debug != "false"):
+                exit_with_usage_msg()
 
         else:
             n = 5
 
-    return bench_name, n, debug
+    return bench_name, n, save_to_file, debug
 
 
 def get_running_times(result, debug):
@@ -143,7 +153,7 @@ def run_benchmark(bench_name, bench_num, debug):
     return get_running_times(result.stdout, debug)
 
 
-def execute_benchmarks(bench_name, n, debug):
+def execute_benchmarks(bench_name, n, save_to_file, debug):
     """
     This function repeatedly executes (in parallel) the named benchmark
     and returns the average running times.
@@ -153,6 +163,8 @@ def execute_benchmarks(bench_name, n, debug):
     [bst|avl]-[unsafe|fullextern|extern|intern]. For instance, 'bst-extern'.
 
     @param n: the amount of times the benchmark is executed.
+
+    @param save_to_file: boolean which tells whether to save results to a file.
 
     @param debug: boolean which tells if debug printing is needed.
 
@@ -167,16 +179,19 @@ def execute_benchmarks(bench_name, n, debug):
         results = get_average_times(results)
         if (debug):
             print("***execute_benchmarks***", results, sep="\n")
-        save_results_to_file(f"benchmark/{bench_name}.txt", results)
+        if (save_to_file):
+            save_results_to_file(f"benchmark/{bench_name}.txt", results)
         return results
 
 
-def execute_all_benchmarks(n, debug):
+def execute_all_benchmarks(n, save_to_file, debug):
     """
     This function repeatedly executes (in parallel) all the benchmarks
     and returns the average running times.
 
     @param n: the amount of times the benchmark is executed.
+
+    @param save_to_file: boolean which tells whether to save results to a file.
 
     @param debug: boolean which tells if debug printing is needed.
 
@@ -185,7 +200,7 @@ def execute_all_benchmarks(n, debug):
     from the function execute_benchmarks.
     """
     for bench_name in valid_bench_names():
-        results = execute_benchmarks(bench_name, n, debug)
+        results = execute_benchmarks(bench_name, n, save_to_file, debug)
         if (debug):
             print("***execute_all_benchmarks***", results, sep="\n")
 
@@ -208,11 +223,11 @@ def save_results_to_file(file_name, results):
 
 
 if __name__ == '__main__':
-    bench_name, n, debug = sanitize_arguments()
+    bench_name, n, save_to_file, debug = sanitize_arguments()
 
     if (bench_name == "all"):
-        execute_all_benchmarks(n, debug)
+        execute_all_benchmarks(n, save_to_file, debug)
     else:
-        results = execute_benchmarks(bench_name, n, debug)
+        results = execute_benchmarks(bench_name, n, save_to_file, debug)
         if (debug):
             print("main", results)
