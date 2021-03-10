@@ -173,7 +173,7 @@ def execute_benchmarks(bench_name, n, save_to_file, debug):
     The keys are the names of each operation: 'INSERT', 'DELETE', 'LOOKUP'.
     It also saves the results to a file.
     """
-    with Pool(cpu_count()) as p:
+    with Pool(min(cpu_count(), n)) as p:
         results = p.starmap(
             run_benchmark, [(bench_name, str(i), debug) for i in range(n)])
         results = get_average_times(results)
