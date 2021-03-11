@@ -100,33 +100,24 @@ def get_running_times(result, debug):
     Parse the text results from the benchmark in order to extract the running times.
     Return a dictionary with keys 'INSERT', 'DELETE' and 'LOOKUP', and arrays as values.
     """
-    print(result)
-    get_insert_times_re = compile(r"INSERT\n(.*)\nDELETE", DOTALL)
-    get_delete_times_re = compile(r"DELETE\n(.*)\nLOOKUP", DOTALL)
-    get_lookup_times_re = compile(r"LOOKUP\n(.*)", DOTALL)
-    insert_times = get_insert_times_re.findall(result)[0]
-    delete_times = get_delete_times_re.findall(result)[0]
-    lookup_times = get_lookup_times_re.findall(result)[0]
-    if (debug):
-        print("***get_running_times***", insert_times, delete_times, lookup_times, sep="\n")
-    get_insert_times_re = compile(r"N=[\w|^]{1,4}: (\d*\.\d*)s")
-    get_delete_times_re = compile(r"N=[\w|^]{1,4}: (\d*\.\d*)s")
-    get_lookup_times_re = compile(r"N=[\w|^]{1,4}: (\d*\.\d*)s")
-    insert_times = get_insert_times_re.findall(insert_times)
-    delete_times = get_delete_times_re.findall(delete_times)
-    lookup_times = get_lookup_times_re.findall(lookup_times)
-    if (debug):
-        print("***get_running_times***", insert_times, delete_times, lookup_times, sep="\n")
-    insert_times = list(map(float, insert_times))
-    delete_times = list(map(float, delete_times))
-    lookup_times = list(map(float, lookup_times))
-    if (debug):
-        print("***get_running_times***", insert_times, delete_times, lookup_times, sep="\n")
-    return {
-        'INSERT': insert_times,
-        'DELETE': delete_times,
-        'LOOKUP': lookup_times
-    }
+    print("***get_running_times***", result, sep="\n")
+    get_op_times_re = [
+        compile(r"INSERT\n(.*)\nDELETE", DOTALL),
+        compile(r"DELETE\n(.*)\nLOOKUP", DOTALL),
+        compile(r"LOOKUP\n(.*)", DOTALL)
+    ]
+    get_times = compile(r"N=[\w|^]{1,4}: (\d*\.\d*)s")
+    op_names = ["INSERT", "DELETE", "LOOKUP"]
+    times = {}
+
+    for i in range(3):
+        op_times = get_op_times_re[i].findall(result)[0]
+        op_times = get_times.findall(op_times)
+        op_times = list(map(float, op_times))
+        if (debug):
+            print(op_times, sep="\n")
+        times[op_names[i]] = op_times
+    return times
 
 
 def get_average_times(times):
