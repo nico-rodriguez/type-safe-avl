@@ -168,7 +168,7 @@ def execute_benchmarks(bench_name, n, save_to_file, debug):
     """
     with Pool(min(cpu_count(), n)) as p:
         results = p.starmap(
-            run_benchmark, [(bench_name, str(i), debug) for i in range(n)])
+            run_benchmark, [(bench_name, str(i), debug) for i in range(n)], n)
         results = get_average_times(results)
         if (debug):
             print("***execute_benchmarks***", results, sep="\n")
@@ -216,12 +216,51 @@ def save_results_to_file(file_name, results):
 
 
 if __name__ == '__main__':
-    bench_name, n, save_to_file, debug = sanitize_arguments()
-    print(bench_name, n ,save_to_file, debug)
+    # bench_name, n, save_to_file, debug = sanitize_arguments()
+    # print(bench_name, n ,save_to_file, debug)
 
-    if (bench_name == "all"):
-        execute_all_benchmarks(n, save_to_file, debug)
-    else:
-        results = execute_benchmarks(bench_name, n, save_to_file, debug)
-        if (debug):
-            print("main", results)
+    # if (bench_name == "all"):
+    #     execute_all_benchmarks(n, save_to_file, debug)
+    # else:
+    #     results = execute_benchmarks(bench_name, n, save_to_file, debug)
+    #     if (debug):
+    #         print("main", results)
+
+    mock_result = """Benchmark bst-unsafe: RUNNING...
+INSERT
+N=2^6: 0.000120216s
+N=2^7: 0.00038288s
+N=2^8: 0.001115082s
+N=2^9: 0.003083101s
+N=2^10: 0.010459861s
+N=2^11: 0.041349423s
+N=2^12: 0.188832208s
+N=2^13: 0.903852489s
+N=2^14: 4.814630432s
+N=2^15: 42.156691797s
+DELETE
+N=2^6: 0.000055186s
+N=2^7: 0.000167266s
+N=2^8: 0.001097783s
+N=2^9: 0.003604952s
+N=2^10: 0.014134406s
+N=2^11: 0.049661603s
+N=2^12: 0.198251642s
+N=2^13: 0.926946749s
+N=2^14: 5.021446852s
+N=2^15: 41.892613284s
+LOOKUP
+N=2^6: 0.000013539s
+N=2^7: 0.000014727s
+N=2^8: 0.000026415s
+N=2^9: 0.000064405s
+N=2^10: 0.000070358s
+N=2^11: 0.0001388s
+N=2^12: 0.000187695s
+N=2^13: 0.000296054s
+N=2^14: 0.000503163s
+N=2^15: 0.00097554s
+Benchmark bst-unsafe: FINISH
+"""
+    results = get_running_times(mock_result, False)
+    print(get_average_times([results for _ in range(2)]))
