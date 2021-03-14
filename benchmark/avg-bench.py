@@ -168,7 +168,7 @@ def execute_benchmarks(bench_name, n, save_to_file, debug):
     """
     with Pool(min(cpu_count(), n)) as p:
         results = p.starmap(
-            run_benchmark, [(bench_name, str(i), debug) for i in range(n)])
+            run_benchmark, [(bench_name, str(i), debug) for i in range(n)], n)
         results = get_average_times(results)
         if (debug):
             print("***execute_benchmarks***", results, sep="\n")
@@ -225,3 +225,4 @@ if __name__ == '__main__':
         results = execute_benchmarks(bench_name, n, save_to_file, debug)
         if (debug):
             print("main", results)
+  
