@@ -100,7 +100,8 @@ def get_running_times(result, debug):
     Parse the text results from the benchmark in order to extract the running times.
     Return a dictionary with keys 'INSERT', 'DELETE' and 'LOOKUP', and arrays as values.
     """
-    print("***get_running_times***", result, sep="\n")
+    if (debug):
+        print("***get_running_times***", result, sep="\n")
     get_op_times_re = [
         compile(r"INSERT\n(.*)\nDELETE", DOTALL),
         compile(r"DELETE\n(.*)\nLOOKUP", DOTALL),
@@ -126,9 +127,9 @@ def get_average_times(times):
     for each function position wise.
     """
     return {
-        'INSERT': [float('{:0.3e}'.format(sum(y) / len(times))) for y in zip(*[x['INSERT'] for x in times])],
-        'DELETE': [float('{:0.3e}'.format(sum(y) / len(times))) for y in zip(*[x['DELETE'] for x in times])],
-        'LOOKUP': [float('{:0.3e}'.format(sum(y) / len(times))) for y in zip(*[x['LOOKUP'] for x in times])]
+        'INSERT': ['{:.3e}'.format(float(sum(y) / len(times))) for y in zip(*[x['INSERT'] for x in times])],
+        'DELETE': ['{:.3e}'.format(float(sum(y) / len(times))) for y in zip(*[x['DELETE'] for x in times])],
+        'LOOKUP': ['{:.3e}'.format(float(sum(y) / len(times))) for y in zip(*[x['LOOKUP'] for x in times])]
     }
 
 
