@@ -217,7 +217,6 @@ def save_results_to_file(file_name, results):
 
 if __name__ == '__main__':
     bench_name, n, save_to_file, debug = sanitize_arguments()
-    print(bench_name, n ,save_to_file, debug)
 
     if (bench_name == "all"):
         execute_all_benchmarks(n, save_to_file, debug)
