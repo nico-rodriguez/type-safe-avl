@@ -57,9 +57,6 @@ def sanitize_arguments():
     Sanitize the command line arguments.
     Ignore any extra arguments provided.
     """
-    save_to_file = False
-    debug = False
-
     if (len(argv) < 2):
         exit_with_usage_msg()
 
@@ -79,14 +76,18 @@ def sanitize_arguments():
                 save_to_file = argv[3].strip().lower()
                 if (save_to_file == "true"):
                     save_to_file = True
-                elif (save_to_file != "false"):
+                elif (save_to_file == "false"):
+                    save_to_file = False
+                else:
                     exit_with_usage_msg()
 
             if (len(argv) > 4):
                 debug = argv[4].strip().lower()
                 if (debug == "true"):
                     debug = True
-                elif (debug != "false"):
+                elif (debug == "false"):
+                    debug = False
+                else:
                     exit_with_usage_msg()
 
         else:
@@ -216,6 +217,7 @@ def save_results_to_file(file_name, results):
 
 if __name__ == '__main__':
     bench_name, n, save_to_file, debug = sanitize_arguments()
+    print(bench_name, n ,save_to_file, debug)
 
     if (bench_name == "all"):
         execute_all_benchmarks(n, save_to_file, debug)
