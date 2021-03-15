@@ -141,9 +141,6 @@ def run_benchmark(bench_name, bench_num, debug):
     """
     result = run(f"cabal bench {bench_name.lower()} --builddir dist{bench_num}",
                  shell=True, capture_output=True, text=True)
-    if (result.stderr != ""):
-        print(result.stderr)
-        exit()
     if (debug):
         print("***run_benchmark***", result, sep="\n")
     return get_running_times(result.stdout, debug)
