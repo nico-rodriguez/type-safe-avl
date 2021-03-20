@@ -290,7 +290,10 @@ def save_run_time_to_file(file_name, results):
 if __name__ == '__main__':
     bench_name, bench_type, n, save_to_file, debug = sanitize_arguments()
 
-    results = execute_run_time_benchmarks(bench_name, n, save_to_file, debug)
+    if (bench_type == "run"):
+        results = execute_run_time_benchmarks(bench_name, n, save_to_file, debug)
+    else:   # bench_type == "compilation"
+        results = execute_compilation_time_benchmarks(bench_name, n, save_to_file, debug)
     if (debug):
         print("main", results)
 
