@@ -181,7 +181,7 @@ def compilation_time_benchmark(bench_name, operation, bench_id, n, debug):
                  shell=True, capture_output=True, text=True)
     if (debug):
         print("***compilation_time_benchmark***", result, sep="\n")
-    return float(result.stdout)
+    return '{:.2f}'.format(float(result.stdout))
 
 
 def execute_run_time_benchmarks(bench_name, n, save_to_file, debug):
