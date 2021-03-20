@@ -100,7 +100,199 @@ library
         Data.Tree.AVL.FullExtern.Examples
 
     -- Modules included in this library but not exported.
-    -- other-modules:
+    other-modules:
+        AVL.Unsafe.Insert.Insert1
+        AVL.Unsafe.Insert.Insert2
+        AVL.Unsafe.Insert.Insert3
+        AVL.Unsafe.Insert.Insert4
+        AVL.Unsafe.Insert.Insert5
+        AVL.Unsafe.Insert.Insert6
+        AVL.Unsafe.Insert.Insert7
+        AVL.Unsafe.Insert.Insert8
+        AVL.Unsafe.Insert.Insert9
+        AVL.Unsafe.Insert.Insert10
+        AVL.Unsafe.Lookup.Lookup1
+        AVL.Unsafe.Lookup.Lookup2
+        AVL.Unsafe.Lookup.Lookup3
+        AVL.Unsafe.Lookup.Lookup4
+        AVL.Unsafe.Lookup.Lookup5
+        AVL.Unsafe.Lookup.Lookup6
+        AVL.Unsafe.Lookup.Lookup7
+        AVL.Unsafe.Lookup.Lookup8
+        AVL.Unsafe.Lookup.Lookup9
+        AVL.Unsafe.Lookup.Lookup10
+        AVL.Unsafe.Delete.Delete1
+        AVL.Unsafe.Delete.Delete2
+        AVL.Unsafe.Delete.Delete3
+        AVL.Unsafe.Delete.Delete4
+        AVL.Unsafe.Delete.Delete5
+        AVL.Unsafe.Delete.Delete6
+        AVL.Unsafe.Delete.Delete7
+        AVL.Unsafe.Delete.Delete8
+        AVL.Unsafe.Delete.Delete9
+        AVL.Unsafe.Delete.Delete10
+        AVL.FullExtern.Insert.Insert10
+        AVL.FullExtern.Insert.Insert20
+        AVL.FullExtern.Insert.Insert30
+        AVL.FullExtern.Insert.Insert40
+        AVL.FullExtern.Insert.Insert50
+        AVL.FullExtern.Insert.Insert60
+        AVL.FullExtern.Insert.Insert70
+        AVL.FullExtern.Insert.Insert80
+        AVL.FullExtern.Insert.Insert90
+        AVL.FullExtern.Insert.Insert100
+        AVL.FullExtern.Lookup.Lookup10
+        AVL.FullExtern.Lookup.Lookup20
+        AVL.FullExtern.Lookup.Lookup30
+        AVL.FullExtern.Lookup.Lookup40
+        AVL.FullExtern.Lookup.Lookup50
+        AVL.FullExtern.Lookup.Lookup60
+        AVL.FullExtern.Lookup.Lookup70
+        AVL.FullExtern.Lookup.Lookup80
+        AVL.FullExtern.Lookup.Lookup90
+        AVL.FullExtern.Lookup.Lookup100
+        AVL.FullExtern.Delete.Delete10
+        AVL.FullExtern.Delete.Delete20
+        AVL.FullExtern.Delete.Delete30
+        AVL.FullExtern.Delete.Delete40
+        AVL.FullExtern.Delete.Delete50
+        AVL.FullExtern.Delete.Delete60
+        AVL.FullExtern.Delete.Delete70
+        AVL.FullExtern.Delete.Delete80
+        AVL.FullExtern.Delete.Delete90
+        AVL.FullExtern.Delete.Delete100
+        AVL.Extern.Insert.Insert10
+        AVL.Extern.Insert.Insert20
+        AVL.Extern.Insert.Insert30
+        AVL.Extern.Insert.Insert40
+        AVL.Extern.Insert.Insert50
+        AVL.Extern.Insert.Insert60
+        AVL.Extern.Lookup.Lookup10
+        AVL.Extern.Lookup.Lookup20
+        AVL.Extern.Lookup.Lookup30
+        AVL.Extern.Lookup.Lookup40
+        AVL.Extern.Lookup.Lookup50
+        AVL.Extern.Lookup.Lookup60
+        AVL.Extern.Delete.Delete10
+        AVL.Extern.Delete.Delete20
+        AVL.Extern.Delete.Delete30
+        AVL.Extern.Delete.Delete40
+        AVL.Extern.Delete.Delete50
+        AVL.Extern.Delete.Delete60
+        AVL.Intern.Insert.Insert10
+        AVL.Intern.Insert.Insert20
+        AVL.Intern.Insert.Insert30
+        AVL.Intern.Insert.Insert40
+        AVL.Intern.Insert.Insert50
+        AVL.Intern.Insert.Insert60
+        AVL.Intern.Lookup.Lookup10
+        AVL.Intern.Lookup.Lookup20
+        AVL.Intern.Lookup.Lookup30
+        AVL.Intern.Lookup.Lookup40
+        AVL.Intern.Lookup.Lookup50
+        AVL.Intern.Lookup.Lookup60
+        AVL.Intern.Delete.Delete10
+        AVL.Intern.Delete.Delete20
+        AVL.Intern.Delete.Delete30
+        AVL.Intern.Delete.Delete40
+        AVL.Intern.Delete.Delete50
+        AVL.Intern.Delete.Delete60
+        BST.Unsafe.Insert.Insert1
+        BST.Unsafe.Insert.Insert2
+        BST.Unsafe.Insert.Insert3
+        BST.Unsafe.Insert.Insert4
+        BST.Unsafe.Insert.Insert5
+        BST.Unsafe.Insert.Insert6
+        BST.Unsafe.Insert.Insert7
+        BST.Unsafe.Insert.Insert8
+        BST.Unsafe.Insert.Insert9
+        BST.Unsafe.Insert.Insert10
+        BST.Unsafe.Lookup.Lookup1
+        BST.Unsafe.Lookup.Lookup2
+        BST.Unsafe.Lookup.Lookup3
+        BST.Unsafe.Lookup.Lookup4
+        BST.Unsafe.Lookup.Lookup5
+        BST.Unsafe.Lookup.Lookup6
+        BST.Unsafe.Lookup.Lookup7
+        BST.Unsafe.Lookup.Lookup8
+        BST.Unsafe.Lookup.Lookup9
+        BST.Unsafe.Lookup.Lookup10
+        BST.Unsafe.Delete.Delete1
+        BST.Unsafe.Delete.Delete2
+        BST.Unsafe.Delete.Delete3
+        BST.Unsafe.Delete.Delete4
+        BST.Unsafe.Delete.Delete5
+        BST.Unsafe.Delete.Delete6
+        BST.Unsafe.Delete.Delete7
+        BST.Unsafe.Delete.Delete8
+        BST.Unsafe.Delete.Delete9
+        BST.Unsafe.Delete.Delete10
+        BST.FullExtern.Insert.Insert10
+        BST.FullExtern.Insert.Insert20
+        BST.FullExtern.Insert.Insert30
+        BST.FullExtern.Insert.Insert40
+        BST.FullExtern.Insert.Insert50
+        BST.FullExtern.Insert.Insert60
+        BST.FullExtern.Insert.Insert70
+        BST.FullExtern.Insert.Insert80
+        BST.FullExtern.Insert.Insert90
+        BST.FullExtern.Insert.Insert100
+        BST.FullExtern.Lookup.Lookup10
+        BST.FullExtern.Lookup.Lookup20
+        BST.FullExtern.Lookup.Lookup30
+        BST.FullExtern.Lookup.Lookup40
+        BST.FullExtern.Lookup.Lookup50
+        BST.FullExtern.Lookup.Lookup60
+        BST.FullExtern.Lookup.Lookup70
+        BST.FullExtern.Lookup.Lookup80
+        BST.FullExtern.Lookup.Lookup90
+        BST.FullExtern.Lookup.Lookup100
+        BST.FullExtern.Delete.Delete10
+        BST.FullExtern.Delete.Delete20
+        BST.FullExtern.Delete.Delete30
+        BST.FullExtern.Delete.Delete40
+        BST.FullExtern.Delete.Delete50
+        BST.FullExtern.Delete.Delete60
+        BST.FullExtern.Delete.Delete70
+        BST.FullExtern.Delete.Delete80
+        BST.FullExtern.Delete.Delete90
+        BST.FullExtern.Delete.Delete100
+        BST.Extern.Insert.Insert10
+        BST.Extern.Insert.Insert20
+        BST.Extern.Insert.Insert30
+        BST.Extern.Insert.Insert40
+        BST.Extern.Insert.Insert50
+        BST.Extern.Insert.Insert60
+        BST.Extern.Lookup.Lookup10
+        BST.Extern.Lookup.Lookup20
+        BST.Extern.Lookup.Lookup30
+        BST.Extern.Lookup.Lookup40
+        BST.Extern.Lookup.Lookup50
+        BST.Extern.Lookup.Lookup60
+        BST.Extern.Delete.Delete10
+        BST.Extern.Delete.Delete20
+        BST.Extern.Delete.Delete30
+        BST.Extern.Delete.Delete40
+        BST.Extern.Delete.Delete50
+        BST.Extern.Delete.Delete60
+        BST.Intern.Insert.Insert10
+        BST.Intern.Insert.Insert20
+        BST.Intern.Insert.Insert30
+        BST.Intern.Insert.Insert40
+        BST.Intern.Insert.Insert50
+        BST.Intern.Insert.Insert60
+        BST.Intern.Lookup.Lookup10
+        BST.Intern.Lookup.Lookup20
+        BST.Intern.Lookup.Lookup30
+        BST.Intern.Lookup.Lookup40
+        BST.Intern.Lookup.Lookup50
+        BST.Intern.Lookup.Lookup60
+        BST.Intern.Delete.Delete10
+        BST.Intern.Delete.Delete20
+        BST.Intern.Delete.Delete30
+        BST.Intern.Delete.Delete40
+        BST.Intern.Delete.Delete50
+        BST.Intern.Delete.Delete60
 
     -- LANGUAGE extensions used by modules in this package.
     other-extensions:
@@ -409,13 +601,16 @@ benchmark bst-intern
         BST.Intern.Insert.Insert30
         BST.Intern.Insert.Insert40
         BST.Intern.Insert.Insert50
+        BST.Intern.Insert.Insert60
         BST.Intern.Lookup.Lookup10
         BST.Intern.Lookup.Lookup20
         BST.Intern.Lookup.Lookup30
         BST.Intern.Lookup.Lookup40
         BST.Intern.Lookup.Lookup50
+        BST.Intern.Lookup.Lookup60
         BST.Intern.Delete.Delete10
         BST.Intern.Delete.Delete20
         BST.Intern.Delete.Delete30
         BST.Intern.Delete.Delete40
         BST.Intern.Delete.Delete50
+        BST.Intern.Delete.Delete60
