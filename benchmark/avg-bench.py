@@ -180,11 +180,11 @@ def execute_run_time_benchmarks(bench_name, n, save_to_file, debug):
         if (debug):
             print("***execute_run_time_benchmarks***", results, sep="\n")
         if (save_to_file):
-            save_results_to_file(f"benchmark/{bench_name}.txt", results)
+            save_run_time_to_file(f"benchmark/{bench_name}.txt", results)
         return results
 
 
-def save_results_to_file(file_name, results):
+def save_run_time_to_file(file_name, results):
     """
     Save the results of the function execute_run_time_benchmarks to a file
     with the following format:
