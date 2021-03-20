@@ -181,7 +181,7 @@ def compilation_time_benchmark(bench_name, operation, bench_id, n, debug):
                  shell=True, capture_output=True, text=True)
     if (debug):
         print("***compilation_time_benchmark***", result, sep="\n")
-    return float('{:.2f}'.format(float(result.stdout)))
+    return float(result.stdout)
 
 
 def execute_run_time_benchmarks(bench_name, n, save_to_file, debug):
@@ -262,7 +262,7 @@ def execute_compilation_time_benchmarks(bench_name, n, save_to_file, debug):
                 t = compilation_time_benchmark(
                     bench_name, op, bench_id, i, debug)
                 bench_times.append(t)
-            avg_time = sum(bench_times) / len(bench_times)
+            avg_time = float('{:.2f}'.format(sum(bench_times) / len(bench_times)))
             times[op].append(avg_time)
             remove_dist_folders()
     if (debug):
