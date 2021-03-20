@@ -154,21 +154,21 @@ def run_time_benchmark(bench_name, bench_num, debug):
 
 
 def _split_bench_name(bench_name):
-  """
-  Split the bench name into two parts: the type of tree (BST or AVL) and the type (Unsafe,
-  FullExtern, Extern or Intern).
-  """
-  translate = {
-      "bst-unsafe" : ("BST", "Unsafe"),
-      "avl-unsafe" : ("AVL", "Unsafe"),
-      "bst-fullextern" : ("BST", "FullExtern"),
-      "avl-fullextern" : ("AVL", "FullExtern"),
-      "bst-extern" : ("BST", "Extern"),
-      "avl-extern" : ("AVL", "Extern"),
-      "bst-intern" : ("BST", "Intern"),
-      "avl-intern" : ("AVL", "Intern")
-  }
-  return translate[bench_name]
+    """
+    Split the bench name into two parts: the type of tree (BST or AVL) and the type (Unsafe,
+    FullExtern, Extern or Intern).
+    """
+    translate = {
+        "bst-unsafe": ("BST", "Unsafe"),
+        "avl-unsafe": ("AVL", "Unsafe"),
+        "bst-fullextern": ("BST", "FullExtern"),
+        "avl-fullextern": ("AVL", "FullExtern"),
+        "bst-extern": ("BST", "Extern"),
+        "avl-extern": ("AVL", "Extern"),
+        "bst-intern": ("BST", "Intern"),
+        "avl-intern": ("AVL", "Intern")
+    }
+    return translate[bench_name]
 
 
 def compilation_time_benchmark(bench_name, operation, bench_id, n, debug):
@@ -211,7 +211,8 @@ def execute_run_time_benchmarks(bench_name, n, save_to_file, debug):
         if (debug):
             print("***execute_run_time_benchmarks***", results, sep="\n")
         if (save_to_file):
-            save_results_to_file(f"benchmark/{bench_name}-run-times.txt", results)
+            save_results_to_file(
+                f"benchmark/{bench_name}-run-times.txt", results)
         remove_dist_folders()
         return results
 
@@ -258,7 +259,8 @@ def execute_compilation_time_benchmarks(bench_name, n, save_to_file, debug):
         for bench_id in bench_ids:
             bench_times = []
             for i in range(n):
-                t = compilation_time_benchmark(bench_name, op, bench_id, i, debug)
+                t = compilation_time_benchmark(
+                    bench_name, op, bench_id, i, debug)
                 bench_times.append(t)
             avg_time = sum(bench_times) / len(bench_times)
             times[op].append(avg_time)
@@ -266,8 +268,9 @@ def execute_compilation_time_benchmarks(bench_name, n, save_to_file, debug):
     if (debug):
         print("***execute_compilation_time_benchmarks***", times, sep="\n")
     if (save_to_file):
-        save_results_to_file(f"benchmark/{bench_name}-compilation-times.txt", results)
-    return results
+        save_results_to_file(
+            f"benchmark/{bench_name}-compilation-times.txt", times)
+    return times
 
 
 def save_results_to_file(file_name, results):
@@ -287,14 +290,14 @@ def save_results_to_file(file_name, results):
             f.writelines(map(lambda n: str(n) + "\n", results[op]))
 
 
-
 if __name__ == '__main__':
     bench_name, bench_type, n, save_to_file, debug = sanitize_arguments()
 
     if (bench_type == "run"):
-        results = execute_run_time_benchmarks(bench_name, n, save_to_file, debug)
+        results = execute_run_time_benchmarks(
+            bench_name, n, save_to_file, debug)
     else:   # bench_type == "compilation"
-        results = execute_compilation_time_benchmarks(bench_name, n, save_to_file, debug)
+        results = execute_compilation_time_benchmarks(
+            bench_name, n, save_to_file, debug)
     if (debug):
         print("main", results)
-
