@@ -211,7 +211,7 @@ def execute_run_time_benchmarks(bench_name, n, save_to_file, debug):
         if (debug):
             print("***execute_run_time_benchmarks***", results, sep="\n")
         if (save_to_file):
-            save_results_to_file(f"benchmark/{bench_name}.txt", results)
+            save_results_to_file(f"benchmark/{bench_name}-run-times.txt", results)
         return results
 
 
@@ -265,7 +265,7 @@ def execute_compilation_time_benchmarks(bench_name, n, save_to_file, debug):
     if (debug):
         print("***execute_compilation_time_benchmarks***", times, sep="\n")
     if (save_to_file):
-        save_results_to_file(f"benchmark/{bench_name}.txt", results)
+        save_results_to_file(f"benchmark/{bench_name}-compilation-times.txt", results)
     return results
 
 
