@@ -153,7 +153,7 @@ def run_benchmark(bench_name, bench_num, debug):
     return get_running_times(result.stdout, debug)
 
 
-def execute_benchmarks(bench_name, n, save_to_file, debug):
+def execute_run_time_benchmarks(bench_name, n, save_to_file, debug):
     """
     This function repeatedly executes (in parallel) the named benchmark
     and returns the average running times.
@@ -178,7 +178,7 @@ def execute_benchmarks(bench_name, n, save_to_file, debug):
             run_benchmark, [(bench_name, str(i), debug) for i in range(n)], n)
         results = get_average_running_times(results)
         if (debug):
-            print("***execute_benchmarks***", results, sep="\n")
+            print("***execute_run_time_benchmarks***", results, sep="\n")
         if (save_to_file):
             save_results_to_file(f"benchmark/{bench_name}.txt", results)
         return results
@@ -186,7 +186,7 @@ def execute_benchmarks(bench_name, n, save_to_file, debug):
 
 def save_results_to_file(file_name, results):
     """
-    Save the results of the function execute_benchmarks to a file
+    Save the results of the function execute_run_time_benchmarks to a file
     with the following format:
       INSERT
       ...
@@ -204,7 +204,7 @@ def save_results_to_file(file_name, results):
 if __name__ == '__main__':
     bench_name, bench_type, n, save_to_file, debug = sanitize_arguments()
 
-    results = execute_benchmarks(bench_name, n, save_to_file, debug)
+    results = execute_run_time_benchmarks(bench_name, n, save_to_file, debug)
     if (debug):
         print("main", results)
 
