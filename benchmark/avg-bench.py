@@ -212,6 +212,7 @@ def execute_run_time_benchmarks(bench_name, n, save_to_file, debug):
             print("***execute_run_time_benchmarks***", results, sep="\n")
         if (save_to_file):
             save_results_to_file(f"benchmark/{bench_name}-run-times.txt", results)
+        remove_dist_folders()
         return results
 
 
