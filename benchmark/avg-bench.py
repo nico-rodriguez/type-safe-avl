@@ -141,7 +141,7 @@ def get_average_running_times(times):
     }
 
 
-def run_benchmark(bench_name, bench_num, debug):
+def run_time_benchmark(bench_name, bench_num, debug):
     """
     It executes the named benchmark using an exclusive builddir
     (the default is dist/)
@@ -149,7 +149,7 @@ def run_benchmark(bench_name, bench_num, debug):
     result = run(f"cabal bench {bench_name.lower()} --builddir dist{bench_num}",
                  shell=True, capture_output=True, text=True)
     if (debug):
-        print("***run_benchmark***", result, sep="\n")
+        print("***run_time_benchmark***", result, sep="\n")
     return get_running_times(result.stdout, debug)
 
 
@@ -175,7 +175,7 @@ def execute_run_time_benchmarks(bench_name, n, save_to_file, debug):
     """
     with Pool(min(cpu_count(), n)) as p:
         results = p.starmap(
-            run_benchmark, [(bench_name, str(i), debug) for i in range(n)], n)
+            run_time_benchmark, [(bench_name, str(i), debug) for i in range(n)], n)
         results = get_average_running_times(results)
         if (debug):
             print("***execute_run_time_benchmarks***", results, sep="\n")
