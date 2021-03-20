@@ -25,7 +25,7 @@ def is_valid_bench_name(bench_name):
 
 
 USAGE_MESSAGE = """
-  Usage: python3 avg-bench.py [BENCH NAME] [N] [SAVE TO FILE] [DEBUG]
+  Usage: python3 avg-bench.py [BENCH NAME] [BENCH TYPE] [N] [SAVE TO FILE] [DEBUG]
   where:
   
   * BENCH NAME (case insensitive) is necessary and must be one of:
@@ -34,6 +34,10 @@ USAGE_MESSAGE = """
   - bst-extern, avl-extern
   - bst-intern, avl-intern,
   - all.
+  * BENCH TYPE (case insensitive) is the type of benchmark to be eecuted
+  (either for running time or compilation time):
+  - run
+  - compile
   * N (optional) is a positive integer number which indicates
   how many times to repeat the benchmark (the results
   are averaged). It defaults to 5.
@@ -57,23 +61,27 @@ def sanitize_arguments():
     Sanitize the command line arguments.
     Ignore any extra arguments provided.
     """
-    if (len(argv) < 2):
+    save_to_file, debug = False, False
+    if (len(argv) < 3):
         exit_with_usage_msg()
 
-    elif (len(argv) >= 2):
+    elif (len(argv) >= 3):
         bench_name = argv[1].strip().lower()
+        bench_type = argv[2].strip().lower()
         if ((not is_valid_bench_name(bench_name)) and bench_name != "all"):
             exit_with_usage_msg()
+        if ((not bench_type in ["run", "compile"])):
+            exit_with_usage_msg()
 
-        if (len(argv) > 2):
-            n = argv[2].strip()
+        if (len(argv) > 3):
+            n = argv[3].strip()
             if (not n.isdigit()):
                 exit_with_usage_msg()
             else:
                 n = int(n)
 
-            if (len(argv) > 3):
-                save_to_file = argv[3].strip().lower()
+            if (len(argv) > 4):
+                save_to_file = argv[4].strip().lower()
                 if (save_to_file == "true"):
                     save_to_file = True
                 elif (save_to_file == "false"):
@@ -81,8 +89,8 @@ def sanitize_arguments():
                 else:
                     exit_with_usage_msg()
 
-            if (len(argv) > 4):
-                debug = argv[4].strip().lower()
+            if (len(argv) > 5):
+                debug = argv[5].strip().lower()
                 if (debug == "true"):
                     debug = True
                 elif (debug == "false"):
@@ -93,7 +101,7 @@ def sanitize_arguments():
         else:
             n = 5
 
-    return bench_name, n, save_to_file, debug
+    return bench_name, bench_type, n, save_to_file, debug
 
 
 def get_running_times(result, debug):
@@ -122,7 +130,7 @@ def get_running_times(result, debug):
     return times
 
 
-def get_average_times(times):
+def get_average_running_times(times):
     """
     Recives a list of dictionaries from get_running_times and computes the average
     for each function position wise.
@@ -169,7 +177,7 @@ def execute_benchmarks(bench_name, n, save_to_file, debug):
     with Pool(min(cpu_count(), n)) as p:
         results = p.starmap(
             run_benchmark, [(bench_name, str(i), debug) for i in range(n)], n)
-        results = get_average_times(results)
+        results = get_average_running_times(results)
         if (debug):
             print("***execute_benchmarks***", results, sep="\n")
         if (save_to_file):
@@ -216,7 +224,7 @@ def save_results_to_file(file_name, results):
 
 
 if __name__ == '__main__':
-    bench_name, n, save_to_file, debug = sanitize_arguments()
+    bench_name, bench_type, n, save_to_file, debug = sanitize_arguments()
 
     if (bench_name == "all"):
         execute_all_benchmarks(n, save_to_file, debug)
@@ -224,4 +232,4 @@ if __name__ == '__main__':
         results = execute_benchmarks(bench_name, n, save_to_file, debug)
         if (debug):
             print("main", results)
-  
+
