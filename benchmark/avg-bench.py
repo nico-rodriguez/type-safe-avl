@@ -238,13 +238,12 @@ def execute_compilation_time_benchmarks(bench_name, n, save_to_file, debug):
     for op in bench_ops:
         times[op.upper()] = []
         for bench_id in bench_ids:
-            bench_times = []
-            for i in range(n):
-                t = compilation_time_benchmark(
-                    bench_name, op, bench_id, i, debug)
-                bench_times.append(t)
-            avg_time = float('{:.2f}'.format(sum(bench_times) / len(bench_times)))
-            times[op.upper()].append(avg_time)
+            with Pool(min(cpu_count(), n)) as p:
+                bench_times = p.starmap(
+                    compilation_time_benchmark, [(bench_name, op, bench_id, i, debug) for i in range(n)], n)
+                avg_time = float('{:.2f}'.format(
+                    sum(bench_times) / len(bench_times)))
+                times[op.upper()].append(avg_time)
             remove_dist_folders()
     if (debug):
         print("***execute_compilation_time_benchmarks***", times, sep="\n")
