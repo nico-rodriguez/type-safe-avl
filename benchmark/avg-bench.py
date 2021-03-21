@@ -153,31 +153,12 @@ def run_time_benchmark(bench_name, bench_num, debug):
     return get_running_times(result.stdout, debug)
 
 
-def _split_bench_name(bench_name):
-    """
-    Split the bench name into two parts: the type of tree (BST or AVL) and the type (Unsafe,
-    FullExtern, Extern or Intern).
-    """
-    translate = {
-        "bst-unsafe": ("BST", "Unsafe"),
-        "avl-unsafe": ("AVL", "Unsafe"),
-        "bst-fullextern": ("BST", "FullExtern"),
-        "avl-fullextern": ("AVL", "FullExtern"),
-        "bst-extern": ("BST", "Extern"),
-        "avl-extern": ("AVL", "Extern"),
-        "bst-intern": ("BST", "Intern"),
-        "avl-intern": ("AVL", "Intern")
-    }
-    return translate[bench_name]
-
-
 def compilation_time_benchmark(bench_name, operation, bench_id, n, debug):
     """
     It executes the named benchmark using an exclusive builddir
     (the default is dist/) and returns the number it took (in seconds).
     """
-    tree_type, approach = _split_bench_name(bench_name)
-    result = run(f'(/usr/bin/time -f "%e" cabal build balanced-binary-search-tree:benchmark/{tree_type}/{approach}/{operation}/{operation}{bench_id}.hs --builddir dist{n}) 2>&1 > /dev/null | tail -1',
+    result = run(f'(/usr/bin/time -f "%e" cabal build {bench_name}-{operation}{bench_id} --builddir dist{n}) 2>&1 > /dev/null | tail -1',
                  shell=True, capture_output=True, text=True)
     if (debug):
         print("***compilation_time_benchmark***", result, sep="\n")
@@ -245,7 +226,7 @@ def execute_compilation_time_benchmarks(bench_name, n, save_to_file, debug):
     The keys are the names of each operation: 'INSERT', 'DELETE', 'LOOKUP'.
     It also saves the results to a file.
     """
-    bench_ops = ["Insert", "Delete", "Lookup"]
+    bench_ops = ["insert", "delete", "lookup"]
     if ("unsafe" in bench_name):
         bench_ids = [str(i) for i in range(1, 11, 1)]
     elif ("fullextern" in bench_name):
@@ -255,7 +236,7 @@ def execute_compilation_time_benchmarks(bench_name, n, save_to_file, debug):
 
     times = {}
     for op in bench_ops:
-        times[op] = []
+        times[op.upper()] = []
         for bench_id in bench_ids:
             bench_times = []
             for i in range(n):
@@ -263,7 +244,7 @@ def execute_compilation_time_benchmarks(bench_name, n, save_to_file, debug):
                     bench_name, op, bench_id, i, debug)
                 bench_times.append(t)
             avg_time = float('{:.2f}'.format(sum(bench_times) / len(bench_times)))
-            times[op].append(avg_time)
+            times[op.upper()].append(avg_time)
             remove_dist_folders()
     if (debug):
         print("***execute_compilation_time_benchmarks***", times, sep="\n")
