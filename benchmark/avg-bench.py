@@ -123,6 +123,7 @@ def get_running_times(result, debug):
         op_times = get_op_times_re[i].findall(result)[0]
         op_times = get_times.findall(op_times)
         op_times = list(map(float, op_times))
+        op_times = remove_outliers(op_times)
         if (debug):
             print(op_times, sep="\n")
         times[op_names[i]] = op_times
@@ -241,6 +242,7 @@ def execute_compilation_time_benchmarks(bench_name, n, save_to_file, debug):
             with Pool(min(cpu_count(), n)) as p:
                 bench_times = p.starmap(
                     compilation_time_benchmark, [(bench_name, op, bench_id, i, debug) for i in range(n)], n)
+                bench_times = remove_outliers(bench_times)
                 avg_time = float('{:.2f}'.format(
                     sum(bench_times) / len(bench_times)))
                 times[op.upper()].append(avg_time)
@@ -268,6 +270,46 @@ def save_results_to_file(file_name, results):
         for op in results.keys():
             f.write(op + "\n")
             f.writelines(map(lambda n: str(n) + "\n", results[op]))
+
+
+def median(arr):
+    """
+    Compute the median value of an array of numbers.
+    """
+    arr_copy = arr.copy()
+    if (len(arr_copy) % 2 == 0):
+        i2 = len(arr_copy) // 2
+        q2 = (arr_copy[i2] + arr_copy[i2 - 1]) / 2
+    else:
+        i2 = len(arr_copy) // 2
+        q2 = arr_copy[i2]
+    return q2
+
+
+def split_array(arr):
+    """
+    Split and array in two halfs, along its median value.
+    It doesn't modify the original array.
+    """
+    q2 = median(arr)
+    first_half = list(filter(lambda n: n < q2, arr))
+    second_half = list(filter(lambda n: n > q2, arr))
+    return first_half, second_half
+
+
+def remove_outliers(arr):
+    """
+    Remove outliers from an array of benchmark times.
+    """
+    # Compute the first (q1), second (q2) and third (q3) quartile.
+    first_half, second_half = split_array(arr)
+    q1, q2, q3 = median(first_half), median(arr), median(second_half)
+    # Remove values outside 1.5 times the IQR centered at the median
+    iqr = q3 - q1
+    filtered_arr = list(filter(lambda n: n >= q2 - iqr, arr))
+    filtered_arr = list(filter(lambda n: n <= q2 + iqr, filtered_arr))
+    return filtered_arr
+
 
 
 if __name__ == '__main__':
