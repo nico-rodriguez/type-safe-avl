@@ -123,7 +123,6 @@ def get_running_times(result, debug):
         op_times = get_op_times_re[i].findall(result)[0]
         op_times = get_times.findall(op_times)
         op_times = list(map(float, op_times))
-        op_times = remove_outliers(op_times)
         if (debug):
             print(op_times, sep="\n")
         times[op_names[i]] = op_times

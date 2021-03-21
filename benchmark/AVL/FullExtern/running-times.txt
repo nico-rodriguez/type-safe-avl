@@ -1,3 +1,4 @@
+N = 16
 Benchmark avl-fullextern: RUNNING...
 INSERT
 N=10: 1.555e-06

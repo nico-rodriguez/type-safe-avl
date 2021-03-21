@@ -1,3 +1,4 @@
+N = 16
 Benchmark avl-intern: RUNNING...
 INSERT
 N=10: 8.861e-05
