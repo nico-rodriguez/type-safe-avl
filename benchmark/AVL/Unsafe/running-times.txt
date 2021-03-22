@@ -1,3 +1,4 @@
+N = 16
 Benchmark avl-unsafe: RUNNING...
 INSERT
 N=2^6: 3.707e-04
