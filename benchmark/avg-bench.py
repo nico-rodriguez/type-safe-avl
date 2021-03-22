@@ -305,8 +305,8 @@ def remove_outliers(arr):
     q1, q2, q3 = median(first_half), median(arr), median(second_half)
     # Remove values outside 1.5 times the IQR centered at the median
     iqr = q3 - q1
-    filtered_arr = list(filter(lambda n: n >= q2 - iqr, arr))
-    filtered_arr = list(filter(lambda n: n <= q2 + iqr, filtered_arr))
+    filtered_arr = list(filter(lambda n: n >= q2 - 1.5 * iqr, arr))
+    filtered_arr = list(filter(lambda n: n <= q2 + 1.5 * iqr, filtered_arr))
     return filtered_arr
 
 
