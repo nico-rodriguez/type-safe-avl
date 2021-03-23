@@ -276,6 +276,7 @@ def median(arr):
     Compute the median value of an array of numbers.
     """
     arr_copy = arr.copy()
+    arr_copy.sort()
     if (len(arr_copy) % 2 == 0):
         i2 = len(arr_copy) // 2
         q2 = (arr_copy[i2] + arr_copy[i2 - 1]) / 2
@@ -290,9 +291,14 @@ def split_array(arr):
     Split and array in two halfs, along its median value.
     It doesn't modify the original array.
     """
-    q2 = median(arr)
-    first_half = list(filter(lambda n: n < q2, arr))
-    second_half = list(filter(lambda n: n > q2, arr))
+    arr_copy = arr.copy()
+    arr_copy.sort()
+    i2 = len(arr_copy) // 2
+    first_half = arr_copy[0:i2]
+    if (len(arr_copy) % 2 == 0):
+        second_half = arr_copy[i2:]
+    else:
+        second_half = arr_copy[i2 + 1:]
     return first_half, second_half
 
 
