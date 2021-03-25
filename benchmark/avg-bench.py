@@ -323,7 +323,7 @@ if __name__ == '__main__':
     if (bench_type == "run"):
         results = execute_run_time_benchmarks(
             bench_name, n, save_to_file, debug)
-    else:   # bench_type == "compilation"
+    else:   # bench_type == "compile"
         results = execute_compilation_time_benchmarks(
             bench_name, n, save_to_file, debug)
     if (debug):
