@@ -343,19 +343,16 @@ benchmark bst-extern
         BST.Extern.Insert.Insert30
         BST.Extern.Insert.Insert40
         BST.Extern.Insert.Insert50
-        BST.Extern.Insert.Insert60
         BST.Extern.Lookup.Lookup10
         BST.Extern.Lookup.Lookup20
         BST.Extern.Lookup.Lookup30
         BST.Extern.Lookup.Lookup40
         BST.Extern.Lookup.Lookup50
-        BST.Extern.Lookup.Lookup60
         BST.Extern.Delete.Delete10
         BST.Extern.Delete.Delete20
         BST.Extern.Delete.Delete30
         BST.Extern.Delete.Delete40
         BST.Extern.Delete.Delete50
-        BST.Extern.Delete.Delete60
 
 benchmark bst-intern
     type:             exitcode-stdio-1.0
@@ -369,19 +366,16 @@ benchmark bst-intern
         BST.Intern.Insert.Insert30
         BST.Intern.Insert.Insert40
         BST.Intern.Insert.Insert50
-        BST.Intern.Insert.Insert60
         BST.Intern.Lookup.Lookup10
         BST.Intern.Lookup.Lookup20
         BST.Intern.Lookup.Lookup30
         BST.Intern.Lookup.Lookup40
         BST.Intern.Lookup.Lookup50
-        BST.Intern.Lookup.Lookup60
         BST.Intern.Delete.Delete10
         BST.Intern.Delete.Delete20
         BST.Intern.Delete.Delete30
         BST.Intern.Delete.Delete40
         BST.Intern.Delete.Delete50
-        BST.Intern.Delete.Delete60
 
 library avl-unsafe-insert1
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
