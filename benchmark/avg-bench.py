@@ -2,156 +2,329 @@
 
 from sys import argv
 from subprocess import run
-from re import compile, findall
+from re import compile, findall, DOTALL
 from itertools import product
-from multiprocessing import Pool
+from multiprocessing import Pool, cpu_count
 
 
 def valid_bench_names():
-  """
-  Return a list with all the possible benchmark names in lower case.
-  """
-  return map(lambda t : t[0] + t[1],
-    product(['bst-', 'avl-'], ['unsafe', 'fullextern', 'extern', 'intern']))
+    """
+    Return a list with all the possible benchmark names in lower case.
+    """
+    return map(lambda t: t[0] + t[1],
+               product(['bst-', 'avl-'], ['unsafe', 'fullextern', 'extern', 'intern']))
 
 
 def is_valid_bench_name(bench_name):
+    """
+    Returns True if and only if the given benchmark name is a valid benchmark name.
+    """
+    valid_names = valid_bench_names()
+
+    return bench_name.lower() in valid_names
+
+
+USAGE_MESSAGE = """
+  Usage: python3 avg-bench.py [BENCH NAME] [BENCH TYPE] [N] [SAVE TO FILE] [DEBUG]
+  where:
+  
+  * BENCH NAME (case insensitive) is necessary and must be one of:
+  - bst-unsafe, avl-unsafe
+  - bst-fullextern, avl-fullextern
+  - bst-extern, avl-extern
+  - bst-intern, avl-intern.
+  * BENCH TYPE (case insensitive) is the type of benchmark to be eecuted
+  (either for running time or compilation time):
+  - run
+  - compile
+  * N (optional) is a positive integer number which indicates
+  how many times to repeat the benchmark (the results
+  are averaged). It defaults to 5.
+  * SAVE TO FILE (optional) is either True or False (case insensitive)
+  and controls whether the results are saved to a file.
+  * DEBUG (optional) is either True or False (case insensitive)
+  and enables debug printing. Defaults to False.
   """
-  Returns True if and only if the given benchmark name is a valid benchmark name.
-  """
-  valid_bench_names = valid_bench_names()
-
-  return bench_name.lower() in valid_bench_names
 
 
-def _mock_bench1():
-  return """Benchmark avl-fullextern: RUNNING...
-INSERT
-N=10: 0.000003685s
-N=20: 0.000020093s
-N=30: 0.000018883s
-N=40: 0.00001599s
-N=50: 0.000019083s
-N=60: 0.000032133s
-N=70: 0.000019902s
-N=80: 0.000016839s
-N=90: 0.000017733s
-N=100: 0.000011346s
-DELETE
-N=10: 0.000010664s
-N=20: 0.000010929s
-N=30: 0.000010111s
-N=40: 0.000008648s
-N=50: 0.000008447s
-N=60: 0.000008667s
-N=70: 0.000008291s
-N=80: 0.000012023s
-N=90: 0.000008058s
-N=100: 0.000008055s
-LOOKUP
-N=10: 0.000052813s
-N=20: 0.000129225s
-N=30: 0.0002612s
-N=40: 0.000306716s
-N=50: 0.00041834s
-N=60: 0.000279074s
-N=70: 0.000297553s
-N=80: 0.000370009s
-N=90: 0.000598961s
-N=100: 0.000394298s
-Benchmark avl-fullextern: FINISH
-"""
+def exit_with_usage_msg():
+    """
+    Print the usage message and exit the interpreter.
+    """
+    print(USAGE_MESSAGE)
+    exit()
 
-def _mock_bench2():
-  return """Benchmark avl-unsafe: RUNNING...
-INSERT
-N=2^6: 0.000389468s
-N=2^7: 0.001001006s
-N=2^8: 0.002546033s
-N=2^9: 0.00836335s
-N=2^10: 0.03130746s
-N=2^11: 0.122868723s
-N=2^12: 0.483508947s
-N=2^13: 1.916203996s
-N=2^14: 7.785558802s
-N=2^15: 32.371207625s
-DELETE
-N=2^6: 0.000293852s
-N=2^7: 0.001020235s
-N=2^8: 0.004021208s
-N=2^9: 0.015454593s
-N=2^10: 0.060563177s
-N=2^11: 0.24069094s
-N=2^12: 0.949627327s
-N=2^13: 3.788817933s
-N=2^14: 15.341255012s
-N=2^15: 62.965286092s
-LOOKUP
-N=2^6: 0.000007022s
-N=2^7: 0.000004781s
-N=2^8: 0.000004236s
-N=2^9: 0.000005014s
-N=2^10: 0.000004838s
-N=2^11: 0.00000476s
-N=2^12: 0.000004596s
-N=2^13: 0.000004514s
-N=2^14: 0.000004545s
-N=2^15: 0.000003434s
-Benchmark avl-unsafe: FINISH
-"""
 
-def get_running_times(result):
-  """
-  Parse the text results from the benchmark in order to extract the running times.
-  Return a dictionary with keys 'INSERT', 'DELETE' and 'LOOKUP', and arrays as values.
-  """
-  get_times_re = compile('N=[\w|^]{1,4}: (\d*\.\d*)s')
-  times = get_times_re.findall(result)
-  times = list(map(float, times))
-  return {
-    'INSERT': times[0:10],
-    'DELETE': times[10:20],
-    'LOOKUP': times[20:30]
-  }
+def sanitize_arguments():
+    """
+    Sanitize the command line arguments.
+    Ignore any extra arguments provided.
+    """
+    save_to_file, debug = False, False
+    if (len(argv) < 3):
+        exit_with_usage_msg()
 
-def get_average_times(times):
-  """
-  Recives a list of dictionaries from get_running_times and computes the average
-  for each function position wise.
-  """
-  return {
-      'INSERT': [float('{:0.3e}'.format(sum(y) / len(times))) for y in zip(*[x['INSERT'] for x in times])],
-      'DELETE': [float('{:0.3e}'.format(sum(y) / len(times))) for y in zip(*[x['DELETE'] for x in times])],
-      'LOOKUP': [float('{:0.3e}'.format(sum(y) / len(times))) for y in zip(*[x['LOOKUP'] for x in times])]
-  }
+    elif (len(argv) >= 3):
+        bench_name = argv[1].strip().lower()
+        bench_type = argv[2].strip().lower()
+        if (not is_valid_bench_name(bench_name)):
+            exit_with_usage_msg()
+        if ((not bench_type in ["run", "compile"])):
+            exit_with_usage_msg()
 
-def run_benchmark(bench_name):
-  result = run(['cabal', "bench", bench_name.lower()], capture_output=True, text=True)
-  return get_running_times(result.stdout)
+        if (len(argv) > 3):
+            n = argv[3].strip()
+            if (not n.isdigit()):
+                exit_with_usage_msg()
+            else:
+                n = int(n)
 
-def execute_benchmarks(bench_name, n):
-  """
-  This function repeatedly executes (in parallel) the named benchmark
-  and returns the average running times.
+            if (len(argv) > 4):
+                save_to_file = argv[4].strip().lower()
+                if (save_to_file == "true"):
+                    save_to_file = True
+                elif (save_to_file == "false"):
+                    save_to_file = False
+                else:
+                    exit_with_usage_msg()
 
-  @param bench_name: the name of the benchmark to execute. Possible choices are
-  [bst|avl]-[unsafe|fullextern|extern|intern]. For instance, 'bst-extern'.
-  @param n: the amount of times the benchmark is executed.
-  @returns: the running times as a dictionary with three entries. Each entry has
-  the running times of a different operation. The keys are the names of each
-  operation: 'INSERT', 'DELETE', 'LOOKUP'.
-  """
-  with Pool(n) as p:
-    results = p.map(run_benchmark, [bench_name for _ in range(n)])
-    return get_average_times(results)
+            if (len(argv) > 5):
+                debug = argv[5].strip().lower()
+                if (debug == "true"):
+                    debug = True
+                elif (debug == "false"):
+                    debug = False
+                else:
+                    exit_with_usage_msg()
+
+        else:
+            n = 5
+
+    return bench_name, bench_type, n, save_to_file, debug
+
+
+def get_running_times(result, debug):
+    """
+    Parse the text results from the benchmark in order to extract the running times.
+    Return a dictionary with keys 'INSERT', 'DELETE' and 'LOOKUP', and arrays as values.
+    """
+    if (debug):
+        print("***get_running_times***", result, sep="\n")
+    get_op_times_re = [
+        compile(r"INSERT\n(.*)\nDELETE", DOTALL),
+        compile(r"DELETE\n(.*)\nLOOKUP", DOTALL),
+        compile(r"LOOKUP\n(.*)", DOTALL)
+    ]
+    get_times = compile(r"N=[\w|^]{1,4}: (\d*\.\d*)s")
+    op_names = ["INSERT", "DELETE", "LOOKUP"]
+    times = {}
+
+    for i in range(3):
+        op_times = get_op_times_re[i].findall(result)[0]
+        op_times = get_times.findall(op_times)
+        op_times = list(map(float, op_times))
+        if (debug):
+            print(op_times, sep="\n")
+        times[op_names[i]] = op_times
+    return times
+
+
+def get_average_running_times(times):
+    """
+    Recives a list of dictionaries from get_running_times and computes the average
+    for each function position wise.
+    """
+    return {
+        'INSERT': ['{:.3e}'.format(float(sum(y) / len(times))) for y in zip(*[x['INSERT'] for x in times])],
+        'DELETE': ['{:.3e}'.format(float(sum(y) / len(times))) for y in zip(*[x['DELETE'] for x in times])],
+        'LOOKUP': ['{:.3e}'.format(float(sum(y) / len(times))) for y in zip(*[x['LOOKUP'] for x in times])]
+    }
+
+
+def run_time_benchmark(bench_name, bench_num, debug):
+    """
+    It executes the named benchmark using an exclusive builddir
+    (the default is dist/)
+    """
+    result = run(f"cabal bench {bench_name.lower()} --builddir dist{str(bench_num)}",
+                 shell=True, capture_output=True, text=True)
+    if (debug):
+        print("***run_time_benchmark***", result, sep="\n")
+    return get_running_times(result.stdout, debug)
+
+
+def compilation_time_benchmark(bench_name, operation, bench_id, n, debug):
+    """
+    It executes the named benchmark using an exclusive builddir
+    (the default is dist/) and returns the number it took (in seconds).
+    """
+    result = run(f'(/usr/bin/time -f "%e" cabal build {bench_name}-{operation}{bench_id} --builddir dist{n}) 2>&1 > /dev/null | tail -1',
+                 shell=True, capture_output=True, text=True)
+    if (debug):
+        print("***compilation_time_benchmark***", result, sep="\n")
+    return float(result.stdout)
+
+
+def execute_run_time_benchmarks(bench_name, n, save_to_file, debug):
+    """
+    This function repeatedly executes (in parallel) the named benchmark
+    and returns the average running times.
+
+
+    @param bench_name: the name of the benchmark to execute. Possible choices are
+    [bst|avl]-[unsafe|fullextern|extern|intern]. For instance, 'bst-extern'.
+
+    @param n: the amount of times the benchmark is executed.
+
+    @param save_to_file: boolean which tells whether to save results to a file.
+
+    @param debug: boolean which tells if debug printing is needed.
+
+    @returns: the running times as a dictionary with three entries.
+    Each entry has the running times of a different operation.
+    The keys are the names of each operation: 'INSERT', 'DELETE', 'LOOKUP'.
+    It also saves the results to a file.
+    """
+    with Pool(min(cpu_count(), n)) as p:
+        results = p.starmap(
+            run_time_benchmark, [(bench_name, i, debug) for i in range(n)], n)
+        results = get_average_running_times(results)
+        if (debug):
+            print("***execute_run_time_benchmarks***", results, sep="\n")
+        if (save_to_file):
+            save_results_to_file(
+                f"benchmark/{bench_name}-run-times.txt", results)
+        remove_dist_folders()
+        return results
+
+
+def remove_dist_folders():
+    """
+    Remove the dist folders generated by the benchmarks.
+    """
+    run("rm -fr dist*", shell=True)
+    return 0
+
+
+def execute_compilation_time_benchmarks(bench_name, n, save_to_file, debug):
+    """
+    This function repeatedly executes (in parallel) the named benchmark
+    and returns the average compilation times.
+
+
+    @param bench_name: the name of the benchmark to execute. Possible choices are
+    [bst|avl]-[unsafe|fullextern|extern|intern]. For instance, 'bst-extern'.
+
+    @param n: the amount of times the benchmark is executed.
+
+    @param save_to_file: boolean which tells whether to save results to a file.
+
+    @param debug: boolean which tells if debug printing is needed.
+
+    @returns: the running times as a dictionary with three entries.
+    Each entry has the running times of a different operation.
+    The keys are the names of each operation: 'INSERT', 'DELETE', 'LOOKUP'.
+    It also saves the results to a file.
+    """
+    bench_ops = ["insert", "delete", "lookup"]
+    if ("unsafe" in bench_name):
+        bench_ids = [str(i) for i in range(1, 11, 1)]
+    elif ("fullextern" in bench_name):
+        bench_ids = [str(i) for i in range(10, 110, 10)]
+    else:   # ("extern" in bench_name) or ("intern" in bench_name)
+        bench_ids = [str(i) for i in range(10, 70, 10)]
+
+    times = {}
+    for op in bench_ops:
+        times[op.upper()] = []
+        for bench_id in bench_ids:
+            with Pool(min(cpu_count(), n)) as p:
+                bench_times = p.starmap(
+                    compilation_time_benchmark, [(bench_name, op, bench_id, i, debug) for i in range(n)], n)
+                bench_times = remove_outliers(bench_times)
+                avg_time = float('{:.2f}'.format(
+                    sum(bench_times) / len(bench_times)))
+                times[op.upper()].append(avg_time)
+            remove_dist_folders()
+    if (debug):
+        print("***execute_compilation_time_benchmarks***", times, sep="\n")
+    if (save_to_file):
+        save_results_to_file(
+            f"benchmark/{bench_name}-compilation-times.txt", times)
+    return times
+
+
+def save_results_to_file(file_name, results):
+    """
+    Save the results of the function execute_run_time_benchmarks to a file
+    with the following format:
+      INSERT
+      ...
+      DELETE
+      ...
+      LOOKUP
+      ...
+    """
+    with open(file_name, "w") as f:
+        for op in results.keys():
+            f.write(op + "\n")
+            f.writelines(map(lambda n: str(n) + "\n", results[op]))
+
+
+def median(arr):
+    """
+    Compute the median value of an array of numbers.
+    """
+    arr_copy = arr.copy()
+    arr_copy.sort()
+    if (len(arr_copy) % 2 == 0):
+        i2 = len(arr_copy) // 2
+        q2 = (arr_copy[i2] + arr_copy[i2 - 1]) / 2
+    else:
+        i2 = len(arr_copy) // 2
+        q2 = arr_copy[i2]
+    return q2
+
+
+def split_array(arr):
+    """
+    Split and array in two halfs, along its median value.
+    It doesn't modify the original array.
+    """
+    arr_copy = arr.copy()
+    arr_copy.sort()
+    i2 = len(arr_copy) // 2
+    first_half = arr_copy[0:i2]
+    if (len(arr_copy) % 2 == 0):
+        second_half = arr_copy[i2:]
+    else:
+        second_half = arr_copy[i2 + 1:]
+    return first_half, second_half
+
+
+def remove_outliers(arr):
+    """
+    Remove outliers from an array of benchmark times.
+    """
+    # Compute the first (q1), second (q2) and third (q3) quartile.
+    first_half, second_half = split_array(arr)
+    q1, q2, q3 = median(first_half), median(arr), median(second_half)
+    # Remove values outside 1.5 times the IQR centered at the median
+    iqr = q3 - q1
+    filtered_arr = list(filter(lambda n: n >= q2 - 1.5 * iqr, arr))
+    filtered_arr = list(filter(lambda n: n <= q2 + 1.5 * iqr, filtered_arr))
+    return filtered_arr
 
 
 
 if __name__ == '__main__':
-  bench_name = argv[1]
-  if (len(argv) > 2):
-    n = int(argv[2])
-  else:
-    n = 5
+    bench_name, bench_type, n, save_to_file, debug = sanitize_arguments()
 
-  print(execute_benchmarks(bench_name, n))
+    if (bench_type == "run"):
+        results = execute_run_time_benchmarks(
+            bench_name, n, save_to_file, debug)
+    else:   # bench_type == "compilation"
+        results = execute_compilation_time_benchmarks(
+            bench_name, n, save_to_file, debug)
+    if (debug):
+        print("main", results)
