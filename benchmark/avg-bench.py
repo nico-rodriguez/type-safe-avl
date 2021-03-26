@@ -232,7 +232,10 @@ def execute_compilation_time_benchmarks(bench_name, n, save_to_file, debug):
     elif ("fullextern" in bench_name):
         bench_ids = [str(i) for i in range(10, 110, 10)]
     else:   # ("extern" in bench_name) or ("intern" in bench_name)
-        bench_ids = [str(i) for i in range(10, 70, 10)]
+        if ("avl" in bench_name):
+            bench_ids = [str(i) for i in range(10, 70, 10)]
+        else:
+            bench_ids = [str(i) for i in range(10, 60, 10)]
 
     times = {}
     for op in bench_ops:
