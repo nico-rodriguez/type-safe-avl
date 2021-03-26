@@ -46,10 +46,6 @@ main =
     seq t50 (return ())
     t1 <- getCurrentTime
     putStrLn $ "N=50: " ++ show (diffUTCTime t1 t0)
-    -- t0 <- getCurrentTime
-    -- seq t60 (return ())
-    -- t1 <- getCurrentTime
-    -- putStrLn $ "N=60: " ++ show (diffUTCTime t1 t0)
     -- Delete
     putStrLn "DELETE"
     t0 <- getCurrentTime
@@ -72,10 +68,6 @@ main =
     seq e50 (return ())
     t1 <- getCurrentTime
     putStrLn $ "N=50: " ++ show (diffUTCTime t1 t0)
-    -- t0 <- getCurrentTime
-    -- seq e60 (return ())
-    -- t1 <- getCurrentTime
-    -- putStrLn $ "N=60: " ++ show (diffUTCTime t1 t0)
     -- Lookup
     putStrLn "LOOKUP"
     t0 <- getCurrentTime
@@ -98,7 +90,3 @@ main =
     seq v50 (return ())
     t1 <- getCurrentTime
     putStrLn $ "N=50: " ++ show (diffUTCTime t1 t0)
-    -- t0 <- getCurrentTime
-    -- seq v60 (return ())
-    -- t1 <- getCurrentTime
-    -- putStrLn $ "N=60: " ++ show (diffUTCTime t1 t0)
