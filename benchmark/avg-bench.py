@@ -33,7 +33,7 @@ USAGE_MESSAGE = """
   - bst-fullextern, avl-fullextern
   - bst-extern, avl-extern
   - bst-intern, avl-intern.
-  * BENCH TYPE (case insensitive) is the type of benchmark to be eecuted
+  * BENCH TYPE (case insensitive) is the type of benchmark to be executed
   (either for running time or compilation time):
   - run
   - compile
@@ -291,7 +291,7 @@ def median(arr):
 
 def split_array(arr):
     """
-    Split and array in two halfs, along its median value.
+    Split and array in two halves, along its median value.
     It doesn't modify the original array.
     """
     arr_copy = arr.copy()
