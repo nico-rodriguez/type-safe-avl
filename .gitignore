@@ -3,3 +3,4 @@
 balanced-binary-search-tree.vscode.code-workspace
 dist-newstyle/
 venv/
+.vscode/
