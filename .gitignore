@@ -2,4 +2,5 @@
 /output_dir
 balanced-binary-search-tree.vscode.code-workspace
 dist-newstyle/
-dist*/
+venv/
+.vscode/
