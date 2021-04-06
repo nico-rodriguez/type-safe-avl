@@ -153,16 +153,28 @@ def run_time_benchmark(bench_name, bench_num, debug):
     return get_running_times(result.stdout, debug)
 
 
-def compilation_time_benchmark(bench_name, operation, bench_id, n, debug):
+def compile_examples(bench_id, debug):
+    """
+    Compile the examples modules which contain the tree that are the basis
+    for the insert, delete and lookup benchmarks.
+    """
+    result = run(f'cabal build {bench_name}-example{bench_id} --builddir dist',
+                 shell=True, capture_output=True, text=True)
+    if (debug):
+          print("***compile_examples***", result, sep="\n")
+    return 0
+
+
+def compilation_time_benchmark(bench_name, operation, bench_id, debug):
     """
     It executes the named benchmark using an exclusive builddir
     (the default is dist/) and returns the number it took (in seconds).
     """
-    result = run(f'(/usr/bin/time -f "%e" cabal build {bench_name}-{operation}{bench_id} --builddir dist{n}) 2>&1 > /dev/null | tail -1',
+    result = run(f'(/usr/bin/time -f "%e" cabal build {bench_name}-{operation}{bench_id} --builddir dist) 2>&1 > /dev/null | tail -1',
                  shell=True, capture_output=True, text=True)
     if (debug):
         print("***compilation_time_benchmark***", result, sep="\n")
-    return float(result.stdout)
+    return (operation, float(result.stdout))
 
 
 def execute_run_time_benchmarks(bench_name, n, save_to_file, debug):
@@ -239,16 +251,28 @@ def execute_compilation_time_benchmarks(bench_name, n, save_to_file, debug):
 
     times = {}
     for op in bench_ops:
-        times[op.upper()] = []
-        for bench_id in bench_ids:
-            with Pool(min(cpu_count(), n)) as p:
+        times[op] = []
+
+    for bench_id in bench_ids:
+        unprocessed_times = {
+            "insert": [],
+            "delete": [],
+            "lookup": []
+        }
+        for _ in range(n):
+            compile_examples(bench_id, debug)
+            with Pool(min(cpu_count(), len(bench_ops))) as p:
                 bench_times = p.starmap(
-                    compilation_time_benchmark, [(bench_name, op, bench_id, i, debug) for i in range(n)], n)
-                bench_times = remove_outliers(bench_times)
-                avg_time = float('{:.2f}'.format(
-                    sum(bench_times) / len(bench_times)))
-                times[op.upper()].append(avg_time)
+                    compilation_time_benchmark, [(bench_name, op, bench_id, debug) for op in bench_ops], len(bench_ops))
+                for op, t in bench_times:
+                    unprocessed_times[op].append(t)
             remove_dist_folders()
+        for op in bench_ops:
+            unprocessed_times[op] = remove_outliers(unprocessed_times[op])
+            avg_time = float('{:.2f}'.format(
+                sum(unprocessed_times[op]) / len(unprocessed_times[op])))
+            times[op].append(avg_time)
+
     if (debug):
         print("***execute_compilation_time_benchmarks***", times, sep="\n")
     if (save_to_file):
