@@ -6,10 +6,9 @@ module BST.FullExtern.Lookup.Lookup60 (v60, main) where
 
 import           Data.Time.Clock                (diffUTCTime, getCurrentTime)
 import           Data.Proxy                     (Proxy (Proxy))
-import           Data.Tree.BST.FullExtern       (BST (BST))
-import           Data.Tree.BST.FullExtern       (lookup)
+import           Data.Tree.BST.FullExtern       (BST (BST), lookup)
 import           Prelude                        (IO, putStrLn, return, seq, show, (++))
-import           BST.FullExtern.Insert.Insert60 (t60)
+import           BST.FullExtern.Example.Example60 (t60)
 
 
 v60 = case t60 of

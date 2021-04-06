@@ -4,12 +4,18 @@
 import           Prelude                (IO, putStrLn, return,
                                         seq, show, (++), ($))
 import           Data.Time.Clock (diffUTCTime, getCurrentTime)
-import AVL.Intern.Insert.Insert10 (t10)
-import AVL.Intern.Insert.Insert20 (t20)
-import AVL.Intern.Insert.Insert30 (t30)
-import AVL.Intern.Insert.Insert40 (t40)
-import AVL.Intern.Insert.Insert50 (t50)
-import AVL.Intern.Insert.Insert60 (t60)
+import AVL.Intern.Example.Example10 (t10)
+import AVL.Intern.Example.Example20 (t20)
+import AVL.Intern.Example.Example30 (t30)
+import AVL.Intern.Example.Example40 (t40)
+import AVL.Intern.Example.Example50 (t50)
+import AVL.Intern.Example.Example60 (t60)
+import AVL.Intern.Insert.Insert10 (t10')
+import AVL.Intern.Insert.Insert20 (t20')
+import AVL.Intern.Insert.Insert30 (t30')
+import AVL.Intern.Insert.Insert40 (t40')
+import AVL.Intern.Insert.Insert50 (t50')
+import AVL.Intern.Insert.Insert60 (t60')
 import AVL.Intern.Lookup.Lookup10 (v10)
 import AVL.Intern.Lookup.Lookup20 (v20)
 import AVL.Intern.Lookup.Lookup30 (v30)
@@ -27,30 +33,37 @@ import AVL.Intern.Delete.Delete60 (e60)
 main :: IO ()
 main =
     do 
+    -- Pre evaluate the example trees
+    seq t10 (return ())
+    seq t20 (return ())
+    seq t30 (return ())
+    seq t40 (return ())
+    seq t50 (return ())
+    seq t60 (return ())
     -- Insert
     putStrLn "INSERT"
     t0 <- getCurrentTime
-    seq t10 (return ())
+    seq t10' (return ())
     t1 <- getCurrentTime
     putStrLn $ "N=10: " ++ show (diffUTCTime t1 t0)
     t0 <- getCurrentTime
-    seq t20 (return ())
+    seq t20' (return ())
     t1 <- getCurrentTime
     putStrLn $ "N=20: " ++ show (diffUTCTime t1 t0)
     t0 <- getCurrentTime
-    seq t30 (return ())
+    seq t30' (return ())
     t1 <- getCurrentTime
     putStrLn $ "N=30: " ++ show (diffUTCTime t1 t0)
     t0 <- getCurrentTime
-    seq t40 (return ())
+    seq t40' (return ())
     t1 <- getCurrentTime
     putStrLn $ "N=40: " ++ show (diffUTCTime t1 t0)
     t0 <- getCurrentTime
-    seq t50 (return ())
+    seq t50' (return ())
     t1 <- getCurrentTime
     putStrLn $ "N=50: " ++ show (diffUTCTime t1 t0)
     t0 <- getCurrentTime
-    seq t60 (return ())
+    seq t60' (return ())
     t1 <- getCurrentTime
     putStrLn $ "N=60: " ++ show (diffUTCTime t1 t0)
     -- Delete

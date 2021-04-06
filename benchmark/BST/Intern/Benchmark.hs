@@ -4,11 +4,16 @@
 import           Prelude                (IO, putStrLn, return,
                                         seq, show, (++), ($))
 import           Data.Time.Clock (diffUTCTime, getCurrentTime)
-import BST.Intern.Insert.Insert10 (t10)
-import BST.Intern.Insert.Insert20 (t20)
-import BST.Intern.Insert.Insert30 (t30)
-import BST.Intern.Insert.Insert40 (t40)
-import BST.Intern.Insert.Insert50 (t50)
+import BST.Intern.Example.Example10 (t10)
+import BST.Intern.Example.Example20 (t20)
+import BST.Intern.Example.Example30 (t30)
+import BST.Intern.Example.Example40 (t40)
+import BST.Intern.Example.Example50 (t50)
+import BST.Intern.Insert.Insert10 (t10')
+import BST.Intern.Insert.Insert20 (t20')
+import BST.Intern.Insert.Insert30 (t30')
+import BST.Intern.Insert.Insert40 (t40')
+import BST.Intern.Insert.Insert50 (t50')
 import BST.Intern.Lookup.Lookup10 (v10)
 import BST.Intern.Lookup.Lookup20 (v20)
 import BST.Intern.Lookup.Lookup30 (v30)
@@ -24,26 +29,32 @@ import BST.Intern.Delete.Delete50 (e50)
 main :: IO ()
 main =
     do 
+    -- Pre evaluate the example trees
+    seq t10 (return ())
+    seq t20 (return ())
+    seq t30 (return ())
+    seq t40 (return ())
+    seq t50 (return ())
     -- Insert
     putStrLn "INSERT"
     t0 <- getCurrentTime
-    seq t10 (return ())
+    seq t10' (return ())
     t1 <- getCurrentTime
     putStrLn $ "N=10: " ++ show (diffUTCTime t1 t0)
     t0 <- getCurrentTime
-    seq t20 (return ())
+    seq t20' (return ())
     t1 <- getCurrentTime
     putStrLn $ "N=20: " ++ show (diffUTCTime t1 t0)
     t0 <- getCurrentTime
-    seq t30 (return ())
+    seq t30' (return ())
     t1 <- getCurrentTime
     putStrLn $ "N=30: " ++ show (diffUTCTime t1 t0)
     t0 <- getCurrentTime
-    seq t40 (return ())
+    seq t40' (return ())
     t1 <- getCurrentTime
     putStrLn $ "N=40: " ++ show (diffUTCTime t1 t0)
     t0 <- getCurrentTime
-    seq t50 (return ())
+    seq t50' (return ())
     t1 <- getCurrentTime
     putStrLn $ "N=50: " ++ show (diffUTCTime t1 t0)
     -- Delete

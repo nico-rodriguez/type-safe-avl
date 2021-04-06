@@ -9,7 +9,7 @@ import           Data.Proxy                 (Proxy (Proxy))
 import           Data.Tree.AVL.Extern       (deleteAVL)
 import           Prelude                    (IO, putStrLn, return, seq,
                                             show, (++), ($))
-import           AVL.Extern.Insert.Insert40 (t40)
+import           AVL.Extern.Example.Example40 (t40)
 
 
 e40 = deleteAVL (Proxy::Proxy 39) $ deleteAVL (Proxy::Proxy 38) $ deleteAVL (Proxy::Proxy 37) $ deleteAVL (Proxy::Proxy 36) $ deleteAVL (Proxy::Proxy 35) $ deleteAVL (Proxy::Proxy 34) $ deleteAVL (Proxy::Proxy 33) $ deleteAVL (Proxy::Proxy 32) $ deleteAVL (Proxy::Proxy 31) $ deleteAVL (Proxy::Proxy 30) $

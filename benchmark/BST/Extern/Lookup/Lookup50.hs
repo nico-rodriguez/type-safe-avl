@@ -8,7 +8,7 @@ import           Data.Time.Clock            (diffUTCTime, getCurrentTime)
 import           Data.Proxy                 (Proxy (Proxy))
 import           Data.Tree.BST.Extern       (lookupBST)
 import           Prelude                    (IO, putStrLn, return, seq, show, (++))
-import           BST.Extern.Insert.Insert50 (t50)
+import           BST.Extern.Example.Example50 (t50)
 
 
 v50 = lookupBST (Proxy::Proxy 49) t50
