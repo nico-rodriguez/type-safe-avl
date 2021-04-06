@@ -377,6 +377,65 @@ benchmark bst-intern
         BST.Intern.Delete.Delete40
         BST.Intern.Delete.Delete50
 
+library avl-unsafe-example1
+    build-depends:   base ^>=4.14.1.0, time ^>=1.9.3, balanced-binary-search-tree ^>=0.1.0.0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    exposed-modules: AVL.Unsafe.Example.Example1
+    hs-source-dirs:  benchmark
+
+library avl-unsafe-example2
+    build-depends:   base ^>=4.14.1.0, time ^>=1.9.3, balanced-binary-search-tree ^>=0.1.0.0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    exposed-modules: AVL.Unsafe.Example.Example2
+    hs-source-dirs:  benchmark
+library avl-unsafe-example3
+    build-depends:   base ^>=4.14.1.0, time ^>=1.9.3, balanced-binary-search-tree ^>=0.1.0.0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    exposed-modules: AVL.Unsafe.Example.Example3
+    hs-source-dirs:  benchmark
+
+library avl-unsafe-example4
+    build-depends:   base ^>=4.14.1.0, time ^>=1.9.3, balanced-binary-search-tree ^>=0.1.0.0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    exposed-modules: AVL.Unsafe.Example.Example4
+    hs-source-dirs:  benchmark
+
+library avl-unsafe-example5
+    build-depends:   base ^>=4.14.1.0, time ^>=1.9.3, balanced-binary-search-tree ^>=0.1.0.0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    exposed-modules: AVL.Unsafe.Example.Example5
+    hs-source-dirs:  benchmark
+
+library avl-unsafe-example6
+    build-depends:   base ^>=4.14.1.0, time ^>=1.9.3, balanced-binary-search-tree ^>=0.1.0.0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    exposed-modules: AVL.Unsafe.Example.Example6
+    hs-source-dirs:  benchmark
+
+library avl-unsafe-example7
+    build-depends:   base ^>=4.14.1.0, time ^>=1.9.3, balanced-binary-search-tree ^>=0.1.0.0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    exposed-modules: AVL.Unsafe.Example.Example7
+    hs-source-dirs:  benchmark
+
+library avl-unsafe-example8
+    build-depends:   base ^>=4.14.1.0, time ^>=1.9.3, balanced-binary-search-tree ^>=0.1.0.0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    exposed-modules: AVL.Unsafe.Example.Example8
+    hs-source-dirs:  benchmark
+
+library avl-unsafe-example9
+    build-depends:   base ^>=4.14.1.0, time ^>=1.9.3, balanced-binary-search-tree ^>=0.1.0.0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    exposed-modules: AVL.Unsafe.Example.Example9
+    hs-source-dirs:  benchmark
+
+library avl-unsafe-example10
+    build-depends:   base ^>=4.14.1.0, time ^>=1.9.3, balanced-binary-search-tree ^>=0.1.0.0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    exposed-modules: AVL.Unsafe.Example.Example10
+    hs-source-dirs:  benchmark
+
 library avl-unsafe-insert1
     build-depends:   base ^>=4.14.1.0, time ^>=1.9.3, balanced-binary-search-tree ^>=0.1.0.0
     ghc-options:     -O0 -fmax-simplifier-iterations=0
@@ -939,6 +998,65 @@ library avl-intern-delete60
     build-depends:   base ^>=4.14.1.0, time ^>=1.9.3, balanced-binary-search-tree ^>=0.1.0.0
     ghc-options:     -O0 -fmax-simplifier-iterations=0
     exposed-modules: AVL.Intern.Delete.Delete60
+    hs-source-dirs:  benchmark
+
+library bst-unsafe-example1
+    build-depends:   base ^>=4.14.1.0, time ^>=1.9.3, balanced-binary-search-tree ^>=0.1.0.0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    exposed-modules: BST.Unsafe.Example.Example1
+    hs-source-dirs:  benchmark
+
+library bst-unsafe-example2
+    build-depends:   base ^>=4.14.1.0, time ^>=1.9.3, balanced-binary-search-tree ^>=0.1.0.0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    exposed-modules: BST.Unsafe.Example.Example2
+    hs-source-dirs:  benchmark
+library bst-unsafe-example3
+    build-depends:   base ^>=4.14.1.0, time ^>=1.9.3, balanced-binary-search-tree ^>=0.1.0.0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    exposed-modules: BST.Unsafe.Example.Example3
+    hs-source-dirs:  benchmark
+
+library bst-unsafe-example4
+    build-depends:   base ^>=4.14.1.0, time ^>=1.9.3, balanced-binary-search-tree ^>=0.1.0.0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    exposed-modules: BST.Unsafe.Example.Example4
+    hs-source-dirs:  benchmark
+
+library bst-unsafe-example5
+    build-depends:   base ^>=4.14.1.0, time ^>=1.9.3, balanced-binary-search-tree ^>=0.1.0.0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    exposed-modules: BST.Unsafe.Example.Example5
+    hs-source-dirs:  benchmark
+
+library bst-unsafe-example6
+    build-depends:   base ^>=4.14.1.0, time ^>=1.9.3, balanced-binary-search-tree ^>=0.1.0.0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    exposed-modules: BST.Unsafe.Example.Example6
+    hs-source-dirs:  benchmark
+
+library bst-unsafe-example7
+    build-depends:   base ^>=4.14.1.0, time ^>=1.9.3, balanced-binary-search-tree ^>=0.1.0.0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    exposed-modules: BST.Unsafe.Example.Example7
+    hs-source-dirs:  benchmark
+
+library bst-unsafe-example8
+    build-depends:   base ^>=4.14.1.0, time ^>=1.9.3, balanced-binary-search-tree ^>=0.1.0.0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    exposed-modules: BST.Unsafe.Example.Example8
+    hs-source-dirs:  benchmark
+
+library bst-unsafe-example9
+    build-depends:   base ^>=4.14.1.0, time ^>=1.9.3, balanced-binary-search-tree ^>=0.1.0.0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    exposed-modules: BST.Unsafe.Example.Example9
+    hs-source-dirs:  benchmark
+
+library bst-unsafe-example10
+    build-depends:   base ^>=4.14.1.0, time ^>=1.9.3, balanced-binary-search-tree ^>=0.1.0.0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    exposed-modules: BST.Unsafe.Example.Example10
     hs-source-dirs:  benchmark
 
 library bst-unsafe-insert1

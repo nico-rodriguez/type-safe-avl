@@ -7,7 +7,7 @@ module BST.Unsafe.Lookup.Lookup4 (v4, main) where
 import           Data.Time.Clock             (diffUTCTime, getCurrentTime)
 import           Data.Tree.BST.Unsafe        (lookupBST)
 import           Prelude                     (IO, putStrLn, return, seq, show, (++), (^))
-import           BST.Unsafe.Insert.Insert4 (t4)
+import           BST.Unsafe.Example.Example4 (t4)
 
 
 v4 = lookupBST (2^9) t4

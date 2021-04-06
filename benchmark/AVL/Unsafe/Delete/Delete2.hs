@@ -8,13 +8,10 @@ import           Data.Time.Clock           (diffUTCTime, getCurrentTime)
 import           Data.Tree.AVL.Unsafe      (deleteAVL)
 import           Prelude                   (IO, putStrLn, return, seq,
                                            show, (++), flip, (^))
-import           AVL.Unsafe.Insert.Insert2 (t2)
-import           Data.Foldable             (foldl')
+import           AVL.Unsafe.Example.Example2 (t2)
 
 
-e2 = foldl' deleteAVL' t2 [0..2^7]
-    where
-        deleteAVL' = flip deleteAVL
+e2 = deleteAVL (2^7) t2
 
 main :: IO ()
 main = do t0 <- getCurrentTime

@@ -4,16 +4,26 @@
 import           Prelude              (IO, putStrLn, return,
                                       seq, show, (++), ($))
 import           Data.Time.Clock      (diffUTCTime, getCurrentTime)
-import BST.Unsafe.Insert.Insert1 (t1)
-import BST.Unsafe.Insert.Insert2 (t2)
-import BST.Unsafe.Insert.Insert3 (t3)
-import BST.Unsafe.Insert.Insert4 (t4)
-import BST.Unsafe.Insert.Insert5 (t5)
-import BST.Unsafe.Insert.Insert6 (t6)
-import BST.Unsafe.Insert.Insert7 (t7)
-import BST.Unsafe.Insert.Insert8 (t8)
-import BST.Unsafe.Insert.Insert9 (t9)
-import BST.Unsafe.Insert.Insert10 (t10)
+import BST.Unsafe.Example.Example1 (t1)
+import BST.Unsafe.Example.Example2 (t2)
+import BST.Unsafe.Example.Example3 (t3)
+import BST.Unsafe.Example.Example4 (t4)
+import BST.Unsafe.Example.Example5 (t5)
+import BST.Unsafe.Example.Example6 (t6)
+import BST.Unsafe.Example.Example7 (t7)
+import BST.Unsafe.Example.Example8 (t8)
+import BST.Unsafe.Example.Example9 (t9)
+import BST.Unsafe.Example.Example10 (t10)
+import BST.Unsafe.Insert.Insert1 (t1')
+import BST.Unsafe.Insert.Insert2 (t2')
+import BST.Unsafe.Insert.Insert3 (t3')
+import BST.Unsafe.Insert.Insert4 (t4')
+import BST.Unsafe.Insert.Insert5 (t5')
+import BST.Unsafe.Insert.Insert6 (t6')
+import BST.Unsafe.Insert.Insert7 (t7')
+import BST.Unsafe.Insert.Insert8 (t8')
+import BST.Unsafe.Insert.Insert9 (t9')
+import BST.Unsafe.Insert.Insert10 (t10')
 import BST.Unsafe.Lookup.Lookup1 (v1)
 import BST.Unsafe.Lookup.Lookup2 (v2)
 import BST.Unsafe.Lookup.Lookup3 (v3)
@@ -39,46 +49,57 @@ import BST.Unsafe.Delete.Delete10 (e10)
 main :: IO ()
 main =
     do
+        -- Pre evaluate the example trees
+        seq t1 (return ())
+        seq t2 (return ())
+        seq t3 (return ())
+        seq t4 (return ())
+        seq t5 (return ())
+        seq t6 (return ())
+        seq t7 (return ())
+        seq t8 (return ())
+        seq t9 (return ())
+        seq t10 (return ())
         -- Insert
         putStrLn "INSERT"
         t0 <- getCurrentTime
-        seq t1 (return ())
+        seq t1' (return ())
         t1 <- getCurrentTime
         putStrLn $ "N=2^6: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
-        seq t2 (return ())
+        seq t2' (return ())
         t1 <- getCurrentTime
         putStrLn $ "N=2^7: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
-        seq t3 (return ())
+        seq t3' (return ())
         t1 <- getCurrentTime
         putStrLn $ "N=2^8: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
-        seq t4 (return ())
+        seq t4' (return ())
         t1 <- getCurrentTime
         putStrLn $ "N=2^9: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
-        seq t5 (return ())
+        seq t5' (return ())
         t1 <- getCurrentTime
         putStrLn $ "N=2^10: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
-        seq t6 (return ())
+        seq t6' (return ())
         t1 <- getCurrentTime
         putStrLn $ "N=2^11: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
-        seq t7 (return ())
+        seq t7' (return ())
         t1 <- getCurrentTime
         putStrLn $ "N=2^12: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
-        seq t8 (return ())
+        seq t8' (return ())
         t1 <- getCurrentTime
         putStrLn $ "N=2^13: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
-        seq t9 (return ())
+        seq t9' (return ())
         t1 <- getCurrentTime
         putStrLn $ "N=2^14: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
-        seq t10 (return ())
+        seq t10' (return ())
         t1 <- getCurrentTime
         putStrLn $ "N=2^15: " ++ show (diffUTCTime t1 t0)
         -- Delete
