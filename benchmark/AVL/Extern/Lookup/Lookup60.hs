@@ -8,7 +8,7 @@ import           Data.Time.Clock            (diffUTCTime, getCurrentTime)
 import           Data.Proxy                 (Proxy (Proxy))
 import           Data.Tree.AVL.Extern       (lookupAVL)
 import           Prelude                    (IO, putStrLn, return, seq, show, (++))
-import           AVL.Extern.Insert.Insert60 (t60)
+import           AVL.Extern.Example.Example60 (t60)
 
 
 v60 = lookupAVL (Proxy::Proxy 59) t60

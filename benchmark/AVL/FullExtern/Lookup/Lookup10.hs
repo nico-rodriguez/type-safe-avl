@@ -9,7 +9,7 @@ import           Data.Proxy                     (Proxy (Proxy))
 import           Data.Tree.AVL.FullExtern       (AVL (AVL))
 import           Data.Tree.BST.FullExtern       (lookup)
 import           Prelude                        (IO, putStrLn, return, seq, show, (++))
-import           AVL.FullExtern.Insert.Insert10 (t10)
+import           AVL.FullExtern.Example.Example10 (t10)
 
 
 v10 = case t10 of

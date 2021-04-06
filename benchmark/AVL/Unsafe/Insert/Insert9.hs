@@ -1,22 +1,20 @@
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE Safe      #-}
 
-module AVL.Unsafe.Insert.Insert9 (t9, main) where
+module AVL.Unsafe.Insert.Insert9 (t9', main) where
 
 import           Data.Time.Clock      (diffUTCTime,
                                        getCurrentTime)
 import           Data.Tree.AVL.Unsafe (emptyAVL, insertAVL)
 import           Prelude              (IO, putStrLn, return, seq,
-                                       show, (++), (^))
-import           Data.Foldable        (foldl')
+                                       show, (++), (^), (+))
+import           AVL.Unsafe.Example.Example9 (t9)
 
 
-t9 = foldl' insertAVL' emptyAVL [0..2^14]
-        where
-                insertAVL' tree key = insertAVL key 'a' tree
+t9' = insertAVL (2^14 + 1) 'a' t9
 
 main :: IO ()
 main = do t0 <- getCurrentTime
-          seq t9 (return ())
+          seq t9' (return ())
           t1 <- getCurrentTime
           putStrLn ("Time: " ++ show (diffUTCTime t1 t0) ++ " seconds")

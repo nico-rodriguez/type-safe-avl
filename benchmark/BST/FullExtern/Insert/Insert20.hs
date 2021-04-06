@@ -1,7 +1,7 @@
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE Safe      #-}
 
-module BST.FullExtern.Insert.Insert20 (t20, main) where
+module BST.FullExtern.Insert.Insert20 (t20', main) where
 
 import           Data.Proxy               (Proxy (Proxy))
 import           Data.Time.Clock          (diffUTCTime,
@@ -10,15 +10,15 @@ import           Data.Tree.Node           (mkNode)
 import           Data.Tree.BST.FullExtern (ITree (EmptyITree), insert, mkBST)
 import           Prelude                  (IO, putStrLn, return, seq,
                                            show, ($), (++))
+import           BST.FullExtern.Example.Example20 (t20)
 
 
-t20 = mkBST t
+t20' = mkBST t
   where
-    t = insert (mkNode (Proxy::Proxy 19) 'a') $ insert (mkNode (Proxy::Proxy 18) 'a') $ insert (mkNode (Proxy::Proxy 17) 'a') $ insert (mkNode (Proxy::Proxy 16) 'a') $ insert (mkNode (Proxy::Proxy 15) 'a') $ insert (mkNode (Proxy::Proxy 14) 'a') $ insert (mkNode (Proxy::Proxy 13) 'a') $ insert (mkNode (Proxy::Proxy 12) 'a') $ insert (mkNode (Proxy::Proxy 11) 'a') $ insert (mkNode (Proxy::Proxy 10) 'a') $
-        insert (mkNode (Proxy::Proxy 9) 'a') $ insert (mkNode (Proxy::Proxy 8) 'a') $ insert (mkNode (Proxy::Proxy 7) 'a') $ insert (mkNode (Proxy::Proxy 6) 'a') $ insert (mkNode (Proxy::Proxy 5) 'a') $ insert (mkNode (Proxy::Proxy 4) 'a') $ insert (mkNode (Proxy::Proxy 3) 'a') $ insert (mkNode (Proxy::Proxy 2) 'a') $ insert (mkNode (Proxy::Proxy 1) 'a') $ insert (mkNode (Proxy::Proxy 0) 'a') EmptyITree
+    t = insert (mkNode (Proxy::Proxy 20) 'a') t20
 
 main :: IO ()
 main = do t0 <- getCurrentTime
-          seq t20 (return ())
+          seq t20' (return ())
           t1 <- getCurrentTime
           putStrLn ("Time: " ++ show (diffUTCTime t0 t1) ++ " seconds")

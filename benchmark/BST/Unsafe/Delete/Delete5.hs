@@ -8,13 +8,10 @@ import           Data.Time.Clock           (diffUTCTime, getCurrentTime)
 import           Data.Tree.BST.Unsafe      (deleteBST)
 import           Prelude                   (IO, putStrLn, return, seq,
                                            show, (++), flip, (^))
-import           BST.Unsafe.Insert.Insert5 (t5)
-import           Data.Foldable             (foldl')
+import           BST.Unsafe.Example.Example5 (t5)
 
 
-e5 = foldl' deleteBST' t5 [0..2^10]
-    where
-        deleteBST' = flip deleteBST
+e5 = deleteBST (2^10) t5
 
 main :: IO ()
 main = do t0 <- getCurrentTime

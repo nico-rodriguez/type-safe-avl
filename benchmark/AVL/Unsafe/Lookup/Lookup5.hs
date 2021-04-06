@@ -7,7 +7,7 @@ module AVL.Unsafe.Lookup.Lookup5 (v5, main) where
 import           Data.Time.Clock             (diffUTCTime, getCurrentTime)
 import           Data.Tree.AVL.Unsafe        (lookupAVL)
 import           Prelude                     (IO, putStrLn, return, seq, show, (++), (^))
-import           AVL.Unsafe.Insert.Insert5 (t5)
+import           AVL.Unsafe.Example.Example5 (t5)
 
 
 v5 = lookupAVL (2^10) t5
