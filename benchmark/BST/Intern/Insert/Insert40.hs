@@ -7,6 +7,7 @@ import           Data.Proxy             (Proxy (Proxy))
 import           Data.Time.Clock        (diffUTCTime, getCurrentTime)
 import           Data.Tree.BST.Intern   (insertBST)
 import           Prelude                (IO, putStrLn, return, seq, show, ($), (++))
+import           BST.Intern.Example.Example40 (t40)
 
 
 t40' = insertBST (Proxy::Proxy 40) 'a' t40

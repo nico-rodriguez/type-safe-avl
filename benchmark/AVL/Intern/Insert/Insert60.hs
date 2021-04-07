@@ -7,6 +7,7 @@ import           Data.Proxy             (Proxy (Proxy))
 import           Data.Time.Clock        (diffUTCTime, getCurrentTime)
 import           Data.Tree.AVL.Intern   (insertAVL)
 import           Prelude                (IO, putStrLn, return, seq, show, ($), (++))
+import           AVL.Intern.Example.Example60 (t60)
 
 
 t60' = insertAVL (Proxy::Proxy 60) 'a' t60

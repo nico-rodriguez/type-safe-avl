@@ -7,7 +7,7 @@ module AVL.Unsafe.Delete.Delete6 (e6, main) where
 import           Data.Time.Clock           (diffUTCTime, getCurrentTime)
 import           Data.Tree.AVL.Unsafe      (deleteAVL)
 import           Prelude                   (IO, putStrLn, return, seq,
-                                           show, (++), flip, (^))
+                                           show, (++), (^))
 import           AVL.Unsafe.Example.Example6 (t6)
 
 
