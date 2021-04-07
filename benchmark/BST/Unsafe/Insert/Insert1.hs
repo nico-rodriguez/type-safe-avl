@@ -7,7 +7,7 @@ import           Data.Time.Clock      (diffUTCTime,
                                        getCurrentTime)
 import           Data.Tree.BST.Unsafe (emptyBST, insertBST)
 import           Prelude              (IO, putStrLn, return, seq,
-                                       show, (++), (^))
+                                       show, (++), (^), (+))
 import           BST.Unsafe.Example.Example1 (t1)
 
 
