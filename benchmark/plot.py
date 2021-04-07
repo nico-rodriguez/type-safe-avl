@@ -37,7 +37,7 @@ avl_fullextern_compilation_times_df = DataFrame({
     "bench_type": Series(["compile" for _ in range(10 * 3)], dtype="category"),
     "N": Series([16 for _ in range(10 * 3)], dtype="int8"),
     "size": Series([size for _ in range(3) for size in range(10, 110, 10)], dtype="int8"),
-    "time": Series([8.03, 8.23, 8.72, 9.88, 11.37, 12.96, 15.57, 19.25, 23.49, 28.13, 7.74, 8.42, 9.42, 11.36, 13.7, 16.27, 20.31, 26.96, 32.87, 41.83, 7.77, 8.16, 8.77, 9.88, 11.4, 12.9, 15.49, 19.21, 23.4, 28.02], dtype="float32"),
+    "time": Series([2.41, 2.86, 3.52, 4.64, 6.09, 7.63, 10.17, 13.84, 18.09, 22.77, 2.24, 3.47, 4.59, 6.07, 7.69, 10.41, 14.18, 18.62, 23.28, 2.69, 3.33, 4.43, 5.93, 10.06, 13.7, 17.95, 22.56], dtype="float32"),
     "operation": Series([op for op in ["INSERT", "DELETE", "LOOKUP"] for _ in range(10)], dtype="category")
 })
 
