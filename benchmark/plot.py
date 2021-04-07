@@ -73,7 +73,7 @@ avl_intern_compilation_times_df = DataFrame({
     "bench_type": Series(["compile" for _ in range(6 * 3)], dtype="category"),
     "N": Series([16 for _ in range(6 * 3)], dtype="int8"),
     "size": Series([size for _ in range(3) for size in range(10, 70, 10)], dtype="int8"),
-    "time": Series([7.88, 8.72, 10.2, 12.46, 15.34, 18.58, 7.98, 9.41, 11.29, 15.19, 19.7, 24.52, 7.85, 8.7, 10.12, 12.33, 15.16, 18.23], dtype="float32"),
+    "time": Series([3.14, 4.12, 5.44, 7.69, 10.57, 13.81, 2.49, 3.48, 4.73, 7.09, 9.95, 13.17, 2.48, 3.42, 4.8, 6.95, 9.82, 13.06], dtype="float32"),
     "operation": Series([op for op in ["INSERT", "DELETE", "LOOKUP"] for _ in range(6)], dtype="category")
 })
 
