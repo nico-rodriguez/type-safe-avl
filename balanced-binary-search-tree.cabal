@@ -133,6 +133,16 @@ benchmark avl-unsafe
     -- The entrypoint to the benchmark (relative to hs-source-dirs).
     main-is:          AVL/Unsafe/Benchmark.hs
     other-modules:
+        AVL.Unsafe.Example.Example1
+        AVL.Unsafe.Example.Example2
+        AVL.Unsafe.Example.Example3
+        AVL.Unsafe.Example.Example4
+        AVL.Unsafe.Example.Example5
+        AVL.Unsafe.Example.Example6
+        AVL.Unsafe.Example.Example7
+        AVL.Unsafe.Example.Example8
+        AVL.Unsafe.Example.Example9
+        AVL.Unsafe.Example.Example10
         AVL.Unsafe.Insert.Insert1
         AVL.Unsafe.Insert.Insert2
         AVL.Unsafe.Insert.Insert3
@@ -171,6 +181,16 @@ benchmark avl-fullextern
     hs-source-dirs:   benchmark
     main-is:          AVL/FullExtern/Benchmark.hs
     other-modules:
+        AVL.FullExtern.Example.Example10
+        AVL.FullExtern.Example.Example20
+        AVL.FullExtern.Example.Example30
+        AVL.FullExtern.Example.Example40
+        AVL.FullExtern.Example.Example50
+        AVL.FullExtern.Example.Example60
+        AVL.FullExtern.Example.Example70
+        AVL.FullExtern.Example.Example80
+        AVL.FullExtern.Example.Example90
+        AVL.FullExtern.Example.Example100
         AVL.FullExtern.Insert.Insert10
         AVL.FullExtern.Insert.Insert20
         AVL.FullExtern.Insert.Insert30
@@ -209,6 +229,12 @@ benchmark avl-extern
     hs-source-dirs:   benchmark
     main-is:          AVL/Extern/Benchmark.hs
     other-modules:
+        AVL.Extern.Example.Example10
+        AVL.Extern.Example.Example20
+        AVL.Extern.Example.Example30
+        AVL.Extern.Example.Example40
+        AVL.Extern.Example.Example50
+        AVL.Extern.Example.Example60
         AVL.Extern.Insert.Insert10
         AVL.Extern.Insert.Insert20
         AVL.Extern.Insert.Insert30
@@ -235,6 +261,12 @@ benchmark avl-intern
     hs-source-dirs:   benchmark
     main-is:          AVL/Intern/Benchmark.hs
     other-modules:
+        AVL.Intern.Example.Example10
+        AVL.Intern.Example.Example20
+        AVL.Intern.Example.Example30
+        AVL.Intern.Example.Example40
+        AVL.Intern.Example.Example50
+        AVL.Intern.Example.Example60
         AVL.Intern.Insert.Insert10
         AVL.Intern.Insert.Insert20
         AVL.Intern.Insert.Insert30
@@ -262,6 +294,16 @@ benchmark bst-unsafe
     hs-source-dirs:   benchmark
     main-is:          BST/Unsafe/Benchmark.hs
     other-modules:
+        BST.Unsafe.Example.Example1
+        BST.Unsafe.Example.Example2
+        BST.Unsafe.Example.Example3
+        BST.Unsafe.Example.Example4
+        BST.Unsafe.Example.Example5
+        BST.Unsafe.Example.Example6
+        BST.Unsafe.Example.Example7
+        BST.Unsafe.Example.Example8
+        BST.Unsafe.Example.Example9
+        BST.Unsafe.Example.Example10
         BST.Unsafe.Insert.Insert1
         BST.Unsafe.Insert.Insert2
         BST.Unsafe.Insert.Insert3
@@ -300,6 +342,16 @@ benchmark bst-fullextern
     hs-source-dirs:   benchmark
     main-is:          BST/FullExtern/Benchmark.hs
     other-modules:
+        BST.FullExtern.Example.Example10
+        BST.FullExtern.Example.Example20
+        BST.FullExtern.Example.Example30
+        BST.FullExtern.Example.Example40
+        BST.FullExtern.Example.Example50
+        BST.FullExtern.Example.Example60
+        BST.FullExtern.Example.Example70
+        BST.FullExtern.Example.Example80
+        BST.FullExtern.Example.Example90
+        BST.FullExtern.Example.Example100
         BST.FullExtern.Insert.Insert10
         BST.FullExtern.Insert.Insert20
         BST.FullExtern.Insert.Insert30
@@ -338,6 +390,11 @@ benchmark bst-extern
     hs-source-dirs:   benchmark
     main-is:          BST/Extern/Benchmark.hs
     other-modules:
+        BST.Extern.Example.Example10
+        BST.Extern.Example.Example20
+        BST.Extern.Example.Example30
+        BST.Extern.Example.Example40
+        BST.Extern.Example.Example50
         BST.Extern.Insert.Insert10
         BST.Extern.Insert.Insert20
         BST.Extern.Insert.Insert30
@@ -361,6 +418,11 @@ benchmark bst-intern
     hs-source-dirs:   benchmark
     main-is:          BST/Intern/Benchmark.hs
     other-modules:
+        BST.Intern.Example.Example10
+        BST.Intern.Example.Example20
+        BST.Intern.Example.Example30
+        BST.Intern.Example.Example40
+        BST.Intern.Example.Example50
         BST.Intern.Insert.Insert10
         BST.Intern.Insert.Insert20
         BST.Intern.Insert.Insert30
