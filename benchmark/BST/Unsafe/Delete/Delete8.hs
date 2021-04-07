@@ -7,7 +7,7 @@ module BST.Unsafe.Delete.Delete8 (e8, main) where
 import           Data.Time.Clock           (diffUTCTime, getCurrentTime)
 import           Data.Tree.BST.Unsafe      (deleteBST)
 import           Prelude                   (IO, putStrLn, return, seq,
-                                           show, (++), flip, (^))
+                                           show, (++), (^))
 import           BST.Unsafe.Example.Example8 (t8)
 
 
