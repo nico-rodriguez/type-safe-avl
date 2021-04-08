@@ -19,7 +19,7 @@ avl_unsafe_running_times_df = DataFrame({
     "bench_type": Series(["run" for _ in range(10 * 3)], dtype="category"),
     "N": Series([16 for _ in range(10 * 3)], dtype="int8"),
     "size": Series([size for _ in range(3) for size in [pow(2, i) for i in range(6, 16, 1)]], dtype="int32"),
-    "time": Series([3.707e-04, 9.402e-04, 2.335e-03, 9.007e-03, 3.165e-02, 1.232e-01, 4.844e-01, 1.920e+00, 7.803e+00, 3.237e+01, 2.823e-04, 1.036e-03, 4.062e-03, 1.558e-02, 6.067e-02, 2.409e-01, 9.509e-01, 3.804e+00, 1.532e+01, 6.262e+01, 6.118e-06, 2.518e-06, 2.605e-06, 2.699e-06, 2.316e-06, 2.876e-06, 2.881e-06, 2.979e-06, 2.962e-06, 2.430e-06], dtype="float32"),
+    "time": Series([1.057e-05, 1.066e-05, 1.656e-05, 3.134e-05, 5.720e-05, 1.232e-04, 2.146e-04, 4.395e-04, 8.596e-04, 1.664e-03, 6.922e-06, 9.065e-06, 1.589e-05, 2.940e-05, 5.643e-05, 1.167e-04, 2.143e-04, 4.184e-04, 8.393e-04, 1.669e-03, 2.588e-06, 1.618e-06, 1.457e-06, 1.581e-06, 1.405e-06, 1.681e-06, 1.381e-06, 1.447e-06, 1.467e-06, 1.422e-06], dtype="float32"),
     "operation": Series([op for op in ["INSERT", "DELETE", "LOOKUP"] for _ in range(10)], dtype="category")
 })
 
@@ -28,7 +28,7 @@ bst_fullextern_compilation_times_df = DataFrame({
     "bench_type": Series(["compile" for _ in range(10 * 3)], dtype="category"),
     "N": Series([16 for _ in range(10 * 3)], dtype="int8"),
     "size": Series([size for _ in range(3) for size in range(10, 110, 10)], dtype="int8"),
-    "time": Series([7.52, 8.05, 8.67, 9.77, 11.13, 13.07, 15.27, 18.31, 21.85, 26.05, 7.5, 8.04, 8.66, 9.79, 11.07, 12.99, 15.27, 18.29, 21.91, 25.86, 7.49, 7.99, 8.69, 9.87, 11.07, 12.89, 15.3, 18.22, 21.79, 25.61], dtype="float32"),
+    "time": Series([2.25, 2.66, 3.45, 4.43, 5.69, 7.59, 9.82, 12.67, 16.22, 20.09, 2.16, 2.59, 3.37, 4.43, 5.76, 7.66, 9.99, 12.98, 16.7, 20.62, 2.15, 2.58, 3.36, 4.4, 5.77, 7.56, 9.91, 12.8, 16.43, 20.32], dtype="float32"),
     "operation": Series([op for op in ["INSERT", "DELETE", "LOOKUP"] for _ in range(10)], dtype="category")
 })
 
