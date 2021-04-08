@@ -9,21 +9,25 @@ import BST.Extern.Example.Example20 (t20)
 import BST.Extern.Example.Example30 (t30)
 import BST.Extern.Example.Example40 (t40)
 import BST.Extern.Example.Example50 (t50)
+import BST.Extern.Example.Example60 (t60)
 import BST.Extern.Insert.Insert10 (t10')
 import BST.Extern.Insert.Insert20 (t20')
 import BST.Extern.Insert.Insert30 (t30')
 import BST.Extern.Insert.Insert40 (t40')
 import BST.Extern.Insert.Insert50 (t50')
+import BST.Extern.Insert.Insert60 (t60')
 import BST.Extern.Lookup.Lookup10 (v10)
 import BST.Extern.Lookup.Lookup20 (v20)
 import BST.Extern.Lookup.Lookup30 (v30)
 import BST.Extern.Lookup.Lookup40 (v40)
 import BST.Extern.Lookup.Lookup50 (v50)
+import BST.Extern.Lookup.Lookup60 (v50)
 import BST.Extern.Delete.Delete10 (e10)
 import BST.Extern.Delete.Delete20 (e20)
 import BST.Extern.Delete.Delete30 (e30)
 import BST.Extern.Delete.Delete40 (e40)
 import BST.Extern.Delete.Delete50 (e50)
+import BST.Extern.Delete.Delete60 (e60)
 
 
 main :: IO ()
@@ -35,6 +39,7 @@ main =
     seq t30 (return ())
     seq t40 (return ())
     seq t50 (return ())
+    seq t60 (return ())
     -- Insert
     putStrLn "INSERT"
     t0 <- getCurrentTime
@@ -57,6 +62,10 @@ main =
     seq t50' (return ())
     t1 <- getCurrentTime
     putStrLn $ "N=50: " ++ show (diffUTCTime t1 t0)
+    t0 <- getCurrentTime
+    seq t60' (return ())
+    t1 <- getCurrentTime
+    putStrLn $ "N=60: " ++ show (diffUTCTime t1 t0)
     -- Delete
     putStrLn "DELETE"
     t0 <- getCurrentTime
@@ -79,6 +88,10 @@ main =
     seq e50 (return ())
     t1 <- getCurrentTime
     putStrLn $ "N=50: " ++ show (diffUTCTime t1 t0)
+    t0 <- getCurrentTime
+    seq e60 (return ())
+    t1 <- getCurrentTime
+    putStrLn $ "N=60: " ++ show (diffUTCTime t1 t0)
     -- Lookup
     putStrLn "LOOKUP"
     t0 <- getCurrentTime
@@ -101,3 +114,7 @@ main =
     seq v50 (return ())
     t1 <- getCurrentTime
     putStrLn $ "N=50: " ++ show (diffUTCTime t1 t0)
+    t0 <- getCurrentTime
+    seq v60 (return ())
+    t1 <- getCurrentTime
+    putStrLn $ "N=60: " ++ show (diffUTCTime t1 t0)
