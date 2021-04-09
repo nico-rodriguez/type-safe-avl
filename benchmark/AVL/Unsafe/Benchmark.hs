@@ -2,8 +2,9 @@
 {-# LANGUAGE Safe      #-}
 
 import           Prelude              (IO, putStrLn, return,
-                                      seq, show, (++), ($))
+                                      show, (++), ($))
 import           Data.Time.Clock      (diffUTCTime, getCurrentTime)
+import           Control.Deepseq      (deepseq)
 import AVL.Unsafe.Example.Example1 (t1)
 import AVL.Unsafe.Example.Example2 (t2)
 import AVL.Unsafe.Example.Example3 (t3)
@@ -50,139 +51,139 @@ main :: IO ()
 main =
     do
         -- Pre evaluate the example trees
-        seq t1 (return ())
-        seq t2 (return ())
-        seq t3 (return ())
-        seq t4 (return ())
-        seq t5 (return ())
-        seq t6 (return ())
-        seq t7 (return ())
-        seq t8 (return ())
-        seq t9 (return ())
-        seq t10 (return ())
+        deepseq t1 (return ())
+        deepseq t2 (return ())
+        deepseq t3 (return ())
+        deepseq t4 (return ())
+        deepseq t5 (return ())
+        deepseq t6 (return ())
+        deepseq t7 (return ())
+        deepseq t8 (return ())
+        deepseq t9 (return ())
+        deepseq t10 (return ())
         -- Insert
         putStrLn "INSERT"
         t0 <- getCurrentTime
-        seq t1' (return ())
+        deepseq t1' (return ())
         t1 <- getCurrentTime
         putStrLn $ "N=2^6: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
-        seq t2' (return ())
+        deepseq t2' (return ())
         t1 <- getCurrentTime
         putStrLn $ "N=2^7: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
-        seq t3' (return ())
+        deepseq t3' (return ())
         t1 <- getCurrentTime
         putStrLn $ "N=2^8: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
-        seq t4' (return ())
+        deepseq t4' (return ())
         t1 <- getCurrentTime
         putStrLn $ "N=2^9: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
-        seq t5' (return ())
+        deepseq t5' (return ())
         t1 <- getCurrentTime
         putStrLn $ "N=2^10: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
-        seq t6' (return ())
+        deepseq t6' (return ())
         t1 <- getCurrentTime
         putStrLn $ "N=2^11: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
-        seq t7' (return ())
+        deepseq t7' (return ())
         t1 <- getCurrentTime
         putStrLn $ "N=2^12: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
-        seq t8' (return ())
+        deepseq t8' (return ())
         t1 <- getCurrentTime
         putStrLn $ "N=2^13: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
-        seq t9' (return ())
+        deepseq t9' (return ())
         t1 <- getCurrentTime
         putStrLn $ "N=2^14: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
-        seq t10' (return ())
+        deepseq t10' (return ())
         t1 <- getCurrentTime
         putStrLn $ "N=2^15: " ++ show (diffUTCTime t1 t0)
         -- Delete
         putStrLn "DELETE"
         t0 <- getCurrentTime
-        seq e1 (return ())
+        deepseq e1 (return ())
         t1 <- getCurrentTime
         putStrLn $ "N=2^6: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
-        seq e2 (return ())
+        deepseq e2 (return ())
         t1 <- getCurrentTime
         putStrLn $ "N=2^7: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
-        seq e3 (return ())
+        deepseq e3 (return ())
         t1 <- getCurrentTime
         putStrLn $ "N=2^8: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
-        seq e4 (return ())
+        deepseq e4 (return ())
         t1 <- getCurrentTime
         putStrLn $ "N=2^9: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
-        seq e5 (return ())
+        deepseq e5 (return ())
         t1 <- getCurrentTime
         putStrLn $ "N=2^10: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
-        seq e6 (return ())
+        deepseq e6 (return ())
         t1 <- getCurrentTime
         putStrLn $ "N=2^11: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
-        seq e7 (return ())
+        deepseq e7 (return ())
         t1 <- getCurrentTime
         putStrLn $ "N=2^12: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
-        seq e8 (return ())
+        deepseq e8 (return ())
         t1 <- getCurrentTime
         putStrLn $ "N=2^13: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
-        seq e9 (return ())
+        deepseq e9 (return ())
         t1 <- getCurrentTime
         putStrLn $ "N=2^14: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
-        seq e10 (return ())
+        deepseq e10 (return ())
         t1 <- getCurrentTime
         putStrLn $ "N=2^15: " ++ show (diffUTCTime t1 t0)
         -- Lookup
         putStrLn "LOOKUP"
         t0 <- getCurrentTime
-        seq v1 (return ())
+        deepseq v1 (return ())
         t1 <- getCurrentTime
         putStrLn $ "N=2^6: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
-        seq v2 (return ())
+        deepseq v2 (return ())
         t1 <- getCurrentTime
         putStrLn $ "N=2^7: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
-        seq v3 (return ())
+        deepseq v3 (return ())
         t1 <- getCurrentTime
         putStrLn $ "N=2^8: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
-        seq v4 (return ())
+        deepseq v4 (return ())
         t1 <- getCurrentTime
         putStrLn $ "N=2^9: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
-        seq v5 (return ())
+        deepseq v5 (return ())
         t1 <- getCurrentTime
         putStrLn $ "N=2^10: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
-        seq v6 (return ())
+        deepseq v6 (return ())
         t1 <- getCurrentTime
         putStrLn $ "N=2^11: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
-        seq v7 (return ())
+        deepseq v7 (return ())
         t1 <- getCurrentTime
         putStrLn $ "N=2^12: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
-        seq v8 (return ())
+        deepseq v8 (return ())
         t1 <- getCurrentTime
         putStrLn $ "N=2^13: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
-        seq v9 (return ())
+        deepseq v9 (return ())
         t1 <- getCurrentTime
         putStrLn $ "N=2^14: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
-        seq v10 (return ())
+        deepseq v10 (return ())
         t1 <- getCurrentTime
         putStrLn $ "N=2^15: " ++ show (diffUTCTime t1 t0)
