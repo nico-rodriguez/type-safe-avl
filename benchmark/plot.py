@@ -64,7 +64,7 @@ bst_intern_compilation_times_df = DataFrame({
     "bench_type": Series(["compile" for _ in range(5 * 3)], dtype="category"),
     "N": Series([4 for _ in range(5 * 3)], dtype="int8"),
     "size": Series([size for _ in range(3) for size in range(10, 60, 10)], dtype="int8"),
-    "time": Series([7.64, 11.15, 21.36, 43.91, 86.49, 7.81, 11.18, 20.61, 42.44, 81.64, 8.34, 11.07, 20.61, 42.38, 81.84], dtype="float32"),
+    "time": Series([3.32, 6.9, 17.4, 40.52, 82.39, 2.7, 6.43, 16.82, 39.86, 81.8, 2.68, 5.85, 15.53, 37.54, 77.06], dtype="float32"),
     "operation": Series([op for op in ["INSERT", "DELETE", "LOOKUP"] for _ in range(5)], dtype="category")
 })
 
