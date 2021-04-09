@@ -395,25 +395,21 @@ benchmark bst-extern
         BST.Extern.Example.Example30
         BST.Extern.Example.Example40
         BST.Extern.Example.Example50
-        BST.Extern.Example.Example60
         BST.Extern.Insert.Insert10
         BST.Extern.Insert.Insert20
         BST.Extern.Insert.Insert30
         BST.Extern.Insert.Insert40
         BST.Extern.Insert.Insert50
-        BST.Extern.Insert.Insert60
         BST.Extern.Lookup.Lookup10
         BST.Extern.Lookup.Lookup20
         BST.Extern.Lookup.Lookup30
         BST.Extern.Lookup.Lookup40
         BST.Extern.Lookup.Lookup50
-        BST.Extern.Lookup.Lookup60
         BST.Extern.Delete.Delete10
         BST.Extern.Delete.Delete20
         BST.Extern.Delete.Delete30
         BST.Extern.Delete.Delete40
         BST.Extern.Delete.Delete50
-        BST.Extern.Delete.Delete60
 
 benchmark bst-intern
     type:             exitcode-stdio-1.0
@@ -427,25 +423,21 @@ benchmark bst-intern
         BST.Intern.Example.Example30
         BST.Intern.Example.Example40
         BST.Intern.Example.Example50
-        BST.Intern.Example.Example60
         BST.Intern.Insert.Insert10
         BST.Intern.Insert.Insert20
         BST.Intern.Insert.Insert30
         BST.Intern.Insert.Insert40
         BST.Intern.Insert.Insert50
-        BST.Intern.Insert.Insert60
         BST.Intern.Lookup.Lookup10
         BST.Intern.Lookup.Lookup20
         BST.Intern.Lookup.Lookup30
         BST.Intern.Lookup.Lookup40
         BST.Intern.Lookup.Lookup50
-        BST.Intern.Lookup.Lookup60
         BST.Intern.Delete.Delete10
         BST.Intern.Delete.Delete20
         BST.Intern.Delete.Delete30
         BST.Intern.Delete.Delete40
         BST.Intern.Delete.Delete50
-        BST.Intern.Delete.Delete60
 
 library avl-unsafe-example1
     build-depends:   base ^>=4.14.1.0, time ^>=1.9.3, balanced-binary-search-tree ^>=0.1.0.0
@@ -1700,12 +1692,6 @@ library bst-extern-example50
     exposed-modules: BST.Extern.Example.Example50
     hs-source-dirs:  benchmark
 
-library bst-extern-example60
-    build-depends:   base ^>=4.14.1.0, time ^>=1.9.3, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
-    exposed-modules: BST.Extern.Example.Example60
-    hs-source-dirs:  benchmark
-
 library bst-extern-insert10
     build-depends:   base ^>=4.14.1.0, time ^>=1.9.3, balanced-binary-search-tree ^>=0.1.0.0
     ghc-options:     -O0 -fmax-simplifier-iterations=0
@@ -1733,12 +1719,6 @@ library bst-extern-insert50
     build-depends:   base ^>=4.14.1.0, time ^>=1.9.3, balanced-binary-search-tree ^>=0.1.0.0
     ghc-options:     -O0 -fmax-simplifier-iterations=0
     exposed-modules: BST.Extern.Insert.Insert50
-    hs-source-dirs:  benchmark
-
-library bst-extern-insert60
-    build-depends:   base ^>=4.14.1.0, time ^>=1.9.3, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
-    exposed-modules: BST.Extern.Insert.Insert60
     hs-source-dirs:  benchmark
 
 library bst-extern-lookup10
@@ -1770,12 +1750,6 @@ library bst-extern-lookup50
     exposed-modules: BST.Extern.Lookup.Lookup50
     hs-source-dirs:  benchmark
 
-library bst-extern-lookup60
-    build-depends:   base ^>=4.14.1.0, time ^>=1.9.3, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
-    exposed-modules: BST.Extern.Lookup.Lookup60
-    hs-source-dirs:  benchmark
-
 library bst-extern-delete10
     build-depends:   base ^>=4.14.1.0, time ^>=1.9.3, balanced-binary-search-tree ^>=0.1.0.0
     ghc-options:     -O0 -fmax-simplifier-iterations=0
@@ -1803,12 +1777,6 @@ library bst-extern-delete50
     build-depends:   base ^>=4.14.1.0, time ^>=1.9.3, balanced-binary-search-tree ^>=0.1.0.0
     ghc-options:     -O0 -fmax-simplifier-iterations=0
     exposed-modules: BST.Extern.Delete.Delete50
-    hs-source-dirs:  benchmark
-
-library bst-extern-delete60
-    build-depends:   base ^>=4.14.1.0, time ^>=1.9.3, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
-    exposed-modules: BST.Extern.Delete.Delete60
     hs-source-dirs:  benchmark
 
 library bst-intern-example10
@@ -1840,12 +1808,6 @@ library bst-intern-example50
     exposed-modules: BST.Intern.Example.Example50
     hs-source-dirs:  benchmark
 
-library bst-intern-example60
-    build-depends:   base ^>=4.14.1.0, time ^>=1.9.3, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
-    exposed-modules: BST.Intern.Example.Example60
-    hs-source-dirs:  benchmark
-
 library bst-intern-insert10
     build-depends:   base ^>=4.14.1.0, time ^>=1.9.3, balanced-binary-search-tree ^>=0.1.0.0
     ghc-options:     -O0 -fmax-simplifier-iterations=0
@@ -1873,12 +1835,6 @@ library bst-intern-insert50
     build-depends:   base ^>=4.14.1.0, time ^>=1.9.3, balanced-binary-search-tree ^>=0.1.0.0
     ghc-options:     -O0 -fmax-simplifier-iterations=0
     exposed-modules: BST.Intern.Insert.Insert50
-    hs-source-dirs:  benchmark
-
-library bst-intern-insert60
-    build-depends:   base ^>=4.14.1.0, time ^>=1.9.3, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
-    exposed-modules: BST.Intern.Insert.Insert60
     hs-source-dirs:  benchmark
 
 library bst-intern-lookup10
@@ -1910,12 +1866,6 @@ library bst-intern-lookup50
     exposed-modules: BST.Intern.Lookup.Lookup50
     hs-source-dirs:  benchmark
 
-library bst-intern-lookup60
-    build-depends:   base ^>=4.14.1.0, time ^>=1.9.3, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
-    exposed-modules: BST.Intern.Lookup.Lookup60
-    hs-source-dirs:  benchmark
-
 library bst-intern-delete10
     build-depends:   base ^>=4.14.1.0, time ^>=1.9.3, balanced-binary-search-tree ^>=0.1.0.0
     ghc-options:     -O0 -fmax-simplifier-iterations=0
@@ -1943,10 +1893,4 @@ library bst-intern-delete50
     build-depends:   base ^>=4.14.1.0, time ^>=1.9.3, balanced-binary-search-tree ^>=0.1.0.0
     ghc-options:     -O0 -fmax-simplifier-iterations=0
     exposed-modules: BST.Intern.Delete.Delete50
-    hs-source-dirs:  benchmark
-
-library bst-intern-delete60
-    build-depends:   base ^>=4.14.1.0, time ^>=1.9.3, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
-    exposed-modules: BST.Intern.Delete.Delete60
     hs-source-dirs:  benchmark
