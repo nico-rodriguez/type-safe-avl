@@ -46,7 +46,7 @@ bst_extern_compilation_times_df = DataFrame({
     "bench_type": Series(["compile" for _ in range(5 * 3)], dtype="category"),
     "N": Series([4 for _ in range(5 * 3)], dtype="int8"),
     "size": Series([size for _ in range(3) for size in range(10, 60, 10)], dtype="int8"),
-    "time": Series([8.09, 12.09, 22.95, 46.94, 90.31, 8.31, 11.69, 21.85, 44.67, 85.48, 8.17, 11.86, 21.82, 44.52, 85.7], dtype="float32"),
+    "time": Series([3.7, 7.69, 18.66, 42.85, 85.76, 2.44, 6.8, 17.98, 41.76, 85.0, 2.92, 6.3, 16.48, 38.91, 79.85], dtype="float32"),
     "operation": Series([op for op in ["INSERT", "DELETE", "LOOKUP"] for _ in range(5)], dtype="category")
 })
 
