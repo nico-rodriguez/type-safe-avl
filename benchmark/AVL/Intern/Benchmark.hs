@@ -2,7 +2,7 @@
 {-# LANGUAGE Safe      #-}
 
 import           Prelude                (IO, putStrLn, return,
-                                        seq, show, (++), ($))
+                                        show, (++), ($), print)
 import           Data.Time.Clock (diffUTCTime, getCurrentTime)
 import AVL.Intern.Example.Example10 (t10)
 import AVL.Intern.Example.Example20 (t20)
@@ -34,87 +34,87 @@ main :: IO ()
 main =
     do 
     -- Pre evaluate the example trees
-    seq t10 (return ())
-    seq t20 (return ())
-    seq t30 (return ())
-    seq t40 (return ())
-    seq t50 (return ())
-    seq t60 (return ())
+    print t10
+    print t20
+    print t30
+    print t40
+    print t50
+    print t60
     -- Insert
     putStrLn "INSERT"
     t0 <- getCurrentTime
-    seq t10' (return ())
+    print t10'
     t1 <- getCurrentTime
     putStrLn $ "N=10: " ++ show (diffUTCTime t1 t0)
     t0 <- getCurrentTime
-    seq t20' (return ())
+    print t20'
     t1 <- getCurrentTime
     putStrLn $ "N=20: " ++ show (diffUTCTime t1 t0)
     t0 <- getCurrentTime
-    seq t30' (return ())
+    print t30'
     t1 <- getCurrentTime
     putStrLn $ "N=30: " ++ show (diffUTCTime t1 t0)
     t0 <- getCurrentTime
-    seq t40' (return ())
+    print t40'
     t1 <- getCurrentTime
     putStrLn $ "N=40: " ++ show (diffUTCTime t1 t0)
     t0 <- getCurrentTime
-    seq t50' (return ())
+    print t50'
     t1 <- getCurrentTime
     putStrLn $ "N=50: " ++ show (diffUTCTime t1 t0)
     t0 <- getCurrentTime
-    seq t60' (return ())
+    print t60'
     t1 <- getCurrentTime
     putStrLn $ "N=60: " ++ show (diffUTCTime t1 t0)
     -- Delete
     putStrLn "DELETE"
     t0 <- getCurrentTime
-    seq e10 (return ())
+    print e10
     t1 <- getCurrentTime
     putStrLn $ "N=10: " ++ show (diffUTCTime t1 t0)
     t0 <- getCurrentTime
-    seq e20 (return ())
+    print e20
     t1 <- getCurrentTime
     putStrLn $ "N=20: " ++ show (diffUTCTime t1 t0)
     t0 <- getCurrentTime
-    seq e30 (return ())
+    print e30
     t1 <- getCurrentTime
     putStrLn $ "N=30: " ++ show (diffUTCTime t1 t0)
     t0 <- getCurrentTime
-    seq e40 (return ())
+    print e40
     t1 <- getCurrentTime
     putStrLn $ "N=40: " ++ show (diffUTCTime t1 t0)
     t0 <- getCurrentTime
-    seq e50 (return ())
+    print e50
     t1 <- getCurrentTime
     putStrLn $ "N=50: " ++ show (diffUTCTime t1 t0)
     t0 <- getCurrentTime
-    seq e60 (return ())
+    print e60
     t1 <- getCurrentTime
     putStrLn $ "N=60: " ++ show (diffUTCTime t1 t0)
     -- Lookup
     putStrLn "LOOKUP"
     t0 <- getCurrentTime
-    seq v10 (return ())
+    print v10
     t1 <- getCurrentTime
     putStrLn $ "N=10: " ++ show (diffUTCTime t1 t0)
     t0 <- getCurrentTime
-    seq v20 (return ())
+    print v20
     t1 <- getCurrentTime
     putStrLn $ "N=20: " ++ show (diffUTCTime t1 t0)
     t0 <- getCurrentTime
-    seq v30 (return ())
+    print v30
     t1 <- getCurrentTime
     putStrLn $ "N=30: " ++ show (diffUTCTime t1 t0)
     t0 <- getCurrentTime
-    seq v40 (return ())
+    print v40
     t1 <- getCurrentTime
     putStrLn $ "N=40: " ++ show (diffUTCTime t1 t0)
     t0 <- getCurrentTime
-    seq v50 (return ())
+    print v50
     t1 <- getCurrentTime
     putStrLn $ "N=50: " ++ show (diffUTCTime t1 t0)
     t0 <- getCurrentTime
-    seq v60 (return ())
+    print v60
     t1 <- getCurrentTime
     putStrLn $ "N=60: " ++ show (diffUTCTime t1 t0)
