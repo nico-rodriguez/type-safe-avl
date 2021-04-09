@@ -4,7 +4,7 @@
 import           Prelude              (IO, putStrLn, return,
                                       show, (++), ($))
 import           Data.Time.Clock      (diffUTCTime, getCurrentTime)
-import           Control.DeepSeq      (deepseq)
+import           Control.Deepseq      (deepseq)
 import BST.Unsafe.Example.Example1 (t1)
 import BST.Unsafe.Example.Example2 (t2)
 import BST.Unsafe.Example.Example3 (t3)
