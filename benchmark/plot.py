@@ -37,7 +37,7 @@ avl_fullextern_compilation_times_df = DataFrame({
     "bench_type": Series(["compile" for _ in range(10 * 3)], dtype="category"),
     "N": Series([16 for _ in range(10 * 3)], dtype="int8"),
     "size": Series([size for _ in range(3) for size in range(10, 110, 10)], dtype="int8"),
-    "time": Series([2.41, 2.86, 3.52, 4.64, 6.09, 7.63, 10.17, 13.84, 18.09, 22.77, 2.24, 3.47, 4.59, 6.07, 7.69, 10.41, 14.18, 18.62, 23.28, 2.69, 3.33, 4.43, 5.93, 10.06, 13.7, 17.95, 22.56], dtype="float32"),
+    "time": Series([2.46, 2.86, 3.55, 4.66, 6.13, 7.71, 10.25, 13.82, 18.11, 22.89, 2.3, 2.78, 3.46, 4.67, 6.19, 7.81, 10.51, 14.26, 18.73, 23.33, 2.35, 2.73, 3.39, 4.52, 6.01, 7.47, 10.06, 13.74, 17.96, 22.66], dtype="float32"),
     "operation": Series([op for op in ["INSERT", "DELETE", "LOOKUP"] for _ in range(10)], dtype="category")
 })
 
@@ -154,7 +154,8 @@ def plot_single_operation(data, op, fit):
         y_fit = list(map(lambda x: fun(x, *popt), x_fit))
 
         plt = lineplot(x=x_fit, y=y_fit)
-        fun_legend += f" - ss={'{:.2f}'.format(ss)}/max_s={'{:.2f}'.format(max_s)}"
+        # fun_legend += f" - ss={'{:.2e}'.format(ss)}/max_s={'{:.2e}'.format(max_s)}"
+        print(bench_name, op.lower(), f"- ss={'{:.2e}'.format(ss)}/max_s={'{:.2e}'.format(max_s)}", sep=" ")
 
         return plt, ([fun_legend], [op.capitalize()])
 
