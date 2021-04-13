@@ -46,7 +46,7 @@ insertBST x' v' t@(F _ (Node x _) _) = insertBST' (Node x' v') t (compare x' x)
 insertBST' :: Node -> BST -> Ordering -> BST
 insertBST' node (F l _ r) EQ = F l node r
 insertBST' n' (F E n r) LT = F (F E n' E) n r
-insertBST' n'@(Node x _) (F l@(F _ (Node ln _) _) n r) _ =
+insertBST' n'@(Node x _) (F l@(F _ (Node ln _) _) n r) LT =
    F (insertBST' n' l (compare x ln)) n r
 insertBST' n' (F l n E) GT = F l n (F E n' E)
 insertBST' n'@(Node x _) (F l n r@(F _ (Node rn _) _)) GT =
