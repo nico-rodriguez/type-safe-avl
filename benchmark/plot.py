@@ -10,7 +10,7 @@ bst_unsafe_running_times_df = DataFrame({
     "bench_type": Series(["run" for _ in range(10 * 3)], dtype="category"),
     "N": Series([16 for _ in range(10 * 3)], dtype="int8"),
     "size": Series([size for _ in range(3) for size in [pow(2, i) for i in range(6, 16, 1)]], dtype="int32"),
-    "time": Series([9.414e-05, 2.987e-04, 9.017e-04, 2.370e-03, 1.000e-02, 4.125e-02, 1.877e-01, 8.985e-01, 4.841e+00, 4.216e+01, 5.021e-05, 1.415e-04, 1.080e-03, 6.973e-03, 1.705e-02, 4.967e-02, 1.984e-01, 9.229e-01, 5.033e+00, 4.185e+01, 1.063e-05, 9.998e-06, 1.742e-05, 3.196e-05, 5.698e-05, 1.173e-04, 1.796e-04, 2.942e-04, 4.871e-04, 9.392e-04], dtype="float32"),
+    "time": Series([5.411e-05, 1.349e-04, 1.719e-04, 3.670e-04, 7.287e-04, 1.439e-03, 2.899e-03, 5.621e-03, 1.130e-02, 2.237e-02, 4.384e-05, 7.908e-05, 1.597e-04, 3.492e-04, 6.791e-04, 1.391e-03, 2.801e-03, 5.472e-03, 1.067e-02, 2.319e-02, 9.416e-06, 7.837e-06, 1.318e-05, 2.219e-05, 3.876e-05, 6.348e-05, 1.006e-04, 1.626e-04, 2.918e-04, 5.864e-04], dtype="float32"),
     "operation": Series([op for op in ["INSERT", "DELETE", "LOOKUP"] for _ in range(10)], dtype="category")
 })
 
@@ -19,7 +19,7 @@ avl_unsafe_running_times_df = DataFrame({
     "bench_type": Series(["run" for _ in range(10 * 3)], dtype="category"),
     "N": Series([16 for _ in range(10 * 3)], dtype="int8"),
     "size": Series([size for _ in range(3) for size in [pow(2, i) for i in range(6, 16, 1)]], dtype="int32"),
-    "time": Series([1.057e-05, 1.066e-05, 1.656e-05, 3.134e-05, 5.720e-05, 1.232e-04, 2.146e-04, 4.395e-04, 8.596e-04, 1.664e-03, 6.922e-06, 9.065e-06, 1.589e-05, 2.940e-05, 5.643e-05, 1.167e-04, 2.143e-04, 4.184e-04, 8.393e-04, 1.669e-03, 2.588e-06, 1.618e-06, 1.457e-06, 1.581e-06, 1.405e-06, 1.681e-06, 1.381e-06, 1.447e-06, 1.467e-06, 1.422e-06], dtype="float32"),
+    "time": Series([5.334e-05, 8.713e-05, 1.959e-04, 3.446e-04, 7.078e-04, 1.958e-03, 8.063e-03, 1.680e-02, 3.167e-02, 6.317e-02, 3.239e-04, 8.361e-05, 1.695e-04, 3.246e-04, 8.450e-04, 4.873e-03, 5.608e-03, 1.675e-02, 3.130e-02, 6.559e-02, 7.167e-06, 3.066e-06, 2.546e-06, 2.689e-06, 2.812e-06, 2.748e-06, 2.852e-06, 2.924e-06, 2.882e-06, 2.741e-06], dtype="float32"),
     "operation": Series([op for op in ["INSERT", "DELETE", "LOOKUP"] for _ in range(10)], dtype="category")
 })
 
@@ -120,29 +120,17 @@ def get_fit_fun_params(data, bench_name, op):
         a = (y_max - b) / x_max
         p0 = (a, b)
     elif(bench_name == "bst_unsafe"):
-        if (op.lower() == "lookup"):
-            fun = linear_fun
-            fun_legend = f"Ajuste lineal ({op.capitalize()})"
-            b = (y_min * x_max - y_max * x_min) / (x_max - x_min)
-            a = (y_max - b) / x_max
-            p0 = (a, b)
-        else:
-            fun = exp_fun
-            fun_legend = f"Ajuste exponencial ({op.capitalize()})"
-            p0 = (1, - log2(y_max) / x_max, 0)
+        fun = linear_fun
+        fun_legend = f"Ajuste lineal ({op.capitalize()})"
+        b = (y_min * x_max - y_max * x_min) / (x_max - x_min)
+        a = (y_max - b) / x_max
+        p0 = (a, b)
     else:   # (bench_name == "avl_unsafe")
-        if (op.lower() == "lookup"):
-            fun = linear_fun
-            fun_legend = f"Ajuste lineal ({op.capitalize()})"
-            b = (y_min * x_max - y_max * x_min) / (x_max - x_min)
-            a = (y_max - b) / x_max
-            p0 = (a, b)
-        else:
-            fun = square_fun
-            fun_legend = f"Ajuste cuadrático ({op.capitalize()})"
-            a = (y_max - y_min) / (square(x_max) - square(x_min))
-            b = y_max - a * square(x_max)
-            p0 = (a, b)
+        fun = linear_fun
+        fun_legend = f"Ajuste lineal ({op.capitalize()})"
+        b = (y_min * x_max - y_max * x_min) / (x_max - x_min)
+        a = (y_max - b) / x_max
+        p0 = (a, b)
     
     return fun, fun_legend, p0
 
@@ -220,80 +208,80 @@ def _combine_legend_lists(*args):
 if __name__ == '__main__':
     plt, legend_list = plot_single_operation(bst_unsafe_running_times_df, "INSERT", True)
     plt = set_plot_labels(plt, "BST no seguro: inserción", "Tamaño del árbol", "Tiempo (seg)", _combine_legend_lists(legend_list))
-    save_plot(plt, "bst_unsafe_insert.png")
+    save_plot(plt, "plots/bst_unsafe_insert.png")
     plt, legend_list = plot_single_operation(bst_unsafe_running_times_df, "DELETE", True)
     plt = set_plot_labels(plt, "BST no seguro: borrado", "Tamaño del árbol", "Tiempo (seg)", _combine_legend_lists(legend_list))
-    save_plot(plt, "bst_unsafe_delete.png")
+    save_plot(plt, "plots/bst_unsafe_delete.png")
     plt, legend_list = plot_single_operation(bst_unsafe_running_times_df, "LOOKUP", True)
     plt = set_plot_labels(plt, "BST no seguro: búsqueda", "Tamaño del árbol", "Tiempo (seg)", _combine_legend_lists(legend_list))
-    save_plot(plt, "bst_unsafe_lookup.png")
+    save_plot(plt, "plots/bst_unsafe_lookup.png")
 
     plt, legend_list = plot_single_operation(avl_unsafe_running_times_df, "INSERT", True)
     plt = set_plot_labels(plt, "AVL no seguro: inserción", "Tamaño del árbol", "Tiempo (seg)", _combine_legend_lists(legend_list))
-    save_plot(plt, "avl_unsafe_insert.png")
+    save_plot(plt, "plots/avl_unsafe_insert.png")
     plt, legend_list = plot_single_operation(avl_unsafe_running_times_df, "DELETE", True)
     plt = set_plot_labels(plt, "AVL no seguro: borrado", "Tamaño del árbol", "Tiempo (seg)", _combine_legend_lists(legend_list))
-    save_plot(plt, "avl_unsafe_delete.png")
+    save_plot(plt, "plots/avl_unsafe_delete.png")
     plt, legend_list = plot_single_operation(avl_unsafe_running_times_df, "LOOKUP", False)
     plt = set_plot_labels(plt, "AVL no seguro: búsqueda", "Tamaño del árbol", "Tiempo (seg)", _combine_legend_lists(legend_list))
-    save_plot(plt, "avl_unsafe_lookup.png")
+    save_plot(plt, "plots/avl_unsafe_lookup.png")
 
     plt, legend_list = plot_single_operation(bst_fullextern_compilation_times_df, "INSERT", True)
     plt = set_plot_labels(plt, "BST completamente externalista: inserción", "Tamaño del árbol", "Tiempo (seg)", _combine_legend_lists(legend_list))
-    save_plot(plt, "bst_fullextern_insert.png")
+    save_plot(plt, "plots/bst_fullextern_insert.png")
     plt, legend_list = plot_single_operation(bst_fullextern_compilation_times_df, "DELETE", True)
     plt = set_plot_labels(plt, "BST completamente externalista: borrado", "Tamaño del árbol", "Tiempo (seg)", _combine_legend_lists(legend_list))
-    save_plot(plt, "bst_fullextern_delete.png")
+    save_plot(plt, "plots/bst_fullextern_delete.png")
     plt, legend_list = plot_single_operation(bst_fullextern_compilation_times_df, "LOOKUP", True)
     plt = set_plot_labels(plt, "BST completamente externalista: búsqueda", "Tamaño del árbol", "Tiempo (seg)", _combine_legend_lists(legend_list))
-    save_plot(plt, "bst_fullextern_lookup.png")
+    save_plot(plt, "plots/bst_fullextern_lookup.png")
 
     plt, legend_list = plot_single_operation(avl_fullextern_compilation_times_df, "INSERT", True)
     plt = set_plot_labels(plt, "AVL completamente externalista: inserción", "Tamaño del árbol", "Tiempo (seg)", _combine_legend_lists(legend_list))
-    save_plot(plt, "avl_fullextern_insert.png")
+    save_plot(plt, "plots/avl_fullextern_insert.png")
     plt, legend_list = plot_single_operation(avl_fullextern_compilation_times_df, "DELETE", True)
     plt = set_plot_labels(plt, "AVL completamente externalista: borrado", "Tamaño del árbol", "Tiempo (seg)", _combine_legend_lists(legend_list))
-    save_plot(plt, "avl_fullextern_delete.png")
+    save_plot(plt, "plots/avl_fullextern_delete.png")
     plt, legend_list = plot_single_operation(avl_fullextern_compilation_times_df, "LOOKUP", True)
     plt = set_plot_labels(plt, "AVL completamente externalista: búsqueda", "Tamaño del árbol", "Tiempo (seg)", _combine_legend_lists(legend_list))
-    save_plot(plt, "avl_fullextern_lookup.png")
+    save_plot(plt, "plots/avl_fullextern_lookup.png")
 
     plt, legend_list = plot_single_operation(bst_extern_compilation_times_df, "INSERT", True)
     plt = set_plot_labels(plt, "BST externalista: inserción", "Tamaño del árbol", "Tiempo (seg)", _combine_legend_lists(legend_list))
-    save_plot(plt, "bst_extern_insert.png")
+    save_plot(plt, "plots/bst_extern_insert.png")
     plt, legend_list = plot_single_operation(bst_extern_compilation_times_df, "DELETE", True)
     plt = set_plot_labels(plt, "BST externalista: borrado", "Tamaño del árbol", "Tiempo (seg)", _combine_legend_lists(legend_list))
-    save_plot(plt, "bst_extern_delete.png")
+    save_plot(plt, "plots/bst_extern_delete.png")
     plt, legend_list = plot_single_operation(bst_extern_compilation_times_df, "LOOKUP", True)
     plt = set_plot_labels(plt, "BST externalista: búsqueda", "Tamaño del árbol", "Tiempo (seg)", _combine_legend_lists(legend_list))
-    save_plot(plt, "bst_extern_lookup.png")
+    save_plot(plt, "plots/bst_extern_lookup.png")
 
     plt, legend_list = plot_single_operation(avl_extern_compilation_times_df, "INSERT", True)
     plt = set_plot_labels(plt, "AVL externalista: inserción", "Tamaño del árbol", "Tiempo (seg)", _combine_legend_lists(legend_list))
-    save_plot(plt, "avl_extern_insert.png")
+    save_plot(plt, "plots/avl_extern_insert.png")
     plt, legend_list = plot_single_operation(avl_extern_compilation_times_df, "DELETE", True)
     plt = set_plot_labels(plt, "AVL externalista: borrado", "Tamaño del árbol", "Tiempo (seg)", _combine_legend_lists(legend_list))
-    save_plot(plt, "avl_extern_delete.png")
+    save_plot(plt, "plots/avl_extern_delete.png")
     plt, legend_list = plot_single_operation(avl_extern_compilation_times_df, "LOOKUP", True)
     plt = set_plot_labels(plt, "AVL externalista: búsqueda", "Tamaño del árbol", "Tiempo (seg)", _combine_legend_lists(legend_list))
-    save_plot(plt, "avl_extern_lookup.png")
+    save_plot(plt, "plots/avl_extern_lookup.png")
 
     plt, legend_list = plot_single_operation(bst_intern_compilation_times_df, "INSERT", True)
     plt = set_plot_labels(plt, "BST internalista: inserción", "Tamaño del árbol", "Tiempo (seg)", _combine_legend_lists(legend_list))
-    save_plot(plt, "bst_intern_insert.png")
+    save_plot(plt, "plots/bst_intern_insert.png")
     plt, legend_list = plot_single_operation(bst_intern_compilation_times_df, "DELETE", True)
     plt = set_plot_labels(plt, "BST internalista: borrado", "Tamaño del árbol", "Tiempo (seg)", _combine_legend_lists(legend_list))
-    save_plot(plt, "bst_intern_delete.png")
+    save_plot(plt, "plots/bst_intern_delete.png")
     plt, legend_list = plot_single_operation(bst_intern_compilation_times_df, "LOOKUP", True)
     plt = set_plot_labels(plt, "BST internalista: búsqueda", "Tamaño del árbol", "Tiempo (seg)", _combine_legend_lists(legend_list))
-    save_plot(plt, "bst_intern_lookup.png")
+    save_plot(plt, "plots/bst_intern_lookup.png")
 
     plt, legend_list = plot_single_operation(avl_intern_compilation_times_df, "INSERT", True)
     plt = set_plot_labels(plt, "AVL internalista: inserción", "Tamaño del árbol", "Tiempo (seg)", _combine_legend_lists(legend_list))
-    save_plot(plt, "avl_intern_insert.png")
+    save_plot(plt, "plots/avl_intern_insert.png")
     plt, legend_list = plot_single_operation(avl_intern_compilation_times_df, "DELETE", True)
     plt = set_plot_labels(plt, "AVL internalista: borrado", "Tamaño del árbol", "Tiempo (seg)", _combine_legend_lists(legend_list))
-    save_plot(plt, "avl_intern_delete.png")
+    save_plot(plt, "plots/avl_intern_delete.png")
     plt, legend_list = plot_single_operation(avl_intern_compilation_times_df, "LOOKUP", True)
     plt = set_plot_labels(plt, "AVL internalista: búsqueda", "Tamaño del árbol", "Tiempo (seg)", _combine_legend_lists(legend_list))
-    save_plot(plt, "avl_intern_lookup.png")
+    save_plot(plt, "plots/avl_intern_lookup.png")
