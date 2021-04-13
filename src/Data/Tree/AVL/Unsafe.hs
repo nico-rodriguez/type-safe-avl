@@ -117,7 +117,7 @@ insertAVL x' v' t@(F _ (Node x _) _) = insertAVL' (Node x' v') t (compare x' x)
 insertAVL' :: Node -> AVL -> Ordering -> AVL
 insertAVL' node (F l _ r) EQ = F l node r
 insertAVL' n' (F E n r) LT = balance (FF (F E n' E) n r)
-insertAVL' n'@(Node x _) (F l@(F _ (Node ln _) _) n r) _ =
+insertAVL' n'@(Node x _) (F l@(F _ (Node ln _) _) n r) LT =
   balance $ FF (insertAVL' n' l (compare x ln)) n r
 insertAVL' n' (F l n E) GT = balance (FF l n (F E n' E))
 insertAVL' n'@(Node x _) (F l n r@(F _ (Node rn _) _)) GT =
