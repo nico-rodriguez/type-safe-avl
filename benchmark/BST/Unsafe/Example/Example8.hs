@@ -11,7 +11,7 @@ import           Prelude              (IO, putStrLn, return, seq,
 import           Data.Foldable        (foldl')
 
 
-t8 = foldl' insertBST' emptyBST [0..5^8]
+t8 = foldl' insertBST' emptyBST [0..10^8]
         where
                 insertBST' tree key = insertBST key 'a' tree
 
