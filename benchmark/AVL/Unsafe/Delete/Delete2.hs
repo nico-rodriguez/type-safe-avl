@@ -1,17 +1,17 @@
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE Safe      #-}
 
-module AVL.Unsafe.Delete.Delete2 (e2, main) where
+module AVL.Unsafe.Delete.Delete10 (e2, main) where
 
 
 import           Data.Time.Clock           (diffUTCTime, getCurrentTime)
 import           Data.Tree.AVL.Unsafe      (deleteAVL)
 import           Prelude                   (IO, putStrLn, return, seq,
                                            show, (++), (^))
-import           AVL.Unsafe.Example.Example2 (t2)
+import           AVL.Unsafe.Example.Example10 (t2)
 
 
-e2 = deleteAVL (2^7) t2
+e2 = deleteAVL (10^7) t10
 
 main :: IO ()
 main = do t0 <- getCurrentTime

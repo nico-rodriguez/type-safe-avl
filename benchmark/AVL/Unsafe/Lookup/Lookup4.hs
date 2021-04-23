@@ -10,7 +10,7 @@ import           Prelude                     (IO, putStrLn, return, seq, show, (
 import           AVL.Unsafe.Example.Example4 (t4)
 
 
-v4 = lookupAVL (2^9) t4
+v4 = lookupAVL (10^9) t4
 
 main :: IO ()
 main = do seq t4 (return ())
