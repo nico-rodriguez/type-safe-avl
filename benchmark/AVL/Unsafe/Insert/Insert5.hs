@@ -11,7 +11,7 @@ import           Prelude              (IO, putStrLn, return, seq,
 import           AVL.Unsafe.Example.Example5 (t5)
 
 
-t5' = insertAVL (10^10 + 1) 'a' t5
+t5' = insertAVL (2^10 + 1) 'a' t5
 
 main :: IO ()
 main = do t0 <- getCurrentTime

@@ -65,124 +65,124 @@ main =
         t0 <- getCurrentTime
         print t1'
         t1 <- getCurrentTime
-        putStrLn $ "N=10^6: " ++ show (diffUTCTime t1 t0)
+        putStrLn $ "N=2^6: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
         print t2'
         t1 <- getCurrentTime
-        putStrLn $ "N=10^7: " ++ show (diffUTCTime t1 t0)
+        putStrLn $ "N=2^7: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
         print t3'
         t1 <- getCurrentTime
-        putStrLn $ "N=10^8: " ++ show (diffUTCTime t1 t0)
+        putStrLn $ "N=2^8: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
         print t4'
         t1 <- getCurrentTime
-        putStrLn $ "N=10^9: " ++ show (diffUTCTime t1 t0)
+        putStrLn $ "N=2^9: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
         print t5'
         t1 <- getCurrentTime
-        putStrLn $ "N=10^10: " ++ show (diffUTCTime t1 t0)
+        putStrLn $ "N=2^10: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
         print t6'
         t1 <- getCurrentTime
-        putStrLn $ "N=10^11: " ++ show (diffUTCTime t1 t0)
+        putStrLn $ "N=2^11: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
         print t7'
         t1 <- getCurrentTime
-        putStrLn $ "N=10^12: " ++ show (diffUTCTime t1 t0)
+        putStrLn $ "N=2^12: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
         print t8'
         t1 <- getCurrentTime
-        putStrLn $ "N=10^13: " ++ show (diffUTCTime t1 t0)
+        putStrLn $ "N=2^13: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
         print t9'
         t1 <- getCurrentTime
-        putStrLn $ "N=10^14: " ++ show (diffUTCTime t1 t0)
+        putStrLn $ "N=2^14: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
         print t10'
         t1 <- getCurrentTime
-        putStrLn $ "N=10^15: " ++ show (diffUTCTime t1 t0)
+        putStrLn $ "N=2^15: " ++ show (diffUTCTime t1 t0)
         -- Delete
         putStrLn "DELETE"
         t0 <- getCurrentTime
         print e1
         t1 <- getCurrentTime
-        putStrLn $ "N=10^6: " ++ show (diffUTCTime t1 t0)
+        putStrLn $ "N=2^6: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
         print e2
         t1 <- getCurrentTime
-        putStrLn $ "N=10^7: " ++ show (diffUTCTime t1 t0)
+        putStrLn $ "N=2^7: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
         print e3
         t1 <- getCurrentTime
-        putStrLn $ "N=10^8: " ++ show (diffUTCTime t1 t0)
+        putStrLn $ "N=2^8: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
         print e4
         t1 <- getCurrentTime
-        putStrLn $ "N=10^9: " ++ show (diffUTCTime t1 t0)
+        putStrLn $ "N=2^9: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
         print e5
         t1 <- getCurrentTime
-        putStrLn $ "N=10^10: " ++ show (diffUTCTime t1 t0)
+        putStrLn $ "N=2^10: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
         print e6
         t1 <- getCurrentTime
-        putStrLn $ "N=10^11: " ++ show (diffUTCTime t1 t0)
+        putStrLn $ "N=2^11: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
         print e7
         t1 <- getCurrentTime
-        putStrLn $ "N=10^12: " ++ show (diffUTCTime t1 t0)
+        putStrLn $ "N=2^12: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
         print e8
         t1 <- getCurrentTime
-        putStrLn $ "N=10^13: " ++ show (diffUTCTime t1 t0)
+        putStrLn $ "N=2^13: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
         print e9
         t1 <- getCurrentTime
-        putStrLn $ "N=10^14: " ++ show (diffUTCTime t1 t0)
+        putStrLn $ "N=2^14: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
         print e10
         t1 <- getCurrentTime
-        putStrLn $ "N=10^15: " ++ show (diffUTCTime t1 t0)
+        putStrLn $ "N=2^15: " ++ show (diffUTCTime t1 t0)
         -- Lookup
         putStrLn "LOOKUP"
         t0 <- getCurrentTime
         print v1
         t1 <- getCurrentTime
-        putStrLn $ "N=10^6: " ++ show (diffUTCTime t1 t0)
+        putStrLn $ "N=2^6: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
         print v2
         t1 <- getCurrentTime
-        putStrLn $ "N=10^7: " ++ show (diffUTCTime t1 t0)
+        putStrLn $ "N=2^7: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
         print v3
         t1 <- getCurrentTime
-        putStrLn $ "N=10^8: " ++ show (diffUTCTime t1 t0)
+        putStrLn $ "N=2^8: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
         print v4
         t1 <- getCurrentTime
-        putStrLn $ "N=10^9: " ++ show (diffUTCTime t1 t0)
+        putStrLn $ "N=2^9: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
         print v5
         t1 <- getCurrentTime
-        putStrLn $ "N=10^10: " ++ show (diffUTCTime t1 t0)
+        putStrLn $ "N=2^10: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
         print v6
         t1 <- getCurrentTime
-        putStrLn $ "N=10^11: " ++ show (diffUTCTime t1 t0)
+        putStrLn $ "N=2^11: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
         print v7
         t1 <- getCurrentTime
-        putStrLn $ "N=10^12: " ++ show (diffUTCTime t1 t0)
+        putStrLn $ "N=2^12: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
         print v8
         t1 <- getCurrentTime
-        putStrLn $ "N=10^13: " ++ show (diffUTCTime t1 t0)
+        putStrLn $ "N=2^13: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
         print v9
         t1 <- getCurrentTime
-        putStrLn $ "N=10^14: " ++ show (diffUTCTime t1 t0)
+        putStrLn $ "N=2^14: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
         print v10
         t1 <- getCurrentTime
-        putStrLn $ "N=10^15: " ++ show (diffUTCTime t1 t0)
+        putStrLn $ "N=2^15: " ++ show (diffUTCTime t1 t0)
