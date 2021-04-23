@@ -11,7 +11,7 @@ import           Prelude                   (IO, putStrLn, return, seq,
 import           AVL.Unsafe.Example.Example8 (t8)
 
 
-e8 = deleteAVL (5^8) t8
+e8 = deleteAVL (4^8) t8
 
 main :: IO ()
 main = do t0 <- getCurrentTime

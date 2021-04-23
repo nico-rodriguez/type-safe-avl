@@ -10,7 +10,7 @@ import           Prelude                     (IO, putStrLn, return, seq, show, (
 import           BST.Unsafe.Example.Example3 (t3)
 
 
-v3 = lookupBST (5^3) t3
+v3 = lookupBST (4^3) t3
 
 main :: IO ()
 main = do seq t3 (return ())
