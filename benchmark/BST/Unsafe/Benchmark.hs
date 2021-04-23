@@ -2,7 +2,7 @@
 {-# LANGUAGE Safe      #-}
 
 import           Prelude              (IO, putStrLn, return,
-                                      show, (++), ($), print)
+                                      show, (++), ($), seq)
 import           Data.Time.Clock      (diffUTCTime, getCurrentTime)
 import BST.Unsafe.Example.Example1 (t1)
 import BST.Unsafe.Example.Example2 (t2)
@@ -50,139 +50,139 @@ main :: IO ()
 main =
     do
         -- Pre evaluate the example trees
-        print t1
-        print t2
-        print t3
-        print t4
-        print t5
-        print t6
-        print t7
-        print t8
-        print t9
-        print t10
+        seq t1 (return ())
+        seq t2 (return ())
+        seq t3 (return ())
+        seq t4 (return ())
+        seq t5 (return ())
+        seq t6 (return ())
+        seq t7 (return ())
+        seq t8 (return ())
+        seq t9 (return ())
+        seq t10 (return ())
         -- Insert
         putStrLn "INSERT"
         t0 <- getCurrentTime
-        print t1'
+        seq t1' (return ())
         t1 <- getCurrentTime
         putStrLn $ "N=4^1: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
-        print t2'
+        seq t2' (return ())
         t1 <- getCurrentTime
         putStrLn $ "N=4^2: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
-        print t3'
+        seq t3' (return ())
         t1 <- getCurrentTime
         putStrLn $ "N=4^3: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
-        print t4'
+        seq t4' (return ())
         t1 <- getCurrentTime
         putStrLn $ "N=4^4: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
-        print t5'
+        seq t5' (return ())
         t1 <- getCurrentTime
         putStrLn $ "N=4^5: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
-        print t6'
+        seq t6' (return ())
         t1 <- getCurrentTime
         putStrLn $ "N=4^6: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
-        print t7'
+        seq t7' (return ())
         t1 <- getCurrentTime
         putStrLn $ "N=4^7: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
-        print t8'
+        seq t8' (return ())
         t1 <- getCurrentTime
         putStrLn $ "N=4^8: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
-        print t9'
+        seq t9' (return ())
         t1 <- getCurrentTime
         putStrLn $ "N=4^9: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
-        print t10'
+        seq t10' (return ())
         t1 <- getCurrentTime
         putStrLn $ "N=4^10: " ++ show (diffUTCTime t1 t0)
         -- Delete
         putStrLn "DELETE"
         t0 <- getCurrentTime
-        print e1
+        seq e1 (return ())
         t1 <- getCurrentTime
         putStrLn $ "N=4^1: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
-        print e2
+        seq e2 (return ())
         t1 <- getCurrentTime
         putStrLn $ "N=4^2: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
-        print e3
+        seq e3 (return ())
         t1 <- getCurrentTime
         putStrLn $ "N=4^3: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
-        print e4
+        seq e4 (return ())
         t1 <- getCurrentTime
         putStrLn $ "N=4^4: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
-        print e5
+        seq e5 (return ())
         t1 <- getCurrentTime
         putStrLn $ "N=4^5: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
-        print e6
+        seq e6 (return ())
         t1 <- getCurrentTime
         putStrLn $ "N=4^6: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
-        print e7
+        seq e7 (return ())
         t1 <- getCurrentTime
         putStrLn $ "N=4^7: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
-        print e8
+        seq e8 (return ())
         t1 <- getCurrentTime
         putStrLn $ "N=4^8: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
-        print e9
+        seq e9 (return ())
         t1 <- getCurrentTime
         putStrLn $ "N=4^9: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
-        print e10
+        seq e10 (return ())
         t1 <- getCurrentTime
         putStrLn $ "N=4^10: " ++ show (diffUTCTime t1 t0)
         -- Lookup
         putStrLn "LOOKUP"
         t0 <- getCurrentTime
-        print v1
+        seq v1 (return ())
         t1 <- getCurrentTime
         putStrLn $ "N=4^1: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
-        print v2
+        seq v2 (return ())
         t1 <- getCurrentTime
         putStrLn $ "N=4^2: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
-        print v3
+        seq v3 (return ())
         t1 <- getCurrentTime
         putStrLn $ "N=4^3: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
-        print v4
+        seq v4 (return ())
         t1 <- getCurrentTime
         putStrLn $ "N=4^4: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
-        print v5
+        seq v5 (return ())
         t1 <- getCurrentTime
         putStrLn $ "N=4^5: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
-        print v6
+        seq v6 (return ())
         t1 <- getCurrentTime
         putStrLn $ "N=4^6: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
-        print v7
+        seq v7 (return ())
         t1 <- getCurrentTime
         putStrLn $ "N=4^7: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
-        print v8
+        seq v8 (return ())
         t1 <- getCurrentTime
         putStrLn $ "N=4^8: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
-        print v9
+        seq v9 (return ())
         t1 <- getCurrentTime
         putStrLn $ "N=4^9: " ++ show (diffUTCTime t1 t0)
         t0 <- getCurrentTime
-        print v10
+        seq v10 (return ())
         t1 <- getCurrentTime
         putStrLn $ "N=4^10: " ++ show (diffUTCTime t1 t0)
