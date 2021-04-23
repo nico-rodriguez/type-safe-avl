@@ -9,10 +9,9 @@ import           Data.Tree.BST.Unsafe (emptyBST, insertBST)
 import           Prelude              (IO, putStrLn, return, seq,
                                        show, (++), (^))
 import           Data.Foldable        (foldl')
-import           BST.Unsafe.Example.Example7 (t7)
 
 
-t8 = foldl' insertBST' emptyBST [4^7 + 1..4^8]
+t8 = foldl' insertBST' emptyBST [0..4^8]
         where
                 insertBST' tree key = insertBST key 'a' tree
 

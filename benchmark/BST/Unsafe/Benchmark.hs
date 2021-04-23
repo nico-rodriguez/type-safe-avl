@@ -51,25 +51,15 @@ main =
     do
         -- Pre evaluate the example trees
         seq t1 (return ())
-        putStrLn "Finish seq t1"
         seq t2 (return ())
-        putStrLn "Finish seq t2"
         seq t3 (return ())
-        putStrLn "Finish seq t3"
         seq t4 (return ())
-        putStrLn "Finish seq t4"
         seq t5 (return ())
-        putStrLn "Finish seq t5"
         seq t6 (return ())
-        putStrLn "Finish seq t6"
         seq t7 (return ())
-        putStrLn "Finish seq t7"
         seq t8 (return ())
-        putStrLn "Finish seq t8"
         seq t9 (return ())
-        putStrLn "Finish seq t9"
         seq t10 (return ())
-        putStrLn "Finish seq t10"
         -- Insert
         putStrLn "INSERT"
         t0 <- getCurrentTime
