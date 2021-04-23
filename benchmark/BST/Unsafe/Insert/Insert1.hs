@@ -11,7 +11,7 @@ import           Prelude              (IO, putStrLn, return, seq,
 import           BST.Unsafe.Example.Example1 (t1)
 
 
-t1' = insertBST (10^6 + 1) 'a' t1
+t1' = insertBST (10^1 + 1) 'a' t1
 
 main :: IO ()
 main = do t0 <- getCurrentTime

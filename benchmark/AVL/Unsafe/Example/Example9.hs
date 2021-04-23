@@ -11,7 +11,7 @@ import           Prelude              (IO, putStrLn, return, seq,
 import           Data.Foldable        (foldl')
 
 
-t9 = foldl' insertAVL' emptyAVL [0..10^14]
+t9 = foldl' insertAVL' emptyAVL [0..10^9]
         where
                 insertAVL' tree key = insertAVL key 'a' tree
 

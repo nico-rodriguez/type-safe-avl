@@ -11,7 +11,7 @@ import           Prelude                   (IO, putStrLn, return, seq,
 import           BST.Unsafe.Example.Example7 (t7)
 
 
-e7 = deleteBST (10^12) t7
+e7 = deleteBST (10^7) t7
 
 main :: IO ()
 main = do t0 <- getCurrentTime
