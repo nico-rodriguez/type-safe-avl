@@ -377,19 +377,19 @@ if __name__ == '__main__':
     _, legend_list_bst2 = plot_single_operation(bst_extern_compilation_times_df, "INSERT", True)
     plt, legend_list_bst3 = plot_single_operation(bst_intern_compilation_times_df, "INSERT", True)
     plt = set_plot_labels(plt, "Compl. Extern./Externalista/Internalista (BST): inserción", "Tamaño del árbol", "Tiempo (seg)", _combine_legend_lists(legend_list_bst1, legend_list_bst2, legend_list_bst3))
-    save_plot(plt, "plots/bst_fullextern_extern_vs_bst_intern_insert.png")
+    save_plot(plt, "plots/bst_fullextern_vs_extern_vs_intern_insert.png")
     ###   Delete
     _, legend_list_bst1 = plot_single_operation(bst_fullextern_compilation_times_df, "DELETE", True)
     _, legend_list_bst2 = plot_single_operation(bst_extern_compilation_times_df, "DELETE", True)
     plt, legend_list_bst3 = plot_single_operation(bst_intern_compilation_times_df, "DELETE", True)
     plt = set_plot_labels(plt, "Compl. Extern./Externalista/Internalista (BST): borrado", "Tamaño del árbol", "Tiempo (seg)", _combine_legend_lists(legend_list_bst1, legend_list_bst2, legend_list_bst3))
-    save_plot(plt, "plots/bst_fullextern_extern_vs_bst_intern_delete.png")
+    save_plot(plt, "plots/bst_fullextern_vs_extern_vs_intern_delete.png")
     ###   Lookup
     _, legend_list_bst1 = plot_single_operation(bst_fullextern_compilation_times_df, "LOOKUP", True)
     _, legend_list_bst2 = plot_single_operation(bst_extern_compilation_times_df, "LOOKUP", True)
     plt, legend_list_bst3 = plot_single_operation(bst_intern_compilation_times_df, "LOOKUP", True)
     plt = set_plot_labels(plt, "Compl. Extern./Externalista/Internalista (BST): búsqueda", "Tamaño del árbol", "Tiempo (seg)", _combine_legend_lists(legend_list_bst1, legend_list_bst2, legend_list_bst3))
-    save_plot(plt, "plots/bst_fullextern_extern_vs_bst_intern_lookup.png")
+    save_plot(plt, "plots/bst_fullextern_vs_extern_vs_intern_lookup.png")
 
     ##### Fullextern/Extern/Intern (AVL)
     ###   Insert
@@ -397,16 +397,16 @@ if __name__ == '__main__':
     _, legend_list_avl2 = plot_single_operation(avl_extern_compilation_times_df, "INSERT", True)
     plt, legend_list_avl3 = plot_single_operation(avl_intern_compilation_times_df, "INSERT", True)
     plt = set_plot_labels(plt, "Compl. Extern./Externalista/Internalista (AVL): inserción", "Tamaño del árbol", "Tiempo (seg)", _combine_legend_lists(legend_list_avl1, legend_list_avl2, legend_list_avl3))
-    save_plot(plt, "plots/avl_fullextern_extern_vs_avl_intern_insert.png")
+    save_plot(plt, "plots/avl_fullextern_vs_extern_vs_intern_insert.png")
     ###   Delete
     _, legend_list_avl1 = plot_single_operation(avl_fullextern_compilation_times_df, "DELETE", True)
     _, legend_list_avl2 = plot_single_operation(avl_extern_compilation_times_df, "DELETE", True)
     plt, legend_list_avl3 = plot_single_operation(avl_intern_compilation_times_df, "DELETE", True)
     plt = set_plot_labels(plt, "Compl. Extern./Externalista/Internalista (AVL): borrado", "Tamaño del árbol", "Tiempo (seg)", _combine_legend_lists(legend_list_avl1, legend_list_avl2, legend_list_avl3))
-    save_plot(plt, "plots/avl_fullextern_extern_vs_avl_intern_delete.png")
+    save_plot(plt, "plots/avl_fullextern_vs_extern_vs_intern_delete.png")
     ###   Lookup
     _, legend_list_avl1 = plot_single_operation(avl_fullextern_compilation_times_df, "LOOKUP", True)
     _, legend_list_avl2 = plot_single_operation(avl_extern_compilation_times_df, "LOOKUP", True)
     plt, legend_list_avl3 = plot_single_operation(avl_intern_compilation_times_df, "LOOKUP", True)
     plt = set_plot_labels(plt, "Compl. Extern./Externalista/Internalista (AVL): búsqueda", "Tamaño del árbol", "Tiempo (seg)", _combine_legend_lists(legend_list_avl1, legend_list_avl2, legend_list_avl3))
-    save_plot(plt, "plots/avl_fullextern_extern_vs_avl_intern_lookup.png")
+    save_plot(plt, "plots/avl_fullextern_vs_extern_vs_intern_lookup.png")
