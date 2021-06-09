@@ -7,15 +7,15 @@ import           Data.Proxy               (Proxy (Proxy))
 import           Data.Time.Clock          (diffUTCTime,
                                            getCurrentTime)
 import           Data.Tree.Node           (mkNode)
-import           Data.Tree.BST.FullExtern (ITree (EmptyITree), insert, mkBST)
+import           Data.Tree.BST.FullExtern (BST (BST), ITree (EmptyITree),
+                                           insert, mkBST)
 import           Prelude                  (IO, putStrLn, return, seq,
                                            show, ($), (++))
 import           BST.FullExtern.Example.Example10 (t10)
 
 
-t10' = mkBST t
-  where
-    t = insert (mkNode (Proxy::Proxy 10) 'a') t10
+t10' = case t10 of
+  BST t' _ -> mkBST $ insert (mkNode (Proxy::Proxy 10) 'a') t'
 
 main :: IO ()
 main = do t0 <- getCurrentTime
