@@ -2,7 +2,6 @@
 {-# LANGUAGE GADTs                #-}
 {-# LANGUAGE ExplicitNamespaces   #-}
 {-# LANGUAGE FlexibleInstances    #-}
-{-# LANGUAGE RankNTypes           #-}
 {-# LANGUAGE TypeFamilies         #-}
 {-# LANGUAGE TypeOperators        #-}
 {-# LANGUAGE UndecidableInstances #-}
