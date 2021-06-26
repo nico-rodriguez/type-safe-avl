@@ -1,7 +1,5 @@
 {-# LANGUAGE DataKinds            #-}
-{-# LANGUAGE GADTs                #-}
 {-# LANGUAGE ExplicitNamespaces   #-}
-{-# LANGUAGE FlexibleInstances    #-}
 {-# LANGUAGE TypeFamilies         #-}
 {-# LANGUAGE TypeOperators        #-}
 {-# LANGUAGE UndecidableInstances #-}
