@@ -32,7 +32,6 @@ import           Data.Tree.Node                 (Node)
 import           Data.Type.Equality             ((:~:) (Refl), gcastWith)
 import           GHC.TypeNats                   (type (<=?), type (+), Nat, CmpNat)
 import           Prelude                        (Bool (True), Ordering (LT, GT))
-import           Unsafe.Coerce                  (unsafeCoerce)
 
 
 -- | Prove that applying a rebalancing (a composition of rotations)
@@ -256,8 +255,8 @@ class ProofIsAVLBalance' (t :: Tree) (us :: US) where
   proofIsAVLBalance' :: (t ~ 'ForkTree l (Node n a) r, LtN l n ~ 'True, GtN r n ~ 'True) =>
     IsAlmostAVLT t -> Proxy us -> IsAVLT (Balance' t us)
 -- | NotUnbalanced implies BalancedHeights (Height l) (Height r) ~ 'True
-instance ProofIsAVLBalance' ('ForkTree l (Node n a) r) 'NotUnbalanced where
-  proofIsAVLBalance' _ _ = unsafeCoerce Refl
+instance (BalancedHeights (Height l) (Height r) ~ 'True) => ProofIsAVLBalance' ('ForkTree l (Node n a) r) 'NotUnbalanced where
+  proofIsAVLBalance' (ForkIsAlmostAVLT l node r) _ = ForkIsAVLT l node r
 instance (bs ~ BalancedState (Height ll) (Height lr),
   ProofIsAVLRotate ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a) r) 'LeftUnbalanced bs) =>
   ProofIsAVLBalance' ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a) r) 'LeftUnbalanced where
