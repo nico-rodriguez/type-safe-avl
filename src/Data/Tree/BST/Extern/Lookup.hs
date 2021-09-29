@@ -1,14 +1,16 @@
+{-# OPTIONS_HADDOCK ignore-exports #-}
+
 {-|
-Module      : W
-Description : 
+Module      : Data.Tree.BST.Extern.Lookup
+Description : Lookup algorithm over ITree trees
 Copyright   : (c) Nicolás Rodríguez, 2021
 License     : GPL-3
 Maintainer  : Nicolás Rodríguez
 Stability   : experimental
 Portability : POSIX
 
-Here is a longer description of this module, containing some
-commentary with @some markup@.
+Implementation of the lookup algorithm over ITree trees for
+externalist BST trees.
 -}
 
 {-# LANGUAGE DataKinds             #-}
@@ -35,11 +37,11 @@ import           Prelude             (Bool (True), Ordering (EQ, GT, LT))
 
 
 -- | This class provides the functionality to lookup a node with key 'x'
--- | in a non empty tree 't' without checking any structural invariant (BST).
--- | The lookup is defined at the value level and the type level, and is performed
--- | as if the tree is a BST.
--- | It's necessary to know the type 'a' of the value stored in node with key 'x'
--- | so that the type of the value returned by 'lookup' may be specified.
+-- in a non empty tree 't' without checking any structural invariant (key ordering).
+-- The lookup is defined at the value level and the type level, and is performed
+-- as if the tree is a `BST`.
+-- It's necessary to know the type 'a' of the value stored in node with key 'x'
+-- so that the type of the value returned by 'lookup' may be specified.
 class Lookupable (x :: Nat) (a :: Type) (t :: Tree) where
   lookup :: (t ~ 'ForkTree l (Node n a1) r, Member x t ~ 'True) =>
     Proxy x -> ITree t -> a
@@ -49,10 +51,10 @@ instance (a ~ LookupValueType x ('ForkTree l (Node n a1) r), o ~ CmpNat x n,
   lookup x t = lookup' x t (Proxy::Proxy o)
 
 -- | This class provides the functionality to lookup a node with key 'x'
--- | in a non empty tree 't' without checking any structural invariant (BST).
--- | It's only used by the 'Lookupable' class and it has one extra parameter 'o',
--- | which is the type level comparison of 'x' with the key value of the root node.
--- | The 'o' parameter guides the lookup.
+-- in a non empty tree 't' without checking any structural invariant (key ordering).
+-- It's only used by the 'Lookupable' class and it has one extra parameter 'o',
+-- which is the type level comparison of 'x' with the key value of the root node.
+-- The 'o' parameter guides the lookup.
 class Lookupable' (x :: Nat) (a :: Type) (t :: Tree) (o :: Ordering) where
   lookup' :: Proxy x -> ITree t -> Proxy o -> a
 instance Lookupable' x a ('ForkTree l (Node n a) r) 'EQ where

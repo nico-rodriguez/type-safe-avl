@@ -39,20 +39,20 @@ import           Prelude       (Int, Maybe (Just, Nothing),
                                 compare)
 
 
--- | Nodes for unsafe BST trees. They only hold information
+-- | Nodes for unsafe `BST` trees. They only hold information
 -- at the value level: some value of kind `Type` and a key
 -- of type `Int`.
 data Node :: Type where
   Node :: Show a => Int -> a -> Node
 deriving stock instance Show Node
 
--- | Constructor of unsafe BST trees.
+-- | Constructor of unsafe `BST` trees.
 data BST :: Type where
   E :: BST
   F :: BST -> Node -> BST -> BST
   deriving stock Show
 
--- | Empty BST tree.
+-- | Empty `BST` tree.
 emptyBST :: BST
 emptyBST = E
 

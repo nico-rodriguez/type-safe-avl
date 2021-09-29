@@ -1,14 +1,16 @@
+{-# OPTIONS_HADDOCK ignore-exports #-}
+
 {-|
-Module      : W
-Description : 
+Module      : Data.Tree.BST.Extern.InsertProofs
+Description : Proofs for insertion over externalist BST trees
 Copyright   : (c) Nicolás Rodríguez, 2021
 License     : GPL-3
 Maintainer  : Nicolás Rodríguez
 Stability   : experimental
 Portability : POSIX
 
-Here is a longer description of this module, containing some
-commentary with @some markup@.
+Implementation of the necessary proofs to ensure (at compile time) that the
+insertion algorithm defined in "Data.Tree.BST.Extern.Insert" respects the key ordering.
 -}
 
 {-# LANGUAGE DataKinds             #-}
@@ -41,7 +43,7 @@ import           Prelude                          (Bool (True), undefined,
 
 
 -- | Prove that inserting a node with key 'x' and element value 'a'
--- | in a BST tree preserves the BST condition.
+-- in a BST tree preserves the BST condition.
 class ProofIsBSTInsert (x :: Nat) (a :: Type) (t :: Tree) where
   proofIsBSTInsert :: Node x a -> IsBSTT t -> IsBSTT (Insert x a t)
 instance ProofIsBSTInsert x a 'EmptyTree where
@@ -52,10 +54,10 @@ instance (o ~ CmpNat x n,
   proofIsBSTInsert node tIsBST = proofIsBSTInsert' node tIsBST (Proxy::Proxy o)
 
 -- | Prove that inserting a node with key 'x' and element value 'a'
--- | in a BST tree preserves the BST condition, given that the comparison between
--- | 'x' and the root key of the tree equals 'o'.
--- | The BST invariant was already check when proofIsBSTInsert was called before.
--- | The 'o' parameter guides the proof.
+-- in a BST tree preserves the BST condition, given that the comparison between
+-- 'x' and the root key of the tree equals 'o'.
+-- The `BST` invariant was already check when `proofIsBSTInsert` was called before.
+-- The 'o' parameter guides the proof.
 class ProofIsBSTInsert' (x :: Nat) (a :: Type) (t :: Tree) (o :: Ordering) where
   proofIsBSTInsert' :: Node x a -> IsBSTT t -> Proxy o -> IsBSTT (Insert' x a t o)
 instance ProofIsBSTInsert' x a ('ForkTree l (Node n a1) r) 'EQ where
@@ -97,9 +99,9 @@ instance (r ~ 'ForkTree rl (Node rn rna) rr, o ~ CmpNat x rn,
 
 
 -- | Prove that inserting a node with key 'x' (lower than 'n') and element value 'a'
--- | in a tree 't' which verifies 'LtN t n ~ 'True' preserves the LtN invariant,
--- | given that the comparison between 'x' and the root key of the tree equals 'o'.
--- | The 'o' parameter guides the proof.
+-- in a tree 't' which verifies @LtN t n ~ 'True@ preserves the `LtN` invariant,
+-- given that the comparison between 'x' and the root key of the tree equals 'o'.
+-- The 'o' parameter guides the proof.
 class ProofLtNInsert' (x :: Nat) (a :: Type) (t :: Tree) (n :: Nat) (o :: Ordering) where
   proofLtNInsert' :: (CmpNat x n ~ 'LT, LtN t n ~ 'True) =>
     Node x a -> IsBSTT t -> Proxy n -> Proxy o -> LtN (Insert' x a t o) n :~: 'True
@@ -130,9 +132,9 @@ instance (r ~ 'ForkTree rl (Node rn rna) rr, o ~ CmpNat x rn,
 
 
 -- | Prove that inserting a node with key 'x' (greater than 'n') and element value 'a'
--- | in a tree 't' which verifies 'GtN t n ~ 'True' preserves the GtN invariant,
--- | given that the comparison between 'x' and the root key of the tree equals 'o'.
--- | The 'o' parameter guides the proof.
+-- in a tree 't' which verifies @GtN t n ~ 'True@ preserves the `GtN` invariant,
+-- given that the comparison between 'x' and the root key of the tree equals 'o'.
+-- The 'o' parameter guides the proof.
 class ProofGtNInsert' (x :: Nat) (a :: Type) (t :: Tree) (n :: Nat) (o :: Ordering) where
   proofGtNInsert' :: (CmpNat x n ~ 'GT, GtN t n ~ 'True) =>
     Node x a -> IsBSTT t -> Proxy n -> Proxy o -> GtN (Insert' x a t o) n :~: 'True

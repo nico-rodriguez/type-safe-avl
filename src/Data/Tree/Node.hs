@@ -26,7 +26,7 @@ import           GHC.TypeLits (Nat)
 import           Prelude      (Show)
 
 -- | Node constructor. It receives a value of an arbitrary type (of kind 'Type')
--- and returns a new Node. At the type level, it has the type `a` of the value
+-- and returns a new `Node`. At the type level, it has the type `a` of the value
 -- and a key `k` of kind `Nat`.
 -- A key may be defined through explicit type signature, like @Node 'a' :: Node 6 Char@.
 data Node :: Nat -> Type -> Type where

@@ -30,17 +30,17 @@ import           Prelude                  (Bool (True), Show (show), String,
                                            (++))
 
 
--- | Constructor of internalist BST trees.
--- Given two BST trees and an arbitrary node, it tests wether the key
--- of the node verifies the LtN and GtN invariants with respect to each tree.
--- Notice that this is all that's needed to assert that the new tree is a BST,
--- since, by recursive logic, both left and right BSTs already respect the key ordering.
+-- | Constructor of internalist `BST` trees.
+-- Given two `BST` trees and an arbitrary node, it tests at compile time wether the key
+-- of the node verifies the `LtN` and `GtN` invariants with respect to each tree.
+-- Notice that this is all that's needed to assert that the new tree is a `BST`,
+-- since, by recursive logic, both left and right BST trees already respect the key ordering.
 data BST :: Tree -> Type where
   EmptyBST :: BST 'EmptyTree
   ForkBST  :: (Show a, LtN l n ~ 'True, GtN r n ~ 'True) =>
     BST l -> Node n a -> BST r -> BST ('ForkTree l (Node n a) r)
 
--- | Instance definition for the @Show@ type class.
+-- | Instance definition for the `Show` type class.
 instance Show (BST t) where
   show EmptyBST         = "E"
   show (ForkBST l n r)  = "F " ++ go l ++ " " ++ show n ++ " " ++ go r

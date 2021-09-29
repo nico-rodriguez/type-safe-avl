@@ -1,14 +1,14 @@
 {-|
-Module      : W
-Description : 
+Module      : Data.Tree.BST.Extern.Delete
+Description : Deletion algorithm over ITree trees
 Copyright   : (c) Nicolás Rodríguez, 2021
 License     : GPL-3
 Maintainer  : Nicolás Rodríguez
 Stability   : experimental
 Portability : POSIX
 
-Here is a longer description of this module, containing some
-commentary with @some markup@.
+Implementation of the deletion algorithm over ITree trees for
+externalist BST trees.
 -}
 
 {-# LANGUAGE DataKinds             #-}
@@ -37,9 +37,9 @@ import           Prelude         (Ordering (EQ, GT, LT), Show)
 
 
 -- | This class provides the functionality to delete the node with maximum key value
--- | in a tree 't' without checking any structural invariant (BST).
--- | The deletion is defined at the value level and the type level, and is performed
--- | as if the tree is a BST; the checking of the BST invariant is performed after the deletion.
+-- in a tree 't' without checking any structural invariant (key ordering).
+-- The deletion is defined at the value level and the type level, and is performed
+-- as if the tree is a `BST`; the checking of the `BST` invariant is performed after the deletion.
 class MaxKeyDeletable (t :: Tree) where
   type MaxKeyDelete (t :: Tree) :: Tree
   maxKeyDelete :: (t ~ 'ForkTree l (Node n a1) r) =>
@@ -59,10 +59,10 @@ instance (MaxKeyDeletable ('ForkTree rl (Node rn ra) rr)) =>
 
 
 -- | This class provides the functionality to get the key, type and value of the node with maximum key value
--- | in a tree 't' without checking any structural invariant (BST).
--- | The lookup is defined at the value level and the type level, and is performed
--- | as if the tree is a BST.
--- | Since the keys are only kept at the type level, there's no value level getter of the maximum key.
+-- in a tree 't' without checking any structural invariant (key ordering).
+-- The lookup is defined at the value level and the type level, and is performed
+-- as if the tree is a `BST`.
+-- Since the keys are only kept at the type level, there's no value level getter of the maximum key.
 class Maxable (t :: Tree) where
   type MaxKey (t :: Tree) :: Nat
   type MaxValue (t :: Tree) :: Type
@@ -81,9 +81,9 @@ instance (Maxable ('ForkTree rl (Node rn ra) rr)) =>
 
 
 -- | This class provides the functionality to delete the node with key 'x'
--- | in a tree 't' without checking any structural invariant (BST).
--- | The deletion is defined at the value level and the type level, and is performed
--- | as if the tree is a BST; the checking of the BST invariant is performed after the deletion.
+-- in a tree 't' without checking any structural invariant (key ordering).
+-- The deletion is defined at the value level and the type level, and is performed
+-- as if the tree is a `BST`; the key ordering is verified after the deletion.
 class Deletable (x :: Nat) (t :: Tree) where
   type Delete (x :: Nat) (t :: Tree) :: Tree
   delete :: Proxy x -> ITree t -> ITree (Delete x t)
@@ -97,10 +97,10 @@ instance (o ~ CmpNat x n,
   delete px t = delete' px t (Proxy::Proxy o)
 
 -- | This class provides the functionality to delete a node with key 'x'
--- | in a non empty tree 't' without checking any structural invariant (BST).
--- | It's only used by the 'Deletable' class and it has one extra parameter 'o',
--- | which is the type level comparison of 'x' with the key value of the root node.
--- | The 'o' parameter guides the insertion.
+-- in a non empty tree 't' without checking any structural invariant (key ordering).
+-- It's only used by the 'Deletable' class and it has one extra parameter 'o',
+-- which is the type level comparison of 'x' with the key value of the root node.
+-- The 'o' parameter guides the insertion.
 class Deletable' (x :: Nat) (t :: Tree) (o :: Ordering) where
   type Delete' (x :: Nat) (t :: Tree) (o :: Ordering) :: Tree
   delete' :: Proxy x -> ITree t -> Proxy o -> ITree (Delete' x t o)

@@ -37,26 +37,26 @@ import           Data.Tree.ITree                   (ITree (EmptyITree),
 import           Data.Tree.Node                    (Node, mkNode)
 import           Prelude                           (Bool (True))
 
--- | Empty BST tree with the externalist implementation.
+-- | Empty `BST` tree with the externalist implementation.
 emptyBST :: BST 'EmptyTree
 emptyBST = BST EmptyITree EmptyIsBSTT
 
 -- | Interface for the insertion algorithm in the externalist implementation.
--- It calls @insert@ over `ITree` and @proofIsBSTInsert@ for constructing the evidence
--- that the new tree remains BST.
+-- It calls `insert` over `ITree` and `proofIsBSTInsert` for constructing the evidence
+-- that the new tree remains `BST`.
 insertBST :: (Insertable x a t, ProofIsBSTInsert x a t) =>
   Proxy x -> a -> BST t -> BST (Insert x a t)
 insertBST x a (BST t tIsBST) = BST (insert node t) (proofIsBSTInsert node tIsBST)
   where node = mkNode x a
 
--- | Interface for the lookup algorithm in the externalist implementation.
+-- | Interface for the lookup algorithm in the externalist implementation of `BST`.
 lookupBST :: (t ~ 'ForkTree l (Node n a1) r, Member x t ~ 'True, Lookupable x a t) =>
   Proxy x -> BST t -> a
 lookupBST p (BST t _) = lookup p t
 
 -- | Interface for the deletion algorithm in the externalist implementation.
--- It calls @delete@ over `ITree` and @proofIsBSTDelete@ for constructing the evidence
--- that the new tree remains BST.
+-- It calls `delete` over `ITree` and `proofIsBSTDelete` for constructing the evidence
+-- that the new tree remains `BST`.
 deleteBST :: (Deletable x t, ProofIsBSTDelete x t) =>
   Proxy x -> BST t -> BST (Delete x t)
 deleteBST px (BST t tIsBST) = BST (delete px t) (proofIsBSTDelete px tIsBST)

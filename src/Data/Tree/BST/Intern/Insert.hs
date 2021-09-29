@@ -42,9 +42,9 @@ import           Prelude                          (Bool (True), Ordering (EQ, GT
 
 
 -- | This class provides the functionality to insert a node with key 'x' and value type 'a'
--- in a BST 't'.
+-- in a `BST` 't'.
 -- The insertion is defined at the value level and the type level.
--- The returned tree verifies the BST invariant.
+-- The returned tree verifies the `BST` restrictions.
 class Insertable (x :: Nat) (a :: Type) (t :: Tree) where
   type Insert (x :: Nat) (a :: Type) (t :: Tree) :: Tree
   insert :: Node x a -> BST t -> BST (Insert x a t)
@@ -59,7 +59,7 @@ instance (o ~ CmpNat x n,
   insert n t = insert' n t (Proxy::Proxy o)
 
 -- | This class provides the functionality to insert a node with key 'x' and value type 'a'
--- in a non empty BST 't'.
+-- in a non empty `BST` 't'.
 -- It's only used by the 'Insertable' class and it has one extra parameter 'o',
 -- which is the type level comparison of 'x' with the key value of the root node.
 -- The 'o' parameter guides the insertion.
@@ -111,7 +111,7 @@ instance (r ~ 'ForkTree rl (Node rn rna) rr, o ~ CmpNat x rn,
         po = Proxy::Proxy o
 
 -- | Prove that inserting a node with key 'x' (lower than 'n') and element value 'a'
--- in a BST 't' which verifies @LtN t n ~ 'True@ preserves the LtN invariant,
+-- in a `BST` 't' which verifies @LtN t n ~ 'True@ preserves the `LtN` invariant,
 -- given that the comparison between 'x' and the root key of the tree equals 'o'.
 -- The 'o' parameter guides the proof.
 class ProofLtNInsert' (x :: Nat) (a :: Type) (t :: Tree) (n :: Nat) (o :: Ordering) where
@@ -141,7 +141,7 @@ instance (r ~ 'ForkTree rl (Node rn rna) rr, o ~ CmpNat x rn,
 
 
 -- | Prove that inserting a node with key 'x' (greater than 'n') and element value 'a'
--- in a BST 't' which verifies @GtN t n ~ 'True@ preserves the GtN invariant,
+-- in a `BST` 't' which verifies @GtN t n ~ 'True@ preserves the `GtN` invariant,
 -- given that the comparison between 'x' and the root key of the tree equals 'o'.
 -- The 'o' parameter guides the proof.
 class ProofGtNInsert' (x :: Nat) (a :: Type) (t :: Tree) (n :: Nat) (o :: Ordering) where
