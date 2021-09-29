@@ -1,3 +1,16 @@
+{-|
+Module      : W
+Description : 
+Copyright   : (c) Nicolás Rodríguez, 2021
+License     : GPL-3
+Maintainer  : Nicolás Rodríguez
+Stability   : experimental
+Portability : POSIX
+
+Here is a longer description of this module, containing some
+commentary with @some markup@.
+-}
+
 {-# LANGUAGE DataKinds          #-}
 {-# LANGUAGE ExplicitNamespaces #-}
 {-# LANGUAGE GADTs              #-}
@@ -19,7 +32,7 @@ import           Prelude                  (Bool (True), Show (show), String,
 
 -- | Constructor of BSTs. Given two BST trees and an arbitrary node,
 -- | it tests wether the key of the node verifies the LtN and GtN invariants
--- | wtih respect to each tree.
+-- | with respect to each tree.
 -- | Notice that this is all that's needed to assert that the new tree is a BST.
 data BST :: Tree -> Type where
   EmptyBST :: BST 'EmptyTree

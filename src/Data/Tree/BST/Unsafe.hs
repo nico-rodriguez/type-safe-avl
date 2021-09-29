@@ -1,3 +1,16 @@
+{-|
+Module      : Data.Tree.BST.Unsafe
+Description : Unsafe BST trees
+Copyright   : (c) Nicolás Rodríguez, 2021
+License     : GPL-3
+Maintainer  : Nicolás Rodríguez
+Stability   : experimental
+Portability : POSIX
+
+Implementation of unsafe BST trees. These trees have no type level
+information useful for compile time verification of invariants.
+-}
+
 {-# LANGUAGE DataKinds           #-}
 {-# LANGUAGE DerivingStrategies  #-}
 {-# LANGUAGE ExplicitNamespaces  #-}
@@ -24,25 +37,32 @@ import           Prelude       (Int, Maybe (Just, Nothing),
                                 compare)
 
 
+-- | Nodes for unsafe BST trees. They only hold information
+-- at the value level: some value of kind `Type` and a key
+-- of type `Int`.
 data Node :: Type where
   Node :: Show a => Int -> a -> Node
 deriving stock instance Show Node
 
+-- | Constructor of unsafe BST trees.
 data BST :: Type where
   E :: BST
   F :: BST -> Node -> BST -> BST
   deriving stock Show
 
+-- | Empty BST tree.
 emptyBST :: BST
 emptyBST = E
 
 
--- | Insert a new key and value.
+-- | Entry point for inserting a new key and value.
 -- | If the key is already present in the tree, update the value.
 insertBST :: Show a => Int -> a -> BST -> BST
 insertBST x  v  E                    = F E (Node x v) E
 insertBST x' v' t@(F _ (Node x _) _) = insertBST' (Node x' v') t (compare x' x)
 
+-- | Insertion algorithm. It has the additional parameter of type
+-- `Ordering`, which guides the recursion.
 insertBST' :: Node -> BST -> Ordering -> BST
 insertBST' node (F l _ r) EQ = F l node r
 insertBST' n' (F E n r) LT = F (F E n' E) n r
@@ -54,12 +74,14 @@ insertBST' n'@(Node x _) (F l n r@(F _ (Node rn _) _)) GT =
 
 
 -- | Lookup the given key in the tree.
--- | It returns Nothing if tree is empty
+-- | It returns `Nothing` if tree is empty
 -- | or if it doesn't have the key.
 lookupBST :: Int -> BST -> Maybe Node
 lookupBST _ E                    = Nothing
 lookupBST x t@(F _ (Node n _) _) = lookupBST' x t (compare x n)
 
+-- | Lookup algorithm. It has the additional parameter of type
+-- `Ordering`, which guides the recursion.
 lookupBST' :: Int -> BST -> Ordering -> Maybe Node
 lookupBST' _ E                             _  = Nothing
 lookupBST' _ (F _ node _)                  EQ = Just node
@@ -78,7 +100,7 @@ maxKeyDelete (F l node r@F{}) =
 
 
 -- | Get the node with maximum key value.
--- | It returns Nothing if tree is empty.
+-- | It returns `Nothing` if tree is empty.
 maxNode :: BST -> Maybe Node
 maxNode E                       = Nothing
 maxNode (F _ n E)               = Just n
@@ -91,6 +113,8 @@ deleteBST :: Int -> BST -> BST
 deleteBST _ E                    = E
 deleteBST x t@(F _ (Node n _) _) = deleteBST' x t (compare x n)
 
+-- | Deletion algorithm. It has the additional parameter of type
+-- `Ordering`, which guides the recursion.
 deleteBST' :: Int -> BST -> Ordering -> BST
 deleteBST' _ (F E     _ E)     EQ = E
 deleteBST' _ (F E     _ r@F{}) EQ = r

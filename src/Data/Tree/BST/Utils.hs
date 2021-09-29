@@ -1,3 +1,15 @@
+{-|
+Module      : Data.Tree.BST.Utils
+Description : Miscellaneous type families
+Copyright   : (c) Nicolás Rodríguez, 2021
+License     : GPL-3
+Maintainer  : Nicolás Rodríguez
+Stability   : experimental
+Portability : POSIX
+
+Type level search for a key and a value type in a type tree.
+-}
+
 {-# LANGUAGE DataKinds            #-}
 {-# LANGUAGE ExplicitNamespaces   #-}
 {-# LANGUAGE TypeFamilies         #-}

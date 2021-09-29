@@ -1,3 +1,16 @@
+{-|
+Module      : W
+Description : 
+Copyright   : (c) Nicolás Rodríguez, 2021
+License     : GPL-3
+Maintainer  : Nicolás Rodríguez
+Stability   : experimental
+Portability : POSIX
+
+Here is a longer description of this module, containing some
+commentary with @some markup@.
+-}
+
 {-# LANGUAGE DataKinds             #-}
 {-# LANGUAGE ExplicitNamespaces    #-}
 {-# LANGUAGE GADTs                 #-}
