@@ -151,8 +151,6 @@ instance (r ~ 'ForkTree ('ForkTree rll (Node rln rla) rlr) (Node rn ra) rr,
 class ProofLtNBalance (t :: Tree) (n :: Nat) where
   proofLtNBalance :: (LtN t n ~ 'True) =>
     AlmostAVL t -> Proxy n -> LtN (Balance t) n :~: 'True
--- instance ProofLtNBalance 'EmptyTree n where
---   proofLtNBalance _ _ = Refl
 instance (us ~ UnbalancedState (Height l) (Height r), ProofLtNBalance' ('ForkTree l (Node n1 a) r) n us) =>
   ProofLtNBalance ('ForkTree l (Node n1 a) r) n where
   proofLtNBalance pt pn = gcastWith (proofLtNBalance' pt pn (Proxy::Proxy us)) Refl
@@ -213,8 +211,6 @@ instance (rl ~ 'ForkTree rll (Node rln rla) rlr, r ~ 'ForkTree rl (Node rn ra) r
 class ProofGtNBalance (t :: Tree) (n :: Nat) where
   proofGtNBalance :: (GtN t n ~ 'True) =>
     AlmostAVL t -> Proxy n -> GtN (Balance t) n :~: 'True
--- instance ProofGtNBalance 'EmptyTree n where
---   proofGtNBalance _ _ = Refl
 instance (us ~ UnbalancedState (Height l) (Height r),
   ProofGtNBalance' ('ForkTree l (Node n1 a) r) n us) =>
   ProofGtNBalance ('ForkTree l (Node n1 a) r) n where
