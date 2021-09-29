@@ -1,14 +1,16 @@
+{-# OPTIONS_HADDOCK ignore-exports #-}
+
 {-|
-Module      : W
-Description : 
+Module      : Data.Tree.BST.Extern.DeleteProofs
+Description : Proofs for deletion over externalist AVL trees
 Copyright   : (c) Nicolás Rodríguez, 2021
 License     : GPL-3
 Maintainer  : Nicolás Rodríguez
 Stability   : experimental
 Portability : POSIX
 
-Here is a longer description of this module, containing some
-commentary with @some markup@.
+Implementation of the necessary proofs to ensure (at compile time) that the
+deletion algorithm defined in "Data.Tree.AVL.Extern.Delete" respects the key ordering and height balance restrictions.
 -}
 
 {-# LANGUAGE DataKinds             #-}
@@ -49,7 +51,7 @@ import           Prelude                            (Bool (True), undefined,
 
 
 -- | Prove that deleting a node with key 'x'
--- | in an AVL tree preserves the AVL condition.
+-- | in an `AVL` tree preserves the `AVL` restrictions.
 class ProofIsBSTDelete (x :: Nat) (t :: Tree) where
   proofIsBSTDelete :: Proxy x -> IsBSTT t -> IsBSTT (Delete x t)
 instance ProofIsBSTDelete x 'EmptyTree where
@@ -60,10 +62,10 @@ instance (o ~ CmpNat x n,
   proofIsBSTDelete px tIsBST = proofIsBSTDelete' px tIsBST (Proxy::Proxy o)
 
 -- | Prove that inserting a node with key 'x' and element value 'a'
--- | in an AVL tree preserves the AVL condition, given that the comparison between
--- | 'x' and the root key of the tree equals 'o'.
--- | The AVL invariant was already check when proofIsBSTInsert was called before.
--- | The 'o' parameter guides the proof.
+-- in an `AVL` tree preserves the `AVL` restrictions, given that the comparison between
+-- 'x' and the root key of the tree equals 'o'.
+-- The `AVL` restrictions were already checked when `proofIsBSTInsert` was called before.
+-- The 'o' parameter guides the proof.
 class ProofIsBSTDelete' (x :: Nat) (t :: Tree) (o :: Ordering) where
   proofIsBSTDelete' :: Proxy x -> IsBSTT t -> Proxy o -> IsBSTT (Delete' x t o)
 instance ProofIsBSTDelete' x ('ForkTree 'EmptyTree (Node n a1) 'EmptyTree) 'EQ where
@@ -101,9 +103,9 @@ instance (r ~ 'ForkTree rl (Node rn ra) rr, o ~ CmpNat x rn,
 
 
 -- | Prove that deleting a node with key 'x' (lower than 'n')
--- | in a tree 't' which verifies 'LtN t n ~ 'True' preserves the LtN invariant,
--- | given that the comparison between 'x' and the root key of the tree equals 'o'.
--- | The 'o' parameter guides the proof.
+-- in a tree 't' which verifies @LtN t n ~ 'True@ preserves the `LtN` invariant,
+-- given that the comparison between 'x' and the root key of the tree equals 'o'.
+-- The 'o' parameter guides the proof.
 class ProofLtNDelete' (x :: Nat) (t :: Tree) (n :: Nat) (o :: Ordering) where
   proofLtNDelete' :: (CmpNat x n ~ 'LT, LtN t n ~ 'True) =>
     Proxy x -> IsBSTT t -> Proxy n -> Proxy o -> LtN (Delete' x t o) n :~: 'True
@@ -158,9 +160,9 @@ instance (r ~ 'ForkTree rl (Node rn ra) rr, o ~ CmpNat x rn,
 
 
 -- | Prove that deleting a node with key 'x' (greater than 'n')
--- | in a tree 't' which verifies 'GtN t n ~ 'True' preserves the GtN invariant,
--- | given that the comparison between 'x' and the root key of the tree equals 'o'.
--- | The 'o' parameter guides the proof.
+-- in a tree 't' which verifies @GtN t n ~ 'True@ preserves the `GtN` invariant,
+-- given that the comparison between 'x' and the root key of the tree equals 'o'.
+-- The 'o' parameter guides the proof.
 class ProofGtNDelete' (x :: Nat) (t :: Tree) (n :: Nat) (o :: Ordering) where
   proofGtNDelete' :: (CmpNat x n ~ 'GT, GtN t n ~ 'True) =>
     Proxy x -> IsBSTT t -> Proxy n -> Proxy o -> GtN (Delete' x t o) n :~: 'True
@@ -216,8 +218,8 @@ instance (r ~ 'ForkTree rl (Node rn ra) rr, o ~ CmpNat x rn,
 
 
 -- | Prove that deleting the node with maximum key value
--- | in a BST 't' preserves the BST invariant.
--- | This proof is needed for the delete operation.
+-- in a `BST` 't' preserves the `BST` restrictions.
+-- This proof is needed for the delete operation.
 class ProofMaxKeyDeleteIsBST (t :: Tree) where
   proofMaxKeyDeleteIsBST :: IsBSTT t -> IsBSTT (MaxKeyDelete t)
 instance ProofMaxKeyDeleteIsBST 'EmptyTree where
@@ -238,9 +240,9 @@ instance (l ~ 'ForkTree ll (Node ln la) lr, r ~ 'ForkTree rl (Node rn ra) rr,
         rIsBST' = proofMaxKeyDeleteIsBST rIsBST
 
 
--- | Prove that in a tree 't' which verifies that 'GtN t n ~ 'True',
--- | the maximum key of 't' is also greater than 'n'.
--- | This proof is needed for the delete operation.
+-- | Prove that in a tree 't' which verifies that @GtN t n ~ 'True@,
+-- the maximum key of 't' is also greater than 'n'.
+-- This proof is needed for the `delete` operation.
 class ProofGTMaxKey (t :: Tree) (n :: Nat) where
   proofGTMaxKey :: (GtN t n ~ 'True) =>
     IsBSTT t -> Proxy n -> CmpNat (MaxKey t) n :~: 'GT
@@ -254,9 +256,9 @@ instance (r ~ 'ForkTree rl (Node rn ra) rr,
   proofGTMaxKey (ForkIsBSTT _ _ rIsBST) pn =
     gcastWith (proofGTMaxKey rIsBST pn) Refl
 
--- | Prove that in a tree 't' which verifies that 'GtN t n ~ 'True',
--- | the tree resulting from the removal of the maximum key of 't' preserves the GtN invariant.
--- | This proof is needed for the delete operation.
+-- | Prove that in a tree 't' which verifies that @GtN t n ~ 'True@,
+-- the tree resulting from the removal of the maximum key of 't' preserves the `GtN` invariant.
+-- This proof is needed for the `delete` operation.
 class ProofGtNMaxKeyDelete (t :: Tree) (n :: Nat) where
   proofGtNMaxKeyDelete :: (MaxKeyDeletable t, GtN t n ~ 'True) =>
     IsBSTT t -> Proxy n -> GtN (MaxKeyDelete t) n :~: 'True
@@ -276,9 +278,9 @@ instance (r ~ 'ForkTree rl (Node rn ra) rr,
       where
         rIsBST' = proofMaxKeyDeleteIsBST rIsBST
 
--- | Prove that in a tree 't' which verifies that 'LtN t n ~ 'True',
--- | the maximum key of 't' is also less than 'n'.
--- | This proof is needed for the delete operation.
+-- | Prove that in a tree 't' which verifies that @LtN t n ~ 'True@,
+-- the maximum key of 't' is also less than 'n'.
+-- This proof is needed for the `delete` operation.
 class ProofLTMaxKey (t :: Tree) (n :: Nat) where
   proofLTMaxKey :: (LtN t n ~ 'True) =>
     IsBSTT t -> Proxy n -> CmpNat (MaxKey t) n :~: 'LT
@@ -292,9 +294,9 @@ instance (r ~ 'ForkTree rl (Node rn ra) rr,
   proofLTMaxKey (ForkIsBSTT _ _ rIsBST) pn =
     gcastWith (proofLTMaxKey rIsBST pn) Refl
 
--- | Prove that in a tree 't' which verifies that 'LtN t n ~ 'True',
--- | the tree resulting from the removal of the maximum key of 't' preserves the LtN invariant.
--- | This proof is needed for the delete operation.
+-- | Prove that in a tree 't' which verifies that @LtN t n ~ 'True@,
+-- the tree resulting from the removal of the maximum key of 't' preserves the `LtN` invariant.
+-- This proof is needed for the `delete` operation.
 class ProofLtNMaxKeyDelete (t :: Tree) (n :: Nat) where
   proofLtNMaxKeyDelete :: (LtN t n ~ 'True) =>
     IsBSTT t -> Proxy n -> LtN (MaxKeyDelete t) n :~: 'True
@@ -316,8 +318,8 @@ instance (r ~ 'ForkTree rl (Node rn ra) rr,
 
 
 -- | Prove that deleting the node with maximum key value
--- | in an AVL 't' preserves the AVL invariant.
--- | This proof is needed for the delete operation.
+-- in an `AVL` 't' preserves the `AVL` restrictions.
+-- This proof is needed for the `delete` operation.
 class ProofMaxKeyDeleteIsAVL (t :: Tree) where
   proofMaxKeyDeleteIsAVL :: IsAVLT t -> IsAVLT (MaxKeyDelete t)
 instance ProofMaxKeyDeleteIsAVL 'EmptyTree where
@@ -334,7 +336,7 @@ instance (l ~ 'ForkTree ll (Node ln la) lr, r ~ 'ForkTree rl (Node rn ra) rr,
 
 
 -- | Prove that deleting a node with key 'x'
--- | in an AVL tree preserves the AVL condition.
+-- in an `AVL` tree preserves the `AVL` condition.
 class ProofIsAVLDelete (x :: Nat) (t :: Tree) where
   proofIsAVLDelete :: Proxy x -> IsAVLT t -> IsAVLT (Delete x t)
 instance ProofIsAVLDelete x 'EmptyTree where
@@ -345,10 +347,10 @@ instance (o ~ CmpNat x n,
   proofIsAVLDelete px tIsAVL = proofIsAVLDelete' px tIsAVL (Proxy::Proxy o)
 
 -- | Prove that deleting a node with key 'x'
--- | in an AVL tree preserves the AVL condition, given that the comparison between
--- | 'x' and the root key of the tree equals 'o'.
--- | The AVL invariant was already check when proofIsBSTDelete was called before.
--- | The 'o' parameter guides the proof.
+-- in an `AVL` tree preserves the `AVL` condition, given that the comparison between
+-- 'x' and the root key of the tree equals 'o'.
+-- The `AVL` restrictions were already checked when `proofIsBSTDelete` was called before.
+-- The 'o' parameter guides the proof.
 class ProofIsAVLDelete' (x :: Nat) (t :: Tree) (o :: Ordering) where
   proofIsAVLDelete' :: Proxy x -> IsAVLT t -> Proxy o -> IsAVLT (Delete' x t o)
 instance ProofIsAVLDelete' x ('ForkTree 'EmptyTree (Node n a1) 'EmptyTree) 'EQ where

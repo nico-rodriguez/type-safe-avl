@@ -8,7 +8,7 @@ Stability   : experimental
 Portability : POSIX
 
 Implementation of the constructor of type safe internalist BST
-trees and instance definition for the @Show@ type class.
+trees and instance definition for the `Show` type class.
 -}
 
 {-# LANGUAGE DataKinds          #-}
@@ -34,7 +34,7 @@ import           Prelude                  (Bool (True), Show (show), String,
 -- Given two `BST` trees and an arbitrary node, it tests at compile time wether the key
 -- of the node verifies the `LtN` and `GtN` invariants with respect to each tree.
 -- Notice that this is all that's needed to assert that the new tree is a `BST`,
--- since, by recursive logic, both left and right BST trees already respect the key ordering.
+-- since, by recursive logic, both left and right `BST` trees already respect the key ordering.
 data BST :: Tree -> Type where
   EmptyBST :: BST 'EmptyTree
   ForkBST  :: (Show a, LtN l n ~ 'True, GtN r n ~ 'True) =>

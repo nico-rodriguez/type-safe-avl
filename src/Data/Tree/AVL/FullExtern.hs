@@ -1,14 +1,17 @@
 {-|
-Module      : W
-Description : 
+Module      : Data.Tree.AVL.FullExtern
+Description : Interface for fully externalist type safe AVL trees
 Copyright   : (c) Nicolás Rodríguez, 2021
 License     : GPL-3
 Maintainer  : Nicolás Rodríguez
 Stability   : experimental
 Portability : POSIX
 
-Here is a longer description of this module, containing some
-commentary with @some markup@.
+Interface for the main functions over type safe AVL trees
+implemented with the internalist approach. This module reexports
+the functions defined over `ITree` trees from the modules
+"Data.Tree.AVL.Extern.Constructors", "Data.Tree.AVL.Extern.Delete", 
+"Data.Tree.AVL.Extern.Insert" and "Data.Tree.AVL.Extern.Lookup".
 -}
 
 {-# LANGUAGE Safe                  #-}

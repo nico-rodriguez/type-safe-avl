@@ -41,7 +41,7 @@ import           Prelude                          (Bool (True), Ordering (EQ, GT
                                                    Show, ($))
 
 
--- | This class provides the functionality to insert a node with key 'x' and value type 'a'
+-- | This type class provides the functionality to insert a node with key 'x' and value type 'a'
 -- in a `BST` 't'.
 -- The insertion is defined at the value level and the type level.
 -- The returned tree verifies the `BST` restrictions.
@@ -58,7 +58,7 @@ instance (o ~ CmpNat x n,
   type Insert x a ('ForkTree l (Node n a1) r) = Insert' x a ('ForkTree l (Node n a1) r) (CmpNat x n)
   insert n t = insert' n t (Proxy::Proxy o)
 
--- | This class provides the functionality to insert a node with key 'x' and value type 'a'
+-- | This type class provides the functionality to insert a node with key 'x' and value type 'a'
 -- in a non empty `BST` 't'.
 -- It's only used by the 'Insertable' class and it has one extra parameter 'o',
 -- which is the type level comparison of 'x' with the key value of the root node.

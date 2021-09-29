@@ -1,14 +1,17 @@
+{-# OPTIONS_HADDOCK ignore-exports #-}
+
 {-|
-Module      : W
-Description : 
+Module      : Data.Tree.AVL.Intern.Delete
+Description : Deletion algorithm (with proofs) over internalist AVL trees
 Copyright   : (c) Nicolás Rodríguez, 2021
 License     : GPL-3
 Maintainer  : Nicolás Rodríguez
 Stability   : experimental
 Portability : POSIX
 
-Here is a longer description of this module, containing some
-commentary with @some markup@.
+Implementation of the deletion algorithm over internalist AVL trees,
+along with the necessary proofs to ensure (at compile time) that the
+key ordering and height balancing still holds.
 -}
 
 {-# LANGUAGE DataKinds             #-}
@@ -44,9 +47,9 @@ import           Prelude                          (Bool (True),
 
 
 -- | Prove that deleting a node with key 'x' (lower than 'n')
--- | in a tree 't' which verifies 'LtN t n ~ 'True' preserves the LtN invariant,
--- | given that the comparison between 'x' and the root key of the tree equals 'o'.
--- | The 'o' parameter guides the proof.
+-- in a tree 't' which verifies @LtN t n ~ 'True@ preserves the `LtN` invariant,
+-- given that the comparison between 'x' and the root key of the tree equals 'o'.
+-- The 'o' parameter guides the proof.
 class ProofLtNDelete' (x :: Nat) (t :: Tree) (n :: Nat) (o :: Ordering) where
   proofLtNDelete' :: (CmpNat x n ~ 'LT, LtN t n ~ 'True) =>
     Proxy x -> AVL t -> Proxy n -> Proxy o -> LtN (Delete' x t o) n :~: 'True
@@ -101,9 +104,9 @@ instance (r ~ 'ForkTree rl (Node rn ra) rr, o ~ CmpNat x rn,
 
 
 -- | Prove that deleting a node with key 'x' (greater than 'n')
--- | in a tree 't' which verifies 'GtN t n ~ 'True' preserves the GtN invariant,
--- | given that the comparison between 'x' and the root key of the tree equals 'o'.
--- | The 'o' parameter guides the proof.
+-- in a tree 't' which verifies @GtN t n ~ 'True@ preserves the `GtN` invariant,
+-- given that the comparison between 'x' and the root key of the tree equals 'o'.
+-- The 'o' parameter guides the proof.
 class ProofGtNDelete' (x :: Nat) (t :: Tree) (n :: Nat) (o :: Ordering) where
   proofGtNDelete' :: (CmpNat x n ~ 'GT, GtN t n ~ 'True) =>
     Proxy x -> AVL t -> Proxy n -> Proxy o -> GtN (Delete' x t o) n :~: 'True
@@ -157,9 +160,9 @@ instance (r ~ 'ForkTree rl (Node rn ra) rr, o ~ CmpNat x rn,
         r' = delete px r
 
 
--- | Prove that in a tree 't' which verifies that 'GtN t n ~ 'True',
--- | the maximum key of 't' is also greater than 'n'.
--- | This proof is needed for the delete operation.
+-- | Prove that in a tree 't' which verifies that @GtN t n ~ 'True@,
+-- the maximum key of 't' is also greater than 'n'.
+-- This proof is needed for the delete operation.
 class ProofGTMaxKey (t :: Tree) (n :: Nat) where
   proofGTMaxKey :: (GtN t n ~ 'True) =>
     AVL t -> Proxy n -> CmpNat (MaxKey t) n :~: 'GT
@@ -173,9 +176,9 @@ instance (r ~ 'ForkTree rl (Node rn ra) rr,
   proofGTMaxKey (ForkAVL _ _ r) pn =
     gcastWith (proofGTMaxKey r pn) Refl
 
--- | Prove that in a tree 't' which verifies that 'GtN t n ~ 'True',
--- | the tree resulting from the removal of the maximum key of 't' preserves the GtN invariant.
--- | This proof is needed for the delete operation.
+-- | Prove that in a tree 't' which verifies that @GtN t n ~ 'True@,
+-- the tree resulting from the removal of the maximum key of 't' preserves the `GtN` invariant.
+-- This proof is needed for the `delete` operation.
 class ProofGtNMaxKeyDelete (t :: Tree) (n :: Nat) where
   proofGtNMaxKeyDelete :: (GtN t n ~ 'True) =>
     AVL t -> Proxy n -> GtN (MaxKeyDelete t) n :~: 'True
@@ -194,9 +197,9 @@ instance (r ~ 'ForkTree rl (Node rn ra) rr,
       where
         r' = maxKeyDelete r
 
--- | Prove that in a tree 't' which verifies that 'LtN t n ~ 'True',
--- | the maximum key of 't' is also less than 'n'.
--- | This proof is needed for the delete operation.
+-- | Prove that in a tree 't' which verifies that @LtN t n ~ 'True@,
+-- the maximum key of 't' is also less than 'n'.
+-- This proof is needed for the `delete` operation.
 class ProofLTMaxKey (t :: Tree) (n :: Nat) where
   proofLTMaxKey :: (LtN t n ~ 'True) =>
     AVL t -> Proxy n -> CmpNat (MaxKey t) n :~: 'LT
@@ -210,9 +213,9 @@ instance (r ~ 'ForkTree rl (Node rn ra) rr,
   proofLTMaxKey (ForkAVL _ _ r) pn =
     gcastWith (proofLTMaxKey r pn) Refl
 
--- | Prove that in a tree 't' which verifies that 'LtN t n ~ 'True',
--- | the tree resulting from the removal of the maximum key of 't' preserves the LtN invariant.
--- | This proof is needed for the delete operation.
+-- | Prove that in a tree 't' which verifies that @LtN t n ~ 'True@,
+-- the tree resulting from the removal of the maximum key of 't' preserves the `LtN` invariant.
+-- This proof is needed for the `delete` operation.
 class ProofLtNMaxKeyDelete (t :: Tree) (n :: Nat) where
   proofLtNMaxKeyDelete :: (LtN t n ~ 'True) =>
     AVL t -> Proxy n -> LtN (MaxKeyDelete t) n :~: 'True
@@ -232,9 +235,9 @@ instance (r ~ 'ForkTree rl (Node rn ra) rr,
         r' = maxKeyDelete r
 
 
--- | This class provides the functionality to delete the node with maximum key value
--- | in an AVL 't'.
--- | The deletion is defined at the value level and the type level.
+-- | This type class provides the functionality to delete the node with maximum key value
+-- in an `AVL` 't'.
+-- The deletion is defined at the value level and the type level.
 class MaxKeyDeletable (t :: Tree) where
   type MaxKeyDelete (t :: Tree) :: Tree
   maxKeyDelete :: (t ~ 'ForkTree l (Node n a1) r) =>
@@ -252,10 +255,10 @@ instance (r ~ 'ForkTree rl (Node rn ra) rr,
     gcastWith (proofGtNMaxKeyDelete r (Proxy::Proxy n)) $
     balance $ AlmostAVL l node (maxKeyDelete r)
 
--- | This class provides the functionality to get the key, type and value of the node with maximum key value
--- | in an AVL 't'.
--- | The lookup is defined at the value level and the type level.
--- | Since the keys are only kept at the type level, there's no value level getter of the maximum key.
+-- | This type class provides the functionality to get the key, type and value of the node with maximum key value
+-- in an `AVL` 't'.
+-- The lookup is defined at the value level and the type level.
+-- Since the keys are only kept at the type level, there's no value level getter of the maximum key.
 class Maxable (t :: Tree) where
   type MaxKey (t :: Tree) :: Nat
   type MaxValue (t :: Tree) :: Type
@@ -272,10 +275,10 @@ instance (Maxable ('ForkTree rl (Node rn ra) rr)) =>
   maxValue (ForkAVL _ _ r) = maxValue r
 
 
--- | This class provides the functionality to delete the node with key 'x'
--- | in an AVL 't'.
--- | The deletion is defined at the value level and the type level,
--- | and both return AVL trees.
+-- | This type class provides the functionality to delete the node with key 'x'
+-- in an `AVL` 't'.
+-- The deletion is defined at the value level and the type level,
+-- and both return `AVL` trees.
 class Deletable (x :: Nat) (t :: Tree) where
   type Delete (x :: Nat) (t :: Tree) :: Tree
   delete :: Proxy x -> AVL t -> AVL (Delete x t)
@@ -288,11 +291,11 @@ instance (o ~ CmpNat x n,
   type Delete x ('ForkTree l (Node n a1) r) = Delete' x ('ForkTree l (Node n a1) r) (CmpNat x n)
   delete px t = delete' px t (Proxy::Proxy o)
 
--- | This class provides the functionality to delete a node with key 'x'
--- | in a non empty AVL 't'.
--- | It's only used by the 'Deletable' class and it has one extra parameter 'o',
--- | which is the type level comparison of 'x' with the key value of the root node.
--- | The 'o' parameter guides the insertion.
+-- | This type class provides the functionality to delete a node with key 'x'
+-- in a non empty `AVL` 't'.
+-- It's only used by the 'Deletable' class and it has one extra parameter 'o',
+-- which is the type level comparison of 'x' with the key value of the root node.
+-- The 'o' parameter guides the insertion.
 class Deletable' (x :: Nat) (t :: Tree) (o :: Ordering) where
   type Delete' (x :: Nat) (t :: Tree) (o :: Ordering) :: Tree
   delete' :: Proxy x -> AVL t -> Proxy o -> AVL (Delete' x t o)

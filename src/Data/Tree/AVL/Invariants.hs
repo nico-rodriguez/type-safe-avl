@@ -1,14 +1,13 @@
 {-|
-Module      : W
-Description : 
+Module      : Data.Tree.AVL.Invariants
+Description : Type level AVL invariants
 Copyright   : (c) Nicolás Rodríguez, 2021
 License     : GPL-3
 Maintainer  : Nicolás Rodríguez
 Stability   : experimental
 Portability : POSIX
 
-Here is a longer description of this module, containing some
-commentary with @some markup@.
+Type level restrictions for the key ordering in type safe AVL trees.
 -}
 
 {-# LANGUAGE DataKinds            #-}
@@ -35,7 +34,7 @@ import           GHC.TypeNats    (type (+), type (-), type (<=?), Nat)
 import           Prelude         (Bool (False, True))
 
 
--- | Get the maximun between two type level natural numbers.
+-- | Get the maximum between two type level natural numbers.
 type family Max (n1 :: Nat) (n2 :: Nat) :: Nat where
   Max n1 n2 =
     (If (n1 <=? n2)
@@ -49,8 +48,8 @@ type family Height (t :: Tree) :: Nat where
   Height ('ForkTree l (Node _n _a) r) = 1 + Max (Height l) (Height r)
 
 -- | Check if two type level natural numbers,
--- | that represent the heights of some left and right sub trees,
--- | differ at most in one (i.e., the tree is balanced).
+-- that represent the heights of some left and right sub trees,
+-- differ at most in one (i.e., the tree is balanced).
 type family BalancedHeights (h1 :: Nat) (h2 :: Nat) :: Bool where
   BalancedHeights 0   0   = 'True
   BalancedHeights 1   0   = 'True
@@ -61,14 +60,17 @@ type family BalancedHeights (h1 :: Nat) (h2 :: Nat) :: Bool where
 
 
 -- | Data type that represents the state of unbalance of the sub trees:
--- | - LeftUnbalanced: height(left sub tree) = height(right sub tree) + 2.
--- | - RightUnbalanced: height(right sub tree) = height(leftt sub tree) + 2.
--- | - NotUnbalanced: tree is not unbalanced.
+--
+-- [`LeftUnbalanced`] @height(left sub tree) = height(right sub tree) + 2@.
+--
+-- [`RightUnbalanced`] @height(right sub tree) = height(left sub tree) + 2@.
+--
+-- [`NotUnbalanced`] tree is not unbalanced.
 data US = LeftUnbalanced | RightUnbalanced | NotUnbalanced
 
 -- | Check from two type level natural numbers,
--- | that represent the heights of some left and right sub trees,
--- | if the tree is balanced or if some of those sub trees is unbalanced.
+-- that represent the heights of some left and right sub trees,
+-- if the tree is balanced or if some of those sub trees is unbalanced.
 type family UnbalancedState (h1 :: Nat) (h2 :: Nat) :: US where
   UnbalancedState 0 0   = 'NotUnbalanced
   UnbalancedState 1 0   = 'NotUnbalanced
@@ -79,14 +81,17 @@ type family UnbalancedState (h1 :: Nat) (h2 :: Nat) :: US where
 
 
 -- | Data type that represents the state of balance of the sub trees in a balanced tree:
--- | - LeftHeavy: height(left sub tree) = height(right sub tree) + 1.
--- | - RightHeavy: height(right sub tree) = height(leftt sub tree) + 1.
--- | - Balanced: height(left sub tree) = height(right sub tree).
+--
+-- [`LeftHeavy`] @height(left sub tree) = height(right sub tree) + 1@.
+--
+-- [`RightHeavy`] @height(right sub tree) = height(left sub tree) + 1@.
+--
+-- [`Balanced`] @height(left sub tree) = height(right sub tree)@.
 data BS = LeftHeavy | RightHeavy | Balanced
 
 -- | Check from two type level natural numbers,
--- | that represent the heights of some left and right sub trees,
--- | if some of those sub trees have height larger than the other.
+-- that represent the heights of some left and right sub trees,
+-- if some of those sub trees have height larger than the other.
 type family BalancedState (h1 :: Nat) (h2 :: Nat) :: BS where
   BalancedState 0 0   = 'Balanced
   BalancedState 1 0   = 'LeftHeavy

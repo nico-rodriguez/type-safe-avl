@@ -1,14 +1,14 @@
 {-|
-Module      : W
-Description : 
+Module      : Data.Tree.AVL.Extern.Insert
+Description : Insertion algorithm over ITree trees
 Copyright   : (c) Nicolás Rodríguez, 2021
 License     : GPL-3
 Maintainer  : Nicolás Rodríguez
 Stability   : experimental
 Portability : POSIX
 
-Here is a longer description of this module, containing some
-commentary with @some markup@.
+Implementation of the insertion algorithm over ITree trees for
+externalist AVL trees.
 -}
 
 {-# LANGUAGE DataKinds             #-}
@@ -35,10 +35,10 @@ import           GHC.TypeNats                 (CmpNat, Nat)
 import           Prelude                      (Ordering (EQ, GT, LT), Show)
 
 
--- | This class provides the functionality to insert a node with key 'x' and value type 'a'
--- | in a tree 't' without checking any structural invariant (BST/AVL).
--- | The insertion is defined at the value level and the type level, and is performed
--- | as if the tree is a BST/AVL; the checking of the BST/AVL invariant is performed after the insertion.
+-- | This type class provides the functionality to insert a node with key 'x' and value type 'a'
+-- in a tree 't' without checking any structural invariant (key ordering or height balance).
+-- The insertion is defined at the value level and the type level, and is performed
+-- as if the tree is an `AVL`; the verification of the `AVL` restrictions is performed after the insertion.
 class Insertable (x :: Nat) (a :: Type) (t :: Tree) where
   type Insert (x :: Nat) (a :: Type) (t :: Tree) :: Tree
   insert :: Node x a -> ITree t -> ITree (Insert x a t)
@@ -52,11 +52,11 @@ instance (o ~ CmpNat x n,
   type Insert x a ('ForkTree l (Node n a1) r) = Insert' x a ('ForkTree l (Node n a1) r) (CmpNat x n)
   insert node t = insert' node t (Proxy::Proxy o)
 
--- | This class provides the functionality to insert a node with key 'x' and value type 'a'
--- | in a non empty tree 't' without checking any structural invariant (BST/AVL).
--- | It's only used by the 'Insertable' class and it has one extra parameter 'o',
--- | which is the type level comparison of 'x' with the key value of the root node.
--- | The 'o' parameter guides the insertion.
+-- | This type class provides the functionality to insert a node with key 'x' and value type 'a'
+-- in a non empty tree 't' without checking any structural invariant (key ordering or height balance).
+-- It's only used by the 'Insertable' class and it has one extra parameter 'o',
+-- which is the type level comparison of 'x' with the key value of the root node.
+-- The 'o' parameter guides the insertion.
 class Insertable' (x :: Nat) (a :: Type) (t :: Tree) (o :: Ordering) where
   type Insert' (x :: Nat) (a :: Type) (t :: Tree) (o :: Ordering) :: Tree
   insert' :: Node x a -> ITree t -> Proxy o -> ITree (Insert' x a t o)

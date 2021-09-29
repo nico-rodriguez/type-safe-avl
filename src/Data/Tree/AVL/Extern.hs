@@ -1,14 +1,14 @@
 {-|
-Module      : W
-Description : 
+Module      : Data.Tree.AVL.Extern
+Description : Interface for externalist type safe AVL trees
 Copyright   : (c) Nicolás Rodríguez, 2021
 License     : GPL-3
 Maintainer  : Nicolás Rodríguez
 Stability   : experimental
 Portability : POSIX
 
-Here is a longer description of this module, containing some
-commentary with @some markup@.
+Interface for the main functions over type safe AVL trees
+implemented with the externalist approach.
 -}
 
 {-# LANGUAGE DataKinds             #-}
@@ -40,19 +40,26 @@ import           Data.Tree.ITree                   (ITree (EmptyITree),
 import           Data.Tree.Node                    (Node, mkNode)
 import           Prelude                           (Bool (True))
 
-
+-- | Empty `AVL` tree with the externalist implementation.
 emptyAVL :: AVL 'EmptyTree
 emptyAVL = AVL EmptyITree EmptyIsBSTT EmptyIsAVLT
 
+-- | Interface for the insertion algorithm in the externalist implementation.
+-- It calls `insert` over `ITree`, and `proofIsBSTInsert` and `proofIsAVLInsert` for constructing the evidence
+-- that the new tree remains `AVL`.
 insertAVL :: (Insertable x a t, ProofIsBSTInsert x a t, ProofIsAVLInsert x a t) =>
   Proxy x -> a -> AVL t -> AVL (Insert x a t)
 insertAVL x a (AVL t tIsBST tIsAVL) = AVL (insert node t) (proofIsBSTInsert node tIsBST) (proofIsAVLInsert node tIsAVL)
   where node = mkNode x a
 
+-- | Interface for the lookup algorithm in the externalist implementation of `AVL`.
 lookupAVL :: (t ~ 'ForkTree l (Node n a1) r, Member x t ~ 'True, Lookupable x a t) =>
   Proxy x -> AVL t -> a
 lookupAVL p (AVL t _ _) = lookup p t
 
+-- | Interface for the deletion algorithm in the externalist implementation.
+-- It calls `delete` over `ITree`, and `proofIsBSTDelete` and `proofIsAVLDelete`  for constructing the evidence
+-- that the new tree remains `AVL`.
 deleteAVL :: (Deletable x t, ProofIsBSTDelete x t, ProofIsAVLDelete x t) =>
   Proxy x -> AVL t -> AVL (Delete x t)
 deleteAVL px (AVL t tIsBST tIsAVL) = AVL (delete px t) (proofIsBSTDelete px tIsBST) (proofIsAVLDelete px tIsAVL)

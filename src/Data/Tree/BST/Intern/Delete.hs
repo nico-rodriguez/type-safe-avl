@@ -41,7 +41,7 @@ import           Prelude                          (Bool (True), Ordering (EQ, GT
                                                    Show, ($))
 
 
--- | This class provides the functionality to delete the node with maximum key value
+-- | This type class provides the functionality to delete the node with maximum key value
 -- in a `BST` 't'.
 -- The deletion is defined at the value level and the type level.
 class MaxKeyDeletable (t :: Tree) where
@@ -60,7 +60,7 @@ instance (r ~ 'ForkTree rl (Node rn ra) rr, MaxKeyDeletable r, ProofGtNMaxKeyDel
     ForkBST l node (maxKeyDelete r)
 
 
--- | This class provides the functionality to get the key, type and value of the node
+-- | This type class provides the functionality to get the key, type and value of the node
 -- with maximum key value in a `BST` 't'.
 -- The lookup is defined at the value level and the type level.
 -- Since the keys are only kept at the type level,
@@ -83,7 +83,7 @@ instance (Maxable ('ForkTree rl (Node rn ra) rr)) =>
   maxValue (ForkBST _ _ r) = maxValue r
 
 
--- | This class provides the functionality to delete a node with key 'x'
+-- | This type class provides the functionality to delete a node with key 'x'
 -- in a `BST` 't'.
 -- The deletion is defined at the value level and the type level.
 -- The returned tree verifies the BST invariant.
@@ -99,7 +99,7 @@ instance (o ~ CmpNat x n,
   type Delete x ('ForkTree l (Node n a1) r) = Delete' x ('ForkTree l (Node n a1) r) (CmpNat x n)
   delete px t = delete' px t (Proxy::Proxy o)
 
--- | This class provides the functionality to delete a node with key 'x'
+-- | This type class provides the functionality to delete a node with key 'x'
 -- in a non empty `BST` 't'.
 -- It's only used by the 'Deletable' class and it has one extra parameter 'o',
 -- which is the type level comparison of 'x' with the key value of the root node.
@@ -250,7 +250,7 @@ instance (r ~ 'ForkTree rl (Node rn ra) rr, o ~ CmpNat x rn,
 
 -- | Prove that in a `BST` 't' which verifies that @GtN t n ~ 'True@,
 -- the maximum key of 't' is also greater than 'n'.
--- This proof is needed for the delete operation.
+-- This proof is needed for the `delete` operation.
 class ProofGTMaxKey (t :: Tree) (n :: Nat) where
   proofGTMaxKey :: (GtN t n ~ 'True) =>
     BST t -> Proxy n -> CmpNat (MaxKey t) n :~: 'GT
@@ -266,7 +266,7 @@ instance (r ~ 'ForkTree rl (Node rn ra) rr,
 
 -- | Prove that in a `BST` 't' which verifies that @GtN t n ~ 'True@,
 -- the tree resulting from the removal of the maximum key of 't' preserves the `GtN` invariant.
--- This proof is needed for the delete operation.
+-- This proof is needed for the `delete` operation.
 class ProofGtNMaxKeyDelete (t :: Tree) (n :: Nat) where
   proofGtNMaxKeyDelete :: (GtN t n ~ 'True) =>
     BST t -> Proxy n -> GtN (MaxKeyDelete t) n :~: 'True

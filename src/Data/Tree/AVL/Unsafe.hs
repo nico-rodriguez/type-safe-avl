@@ -1,14 +1,16 @@
+{-# OPTIONS_HADDOCK ignore-exports #-}
+
 {-|
-Module      : W
-Description : 
+Module      : Data.Tree.AVL.Unsafe
+Description : Unsafe AVL trees
 Copyright   : (c) Nicolás Rodríguez, 2021
 License     : GPL-3
 Maintainer  : Nicolás Rodríguez
 Stability   : experimental
 Portability : POSIX
 
-Here is a longer description of this module, containing some
-commentary with @some markup@.
+Implementation of unsafe AVL trees. These trees have no type level
+information useful for compile time verification of invariants.
 -}
 
 {-# LANGUAGE DataKinds           #-}
@@ -36,20 +38,27 @@ import           Prelude       (Int, Maybe (Just, Nothing),
                                 Ordering (EQ, GT, LT), Show,
                                 compare, max, ($), (+), (-))
 
-
+-- | Nodes for unsafe `AVL` trees. They only hold information
+-- at the value level: some value of kind `Type` and a key
+-- of type `Int`.
 data Node :: Type where
   Node :: Show a => Int -> a -> Node
 deriving stock instance Show Node
 
+-- | Constructor of unsafe `AVL` trees.
 data AVL :: Type where
   E :: AVL
   F :: AVL -> Node -> AVL -> AVL
   deriving stock Show
 
+-- | Constructor of unsafe `AlmostAVL` trees.
+-- These trees have left and right `AVL` sub trees,
+-- but the overall tree may not be balanced.
 data AlmostAVL :: Type where
   FF :: AVL -> Node -> AVL -> AlmostAVL
   deriving stock Show
 
+-- | Empty `AVL` tree.
 emptyAVL :: AVL
 emptyAVL = E
 
@@ -60,14 +69,17 @@ height (F l _ r) = 1 + max (height l) (height r)
 
 
 -- | Data type that represents the state of unbalance of the sub trees:
--- | - LeftUnbalanced: height(left sub tree) = height(right sub tree) + 2.
--- | - RightUnbalanced: height(right sub tree) = height(leftt sub tree) + 2.
--- | - NotUnbalanced: tree is not unbalanced.
+--
+-- [`LeftUnbalanced`] @height(left sub tree) = height(right sub tree) + 2@.
+--
+-- [`RightUnbalanced`] @height(right sub tree) = height(left sub tree) + 2@.
+--
+-- [`NotUnbalanced`] tree is not unbalanced.
 data US = LeftUnbalanced | RightUnbalanced | NotUnbalanced
 
 -- | Check from two natural numbers,
--- | that represent the heights of some left and right sub trees,
--- | if the tree is balanced or if some of those sub trees is unbalanced.
+-- that represent the heights of some left and right sub trees,
+-- if the tree is balanced or if some of those sub trees is unbalanced.
 unbalancedState :: Int -> Int -> US
 unbalancedState 0 0   = NotUnbalanced
 unbalancedState 1 0   = NotUnbalanced
@@ -78,14 +90,17 @@ unbalancedState h1 h2 = unbalancedState (h1-1) (h2-1)
 
 
 -- | Data type that represents the state of balance of the sub trees in a balanced tree:
--- | - LeftHeavy: height(left sub tree) = height(right sub tree) + 1.
--- | - RightHeavy: height(right sub tree) = height(leftt sub tree) + 1.
--- | - Balanced: height(left sub tree) = height(right sub tree).
+--
+-- [`LeftHeavy`] @height(left sub tree) = height(right sub tree) + 1@.
+--
+-- [`RightHeavy`] @height(right sub tree) = height(left sub tree) + 1@.
+--
+-- [`Balanced`] @height(left sub tree) = height(right sub tree)@.
 data BS = LeftHeavy | RightHeavy | Balanced
 
 -- | Check from two natural numbers,
--- | that represent the heights of some left and right sub trees,
--- | if some of those sub trees have height larger than the other.
+-- that represent the heights of some left and right sub trees,
+-- if some of those sub trees have height larger than the other.
 balancedState :: Int -> Int -> BS
 balancedState 0 0   = Balanced
 balancedState 1 0   = LeftHeavy
@@ -107,22 +122,22 @@ balance' t@(FF _ _ (F rl _ rr)) RightUnbalanced =
 
 -- | Apply a rotation to a tree.
 rotate :: AlmostAVL -> US -> BS -> AVL
--- | Left-Left case (Right rotation)
+-- Left-Left case (Right rotation)
 rotate (FF (F ll lnode lr) node r) LeftUnbalanced LeftHeavy = F ll lnode (F lr node r)
 rotate (FF (F ll lnode lr) node r) LeftUnbalanced Balanced  = F ll lnode (F lr node r)
--- | Right-Right case (Left rotation)
+-- Right-Right case (Left rotation)
 rotate (FF l node (F rl rnode rr)) RightUnbalanced RightHeavy = F (F l node rl) rnode rr
 rotate (FF l node (F rl rnode rr)) RightUnbalanced Balanced   = F (F l node rl) rnode rr
--- | Left-Right case (First left rotation, then right rotation)
+-- Left-Right case (First left rotation, then right rotation)
 rotate (FF (F ll lnode (F lrl lrnode lrr)) node r) LeftUnbalanced RightHeavy =
   F (F ll lnode lrl) lrnode (F lrr node r)
--- | Right-Left case (First right rotation, then left rotation)
+-- Right-Left case (First right rotation, then left rotation)
 rotate (FF l node (F (F rll rlnode rlr) rnode rr)) RightUnbalanced LeftHeavy =
   F (F l node rll) rlnode (F rlr rnode rr)
 
 
 -- | Insert a new key and value.
--- | If the key is already present in the tree, update the value.
+-- If the key is already present in the tree, update the value.
 insertAVL :: Show a => Int -> a -> AVL -> AVL
 insertAVL x  v  E                    = F E (Node x v) E
 insertAVL x' v' t@(F _ (Node x _) _) = insertAVL' (Node x' v') t (compare x' x)
@@ -138,8 +153,8 @@ insertAVL' n'@(Node x _) (F l n r@(F _ (Node rn _) _)) GT =
 
 
 -- | Lookup the given key in the tree.
--- | It returns Nothing if tree is empty
--- | or if it doesn't have the key.
+-- It returns `Nothing` if tree is empty
+-- or if it doesn't have the key.
 lookupAVL :: Int -> AVL -> Maybe Node
 lookupAVL _ E                    = Nothing
 lookupAVL x t@(F _ (Node n _) _) = lookupAVL' x t (compare x n)
@@ -162,7 +177,7 @@ maxKeyDelete (F l node r@F{}) =
 
 
 -- | Get the node with maximum key value.
--- | It returns Nothing if tree is empty.
+-- It returns `Nothing` if tree is empty.
 maxNode :: AVL -> Maybe Node
 maxNode E                       = Nothing
 maxNode (F _ n E)               = Just n
@@ -170,7 +185,7 @@ maxNode (F _ (Node _ _) r@F{})  = maxNode r
 
 
 -- | Delete the node with the given key.
--- | If the key is not in the tree, return the same tree.
+-- If the key is not in the tree, return the same tree.
 deleteAVL :: Int -> AVL -> AVL
 deleteAVL _ E                    = E
 deleteAVL x t@(F _ (Node n _) _) = deleteAVL' x t (compare x n)

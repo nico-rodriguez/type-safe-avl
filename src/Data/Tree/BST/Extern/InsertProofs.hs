@@ -56,7 +56,7 @@ instance (o ~ CmpNat x n,
 -- | Prove that inserting a node with key 'x' and element value 'a'
 -- in a BST tree preserves the BST condition, given that the comparison between
 -- 'x' and the root key of the tree equals 'o'.
--- The `BST` invariant was already check when `proofIsBSTInsert` was called before.
+-- The `BST` condition was already checked when `proofIsBSTInsert` was called before.
 -- The 'o' parameter guides the proof.
 class ProofIsBSTInsert' (x :: Nat) (a :: Type) (t :: Tree) (o :: Ordering) where
   proofIsBSTInsert' :: Node x a -> IsBSTT t -> Proxy o -> IsBSTT (Insert' x a t o)

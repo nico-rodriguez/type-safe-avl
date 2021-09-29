@@ -54,9 +54,9 @@ instance (o ~ CmpNat x n,
   proofIsBSTDelete px tIsBST = proofIsBSTDelete' px tIsBST (Proxy::Proxy o)
 
 -- | Prove that deleting a node with key 'x'
--- in a `BST` tree preserves BST condition, given that the comparison between
+-- in a `BST` tree preserves `BST` restrictions, given that the comparison between
 -- 'x' and the root key of the tree equals 'o'.
--- The BST invariant was already check when `proofIsBSTDelete` was called before.
+-- The `BST` restrictions were already checked when `proofIsBSTDelete` was called before.
 -- The 'o' parameter guides the proof.
 class ProofIsBSTDelete' (x :: Nat) (t :: Tree) (o :: Ordering) where
   proofIsBSTDelete' :: Proxy x -> IsBSTT t -> Proxy o -> IsBSTT (Delete' x t o)
@@ -177,7 +177,7 @@ instance (r ~ 'ForkTree rl (Node rn ra) rr, o ~ CmpNat x rn,
 
 
 -- | Prove that deleting the node with maximum key value
--- in a `BST` 't' preserves the BST invariant.
+-- in a `BST` 't' preserves the BST restrictions.
 -- This proof is needed for the delete operation.
 class ProofMaxKeyDeleteIsBST (t :: Tree) where
   proofMaxKeyDeleteIsBST :: IsBSTT t -> IsBSTT (MaxKeyDelete t)
@@ -196,7 +196,7 @@ instance (l ~ 'ForkTree ll (Node ln la) lr, r ~ 'ForkTree rl (Node rn ra) rr,
 
 -- | Prove that in a tree 't' which verifies that @GtN t n ~ 'True@,
 -- the maximum key of 't' is also greater than 'n'.
--- This proof is needed for the delete operation.
+-- This proof is needed for the `delete` operation.
 class ProofGTMaxKey (t :: Tree) (n :: Nat) where
   proofGTMaxKey :: (GtN t n ~ 'True) =>
     IsBSTT t -> Proxy n -> CmpNat (MaxKey t) n :~: 'GT
@@ -212,7 +212,7 @@ instance (r ~ 'ForkTree rl (Node rn ra) rr,
 
 -- | Prove that in a tree 't' which verifies that @GtN t n ~ 'True@,
 -- the tree resulting from the removal of the maximum key of 't' preserves the `GtN` invariant.
--- This proof is needed for the delete operation.
+-- This proof is needed for the `delete` operation.
 class ProofGtNMaxKeyDelete (t :: Tree) (n :: Nat) where
   proofGtNMaxKeyDelete :: (GtN t n ~ 'True) =>
     IsBSTT t -> Proxy n -> GtN (MaxKeyDelete t) n :~: 'True
@@ -228,7 +228,7 @@ instance (r ~ 'ForkTree rl (Node rn ra) rr,
 
 -- | Prove that in a tree 't' which verifies that @LtN t n ~ 'True@,
 -- the maximum key of 't' is also less than 'n'.
--- This proof is needed for the delete operation.
+-- This proof is needed for the `delete` operation.
 class ProofLTMaxKey (t :: Tree) (n :: Nat) where
   proofLTMaxKey :: (LtN t n ~ 'True) =>
     IsBSTT t -> Proxy n -> CmpNat (MaxKey t) n :~: 'LT
@@ -244,7 +244,7 @@ instance (r ~ 'ForkTree rl (Node rn ra) rr,
 
 -- | Prove that in a tree 't' which verifies that @LtN t n ~ 'True@,
 -- the tree resulting from the removal of the maximum key of 't' preserves the `LtN` invariant.
--- This proof is needed for the delete operation.
+-- This proof is needed for the `delete` operation.
 class ProofLtNMaxKeyDelete (t :: Tree) (n :: Nat) where
   proofLtNMaxKeyDelete :: (LtN t n ~ 'True) =>
     IsBSTT t -> Proxy n -> LtN (MaxKeyDelete t) n :~: 'True

@@ -38,7 +38,7 @@ import           Prelude                          (Bool (True),
                                                    Ordering (EQ, GT, LT))
 
 
--- | This class provides the functionality to lookup a node with key 'x'
+-- | This type class provides the functionality to lookup a node with key 'x'
 -- in a non empty `BST` 't'.
 -- The lookup is defined at the value level and the type level.
 -- It's necessary to know the type 'a' of the value stored in node with key 'x'
@@ -51,7 +51,7 @@ instance (a ~ LookupValueType x ('ForkTree l (Node n a1) r), o ~ CmpNat x n,
   Lookupable x a ('ForkTree l (Node n a1) r) where
   lookup x t = lookup' x t (Proxy::Proxy o)
 
--- | This class provides the functionality to lookup a node with key 'x'
+-- | This type class provides the functionality to lookup a node with key 'x'
 -- in a non empty `BST` 't'.
 -- It's only used by the 'Lookupable' class and it has one extra parameter 'o',
 -- which is the type level comparison of 'x' with the key value of the root node.

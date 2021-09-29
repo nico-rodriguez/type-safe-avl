@@ -1,14 +1,17 @@
+{-# OPTIONS_HADDOCK ignore-exports #-}
+
 {-|
-Module      : W
-Description : 
+Module      : Data.Tree.AVL.Intern.Insert
+Description : Insertion algorithm (with proofs) over internalist AVL trees
 Copyright   : (c) Nicolás Rodríguez, 2021
 License     : GPL-3
 Maintainer  : Nicolás Rodríguez
 Stability   : experimental
 Portability : POSIX
 
-Here is a longer description of this module, containing some
-commentary with @some markup@.
+Implementation of the insertion algorithm over internalist AVL trees,
+along with the necessary proofs to ensure (at compile time) that the
+key ordering and height balancing still holds.
 -}
 
 {-# LANGUAGE DataKinds             #-}
@@ -43,9 +46,9 @@ import           Prelude                          (Bool (True), Ordering (EQ, GT
 
 
 -- | Prove that inserting a node with key 'x' (lower than 'n') and element value 'a'
--- | in an AVL 't' which verifies 'LtN t n ~ 'True' preserves the LtN invariant,
--- | given that the comparison between 'x' and the root key of the tree equals 'o'.
--- | The 'o' parameter guides the proof.
+-- in an `AVL` 't' which verifies @LtN t n ~ 'True@ preserves the `LtN` invariant,
+-- given that the comparison between 'x' and the root key of the tree equals 'o'.
+-- The 'o' parameter guides the proof.
 class ProofLtNInsert' (x :: Nat) (a :: Type) (t :: Tree) (n :: Nat) (o :: Ordering) where
   proofLtNInsert' :: (CmpNat x n ~ 'LT, LtN t n ~ 'True) =>
     Node x a -> AVL t -> Proxy n -> Proxy o -> LtN (Insert x a t) n :~: 'True
@@ -89,9 +92,9 @@ instance (r ~ 'ForkTree rl (Node rn rna) rr, o ~ CmpNat x rn,
         r' = insert node r
 
 -- | Prove that inserting a node with key 'x' (greater than 'n') and element value 'a'
--- | in an AVL 't' which verifies 'GtN t n ~ 'True' preserves the GtN invariant,
--- | given that the comparison between 'x' and the root key of the tree equals 'o'.
--- | The 'o' parameter guides the proof.
+-- in an `AVL` 't' which verifies @GtN t n ~ 'True@ preserves the `GtN` invariant,
+-- given that the comparison between 'x' and the root key of the tree equals 'o'.
+-- The 'o' parameter guides the proof.
 class ProofGtNInsert' (x :: Nat) (a :: Type) (t :: Tree) (n :: Nat) (o :: Ordering) where
   proofGtNInsert' :: (CmpNat x n ~ 'GT, GtN t n ~ 'True) =>
     Node x a -> AVL t -> Proxy n -> Proxy o -> GtN (Insert x a t) n :~: 'True
@@ -136,10 +139,10 @@ instance (r ~ 'ForkTree rl (Node rn rna) rr, o ~ CmpNat x rn,
         r' = insert node r
 
 
--- | This class provides the functionality to insert a node with key 'x' and value type 'a'
--- | in an AVL 't'.
--- | The insertion is defined at the value level and the type level.
--- | The returned tree verifies the BST/AVL invariant.
+-- | This type class provides the functionality to insert a node with key 'x' and value type 'a'
+-- in an `AVL` 't'.
+-- The insertion is defined at the value level and the type level.
+-- The returned tree verifies the `BST`/`AVL` restrictions.
 class Insertable (x :: Nat) (a :: Type) (t :: Tree) where
   type Insert (x :: Nat) (a :: Type) (t :: Tree) :: Tree
   insert :: Node x a -> AVL t -> AVL (Insert x a t)
@@ -155,11 +158,11 @@ instance (o ~ CmpNat x n,
   type Insert x a ('ForkTree l (Node n a1) r) = Insert' x a ('ForkTree l (Node n a1) r) (CmpNat x n)
   insert node t = insert' node t (Proxy::Proxy o)
 
--- | This class provides the functionality to insert a node with key 'x' and value type 'a'
--- | in a non empty AVL 't'.
--- | It's only used by the 'Insertable' class and it has one extra parameter 'o',
--- | which is the type level comparison of 'x' with the key value of the root node.
--- | The 'o' parameter guides the insertion.
+-- | This type class provides the functionality to insert a node with key 'x' and value type 'a'
+-- in a non empty `AVL` 't'.
+-- It's only used by the 'Insertable' class and it has one extra parameter 'o',
+-- which is the type level comparison of 'x' with the key value of the root node.
+-- The 'o' parameter guides the insertion.
 class Insertable' (x :: Nat) (a :: Type) (t :: Tree) (o :: Ordering) where
   type Insert' (x :: Nat) (a :: Type) (t :: Tree) (o :: Ordering) :: Tree
   insert' :: Node x a -> AVL t -> Proxy o -> AVL (Insert' x a t o)

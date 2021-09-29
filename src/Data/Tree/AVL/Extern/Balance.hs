@@ -1,14 +1,15 @@
+{-# OPTIONS_HADDOCK ignore-exports #-}
+
 {-|
-Module      : W
-Description : 
+Module      : Data.Tree.AVL.Extern.Balance
+Description : Balancing algorithm over ITree trees
 Copyright   : (c) Nicolás Rodríguez, 2021
 License     : GPL-3
 Maintainer  : Nicolás Rodríguez
 Stability   : experimental
 Portability : POSIX
 
-Here is a longer description of this module, containing some
-commentary with @some markup@.
+Implementation of the balancing algorithm over ITree trees for externalist AlmostAVL trees.
 -}
 
 {-# LANGUAGE DataKinds             #-}
@@ -38,10 +39,10 @@ import           Data.Tree.Node           (Node)
 import           Prelude                  ()
 
 
--- | This class provides the functionality to balance
--- | a tree 't' without checking any structural invariant (BST/AVL).
--- | The insertion is defined at the value level and the type level;
--- | the checking of the BST/AVL invariant is performed after the insertion.
+-- | This type class provides the functionality to balance
+-- a tree 't' without checking any structural invariant (key ordering or height balance).
+-- The insertion is defined at the value level and the type level;
+-- the verification of the `BST`/`AVL` restrictions is performed after the insertion.
 class Balanceable (t :: Tree) where
   type Balance (t :: Tree) :: Tree
   balance :: ITree t -> ITree (Balance t)
@@ -54,11 +55,10 @@ instance (us ~ UnbalancedState (Height l) (Height r),
   type Balance ('ForkTree l (Node n a) r) = Balance' ('ForkTree l (Node n a) r) (UnbalancedState (Height l) (Height r))
   balance t = balance' t (Proxy::Proxy us)
 
--- | This class provides the functionality to balance
--- | a tree 't' without checking any structural invariant (BST/AVL).
--- | It's only used by the 'Balanceable' class and it has one extra parameter 'us',
--- | which is the Unbalance State of the two sub trees of 't'.
--- | The 'us' parameter guides the insertion.
+-- | This type class provides the functionality to balance
+-- a tree 't' without checking any structural invariant (key ordering or height balance).
+-- It's only used by the 'Balanceable' class and it has one extra parameter 'us',
+-- which is the `UnbalancedState` of the two sub trees of 't'.
 class Balanceable' (t :: Tree) (us :: US) where
   type Balance' (t :: Tree) (us :: US) :: Tree
   balance' :: ITree t -> Proxy us -> ITree (Balance' t us)
@@ -79,14 +79,14 @@ instance (bs ~ BalancedState (Height rl) (Height rr),
   balance' t pus = rotate t pus (Proxy::Proxy bs)
 
 
--- | This class provides the functionality to apply a rotation to
--- | a tree 't' without checking any structural invariant (BST/AVL).
--- | The rotation is defined at the value level and the type level;
--- | the checking of the BST/AVL invariant is performed after the insertion.
+-- | This type class provides the functionality to apply a rotation to
+-- a tree 't' without checking any structural invariant (key ordering or height balance).
+-- The rotation is defined at the value level and the type level;
+-- the verification of the `BST`/`AVL` restrictions is performed after the insertion.
 class Rotateable (t :: Tree) (us :: US) (bs :: BS) where
   type Rotate (t :: Tree) (us :: US) (bs :: BS) :: Tree
   rotate :: ITree t -> Proxy us -> Proxy bs -> ITree (Rotate t us bs)
--- | Left-Left case (Right rotation)
+-- Left-Left case (Right rotation)
 instance Rotateable ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a) r) 'LeftUnbalanced 'LeftHeavy where
   type Rotate ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a) r) 'LeftUnbalanced 'LeftHeavy =
     ('ForkTree ll (Node ln la) ('ForkTree lr (Node n a) r))
@@ -95,7 +95,7 @@ instance Rotateable ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a) r) 'Lef
   type Rotate ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a) r) 'LeftUnbalanced 'Balanced =
     ('ForkTree ll (Node ln la) ('ForkTree lr (Node n a) r))
   rotate (ForkITree (ForkITree ll lnode lr) node r) _ _ = ForkITree ll lnode (ForkITree lr node r)
--- | Right-Right case (Left rotation)
+-- Right-Right case (Left rotation)
 instance Rotateable ('ForkTree l (Node n a) ('ForkTree rl (Node rn ra) rr)) 'RightUnbalanced 'RightHeavy where
   type Rotate ('ForkTree l (Node n a) ('ForkTree rl (Node rn ra) rr)) 'RightUnbalanced 'RightHeavy =
     ('ForkTree ('ForkTree l (Node n a) rl) (Node rn ra) rr)
@@ -104,13 +104,13 @@ instance Rotateable ('ForkTree l (Node n a) ('ForkTree rl (Node rn ra) rr)) 'Rig
   type Rotate ('ForkTree l (Node n a) ('ForkTree rl (Node rn ra) rr)) 'RightUnbalanced 'Balanced =
     ('ForkTree ('ForkTree l (Node n a) rl) (Node rn ra) rr)
   rotate (ForkITree l node (ForkITree rl rnode rr)) _ _ = ForkITree (ForkITree l node rl) rnode rr
--- | Left-Right case (First left rotation, then right rotation)
+-- Left-Right case (First left rotation, then right rotation)
 instance Rotateable ('ForkTree ('ForkTree ll (Node ln la) ('ForkTree lrl (Node lrn lra) lrr)) (Node n a) r) 'LeftUnbalanced 'RightHeavy where
   type Rotate ('ForkTree ('ForkTree ll (Node ln la) ('ForkTree lrl (Node lrn lra) lrr)) (Node n a) r) 'LeftUnbalanced 'RightHeavy =
     ('ForkTree ('ForkTree ll (Node ln la) lrl) (Node lrn lra) ('ForkTree lrr (Node n a) r))
   rotate (ForkITree (ForkITree ll lnode (ForkITree lrl lrnode lrr)) node r) _ _ =
     ForkITree (ForkITree ll lnode lrl) lrnode (ForkITree lrr node r)
--- | Right-Left case (First right rotation, then left rotation)
+-- Right-Left case (First right rotation, then left rotation)
 instance Rotateable ('ForkTree l (Node n a) ('ForkTree ('ForkTree rll (Node rln rla) rlr) (Node rn ra) rr)) 'RightUnbalanced 'LeftHeavy where
   type Rotate ('ForkTree l (Node n a) ('ForkTree ('ForkTree rll (Node rln rla) rlr) (Node rn ra) rr)) 'RightUnbalanced 'LeftHeavy =
     ('ForkTree ('ForkTree l (Node n a) rll) (Node rln rla) ('ForkTree rlr (Node rn ra) rr))

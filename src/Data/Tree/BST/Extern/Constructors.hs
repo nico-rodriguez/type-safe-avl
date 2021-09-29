@@ -8,7 +8,7 @@ Stability   : experimental
 Portability : POSIX
 
 Implementation of the constructor of type safe externalist BST
-trees and instance definition for the @Show@ type class.
+trees and instance definition for the `Show` type class.
 -}
 
 {-# LANGUAGE DataKinds          #-}
@@ -46,7 +46,7 @@ instance Show (BST t) where
 -- | Proof term which shows that `t` is a `BST`.
 -- The restrictions on the constructor `ForkIsBSTT`
 -- are verified at compile time.
--- Given two proofs of `BST` and an arbitrary node, it tests time wether the key
+-- Given two proofs of `BST` and an arbitrary node, it tests wether the key
 -- of the node verifies the `LtN` and `GtN` invariants.
 -- Notice that this is all that's needed to assert that the new tree is a `BST`,
 -- since, both left and right proofs are evidence of the key ordering in both
@@ -69,6 +69,7 @@ instance (IsBSTC l, IsBSTC r, LtN l n ~ 'True, GtN r n ~ 'True) =>
 
 
 -- | Given an `ITree`, compute the proof term `IsBSTT`, through the
--- type class `IsBSTC`, in order to check if it is a `BST`.
+-- type class `IsBSTC`, in order to check if it is a `BST` tree.
+-- This is the fully externalist constructor for `BST` trees.
 mkBST :: (IsBSTC t) => ITree t -> BST t
 mkBST t = BST t isBSTT
