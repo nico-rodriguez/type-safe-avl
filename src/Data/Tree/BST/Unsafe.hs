@@ -1,3 +1,5 @@
+{-# OPTIONS_HADDOCK ignore-exports #-}
+
 {-|
 Module      : Data.Tree.BST.Unsafe
 Description : Unsafe BST trees

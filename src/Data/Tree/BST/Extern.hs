@@ -1,6 +1,6 @@
 {-|
 Module      : Data.Tree.BST.Extern
-Description : Interface for externalist type safe BSTs
+Description : Interface for externalist type safe BST trees
 Copyright   : (c) Nicolás Rodríguez, 2021
 License     : GPL-3
 Maintainer  : Nicolás Rodríguez
@@ -8,7 +8,7 @@ Stability   : experimental
 Portability : POSIX
 
 Interface for the main functions over type safe BST trees
-implemented with the internalist approach.
+implemented with the externalist approach.
 -}
 
 {-# LANGUAGE DataKinds             #-}

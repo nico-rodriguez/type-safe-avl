@@ -1,6 +1,6 @@
 {-|
 Module      : Data.Tree.BST.FullExtern
-Description : Interface for fully externalist type safe BSTs
+Description : Interface for fully externalist type safe BST trees
 Copyright   : (c) Nicolás Rodríguez, 2021
 License     : GPL-3
 Maintainer  : Nicolás Rodríguez

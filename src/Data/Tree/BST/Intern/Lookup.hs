@@ -1,14 +1,16 @@
+{-# OPTIONS_HADDOCK ignore-exports #-}
+
 {-|
-Module      : W
-Description : 
+Module      : Data.Tree.BST.Intern.Lookup
+Description : Lookup algorithm over internalist BST trees
 Copyright   : (c) Nicolás Rodríguez, 2021
 License     : GPL-3
 Maintainer  : Nicolás Rodríguez
 Stability   : experimental
 Portability : POSIX
 
-Here is a longer description of this module, containing some
-commentary with @some markup@.
+Implementation of the lookup algorithm over internalist BST trees.
+Since the lookup does not modify the tree, there is no need for proofs.
 -}
 
 {-# LANGUAGE DataKinds             #-}
@@ -37,10 +39,10 @@ import           Prelude                          (Bool (True),
 
 
 -- | This class provides the functionality to lookup a node with key 'x'
--- | in a non empty BST 't'.
--- | The lookup is defined at the value level and the type level.
--- | It's necessary to know the type 'a' of the value stored in node with key 'x'
--- | so that the type of the value returned by 'lookup' may be specified.
+-- in a non empty BST 't'.
+-- The lookup is defined at the value level and the type level.
+-- It's necessary to know the type 'a' of the value stored in node with key 'x'
+-- so that the type of the value returned by 'lookup' may be specified.
 class Lookupable (x :: Nat) (a :: Type) (t :: Tree) where
   lookup :: (t ~ 'ForkTree l (Node n a1) r, Member x t ~ 'True) =>
     Proxy x -> BST t -> a
@@ -50,10 +52,10 @@ instance (a ~ LookupValueType x ('ForkTree l (Node n a1) r), o ~ CmpNat x n,
   lookup x t = lookup' x t (Proxy::Proxy o)
 
 -- | This class provides the functionality to lookup a node with key 'x'
--- | in a non empty BST 't'.
--- | It's only used by the 'Lookupable' class and it has one extra parameter 'o',
--- | which is the type level comparison of 'x' with the key value of the root node.
--- | The 'o' parameter guides the lookup.
+-- in a non empty BST 't'.
+-- It's only used by the 'Lookupable' class and it has one extra parameter 'o',
+-- which is the type level comparison of 'x' with the key value of the root node.
+-- The 'o' parameter guides the lookup.
 class Lookupable' (x :: Nat) (a :: Type) (t :: Tree) (o :: Ordering) where
   lookup' :: Proxy x -> BST t -> Proxy o -> a
 instance Lookupable' x a ('ForkTree l (Node n a) r) 'EQ where

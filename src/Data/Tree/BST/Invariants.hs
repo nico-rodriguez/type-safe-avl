@@ -1,5 +1,5 @@
 {-|
-Module      : Data.Tree.BST.Invariant
+Module      : Data.Tree.BST.Invariants
 Description : Type level BST invariants
 Copyright   : (c) Nicolás Rodríguez, 2021
 License     : GPL-3

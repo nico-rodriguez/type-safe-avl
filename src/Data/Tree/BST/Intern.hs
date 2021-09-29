@@ -1,6 +1,6 @@
 {-|
 Module      : Data.Tree.BST.Intern
-Description : Interface for internalist type safe BSTs
+Description : Interface for internalist type safe BST trees
 Copyright   : (c) Nicolás Rodríguez, 2021
 License     : GPL-3
 Maintainer  : Nicolás Rodríguez

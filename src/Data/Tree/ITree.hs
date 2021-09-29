@@ -17,8 +17,8 @@ Definition of the trees used at the type level for the type safe BST and AVL tre
 {-# LANGUAGE Safe           #-}
 
 module Data.Tree.ITree (
-  Tree(..),
-  ITree(..))
+  Tree(EmptyTree,ForkTree),
+  ITree(EmptyITree,ForkITree))
 where
 
 import           Data.Kind      (Type)
