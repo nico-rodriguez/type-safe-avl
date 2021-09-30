@@ -18,7 +18,7 @@ version:            0.1.0.0
 
 -- A short (one-line) description of the package.
 synopsis:
-    Implementation of type safe BST and AVL trees, following four different approaches: unsafe, full externalist, externalist and internalist.
+    Type safe BST and AVL trees
 
 -- A longer description of the package.
 -- description:
@@ -41,7 +41,7 @@ license-file:       LICENSE
 author:             Nicolás Rodríguez
 
 -- An email address to which users can send suggestions, bug reports, and patches.
-maintainer:         18080513+nico-rodriguez@users.noreply.github.com
+maintainer:         Nicolás Rodríguez
 
 -- A copyright notice.
 -- copyright:
