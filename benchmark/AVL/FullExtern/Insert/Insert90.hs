@@ -1,3 +1,5 @@
+{-# OPTIONS_HADDOCK hide, prune #-}
+
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE Safe      #-}
 
