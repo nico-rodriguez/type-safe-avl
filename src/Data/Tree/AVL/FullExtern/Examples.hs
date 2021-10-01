@@ -16,6 +16,7 @@ module Data.Tree.AVL.FullExtern.Examples where
 import           Data.Proxy               (Proxy (Proxy))
 import           Data.Tree.AVL.FullExtern (AVL (AVL), mkAVL, ITree (EmptyITree),
                                            delete, insert, lookup)
+import           Data.Tree.ITree          (ITree(EmptyITree,ForkITree))
 import           Data.Tree.Node           (mkNode)
 import           Prelude                  (Bool (False, True), Float, Int, ($))
 
@@ -44,8 +45,14 @@ l1' = case avl of
     AVL t _ _ -> lookup p6 t
 
 -- | Error: key 1 is not in the tree avl
--- err = case avl of
---     AVL t -> lookup p1 t
+-- avlError = mkAVL $
+--   ForkITree (ForkITree
+--             (ForkITree
+--               EmptyITree (mkNode p0 'a') EmptyITree)
+--               (mkNode p7 4)
+--               EmptyITree)
+--             (mkNode p4 'f')
+--             EmptyITree
 
 avlt2 = case avl of
   AVL t _ _ -> mkAVL t'

@@ -28,6 +28,7 @@ import           Data.Tree.ITree    (Tree (EmptyTree, ForkTree))
 import           Data.Tree.Node     (Node)
 import           Data.Type.Bool     (If)
 import           Data.Type.Equality (type (==))
+import           GHC.TypeLits       (TypeError, ErrorMessage(Text, ShowType, (:<>:)))
 import           GHC.TypeNats       (CmpNat, Nat)
 import           Prelude            (Bool (False, True), Ordering (EQ, LT))
 
@@ -35,7 +36,6 @@ import           Prelude            (Bool (False, True), Ordering (EQ, LT))
 -- | Type family to test wether there is a node in the tree 't' with key 'x'.
 -- | It assumes that 't' is a BST in order to perform the search.
 type family Member (x :: Nat) (t :: Tree) :: Bool where
-  Member _x 'EmptyTree = 'False
   Member x ('ForkTree l (Node n _a) r) =
     (If (CmpNat x n == 'EQ)
       'True
@@ -44,6 +44,7 @@ type family Member (x :: Nat) (t :: Tree) :: Bool where
         (Member x r)
       )
     )
+  Member x 'EmptyTree = TypeError (Text "Key " :<>: ShowType x :<>: Text " not found!")
 
 -- | Type family to search for the type of the value stored with key 'x' in a tree 't'.
 -- | It assumes that 't' is a BST and that 'x' is a member of 't' in order to perform the search
@@ -57,3 +58,4 @@ type family LookupValueType (x :: Nat) (t :: Tree) :: Type where
         (LookupValueType x r)
       )
     )
+  LookupValueType x _t = TypeError (Text "Key " :<>: ShowType x :<>: Text " not found!")

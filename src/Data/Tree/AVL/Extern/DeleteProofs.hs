@@ -266,7 +266,7 @@ instance (GtN l n ~ 'True) =>
   ProofGtNMaxKeyDelete ('ForkTree l (Node n1 a) 'EmptyTree) n where
   proofGtNMaxKeyDelete _ _ = Refl
 instance (r ~ 'ForkTree rl (Node rn ra) rr,
-  GtN l n ~ 'True, CmpNat n1 n ~ 'GT,
+  GtN l n ~ 'True, GtN r n ~ 'True,
   MaxKeyDeletable r,
   ProofGtNMaxKeyDelete r n, ProofGtNMaxKeyDelete r n1, ProofMaxKeyDeleteIsBST r,
   ProofGtNBalance ('ForkTree l (Node n1 a) (MaxKeyDelete r)) n) =>

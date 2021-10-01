@@ -16,8 +16,11 @@ module Data.Tree.BST.FullExtern.Examples where
 import           Data.Proxy               (Proxy (Proxy))
 import           Data.Tree.BST.FullExtern (mkBST, BST (BST), ITree (EmptyITree),
                                            delete, insert, lookup)
+import           Data.Tree.ITree          (ITree(EmptyITree,ForkITree))
 import           Data.Tree.Node           (mkNode)
 import           Prelude                  (Bool (False, True), Float, Int, ($))
+
+
 
 
 p0 = Proxy :: Proxy 0
@@ -39,10 +42,15 @@ bst = mkBST t
         insert (mkNode p5 ([1,2,3]::[Int])) $ insert (mkNode p0 (1.8::Float)) $
         insert (mkNode p7 [False]) emptyTree
 
+-- bstError = mkBST $
+--   ForkITree (ForkITree EmptyITree (mkNode p7 4) EmptyITree)
+--             (mkNode p4 'f')
+--             EmptyITree
+
 l1 = case bst of
     BST t _ -> lookup p6 t
 
--- | Error: key 1 is not in the tree bst
+-- -- | Error: key 1 is not in the tree bst
 -- err = case bst of
 --     BST t _ -> lookup p1 t
 

@@ -179,30 +179,28 @@ class ProofLtNRotate (t :: Tree) (n :: Nat) (us :: US) (bs :: BS) where
     AlmostAVL t -> Proxy n -> Proxy us -> Proxy bs -> LtN (Rotate t us bs) n :~: 'True
 
 -- Left-Left case (Right rotation)
-instance (LtN ('ForkTree ll (Node ln la) lr) n ~ 'True, LtN r n ~ 'True) =>
+instance (LtN ll n ~ 'True, CmpNat ln n ~ 'LT,  LtN lr n ~ 'True, LtN r n ~ 'True) =>
   ProofLtNRotate ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n1 a) r) n 'LeftUnbalanced 'LeftHeavy where
   proofLtNRotate _ _ _ _ = Refl
-instance (LtN ('ForkTree ll (Node ln la) lr) n ~ 'True, LtN r n ~ 'True) =>
+instance (LtN ll n ~ 'True, CmpNat ln n ~ 'LT,  LtN lr n ~ 'True, LtN r n ~ 'True) =>
   ProofLtNRotate ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n1 a) r) n 'LeftUnbalanced 'Balanced where
   proofLtNRotate _ _ _ _ = Refl
 
 -- Right-Right case (Left rotation)
-instance (CmpNat n1 n ~ 'LT, LtN ('ForkTree rl (Node rn ra) rr) n ~ 'True) =>
+instance (LtN l n ~ 'True, LtN rl n ~ 'True, CmpNat rn n ~ 'LT, LtN rr n ~ 'True) =>
   ProofLtNRotate ('ForkTree l (Node n1 a) ('ForkTree rl (Node rn ra) rr)) n 'RightUnbalanced 'RightHeavy where
   proofLtNRotate _ _ _ _ = Refl
-instance (CmpNat n1 n ~ 'LT, LtN ('ForkTree rl (Node rn ra) rr) n ~ 'True) =>
+instance (LtN l n ~ 'True, LtN rl n ~ 'True, CmpNat rn n ~ 'LT, LtN rr n ~ 'True) =>
   ProofLtNRotate ('ForkTree l (Node n1 a) ('ForkTree rl (Node rn ra) rr)) n 'RightUnbalanced 'Balanced where
   proofLtNRotate _ _ _ _ = Refl
 
 -- Left-Right case (First left rotation, then right rotation)
-instance (lr ~ 'ForkTree lrl (Node lrn lra) lrr, l ~ 'ForkTree ll (Node ln la) lr,
-  LtN r n ~ 'True, CmpNat ln n ~ 'LT, LtN lr n ~ 'True, CmpNat n1 n ~ 'LT) =>
+instance (LtN ll n ~ 'True, CmpNat ln n ~ 'LT, LtN lrl n ~ 'True, CmpNat lrn n ~ 'LT, LtN lrr n ~ 'True, LtN r n ~ 'True) =>
   ProofLtNRotate ('ForkTree ('ForkTree ll (Node ln la) ('ForkTree lrl (Node lrn lra) lrr)) (Node n1 a) r) n 'LeftUnbalanced 'RightHeavy where
   proofLtNRotate _ _ _ _ = Refl
 
 -- Right-Left case (First right rotation, then left rotation)
-instance (rl ~ 'ForkTree rll (Node rln rla) rlr, r ~ 'ForkTree rl (Node rn ra) rr,
-  LtN l n ~ 'True, CmpNat rn n ~ 'LT, LtN rl n ~ 'True, CmpNat n1 n ~ 'LT) =>
+instance (LtN l n ~ 'True, LtN rll n ~ 'True, CmpNat rln n ~ 'LT, LtN rlr n ~ 'True, CmpNat rn n ~ 'LT, LtN rr n ~ 'True) =>
   ProofLtNRotate ('ForkTree l (Node n1 a) ('ForkTree ('ForkTree rll (Node rln rla) rlr) (Node rn ra) rr)) n 'RightUnbalanced 'LeftHeavy where
   proofLtNRotate _ _ _ _ = Refl
 
@@ -240,29 +238,27 @@ class ProofGtNRotate (t :: Tree) (n :: Nat) (us :: US) (bs :: BS) where
     AlmostAVL t -> Proxy n -> Proxy us -> Proxy bs -> GtN (Rotate t us bs) n :~: 'True
 
 -- Left-Left case (Right rotation)
-instance (GtN ('ForkTree ll (Node ln la) lr) n ~ 'True, GtN r n ~ 'True) =>
+instance (GtN ll n ~ 'True, CmpNat ln n ~ 'GT, GtN lr n ~ 'True, GtN r n ~ 'True) =>
   ProofGtNRotate ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n1 a) r) n 'LeftUnbalanced 'LeftHeavy where
   proofGtNRotate _ _ _ _ = Refl
-instance (GtN ('ForkTree ll (Node ln la) lr) n ~ 'True, GtN r n ~ 'True) =>
+instance (GtN ll n ~ 'True, CmpNat ln n ~ 'GT, GtN lr n ~ 'True, GtN r n ~ 'True) =>
   ProofGtNRotate ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n1 a) r) n 'LeftUnbalanced 'Balanced where
   proofGtNRotate _ _ _ _ = Refl
 
 -- Right-Right case (Left rotation)
-instance (CmpNat n1 n ~ 'GT, GtN ('ForkTree rl (Node rn ra) rr) n ~ 'True) =>
+instance (GtN l n ~ 'True, GtN rl n ~ 'True, CmpNat rn n ~ 'GT, GtN rr n ~ 'True) =>
   ProofGtNRotate ('ForkTree l (Node n1 a) ('ForkTree rl (Node rn ra) rr)) n 'RightUnbalanced 'RightHeavy where
   proofGtNRotate _ _ _ _ = Refl
-instance (CmpNat n1 n ~ 'GT, GtN ('ForkTree rl (Node rn ra) rr) n ~ 'True) =>
+instance (GtN l n ~ 'True, GtN rl n ~ 'True, CmpNat rn n ~ 'GT, GtN rr n ~ 'True) =>
   ProofGtNRotate ('ForkTree l (Node n1 a) ('ForkTree rl (Node rn ra) rr)) n 'RightUnbalanced 'Balanced where
   proofGtNRotate _ _ _ _ = Refl
 
 -- Left-Right case (First left rotation, then right rotation)
-instance (lr ~ 'ForkTree lrl (Node lrn lra) lrr, l ~ 'ForkTree ll (Node ln la) lr,
-  GtN r n ~ 'True, CmpNat ln n ~ 'GT, GtN lr n ~ 'True, CmpNat n1 n ~ 'GT) =>
+instance (GtN ll n ~ 'True, CmpNat ln n ~ 'GT, GtN lrl n ~ 'True, CmpNat lrn n ~ 'GT, GtN lrr n ~ 'True, GtN r n ~ 'True) =>
   ProofGtNRotate ('ForkTree ('ForkTree ll (Node ln la) ('ForkTree lrl (Node lrn lra) lrr)) (Node n1 a) r) n 'LeftUnbalanced 'RightHeavy where
   proofGtNRotate _ _ _ _ = Refl
 
 -- Right-Left case (First right rotation, then left rotation)
-instance (rl ~ 'ForkTree rll (Node rln rla) rlr, r ~ 'ForkTree rl (Node rn ra) rr,
-  GtN l n ~ 'True, CmpNat rn n ~ 'GT, GtN rl n ~ 'True, CmpNat n1 n ~ 'GT) =>
+instance (GtN l n ~ 'True, GtN rll n ~ 'True, CmpNat rln n ~ 'GT, GtN rlr n ~ 'True, CmpNat rn n ~ 'GT, GtN rr n ~ 'True) =>
   ProofGtNRotate ('ForkTree l (Node n1 a) ('ForkTree ('ForkTree rll (Node rln rla) rlr) (Node rn ra) rr)) n 'RightUnbalanced 'LeftHeavy where
   proofGtNRotate _ _ _ _ = Refl

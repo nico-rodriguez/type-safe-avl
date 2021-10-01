@@ -30,6 +30,7 @@ module Data.Tree.AVL.Invariants (
 import           Data.Tree.ITree (Tree (EmptyTree, ForkTree))
 import           Data.Tree.Node  (Node)
 import           Data.Type.Bool  (If)
+import           GHC.TypeLits    (TypeError, ErrorMessage(Text, ShowType, (:<>:)))
 import           GHC.TypeNats    (type (+), type (-), type (<=?), Nat)
 import           Prelude         (Bool (False, True))
 
@@ -53,9 +54,9 @@ type family Height (t :: Tree) :: Nat where
 type family BalancedHeights (h1 :: Nat) (h2 :: Nat) :: Bool where
   BalancedHeights 0   0   = 'True
   BalancedHeights 1   0   = 'True
-  BalancedHeights _h1 0   = 'False
+  BalancedHeights _h1 0   = TypeError (Text "Some left sub tree has +2 greater height!")
   BalancedHeights 0   1   = 'True
-  BalancedHeights 0   _h2 = 'False
+  BalancedHeights 0   _h2 = TypeError (Text "Some right sub tree has +2 greater height!")
   BalancedHeights h1  h2  = BalancedHeights (h1-1) (h2-1)
 
 
