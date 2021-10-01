@@ -48,7 +48,7 @@ insertAVL x a = insert node
   where node = mkNode x a
 
 -- | Interface for the lookup algorithm in the internalist implementation for `AVL`.
-lookupAVL :: (t ~ 'ForkTree l (Node n a1) r, Member x t ~ 'True, Lookupable x a t) =>
+lookupAVL :: (t ~ 'ForkTree l (Node n a1) r, Member x t t ~ 'True, Lookupable x a t) =>
   Proxy x -> AVL t -> a
 lookupAVL = lookup
 

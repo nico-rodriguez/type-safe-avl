@@ -50,7 +50,7 @@ insertBST x a (BST t tIsBST) = BST (insert node t) (proofIsBSTInsert node tIsBST
   where node = mkNode x a
 
 -- | Interface for the lookup algorithm in the externalist implementation of `BST`.
-lookupBST :: (t ~ 'ForkTree l (Node n a1) r, Member x t ~ 'True, Lookupable x a t) =>
+lookupBST :: (t ~ 'ForkTree l (Node n a1) r, Member x t t ~ 'True, Lookupable x a t) =>
   Proxy x -> BST t -> a
 lookupBST p (BST t _) = lookup p t
 

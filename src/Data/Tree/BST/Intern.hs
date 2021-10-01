@@ -46,7 +46,7 @@ insertBST x a = insert node
   where node = mkNode x a
 
 -- | Interface for the lookup algorithm in the internalist implementation for `BST`.
-lookupBST :: (t ~ 'ForkTree l (Node n a1) r, Member x t ~ 'True, Lookupable x a t) =>
+lookupBST :: (t ~ 'ForkTree l (Node n a1) r, Member x t t ~ 'True, Lookupable x a t) =>
   Proxy x -> BST t -> a
 lookupBST = lookup
 

@@ -53,7 +53,7 @@ insertAVL x a (AVL t tIsBST tIsAVL) = AVL (insert node t) (proofIsBSTInsert node
   where node = mkNode x a
 
 -- | Interface for the lookup algorithm in the externalist implementation of `AVL`.
-lookupAVL :: (t ~ 'ForkTree l (Node n a1) r, Member x t ~ 'True, Lookupable x a t) =>
+lookupAVL :: (t ~ 'ForkTree l (Node n a1) r, Member x t t ~ 'True, Lookupable x a t) =>
   Proxy x -> AVL t -> a
 lookupAVL p (AVL t _ _) = lookup p t
 

@@ -43,9 +43,9 @@ import           Prelude             (Bool (True), Ordering (EQ, GT, LT))
 -- It's necessary to know the type 'a' of the value stored in node with key 'x'
 -- so that the type of the value returned by 'lookup' may be specified.
 class Lookupable (x :: Nat) (a :: Type) (t :: Tree) where
-  lookup :: (t ~ 'ForkTree l (Node n a1) r, Member x t ~ 'True) =>
+  lookup :: (t ~ 'ForkTree l (Node n a1) r, Member x t t ~ 'True) =>
     Proxy x -> ITree t -> a
-instance (a ~ LookupValueType x ('ForkTree l (Node n a1) r), o ~ CmpNat x n,
+instance (t ~ 'ForkTree l (Node n a1) r, a ~ LookupValueType x t t, o ~ CmpNat x n,
   Lookupable' x a ('ForkTree l (Node n a1) r) o) =>
   Lookupable x a ('ForkTree l (Node n a1) r) where
   lookup x t = lookup' x t (Proxy::Proxy o)
