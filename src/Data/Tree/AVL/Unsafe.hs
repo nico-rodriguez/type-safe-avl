@@ -70,11 +70,11 @@ height (F l _ r) = 1 + max (height l) (height r)
 
 -- | Data type that represents the state of unbalance of the sub trees:
 --
--- [`LeftUnbalanced`] @height(left sub tree) = height(right sub tree) + 2@.
+-- [`LeftUnbalanced`] @height(left sub tree) = height(right sub tree) + 2@
 --
--- [`RightUnbalanced`] @height(right sub tree) = height(left sub tree) + 2@.
+-- [`RightUnbalanced`] @height(right sub tree) = height(left sub tree) + 2@
 --
--- [`NotUnbalanced`] tree is not unbalanced.
+-- [`NotUnbalanced`] @tree is not unbalanced@
 data US = LeftUnbalanced | RightUnbalanced | NotUnbalanced
 
 -- | Check from two natural numbers,
@@ -91,11 +91,11 @@ unbalancedState h1 h2 = unbalancedState (h1-1) (h2-1)
 
 -- | Data type that represents the state of balance of the sub trees in a balanced tree:
 --
--- [`LeftHeavy`] @height(left sub tree) = height(right sub tree) + 1@.
+-- [`LeftHeavy`] @height(left sub tree) = height(right sub tree) + 1@
 --
--- [`RightHeavy`] @height(right sub tree) = height(left sub tree) + 1@.
+-- [`RightHeavy`] @height(right sub tree) = height(left sub tree) + 1@
 --
--- [`Balanced`] @height(left sub tree) = height(right sub tree)@.
+-- [`Balanced`] @height(left sub tree) = height(right sub tree)@
 data BS = LeftHeavy | RightHeavy | Balanced
 
 -- | Check from two natural numbers,

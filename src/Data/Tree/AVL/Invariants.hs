@@ -62,11 +62,11 @@ type family BalancedHeights (h1 :: Nat) (h2 :: Nat) :: Bool where
 
 -- | Data type that represents the state of unbalance of the sub trees:
 --
--- [`LeftUnbalanced`] @height(left sub tree) = height(right sub tree) + 2@.
+-- [`LeftUnbalanced`] @height(left sub tree) = height(right sub tree) + 2@
 --
--- [`RightUnbalanced`] @height(right sub tree) = height(left sub tree) + 2@.
+-- [`RightUnbalanced`] @height(right sub tree) = height(left sub tree) + 2@
 --
--- [`NotUnbalanced`] tree is not unbalanced.
+-- [`NotUnbalanced`] @tree is not unbalanced@
 data US = LeftUnbalanced | RightUnbalanced | NotUnbalanced
 
 -- | Check from two type level natural numbers,
@@ -83,11 +83,11 @@ type family UnbalancedState (h1 :: Nat) (h2 :: Nat) :: US where
 
 -- | Data type that represents the state of balance of the sub trees in a balanced tree:
 --
--- [`LeftHeavy`] @height(left sub tree) = height(right sub tree) + 1@.
+-- [`LeftHeavy`] @height(left sub tree) = height(right sub tree) + 1@
 --
--- [`RightHeavy`] @height(right sub tree) = height(left sub tree) + 1@.
+-- [`RightHeavy`] @height(right sub tree) = height(left sub tree) + 1@
 --
--- [`Balanced`] @height(left sub tree) = height(right sub tree)@.
+-- [`Balanced`] @height(left sub tree) = height(right sub tree)@
 data BS = LeftHeavy | RightHeavy | Balanced
 
 -- | Check from two type level natural numbers,
