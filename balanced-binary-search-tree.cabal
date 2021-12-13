@@ -113,7 +113,7 @@ library
     build-depends:    base ^>=4.11.1.0, time ^>=1.8.0
 
     -- Additional options for GHC.
-    ghc-options:      -O0 -fmax-simplifier-iterations=0
+    ghc-options:      -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
 
     -- Directories containing source files.
     hs-source-dirs:   src, benchmark
@@ -127,7 +127,7 @@ benchmark avl-unsafe
     -- Other library packages from which benchmark modules are imported.
     build-depends:    base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
     -- Additional options for GHC.
-    ghc-options:      -O0 -fmax-simplifier-iterations=0
+    ghc-options:      -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     -- Directories containing source files.
     hs-source-dirs:   benchmark
     -- The entrypoint to the benchmark (relative to hs-source-dirs).
@@ -177,7 +177,7 @@ benchmark avl-unsafe
 benchmark avl-fullextern
     type:             exitcode-stdio-1.0
     build-depends:    base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:      -O0 -fmax-simplifier-iterations=0
+    ghc-options:      -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     hs-source-dirs:   benchmark
     main-is:          AVL/FullExtern/Benchmark.hs
     other-modules:
@@ -225,7 +225,7 @@ benchmark avl-fullextern
 benchmark avl-extern
     type:             exitcode-stdio-1.0
     build-depends:    base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:      -O0 -fmax-simplifier-iterations=0
+    ghc-options:      -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     hs-source-dirs:   benchmark
     main-is:          AVL/Extern/Benchmark.hs
     other-modules:
@@ -257,7 +257,7 @@ benchmark avl-extern
 benchmark avl-intern
     type:             exitcode-stdio-1.0
     build-depends:    base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:      -O0 -fmax-simplifier-iterations=0
+    ghc-options:      -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     hs-source-dirs:   benchmark
     main-is:          AVL/Intern/Benchmark.hs
     other-modules:
@@ -290,7 +290,7 @@ benchmark avl-intern
 benchmark bst-unsafe
     type:             exitcode-stdio-1.0
     build-depends:    base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:      -O0 -fmax-simplifier-iterations=0
+    ghc-options:      -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     hs-source-dirs:   benchmark
     main-is:          BST/Unsafe/Benchmark.hs
     other-modules:
@@ -338,7 +338,7 @@ benchmark bst-unsafe
 benchmark bst-fullextern
     type:             exitcode-stdio-1.0
     build-depends:    base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:      -O0 -fmax-simplifier-iterations=0
+    ghc-options:      -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     hs-source-dirs:   benchmark
     main-is:          BST/FullExtern/Benchmark.hs
     other-modules:
@@ -386,7 +386,7 @@ benchmark bst-fullextern
 benchmark bst-extern
     type:             exitcode-stdio-1.0
     build-depends:    base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:      -O0 -fmax-simplifier-iterations=0
+    ghc-options:      -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     hs-source-dirs:   benchmark
     main-is:          BST/Extern/Benchmark.hs
     other-modules:
@@ -414,7 +414,7 @@ benchmark bst-extern
 benchmark bst-intern
     type:             exitcode-stdio-1.0
     build-depends:    base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:      -O0 -fmax-simplifier-iterations=0
+    ghc-options:      -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     hs-source-dirs:   benchmark
     main-is:          BST/Intern/Benchmark.hs
     other-modules:
@@ -441,1456 +441,1456 @@ benchmark bst-intern
 
 library avl-unsafe-example1
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.Unsafe.Example.Example1
     hs-source-dirs:  benchmark
 
 library avl-unsafe-example2
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.Unsafe.Example.Example2
     hs-source-dirs:  benchmark
 library avl-unsafe-example3
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.Unsafe.Example.Example3
     hs-source-dirs:  benchmark
 
 library avl-unsafe-example4
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.Unsafe.Example.Example4
     hs-source-dirs:  benchmark
 
 library avl-unsafe-example5
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.Unsafe.Example.Example5
     hs-source-dirs:  benchmark
 
 library avl-unsafe-example6
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.Unsafe.Example.Example6
     hs-source-dirs:  benchmark
 
 library avl-unsafe-example7
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.Unsafe.Example.Example7
     hs-source-dirs:  benchmark
 
 library avl-unsafe-example8
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.Unsafe.Example.Example8
     hs-source-dirs:  benchmark
 
 library avl-unsafe-example9
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.Unsafe.Example.Example9
     hs-source-dirs:  benchmark
 
 library avl-unsafe-example10
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.Unsafe.Example.Example10
     hs-source-dirs:  benchmark
 
 library avl-unsafe-insert1
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.Unsafe.Insert.Insert1
     hs-source-dirs:  benchmark
 
 library avl-unsafe-insert2
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.Unsafe.Insert.Insert2
     hs-source-dirs:  benchmark
 library avl-unsafe-insert3
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.Unsafe.Insert.Insert3
     hs-source-dirs:  benchmark
 
 library avl-unsafe-insert4
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.Unsafe.Insert.Insert4
     hs-source-dirs:  benchmark
 
 library avl-unsafe-insert5
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.Unsafe.Insert.Insert5
     hs-source-dirs:  benchmark
 
 library avl-unsafe-insert6
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.Unsafe.Insert.Insert6
     hs-source-dirs:  benchmark
 
 library avl-unsafe-insert7
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.Unsafe.Insert.Insert7
     hs-source-dirs:  benchmark
 
 library avl-unsafe-insert8
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.Unsafe.Insert.Insert8
     hs-source-dirs:  benchmark
 
 library avl-unsafe-insert9
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.Unsafe.Insert.Insert9
     hs-source-dirs:  benchmark
 
 library avl-unsafe-insert10
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.Unsafe.Insert.Insert10
     hs-source-dirs:  benchmark
 
 library avl-unsafe-lookup1
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.Unsafe.Lookup.Lookup1
     hs-source-dirs:  benchmark
 
 library avl-unsafe-lookup2
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.Unsafe.Lookup.Lookup2
     hs-source-dirs:  benchmark
 library avl-unsafe-lookup3
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.Unsafe.Lookup.Lookup3
     hs-source-dirs:  benchmark
 
 library avl-unsafe-lookup4
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.Unsafe.Lookup.Lookup4
     hs-source-dirs:  benchmark
 
 library avl-unsafe-lookup5
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.Unsafe.Lookup.Lookup5
     hs-source-dirs:  benchmark
 
 library avl-unsafe-lookup6
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.Unsafe.Lookup.Lookup6
     hs-source-dirs:  benchmark
 
 library avl-unsafe-lookup7
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.Unsafe.Lookup.Lookup7
     hs-source-dirs:  benchmark
 
 library avl-unsafe-lookup8
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.Unsafe.Lookup.Lookup8
     hs-source-dirs:  benchmark
 
 library avl-unsafe-lookup9
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.Unsafe.Lookup.Lookup9
     hs-source-dirs:  benchmark
 
 library avl-unsafe-lookup10
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.Unsafe.Lookup.Lookup10
     hs-source-dirs:  benchmark
 
 library avl-unsafe-delete1
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.Unsafe.Delete.Delete1
     hs-source-dirs:  benchmark
 
 library avl-unsafe-delete2
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.Unsafe.Delete.Delete2
     hs-source-dirs:  benchmark
 library avl-unsafe-delete3
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.Unsafe.Delete.Delete3
     hs-source-dirs:  benchmark
 
 library avl-unsafe-delete4
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.Unsafe.Delete.Delete4
     hs-source-dirs:  benchmark
 
 library avl-unsafe-delete5
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.Unsafe.Delete.Delete5
     hs-source-dirs:  benchmark
 
 library avl-unsafe-delete6
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.Unsafe.Delete.Delete6
     hs-source-dirs:  benchmark
 
 library avl-unsafe-delete7
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.Unsafe.Delete.Delete7
     hs-source-dirs:  benchmark
 
 library avl-unsafe-delete8
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.Unsafe.Delete.Delete8
     hs-source-dirs:  benchmark
 
 library avl-unsafe-delete9
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.Unsafe.Delete.Delete9
     hs-source-dirs:  benchmark
 
 library avl-unsafe-delete10
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.Unsafe.Delete.Delete10
     hs-source-dirs:  benchmark
 
 library avl-fullextern-example10
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.FullExtern.Example.Example10
     hs-source-dirs:  benchmark
 
 library avl-fullextern-example20
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.FullExtern.Example.Example20
     hs-source-dirs:  benchmark
 library avl-fullextern-example30
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.FullExtern.Example.Example30
     hs-source-dirs:  benchmark
 
 library avl-fullextern-example40
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.FullExtern.Example.Example40
     hs-source-dirs:  benchmark
 
 library avl-fullextern-example50
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.FullExtern.Example.Example50
     hs-source-dirs:  benchmark
 
 library avl-fullextern-example60
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.FullExtern.Example.Example60
     hs-source-dirs:  benchmark
 
 library avl-fullextern-example70
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.FullExtern.Example.Example70
     hs-source-dirs:  benchmark
 
 library avl-fullextern-example80
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.FullExtern.Example.Example80
     hs-source-dirs:  benchmark
 
 library avl-fullextern-example90
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.FullExtern.Example.Example90
     hs-source-dirs:  benchmark
 
 library avl-fullextern-example100
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.FullExtern.Example.Example100
     hs-source-dirs:  benchmark
 
 library avl-fullextern-insert10
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.FullExtern.Insert.Insert10
     hs-source-dirs:  benchmark
 
 library avl-fullextern-insert20
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.FullExtern.Insert.Insert20
     hs-source-dirs:  benchmark
 library avl-fullextern-insert30
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.FullExtern.Insert.Insert30
     hs-source-dirs:  benchmark
 
 library avl-fullextern-insert40
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.FullExtern.Insert.Insert40
     hs-source-dirs:  benchmark
 
 library avl-fullextern-insert50
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.FullExtern.Insert.Insert50
     hs-source-dirs:  benchmark
 
 library avl-fullextern-insert60
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.FullExtern.Insert.Insert60
     hs-source-dirs:  benchmark
 
 library avl-fullextern-insert70
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.FullExtern.Insert.Insert70
     hs-source-dirs:  benchmark
 
 library avl-fullextern-insert80
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.FullExtern.Insert.Insert80
     hs-source-dirs:  benchmark
 
 library avl-fullextern-insert90
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.FullExtern.Insert.Insert90
     hs-source-dirs:  benchmark
 
 library avl-fullextern-insert100
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.FullExtern.Insert.Insert100
     hs-source-dirs:  benchmark
 
 library avl-fullextern-lookup10
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.FullExtern.Lookup.Lookup10
     hs-source-dirs:  benchmark
 
 library avl-fullextern-lookup20
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.FullExtern.Lookup.Lookup20
     hs-source-dirs:  benchmark
 library avl-fullextern-lookup30
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.FullExtern.Lookup.Lookup30
     hs-source-dirs:  benchmark
 
 library avl-fullextern-lookup40
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.FullExtern.Lookup.Lookup40
     hs-source-dirs:  benchmark
 
 library avl-fullextern-lookup50
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.FullExtern.Lookup.Lookup50
     hs-source-dirs:  benchmark
 
 library avl-fullextern-lookup60
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.FullExtern.Lookup.Lookup60
     hs-source-dirs:  benchmark
 
 library avl-fullextern-lookup70
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.FullExtern.Lookup.Lookup70
     hs-source-dirs:  benchmark
 
 library avl-fullextern-lookup80
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.FullExtern.Lookup.Lookup80
     hs-source-dirs:  benchmark
 
 library avl-fullextern-lookup90
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.FullExtern.Lookup.Lookup90
     hs-source-dirs:  benchmark
 
 library avl-fullextern-lookup100
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.FullExtern.Lookup.Lookup100
     hs-source-dirs:  benchmark
 
 library avl-fullextern-delete10
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.FullExtern.Delete.Delete10
     hs-source-dirs:  benchmark
 
 library avl-fullextern-delete20
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.FullExtern.Delete.Delete20
     hs-source-dirs:  benchmark
 library avl-fullextern-delete30
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.FullExtern.Delete.Delete30
     hs-source-dirs:  benchmark
 
 library avl-fullextern-delete40
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.FullExtern.Delete.Delete40
     hs-source-dirs:  benchmark
 
 library avl-fullextern-delete50
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.FullExtern.Delete.Delete50
     hs-source-dirs:  benchmark
 
 library avl-fullextern-delete60
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.FullExtern.Delete.Delete60
     hs-source-dirs:  benchmark
 
 library avl-fullextern-delete70
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.FullExtern.Delete.Delete70
     hs-source-dirs:  benchmark
 
 library avl-fullextern-delete80
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.FullExtern.Delete.Delete80
     hs-source-dirs:  benchmark
 
 library avl-fullextern-delete90
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.FullExtern.Delete.Delete90
     hs-source-dirs:  benchmark
 
 library avl-fullextern-delete100
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.FullExtern.Delete.Delete100
     hs-source-dirs:  benchmark
 
 library avl-extern-example10
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.Extern.Example.Example10
     hs-source-dirs:  benchmark
 
 library avl-extern-example20
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.Extern.Example.Example20
     hs-source-dirs:  benchmark
 library avl-extern-example30
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.Extern.Example.Example30
     hs-source-dirs:  benchmark
 
 library avl-extern-example40
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.Extern.Example.Example40
     hs-source-dirs:  benchmark
 
 library avl-extern-example50
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.Extern.Example.Example50
     hs-source-dirs:  benchmark
 
 library avl-extern-example60
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.Extern.Example.Example60
     hs-source-dirs:  benchmark
 
 library avl-extern-insert10
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.Extern.Insert.Insert10
     hs-source-dirs:  benchmark
 
 library avl-extern-insert20
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.Extern.Insert.Insert20
     hs-source-dirs:  benchmark
 library avl-extern-insert30
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.Extern.Insert.Insert30
     hs-source-dirs:  benchmark
 
 library avl-extern-insert40
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.Extern.Insert.Insert40
     hs-source-dirs:  benchmark
 
 library avl-extern-insert50
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.Extern.Insert.Insert50
     hs-source-dirs:  benchmark
 
 library avl-extern-insert60
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.Extern.Insert.Insert60
     hs-source-dirs:  benchmark
 
 library avl-extern-lookup10
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.Extern.Lookup.Lookup10
     hs-source-dirs:  benchmark
 
 library avl-extern-lookup20
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.Extern.Lookup.Lookup20
     hs-source-dirs:  benchmark
 library avl-extern-lookup30
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.Extern.Lookup.Lookup30
     hs-source-dirs:  benchmark
 
 library avl-extern-lookup40
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.Extern.Lookup.Lookup40
     hs-source-dirs:  benchmark
 
 library avl-extern-lookup50
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.Extern.Lookup.Lookup50
     hs-source-dirs:  benchmark
 
 library avl-extern-lookup60
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.Extern.Lookup.Lookup60
     hs-source-dirs:  benchmark
 
 library avl-extern-delete10
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.Extern.Delete.Delete10
     hs-source-dirs:  benchmark
 
 library avl-extern-delete20
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.Extern.Delete.Delete20
     hs-source-dirs:  benchmark
 library avl-extern-delete30
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.Extern.Delete.Delete30
     hs-source-dirs:  benchmark
 
 library avl-extern-delete40
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.Extern.Delete.Delete40
     hs-source-dirs:  benchmark
 
 library avl-extern-delete50
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.Extern.Delete.Delete50
     hs-source-dirs:  benchmark
 
 library avl-extern-delete60
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.Extern.Delete.Delete60
     hs-source-dirs:  benchmark
 
 library avl-intern-example10
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.Intern.Example.Example10
     hs-source-dirs:  benchmark
 
 library avl-intern-example20
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.Intern.Example.Example20
     hs-source-dirs:  benchmark
 library avl-intern-example30
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.Intern.Example.Example30
     hs-source-dirs:  benchmark
 
 library avl-intern-example40
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.Intern.Example.Example40
     hs-source-dirs:  benchmark
 
 library avl-intern-example50
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.Intern.Example.Example50
     hs-source-dirs:  benchmark
 
 library avl-intern-example60
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.Intern.Example.Example60
     hs-source-dirs:  benchmark
 
 library avl-intern-insert10
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.Intern.Insert.Insert10
     hs-source-dirs:  benchmark
 
 library avl-intern-insert20
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.Intern.Insert.Insert20
     hs-source-dirs:  benchmark
 library avl-intern-insert30
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.Intern.Insert.Insert30
     hs-source-dirs:  benchmark
 
 library avl-intern-insert40
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.Intern.Insert.Insert40
     hs-source-dirs:  benchmark
 
 library avl-intern-insert50
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.Intern.Insert.Insert50
     hs-source-dirs:  benchmark
 
 library avl-intern-insert60
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.Intern.Insert.Insert60
     hs-source-dirs:  benchmark
 
 library avl-intern-lookup10
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.Intern.Lookup.Lookup10
     hs-source-dirs:  benchmark
 
 library avl-intern-lookup20
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.Intern.Lookup.Lookup20
     hs-source-dirs:  benchmark
 library avl-intern-lookup30
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.Intern.Lookup.Lookup30
     hs-source-dirs:  benchmark
 
 library avl-intern-lookup40
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.Intern.Lookup.Lookup40
     hs-source-dirs:  benchmark
 
 library avl-intern-lookup50
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.Intern.Lookup.Lookup50
     hs-source-dirs:  benchmark
 
 library avl-intern-lookup60
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.Intern.Lookup.Lookup60
     hs-source-dirs:  benchmark
 
 library avl-intern-delete10
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.Intern.Delete.Delete10
     hs-source-dirs:  benchmark
 
 library avl-intern-delete20
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.Intern.Delete.Delete20
     hs-source-dirs:  benchmark
 library avl-intern-delete30
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.Intern.Delete.Delete30
     hs-source-dirs:  benchmark
 
 library avl-intern-delete40
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.Intern.Delete.Delete40
     hs-source-dirs:  benchmark
 
 library avl-intern-delete50
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.Intern.Delete.Delete50
     hs-source-dirs:  benchmark
 
 library avl-intern-delete60
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: AVL.Intern.Delete.Delete60
     hs-source-dirs:  benchmark
 
 library bst-unsafe-example1
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.Unsafe.Example.Example1
     hs-source-dirs:  benchmark
 
 library bst-unsafe-example2
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.Unsafe.Example.Example2
     hs-source-dirs:  benchmark
 library bst-unsafe-example3
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.Unsafe.Example.Example3
     hs-source-dirs:  benchmark
 
 library bst-unsafe-example4
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.Unsafe.Example.Example4
     hs-source-dirs:  benchmark
 
 library bst-unsafe-example5
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.Unsafe.Example.Example5
     hs-source-dirs:  benchmark
 
 library bst-unsafe-example6
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.Unsafe.Example.Example6
     hs-source-dirs:  benchmark
 
 library bst-unsafe-example7
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.Unsafe.Example.Example7
     hs-source-dirs:  benchmark
 
 library bst-unsafe-example8
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.Unsafe.Example.Example8
     hs-source-dirs:  benchmark
 
 library bst-unsafe-example9
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.Unsafe.Example.Example9
     hs-source-dirs:  benchmark
 
 library bst-unsafe-example10
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.Unsafe.Example.Example10
     hs-source-dirs:  benchmark
 
 library bst-unsafe-insert1
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.Unsafe.Insert.Insert1
     hs-source-dirs:  benchmark
 
 library bst-unsafe-insert2
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.Unsafe.Insert.Insert2
     hs-source-dirs:  benchmark
 library bst-unsafe-insert3
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.Unsafe.Insert.Insert3
     hs-source-dirs:  benchmark
 
 library bst-unsafe-insert4
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.Unsafe.Insert.Insert4
     hs-source-dirs:  benchmark
 
 library bst-unsafe-insert5
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.Unsafe.Insert.Insert5
     hs-source-dirs:  benchmark
 
 library bst-unsafe-insert6
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.Unsafe.Insert.Insert6
     hs-source-dirs:  benchmark
 
 library bst-unsafe-insert7
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.Unsafe.Insert.Insert7
     hs-source-dirs:  benchmark
 
 library bst-unsafe-insert8
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.Unsafe.Insert.Insert8
     hs-source-dirs:  benchmark
 
 library bst-unsafe-insert9
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.Unsafe.Insert.Insert9
     hs-source-dirs:  benchmark
 
 library bst-unsafe-insert10
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.Unsafe.Insert.Insert10
     hs-source-dirs:  benchmark
 
 library bst-unsafe-lookup1
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.Unsafe.Lookup.Lookup1
     hs-source-dirs:  benchmark
 
 library bst-unsafe-lookup2
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.Unsafe.Lookup.Lookup2
     hs-source-dirs:  benchmark
 library bst-unsafe-lookup3
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.Unsafe.Lookup.Lookup3
     hs-source-dirs:  benchmark
 
 library bst-unsafe-lookup4
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.Unsafe.Lookup.Lookup4
     hs-source-dirs:  benchmark
 
 library bst-unsafe-lookup5
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.Unsafe.Lookup.Lookup5
     hs-source-dirs:  benchmark
 
 library bst-unsafe-lookup6
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.Unsafe.Lookup.Lookup6
     hs-source-dirs:  benchmark
 
 library bst-unsafe-lookup7
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.Unsafe.Lookup.Lookup7
     hs-source-dirs:  benchmark
 
 library bst-unsafe-lookup8
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.Unsafe.Lookup.Lookup8
     hs-source-dirs:  benchmark
 
 library bst-unsafe-lookup9
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.Unsafe.Lookup.Lookup9
     hs-source-dirs:  benchmark
 
 library bst-unsafe-lookup10
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.Unsafe.Lookup.Lookup10
     hs-source-dirs:  benchmark
 
 library bst-unsafe-delete1
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.Unsafe.Delete.Delete1
     hs-source-dirs:  benchmark
 
 library bst-unsafe-delete2
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.Unsafe.Delete.Delete2
     hs-source-dirs:  benchmark
 library bst-unsafe-delete3
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.Unsafe.Delete.Delete3
     hs-source-dirs:  benchmark
 
 library bst-unsafe-delete4
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.Unsafe.Delete.Delete4
     hs-source-dirs:  benchmark
 
 library bst-unsafe-delete5
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.Unsafe.Delete.Delete5
     hs-source-dirs:  benchmark
 
 library bst-unsafe-delete6
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.Unsafe.Delete.Delete6
     hs-source-dirs:  benchmark
 
 library bst-unsafe-delete7
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.Unsafe.Delete.Delete7
     hs-source-dirs:  benchmark
 
 library bst-unsafe-delete8
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.Unsafe.Delete.Delete8
     hs-source-dirs:  benchmark
 
 library bst-unsafe-delete9
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.Unsafe.Delete.Delete9
     hs-source-dirs:  benchmark
 
 library bst-unsafe-delete10
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.Unsafe.Delete.Delete10
     hs-source-dirs:  benchmark
 
 library bst-fullextern-example10
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.FullExtern.Example.Example10
     hs-source-dirs:  benchmark
 
 library bst-fullextern-example20
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.FullExtern.Example.Example20
     hs-source-dirs:  benchmark
 library bst-fullextern-example30
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.FullExtern.Example.Example30
     hs-source-dirs:  benchmark
 
 library bst-fullextern-example40
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.FullExtern.Example.Example40
     hs-source-dirs:  benchmark
 
 library bst-fullextern-example50
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.FullExtern.Example.Example50
     hs-source-dirs:  benchmark
 
 library bst-fullextern-example60
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.FullExtern.Example.Example60
     hs-source-dirs:  benchmark
 
 library bst-fullextern-example70
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.FullExtern.Example.Example70
     hs-source-dirs:  benchmark
 
 library bst-fullextern-example80
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.FullExtern.Example.Example80
     hs-source-dirs:  benchmark
 
 library bst-fullextern-example90
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.FullExtern.Example.Example90
     hs-source-dirs:  benchmark
 
 library bst-fullextern-example100
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.FullExtern.Example.Example100
     hs-source-dirs:  benchmark
 
 library bst-fullextern-insert10
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.FullExtern.Insert.Insert10
     hs-source-dirs:  benchmark
 
 library bst-fullextern-insert20
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.FullExtern.Insert.Insert20
     hs-source-dirs:  benchmark
 library bst-fullextern-insert30
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.FullExtern.Insert.Insert30
     hs-source-dirs:  benchmark
 
 library bst-fullextern-insert40
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.FullExtern.Insert.Insert40
     hs-source-dirs:  benchmark
 
 library bst-fullextern-insert50
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.FullExtern.Insert.Insert50
     hs-source-dirs:  benchmark
 
 library bst-fullextern-insert60
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.FullExtern.Insert.Insert60
     hs-source-dirs:  benchmark
 
 library bst-fullextern-insert70
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.FullExtern.Insert.Insert70
     hs-source-dirs:  benchmark
 
 library bst-fullextern-insert80
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.FullExtern.Insert.Insert80
     hs-source-dirs:  benchmark
 
 library bst-fullextern-insert90
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.FullExtern.Insert.Insert90
     hs-source-dirs:  benchmark
 
 library bst-fullextern-insert100
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.FullExtern.Insert.Insert100
     hs-source-dirs:  benchmark
 
 library bst-fullextern-lookup10
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.FullExtern.Lookup.Lookup10
     hs-source-dirs:  benchmark
 
 library bst-fullextern-lookup20
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.FullExtern.Lookup.Lookup20
     hs-source-dirs:  benchmark
 library bst-fullextern-lookup30
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.FullExtern.Lookup.Lookup30
     hs-source-dirs:  benchmark
 
 library bst-fullextern-lookup40
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.FullExtern.Lookup.Lookup40
     hs-source-dirs:  benchmark
 
 library bst-fullextern-lookup50
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.FullExtern.Lookup.Lookup50
     hs-source-dirs:  benchmark
 
 library bst-fullextern-lookup60
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.FullExtern.Lookup.Lookup60
     hs-source-dirs:  benchmark
 
 library bst-fullextern-lookup70
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.FullExtern.Lookup.Lookup70
     hs-source-dirs:  benchmark
 
 library bst-fullextern-lookup80
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.FullExtern.Lookup.Lookup80
     hs-source-dirs:  benchmark
 
 library bst-fullextern-lookup90
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.FullExtern.Lookup.Lookup90
     hs-source-dirs:  benchmark
 
 library bst-fullextern-lookup100
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.FullExtern.Lookup.Lookup100
     hs-source-dirs:  benchmark
 
 library bst-fullextern-delete10
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.FullExtern.Delete.Delete10
     hs-source-dirs:  benchmark
 
 library bst-fullextern-delete20
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.FullExtern.Delete.Delete20
     hs-source-dirs:  benchmark
 library bst-fullextern-delete30
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.FullExtern.Delete.Delete30
     hs-source-dirs:  benchmark
 
 library bst-fullextern-delete40
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.FullExtern.Delete.Delete40
     hs-source-dirs:  benchmark
 
 library bst-fullextern-delete50
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.FullExtern.Delete.Delete50
     hs-source-dirs:  benchmark
 
 library bst-fullextern-delete60
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.FullExtern.Delete.Delete60
     hs-source-dirs:  benchmark
 
 library bst-fullextern-delete70
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.FullExtern.Delete.Delete70
     hs-source-dirs:  benchmark
 
 library bst-fullextern-delete80
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.FullExtern.Delete.Delete80
     hs-source-dirs:  benchmark
 
 library bst-fullextern-delete90
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.FullExtern.Delete.Delete90
     hs-source-dirs:  benchmark
 
 library bst-fullextern-delete100
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.FullExtern.Delete.Delete100
     hs-source-dirs:  benchmark
 
 library bst-extern-example10
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.Extern.Example.Example10
     hs-source-dirs:  benchmark
 
 library bst-extern-example20
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.Extern.Example.Example20
     hs-source-dirs:  benchmark
 library bst-extern-example30
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.Extern.Example.Example30
     hs-source-dirs:  benchmark
 
 library bst-extern-example40
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.Extern.Example.Example40
     hs-source-dirs:  benchmark
 
 library bst-extern-example50
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.Extern.Example.Example50
     hs-source-dirs:  benchmark
 
 library bst-extern-insert10
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.Extern.Insert.Insert10
     hs-source-dirs:  benchmark
 
 library bst-extern-insert20
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.Extern.Insert.Insert20
     hs-source-dirs:  benchmark
 library bst-extern-insert30
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.Extern.Insert.Insert30
     hs-source-dirs:  benchmark
 
 library bst-extern-insert40
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.Extern.Insert.Insert40
     hs-source-dirs:  benchmark
 
 library bst-extern-insert50
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.Extern.Insert.Insert50
     hs-source-dirs:  benchmark
 
 library bst-extern-lookup10
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.Extern.Lookup.Lookup10
     hs-source-dirs:  benchmark
 
 library bst-extern-lookup20
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.Extern.Lookup.Lookup20
     hs-source-dirs:  benchmark
 library bst-extern-lookup30
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.Extern.Lookup.Lookup30
     hs-source-dirs:  benchmark
 
 library bst-extern-lookup40
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.Extern.Lookup.Lookup40
     hs-source-dirs:  benchmark
 
 library bst-extern-lookup50
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.Extern.Lookup.Lookup50
     hs-source-dirs:  benchmark
 
 library bst-extern-delete10
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.Extern.Delete.Delete10
     hs-source-dirs:  benchmark
 
 library bst-extern-delete20
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.Extern.Delete.Delete20
     hs-source-dirs:  benchmark
 library bst-extern-delete30
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.Extern.Delete.Delete30
     hs-source-dirs:  benchmark
 
 library bst-extern-delete40
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.Extern.Delete.Delete40
     hs-source-dirs:  benchmark
 
 library bst-extern-delete50
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.Extern.Delete.Delete50
     hs-source-dirs:  benchmark
 
 library bst-intern-example10
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.Intern.Example.Example10
     hs-source-dirs:  benchmark
 
 library bst-intern-example20
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.Intern.Example.Example20
     hs-source-dirs:  benchmark
 library bst-intern-example30
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.Intern.Example.Example30
     hs-source-dirs:  benchmark
 
 library bst-intern-example40
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.Intern.Example.Example40
     hs-source-dirs:  benchmark
 
 library bst-intern-example50
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.Intern.Example.Example50
     hs-source-dirs:  benchmark
 
 library bst-intern-insert10
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.Intern.Insert.Insert10
     hs-source-dirs:  benchmark
 
 library bst-intern-insert20
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.Intern.Insert.Insert20
     hs-source-dirs:  benchmark
 library bst-intern-insert30
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.Intern.Insert.Insert30
     hs-source-dirs:  benchmark
 
 library bst-intern-insert40
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.Intern.Insert.Insert40
     hs-source-dirs:  benchmark
 
 library bst-intern-insert50
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.Intern.Insert.Insert50
     hs-source-dirs:  benchmark
 
 library bst-intern-lookup10
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.Intern.Lookup.Lookup10
     hs-source-dirs:  benchmark
 
 library bst-intern-lookup20
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.Intern.Lookup.Lookup20
     hs-source-dirs:  benchmark
 library bst-intern-lookup30
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.Intern.Lookup.Lookup30
     hs-source-dirs:  benchmark
 
 library bst-intern-lookup40
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.Intern.Lookup.Lookup40
     hs-source-dirs:  benchmark
 
 library bst-intern-lookup50
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.Intern.Lookup.Lookup50
     hs-source-dirs:  benchmark
 
 library bst-intern-delete10
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.Intern.Delete.Delete10
     hs-source-dirs:  benchmark
 
 library bst-intern-delete20
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.Intern.Delete.Delete20
     hs-source-dirs:  benchmark
 library bst-intern-delete30
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.Intern.Delete.Delete30
     hs-source-dirs:  benchmark
 
 library bst-intern-delete40
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.Intern.Delete.Delete40
     hs-source-dirs:  benchmark
 
 library bst-intern-delete50
     build-depends:   base ^>=4.11.1.0, time ^>=1.8.0, balanced-binary-search-tree ^>=0.1.0.0
-    ghc-options:     -O0 -fmax-simplifier-iterations=0
+    ghc-options:     -O0 -fmax-simplifier-iterations=0 +RTS -S -A2048M -H2048M -RTS
     exposed-modules: BST.Intern.Delete.Delete50
     hs-source-dirs:  benchmark
