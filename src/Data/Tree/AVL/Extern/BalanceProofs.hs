@@ -273,8 +273,8 @@ instance (us ~ UnbalancedState (Height l) (Height r),
 class ProofIsAVLBalance' (t :: Tree) (us :: US) where
   proofIsAVLBalance' :: (t ~ 'ForkTree l (Node n a) r, LtN l n ~ 'True, GtN r n ~ 'True) =>
     IsAlmostAVLT t -> Proxy us -> IsAVLT (Balance' t us)
--- | NotUnbalanced implies BalancedHeights (Height l) (Height r) ~ 'True
-instance (BalancedHeights (Height l) (Height r) ~ 'True) => ProofIsAVLBalance' ('ForkTree l (Node n a) r) 'NotUnbalanced where
+-- | NotUnbalanced implies BalancedHeights (Height l) (Height r) n ~ 'True
+instance (BalancedHeights (Height l) (Height r) n ~ 'True) => ProofIsAVLBalance' ('ForkTree l (Node n a) r) 'NotUnbalanced where
   proofIsAVLBalance' (ForkIsAlmostAVLT l node r) _ = ForkIsAVLT l node r
 instance (bs ~ BalancedState (Height ll) (Height lr),
   ProofIsAVLRotate ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a) r) 'LeftUnbalanced bs) =>
@@ -292,41 +292,41 @@ class ProofIsAVLRotate (t :: Tree) (us :: US) (bs :: BS) where
   proofIsAVLRotate :: (t ~ 'ForkTree l (Node n a) r, LtN l n ~ 'True, GtN r n ~ 'True) =>
     IsAlmostAVLT t -> Proxy us -> Proxy bs -> IsAVLT (Rotate t us bs)
 -- Left-Left case (Right rotation)
-instance ((Height lr <=? Height r) ~ 'True, BalancedHeights (Height ll) (1 + Height r) ~ 'True,
-  BalancedHeights (Height lr) (Height r) ~ 'True) =>
+instance ((Height lr <=? Height r) ~ 'True, BalancedHeights (Height ll) (1 + Height r) ln ~ 'True,
+  BalancedHeights (Height lr) (Height r) n ~ 'True) =>
   ProofIsAVLRotate ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a) r) 'LeftUnbalanced 'LeftHeavy where
   proofIsAVLRotate (ForkIsAlmostAVLT (ForkIsAVLT ll lnode lr) node r) _ _ =
     ForkIsAVLT ll lnode (ForkIsAVLT lr node r)
-instance ((Height lr <=? Height r) ~ 'True, BalancedHeights (Height ll) (1 + Height r) ~ 'True,
-  BalancedHeights (Height lr) (Height r) ~ 'True) =>
+instance ((Height lr <=? Height r) ~ 'True, BalancedHeights (Height ll) (1 + Height r) ln ~ 'True,
+  BalancedHeights (Height lr) (Height r) n ~ 'True) =>
   ProofIsAVLRotate ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a) r) 'LeftUnbalanced 'Balanced where
   proofIsAVLRotate (ForkIsAlmostAVLT (ForkIsAVLT ll lnode lr) node r) _ _ =
     ForkIsAVLT ll lnode (ForkIsAVLT lr node r)
 
 -- Right-Right case (Left rotation)
-instance ((Height l <=? Height rl) ~ 'True, BalancedHeights (1 + Height rl) (Height rr) ~ 'True,
-  BalancedHeights (Height l) (Height rl) ~ 'True) =>
+instance ((Height l <=? Height rl) ~ 'True, BalancedHeights (1 + Height rl) (Height rr) rn ~ 'True,
+  BalancedHeights (Height l) (Height rl) n ~ 'True) =>
   ProofIsAVLRotate ('ForkTree l (Node n a) ('ForkTree rl (Node rn ra) rr)) 'RightUnbalanced 'RightHeavy where
   proofIsAVLRotate (ForkIsAlmostAVLT l node (ForkIsAVLT rl rnode rr)) _ _ =
     ForkIsAVLT (ForkIsAVLT l node rl) rnode rr
-instance ((Height l <=? Height rl) ~ 'True, BalancedHeights (1 + Height rl) (Height rr) ~ 'True,
-  BalancedHeights (Height l) (Height rl) ~ 'True) =>
+instance ((Height l <=? Height rl) ~ 'True, BalancedHeights (1 + Height rl) (Height rr) rn ~ 'True,
+  BalancedHeights (Height l) (Height rl) n ~ 'True) =>
   ProofIsAVLRotate ('ForkTree l (Node n a) ('ForkTree rl (Node rn ra) rr)) 'RightUnbalanced 'Balanced where
   proofIsAVLRotate (ForkIsAlmostAVLT l node (ForkIsAVLT rl rnode rr)) _ _ =
     ForkIsAVLT (ForkIsAVLT l node rl) rnode rr
 
 -- Left-Right case (First left rotation, then right rotation)
-instance ((Height ll <=? Height lrl) ~ 'True, BalancedHeights (1 + Height lrl) (1 + Height r) ~ 'True,
-  (Height lrr <=? Height r) ~ 'True, BalancedHeights (Height lrr) (Height r) ~ 'True,
-  BalancedHeights (Height ll) (Height lrl) ~ 'True) =>
+instance ((Height ll <=? Height lrl) ~ 'True, BalancedHeights (1 + Height lrl) (1 + Height r) lrn ~ 'True,
+  (Height lrr <=? Height r) ~ 'True, BalancedHeights (Height lrr) (Height r) n ~ 'True,
+  BalancedHeights (Height ll) (Height lrl) ln ~ 'True) =>
   ProofIsAVLRotate ('ForkTree ('ForkTree ll (Node ln la) ('ForkTree lrl (Node lrn lra) lrr)) (Node n a) r) 'LeftUnbalanced 'RightHeavy where
   proofIsAVLRotate (ForkIsAlmostAVLT (ForkIsAVLT ll lnode (ForkIsAVLT lrl lrnode lrr)) node r) _ _ =
     ForkIsAVLT (ForkIsAVLT ll lnode lrl) lrnode (ForkIsAVLT lrr node r)
 
 -- Right-Left case (First right rotation, then left rotation)
-instance ((Height l <=? Height rll) ~ 'True, BalancedHeights (1 + Height rll) (1 + Height rr) ~ 'True,
-  (Height rlr <=? Height rr) ~ 'True, BalancedHeights (Height rlr) (Height rr) ~ 'True,
-  BalancedHeights (Height l) (Height rll) ~ 'True) =>
+instance ((Height l <=? Height rll) ~ 'True, BalancedHeights (1 + Height rll) (1 + Height rr) rln ~ 'True,
+  (Height rlr <=? Height rr) ~ 'True, BalancedHeights (Height rlr) (Height rr) rn ~ 'True,
+  BalancedHeights (Height l) (Height rll) n ~ 'True) =>
   ProofIsAVLRotate ('ForkTree l (Node n a) ('ForkTree ('ForkTree rll (Node rln rla) rlr) (Node rn ra) rr)) 'RightUnbalanced 'LeftHeavy where
   proofIsAVLRotate (ForkIsAlmostAVLT l node (ForkIsAVLT (ForkIsAVLT rll rlnode rlr) rnode rr)) _ _ =
     ForkIsAVLT (ForkIsAVLT l node rll) rlnode (ForkIsAVLT rlr rnode rr)

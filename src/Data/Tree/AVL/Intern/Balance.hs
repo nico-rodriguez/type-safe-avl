@@ -65,7 +65,7 @@ instance (us ~ UnbalancedState (Height l) (Height r),
 class Balanceable' (t :: Tree) (us :: US) where
   type Balance' (t :: Tree) (us :: US) :: Tree
   balance' :: AlmostAVL t -> Proxy us -> AVL (Balance' t us)
-instance (BalancedHeights (Height l) (Height r) ~ 'True) =>
+instance (BalancedHeights (Height l) (Height r) n ~ 'True) =>
   Balanceable' ('ForkTree l (Node n a) r) 'NotUnbalanced where
   type Balance' ('ForkTree l (Node n a) r) 'NotUnbalanced = 'ForkTree l (Node n a) r
   balance' (AlmostAVL l node r) _ = ForkAVL l node r
@@ -92,7 +92,7 @@ class Rotateable (t :: Tree) (us :: US) (bs :: BS) where
 -- Left-Left case (Right rotation)
 instance (l ~ 'ForkTree ll (Node ln la) lr,
   CmpNat n ln ~ 'GT, GtN r ln ~ 'True, LtN lr n ~ 'True, (Height lr <=? Height r) ~ 'True,
-  BalancedHeights (Height ll) (1 + Height r) ~ 'True, BalancedHeights (Height lr) (Height r) ~ 'True) =>
+  BalancedHeights (Height ll) (1 + Height r) ln ~ 'True, BalancedHeights (Height lr) (Height r) n ~ 'True) =>
   Rotateable ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a) r) 'LeftUnbalanced 'LeftHeavy where
   type Rotate ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a) r) 'LeftUnbalanced 'LeftHeavy =
     'ForkTree ll (Node ln la) ('ForkTree lr (Node n a) r)
@@ -100,7 +100,7 @@ instance (l ~ 'ForkTree ll (Node ln la) lr,
     ForkAVL ll lnode (ForkAVL lr xnode r)
 instance (l ~ 'ForkTree ll (Node ln la) lr,
   CmpNat n ln ~ 'GT, GtN r ln ~ 'True, LtN lr n ~ 'True, (Height lr <=? Height r) ~ 'True,
-  BalancedHeights (Height ll) (1 + Height r) ~ 'True, BalancedHeights (Height lr) (Height r) ~ 'True) =>
+  BalancedHeights (Height ll) (1 + Height r) ln ~ 'True, BalancedHeights (Height lr) (Height r) n ~ 'True) =>
   Rotateable ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a) r) 'LeftUnbalanced 'Balanced where
   type Rotate ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a) r) 'LeftUnbalanced 'Balanced =
     'ForkTree ll (Node ln la) ('ForkTree lr (Node n a) r)
@@ -109,7 +109,7 @@ instance (l ~ 'ForkTree ll (Node ln la) lr,
 -- Right-Right case (Left rotation)
 instance (r ~ 'ForkTree rl (Node rn ra) rr,
   (Height l <=? Height rl) ~ 'True, CmpNat n rn ~ 'LT, LtN l rn ~ 'True, GtN rl n ~ 'True,
-  BalancedHeights (1 + Height rl) (Height rr) ~ 'True, BalancedHeights (Height l) (Height rl) ~ 'True) =>
+  BalancedHeights (1 + Height rl) (Height rr) rn ~ 'True, BalancedHeights (Height l) (Height rl) n ~ 'True) =>
   Rotateable ('ForkTree l (Node n a) ('ForkTree rl (Node rn ra) rr)) 'RightUnbalanced 'RightHeavy where
   type Rotate ('ForkTree l (Node n a) ('ForkTree rl (Node rn ra) rr)) 'RightUnbalanced 'RightHeavy =
     'ForkTree ('ForkTree l (Node n a) rl) (Node rn ra) rr
@@ -117,7 +117,7 @@ instance (r ~ 'ForkTree rl (Node rn ra) rr,
     ForkAVL (ForkAVL l xnode rl) rnode rr
 instance (r ~ 'ForkTree rl (Node rn ra) rr,
   (Height l <=? Height rl) ~ 'True, CmpNat n rn ~ 'LT, LtN l rn ~ 'True, GtN rl n ~ 'True,
-  BalancedHeights (1 + Height rl) (Height rr) ~ 'True, BalancedHeights (Height l) (Height rl) ~ 'True) =>
+  BalancedHeights (1 + Height rl) (Height rr) rn ~ 'True, BalancedHeights (Height l) (Height rl) n ~ 'True) =>
   Rotateable ('ForkTree l (Node n a) ('ForkTree rl (Node rn ra) rr)) 'RightUnbalanced 'Balanced where
   type Rotate ('ForkTree l (Node n a) ('ForkTree rl (Node rn ra) rr)) 'RightUnbalanced 'Balanced =
     'ForkTree ('ForkTree l (Node n a) rl) (Node rn ra) rr
@@ -127,8 +127,8 @@ instance (r ~ 'ForkTree rl (Node rn ra) rr,
 instance (l ~ 'ForkTree ll (Node ln la) ('ForkTree lrl (Node lrn lra) lrr),
   (Height ll <=? Height lrl) ~ 'True, GtN r lrn ~ 'True, LtN ll lrn ~ 'True, LtN lrr n ~ 'True,
   (Height lrr <=? Height r) ~ 'True, CmpNat n lrn ~ 'GT, CmpNat ln lrn ~ 'LT, GtN lrl ln ~ 'True,
-  BalancedHeights (1 + Height lrl) (1 + Height r) ~ 'True, BalancedHeights (Height ll) (Height lrl) ~ 'True,
-  BalancedHeights (Height lrr) (Height r) ~ 'True) =>
+  BalancedHeights (1 + Height lrl) (1 + Height r) lrn ~ 'True, BalancedHeights (Height ll) (Height lrl) ln ~ 'True,
+  BalancedHeights (Height lrr) (Height r) n ~ 'True) =>
   Rotateable ('ForkTree ('ForkTree ll (Node ln la) ('ForkTree lrl (Node lrn lra) lrr)) (Node n a) r) 'LeftUnbalanced 'RightHeavy where
   type Rotate ('ForkTree ('ForkTree ll (Node ln la) ('ForkTree lrl (Node lrn lra) lrr)) (Node n a) r) 'LeftUnbalanced 'RightHeavy =
     'ForkTree ('ForkTree ll (Node ln la) lrl) (Node lrn lra) ('ForkTree lrr (Node n a) r)
@@ -138,8 +138,8 @@ instance (l ~ 'ForkTree ll (Node ln la) ('ForkTree lrl (Node lrn lra) lrr),
 instance (r ~ 'ForkTree ('ForkTree rll (Node rln rla) rlr) (Node rn ra) rr,
   (Height l <=? Height rll) ~ 'True, CmpNat rn rln ~ 'GT, CmpNat n rln ~ 'LT, LtN l rln ~ 'True,
   (Height rlr <=? Height rr) ~ 'True, GtN rr rln ~ 'True, GtN rll n ~ 'True, LtN rlr rn ~ 'True,
-  BalancedHeights (1 + Height rll) (1 + Height rr) ~ 'True, BalancedHeights (Height l) (Height rll) ~ 'True,
-  BalancedHeights (Height rlr) (Height rr) ~ 'True) =>
+  BalancedHeights (1 + Height rll) (1 + Height rr) rln ~ 'True, BalancedHeights (Height l) (Height rll) n ~ 'True,
+  BalancedHeights (Height rlr) (Height rr) rn ~ 'True) =>
   Rotateable ('ForkTree l (Node n a) ('ForkTree ('ForkTree rll (Node rln rla) rlr) (Node rn ra) rr)) 'RightUnbalanced 'LeftHeavy where
   type Rotate ('ForkTree l (Node n a) ('ForkTree ('ForkTree rll (Node rln rla) rlr) (Node rn ra) rr)) 'RightUnbalanced 'LeftHeavy =
     'ForkTree ('ForkTree l (Node n a) rll) (Node rln rla) ('ForkTree rlr (Node rn ra) rr)

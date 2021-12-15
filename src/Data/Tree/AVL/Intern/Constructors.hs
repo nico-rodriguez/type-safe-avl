@@ -38,7 +38,7 @@ import           Prelude                  (Bool (True), Show (show), String,
 -- Notice that, by inductive reasoning, this is all that's needed to assert that the new tree is a `AVL`.
 data AVL :: Tree -> Type where
   EmptyAVL :: AVL 'EmptyTree
-  ForkAVL  :: (Show a, LtN l n ~ 'True, GtN r n ~ 'True, BalancedHeights (Height l) (Height r) ~ 'True) =>
+  ForkAVL  :: (Show a, LtN l n ~ 'True, GtN r n ~ 'True, BalancedHeights (Height l) (Height r) n ~ 'True) =>
     AVL l -> Node n a -> AVL r -> AVL ('ForkTree l (Node n a) r)
 
 -- | Instance definition for the `Show` type class.

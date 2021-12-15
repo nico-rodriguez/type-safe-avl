@@ -55,7 +55,7 @@ instance Show (AVL t) where
 -- left and right sub trees.
 data IsAVLT :: Tree -> Type where
   EmptyIsAVLT :: IsAVLT 'EmptyTree
-  ForkIsAVLT  :: (BalancedHeights (Height l) (Height r) ~ 'True) =>
+  ForkIsAVLT  :: (BalancedHeights (Height l) (Height r) n ~ 'True) =>
     IsAVLT l -> Node n a -> IsAVLT r -> IsAVLT ('ForkTree l (Node n a) r)
 
 
@@ -66,7 +66,7 @@ class IsAVLC (t :: Tree) where
 -- | Instances for the type class `IsAVLC`.
 instance IsAVLC 'EmptyTree where
   isAVLT = EmptyIsAVLT
-instance (IsAVLC l, IsAVLC r, BalancedHeights (Height l) (Height r) ~ 'True) =>
+instance (IsAVLC l, IsAVLC r, BalancedHeights (Height l) (Height r) n ~ 'True) =>
   IsAVLC ('ForkTree l (Node n a) r) where
   isAVLT = ForkIsAVLT isAVLT (undefined::Node n a) isAVLT
 

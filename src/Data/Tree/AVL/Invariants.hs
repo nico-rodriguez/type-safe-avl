@@ -51,13 +51,13 @@ type family Height (t :: Tree) :: Nat where
 -- | Check if two type level natural numbers,
 -- that represent the heights of some left and right sub trees,
 -- differ at most in one (i.e., the tree is balanced).
-type family BalancedHeights (h1 :: Nat) (h2 :: Nat) :: Bool where
-  BalancedHeights 0   0   = 'True
-  BalancedHeights 1   0   = 'True
-  BalancedHeights _h1 0   = TypeError (Text "Some left sub tree has +2 greater height!")
-  BalancedHeights 0   1   = 'True
-  BalancedHeights 0   _h2 = TypeError (Text "Some right sub tree has +2 greater height!")
-  BalancedHeights h1  h2  = BalancedHeights (h1-1) (h2-1)
+type family BalancedHeights (h1 :: Nat) (h2 :: Nat) (k :: Nat) :: Bool where
+  BalancedHeights 0   0   _k = 'True
+  BalancedHeights 1   0   _k = 'True
+  BalancedHeights _h1 0    k = TypeError (Text "The left sub tree at node with key " :<>: ShowType k :<>: Text " has +2 greater height!")
+  BalancedHeights 0   1   _k = 'True
+  BalancedHeights 0   _h2  k = TypeError (Text "The right sub tree at node with key " :<>: ShowType k :<>: Text " has +2 greater height!")
+  BalancedHeights h1  h2   k = BalancedHeights (h1-1) (h2-1) k
 
 
 -- | Data type that represents the state of unbalance of the sub trees:

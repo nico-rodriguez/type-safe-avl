@@ -44,7 +44,7 @@ avl = mkAVL t
 l1' = case avl of
     AVL t _ _ -> lookup p6 t
 
--- | Error: key 1 is not in the tree avl
+-- | Error: key 1 is not in the tree avl and left subtree at node with key 4 has height +2 greater than the right subtree
 -- avlError = mkAVL $
 --   ForkITree (ForkITree
 --             (ForkITree
