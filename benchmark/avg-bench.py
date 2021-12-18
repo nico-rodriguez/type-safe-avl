@@ -6,6 +6,8 @@ from re import compile, findall, DOTALL
 from itertools import product
 from multiprocessing import Pool, cpu_count
 
+from numpy import sqrt
+
 
 def valid_bench_names():
     """
@@ -135,9 +137,9 @@ def get_average_running_times(times):
     for each function position wise.
     """
     return {
-        'INSERT': ['{:.3e}'.format(float(sum(y) / len(times))) for y in zip(*[x['INSERT'] for x in times])],
-        'DELETE': ['{:.3e}'.format(float(sum(y) / len(times))) for y in zip(*[x['DELETE'] for x in times])],
-        'LOOKUP': ['{:.3e}'.format(float(sum(y) / len(times))) for y in zip(*[x['LOOKUP'] for x in times])]
+        'INSERT': [('{:.3e}'.format(float(sum(y) / len(times))), '{:.3e}'.format(std_dev_spread(y))) for y in zip(*[x['INSERT'] for x in times])],
+        'DELETE': [('{:.3e}'.format(float(sum(y) / len(times))), '{:.3e}'.format(std_dev_spread(y))) for y in zip(*[x['DELETE'] for x in times])],
+        'LOOKUP': [('{:.3e}'.format(float(sum(y) / len(times))), '{:.3e}'.format(std_dev_spread(y))) for y in zip(*[x['LOOKUP'] for x in times])]
     }
 
 
@@ -271,7 +273,8 @@ def execute_compilation_time_benchmarks(bench_name, n, save_to_file, debug):
             unprocessed_times[op] = remove_outliers(unprocessed_times[op])
             avg_time = float('{:.2f}'.format(
                 sum(unprocessed_times[op]) / len(unprocessed_times[op])))
-            times[op].append(avg_time)
+            std_dev = std_dev(unprocessed_times[op])
+            times[op].append((avg_time, std_dev))
 
     if (debug):
         print("***execute_compilation_time_benchmarks***", times, sep="\n")
@@ -296,6 +299,36 @@ def save_results_to_file(file_name, results):
         for op in results.keys():
             f.write(op + "\n")
             f.writelines(map(lambda n: str(n) + "\n", results[op]))
+
+
+def mean(arr):
+    """
+    Compute the mean value of an array of numbers.
+    """
+    s = sum(arr)
+    return s / len(arr)
+
+
+def std_dev(arr):
+    """
+    Compute the standard deviation of an array of numbers.
+    """
+    m = mean(arr)
+    s = 0
+    for a in arr:
+        s += (a - m) ** 2
+    return sqrt(s / len(arr))
+
+
+def std_dev_spread(*vals):
+    """
+    Compute the standard deviation over a variable list of number arguments.
+    """
+    m = sum(vals) / len(vals)
+    s = 0
+    for a in vals:
+        s += (a - m) ** 2
+    return sqrt(s / len(vals))
 
 
 def median(arr):
