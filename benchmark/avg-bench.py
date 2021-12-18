@@ -5,8 +5,7 @@ from subprocess import run
 from re import compile, findall, DOTALL
 from itertools import product
 from multiprocessing import Pool, cpu_count
-
-from numpy import sqrt
+from math import sqrt
 
 
 def valid_bench_names():
