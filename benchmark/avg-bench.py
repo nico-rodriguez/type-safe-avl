@@ -136,9 +136,9 @@ def get_average_running_times(times):
     for each function position wise.
     """
     return {
-        'INSERT': [('{:.3e}'.format(float(sum(y) / len(times))), '{:.3e}'.format(std_dev_spread(y))) for y in zip(*[x['INSERT'] for x in times])],
-        'DELETE': [('{:.3e}'.format(float(sum(y) / len(times))), '{:.3e}'.format(std_dev_spread(y))) for y in zip(*[x['DELETE'] for x in times])],
-        'LOOKUP': [('{:.3e}'.format(float(sum(y) / len(times))), '{:.3e}'.format(std_dev_spread(y))) for y in zip(*[x['LOOKUP'] for x in times])]
+        'INSERT': [('{:.4e}'.format(float(sum(y) / len(times))), '{:.4e}'.format(std_dev_spread(y))) for y in zip(*[x['INSERT'] for x in times])],
+        'DELETE': [('{:.4e}'.format(float(sum(y) / len(times))), '{:.4e}'.format(std_dev_spread(y))) for y in zip(*[x['DELETE'] for x in times])],
+        'LOOKUP': [('{:.4e}'.format(float(sum(y) / len(times))), '{:.4e}'.format(std_dev_spread(y))) for y in zip(*[x['LOOKUP'] for x in times])]
     }
 
 
@@ -270,7 +270,7 @@ def execute_compilation_time_benchmarks(bench_name, n, save_to_file, debug):
             remove_dist_folders()
         for op in bench_ops:
             unprocessed_times[op] = remove_outliers(unprocessed_times[op])
-            avg_time = float('{:.2f}'.format(
+            avg_time = float('{:.4f}'.format(
                 sum(unprocessed_times[op]) / len(unprocessed_times[op])))
             std_dev = std_dev(unprocessed_times[op])
             times[op].append((avg_time, std_dev))
