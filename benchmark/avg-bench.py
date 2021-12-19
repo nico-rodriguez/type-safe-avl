@@ -272,8 +272,8 @@ def execute_compilation_time_benchmarks(bench_name, n, save_to_file, debug):
             unprocessed_times[op] = remove_outliers(unprocessed_times[op])
             avg_time = float('{:.4f}'.format(
                 sum(unprocessed_times[op]) / len(unprocessed_times[op])))
-            std_dev = std_dev(unprocessed_times[op])
-            times[op].append((avg_time, std_dev))
+            std_dev_time = std_dev(unprocessed_times[op])
+            times[op].append((avg_time, std_dev_time))
 
     if (debug):
         print("***execute_compilation_time_benchmarks***", times, sep="\n")
