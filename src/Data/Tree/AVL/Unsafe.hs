@@ -41,29 +41,29 @@ import           Prelude       (Int, Maybe (Just, Nothing),
 -- | Nodes for unsafe `AVL` trees. They only hold information
 -- at the value level: some value of kind `Type` and a key
 -- of type `Int`.
-data Node :: Type where
-  Node :: Show a => Int -> a -> Node
-deriving stock instance Show Node
+data Node :: Type -> Type where
+  Node :: Show a => Int -> a -> Node a
+deriving stock instance Show (Node a)
 
 -- | Constructor of unsafe `AVL` trees.
-data AVL :: Type where
-  E :: AVL
-  F :: AVL -> Node -> AVL -> AVL
+data AVL :: Type -> Type where
+  E :: AVL a
+  F :: AVL a -> Node a -> AVL a -> AVL a
   deriving stock Show
 
 -- | Constructor of unsafe `AlmostAVL` trees.
 -- These trees have left and right `AVL` sub trees,
 -- but the overall tree may not be balanced.
-data AlmostAVL :: Type where
-  FF :: AVL -> Node -> AVL -> AlmostAVL
+data AlmostAVL :: Type -> Type where
+  FF :: AVL a -> Node a -> AVL a -> AlmostAVL a
   deriving stock Show
 
 -- | Empty `AVL` tree.
-emptyAVL :: AVL
+emptyAVL :: AVL a
 emptyAVL = E
 
 -- | Get the height of a tree.
-height :: AVL -> Int
+height :: AVL a -> Int
 height E                  = 0
 height (F l _ r) = 1 + max (height l) (height r)
 
@@ -109,10 +109,10 @@ balancedState h1 h2 = balancedState (h1-1) (h2-1)
 
 
 -- | Balance a tree.
-balance :: AlmostAVL -> AVL
+balance :: AlmostAVL a -> AVL a
 balance t@(FF l _ r) = balance' t (unbalancedState (height l) (height r))
 
-balance' :: AlmostAVL -> US -> AVL
+balance' :: AlmostAVL a -> US -> AVL a
 balance' (FF l n r)             NotUnbalanced   = F l n r
 balance' t@(FF (F ll _ lr) _ _) LeftUnbalanced  =
   rotate t LeftUnbalanced $ balancedState (height ll) (height lr)
@@ -121,7 +121,7 @@ balance' t@(FF _ _ (F rl _ rr)) RightUnbalanced =
 
 
 -- | Apply a rotation to a tree.
-rotate :: AlmostAVL -> US -> BS -> AVL
+rotate :: AlmostAVL a -> US -> BS -> AVL a
 -- Left-Left case (Right rotation)
 rotate (FF (F ll lnode lr) node r) LeftUnbalanced LeftHeavy = F ll lnode (F lr node r)
 rotate (FF (F ll lnode lr) node r) LeftUnbalanced Balanced  = F ll lnode (F lr node r)
@@ -138,11 +138,11 @@ rotate (FF l node (F (F rll rlnode rlr) rnode rr)) RightUnbalanced LeftHeavy =
 
 -- | Insert a new key and value.
 -- If the key is already present in the tree, update the value.
-insertAVL :: Show a => Int -> a -> AVL -> AVL
+insertAVL :: Show a => Int -> a -> AVL a -> AVL a
 insertAVL x  v  E                    = F E (Node x v) E
 insertAVL x' v' t@(F _ (Node x _) _) = insertAVL' (Node x' v') t (compare x' x)
 
-insertAVL' :: Node -> AVL -> Ordering -> AVL
+insertAVL' :: Node a -> AVL a -> Ordering -> AVL a
 insertAVL' node (F l _ r) EQ = F l node r
 insertAVL' n' (F E n r) LT = balance (FF (F E n' E) n r)
 insertAVL' n'@(Node x _) (F l@(F _ (Node ln _) _) n r) LT =
@@ -155,13 +155,13 @@ insertAVL' n'@(Node x _) (F l n r@(F _ (Node rn _) _)) GT =
 -- | Lookup the given key in the tree.
 -- It returns `Nothing` if tree is empty
 -- or if it doesn't have the key.
-lookupAVL :: Int -> AVL -> Maybe Node
+lookupAVL :: Int -> AVL a -> Maybe a
 lookupAVL _ E                    = Nothing
 lookupAVL x t@(F _ (Node n _) _) = lookupAVL' x t (compare x n)
 
-lookupAVL' :: Int -> AVL -> Ordering -> Maybe Node
+lookupAVL' :: Int -> AVL a -> Ordering -> Maybe a
 lookupAVL' _ E                             _  = Nothing
-lookupAVL' _ (F _ node _)                  EQ = Just node
+lookupAVL' _ (F _ (Node _ a) _)            EQ = Just a
 lookupAVL' _ (F E _ _)                     LT = Nothing
 lookupAVL' _ (F _ _ E)                     GT = Nothing
 lookupAVL' x (F l@(F _ (Node ln _) _) _ _) LT = lookupAVL' x l (compare x ln)
@@ -169,7 +169,7 @@ lookupAVL' x (F _ _ r@(F _ (Node rn _) _)) GT = lookupAVL' x r (compare x rn)
 
 
 -- | Delete the node with the maximum key value.
-maxKeyDelete :: AVL -> AVL
+maxKeyDelete :: AVL a -> AVL a
 maxKeyDelete E                = E
 maxKeyDelete (F l _ E)        = l
 maxKeyDelete (F l node r@F{}) =
@@ -178,19 +178,19 @@ maxKeyDelete (F l node r@F{}) =
 
 -- | Get the node with maximum key value.
 -- It returns `Nothing` if tree is empty.
-maxNode :: AVL -> Maybe Node
+maxNode :: AVL a -> Maybe (Node a)
 maxNode E                       = Nothing
-maxNode (F _ n E)               = Just n
+maxNode (F _ node E)            = Just node
 maxNode (F _ (Node _ _) r@F{})  = maxNode r
 
 
 -- | Delete the node with the given key.
 -- If the key is not in the tree, return the same tree.
-deleteAVL :: Int -> AVL -> AVL
+deleteAVL :: Int -> AVL a -> AVL a
 deleteAVL _ E                    = E
 deleteAVL x t@(F _ (Node n _) _) = deleteAVL' x t (compare x n)
 
-deleteAVL' :: Int -> AVL -> Ordering -> AVL
+deleteAVL' :: Int -> AVL a -> Ordering -> AVL a
 deleteAVL' _ (F E     _ E)     EQ = E
 deleteAVL' _ (F E     _ r@F{}) EQ = r
 deleteAVL' _ (F l@F{} _ E)     EQ = l

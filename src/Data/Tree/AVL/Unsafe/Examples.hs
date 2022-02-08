@@ -21,12 +21,12 @@ import           Prelude              (Int, Float, Bool(True,False))
 -- | Test Balanced Binary Tree
 avle = emptyAVL
 avlt1 = insertAVL 20 'f' avle
-avlt2 = insertAVL 60 (4::Int) avlt1
-avlt3 = insertAVL 30 "lala" avlt2
-avlt4 = insertAVL 50 True avlt3
-avlt5 = insertAVL 0 ([1,2,3]::[Int]) avlt4
-avlt6 = insertAVL 70 (1.8::Float) avlt5
-avlt7 = insertAVL 70 [False] avlt6
+avlt2 = insertAVL 60 'o' avlt1
+avlt3 = insertAVL 30 'l' avlt2
+avlt4 = insertAVL 50 'p' avlt3
+avlt5 = insertAVL 0  'f' avlt4
+avlt6 = insertAVL 70 'q' avlt5
+avlt7 = insertAVL 70 't' avlt6
 avlt8 = insertAVL 75 'a' avlt7
 avlt9 = insertAVL 80 'a' avlt8
 avlt10 = insertAVL 90 'a' avlt9
