@@ -12,7 +12,6 @@ trees and instance definition for the `Show` type class.
 -}
 
 {-# LANGUAGE DataKinds          #-}
-{-# LANGUAGE ExplicitNamespaces #-}
 {-# LANGUAGE FlexibleInstances  #-}
 {-# LANGUAGE GADTs              #-}
 {-# LANGUAGE TypeFamilies       #-}
@@ -26,11 +25,12 @@ module Data.Tree.AVL.Extern.Constructors (
 ) where
 
 import           Data.Kind                (Type)
+import           Data.Proxy               (Proxy (Proxy))
 import           Data.Tree.Node           (Node)
 import           Data.Tree.AVL.Invariants (BalancedHeights, Height)
 import           Data.Tree.BST.Extern.Constructors (IsBSTT, IsBSTC(isBSTT))
 import           Data.Tree.ITree          (ITree, Tree (EmptyTree,ForkTree))
-import           Prelude                  (Show (show), Bool(True), (++), undefined)
+import           Prelude                  (Show (show), Bool(True), (++))
 
 
 
@@ -56,7 +56,7 @@ instance Show (AVL t) where
 data IsAVLT :: Tree -> Type where
   EmptyIsAVLT :: IsAVLT 'EmptyTree
   ForkIsAVLT  :: (BalancedHeights (Height l) (Height r) n ~ 'True) =>
-    IsAVLT l -> Node n a -> IsAVLT r -> IsAVLT ('ForkTree l (Node n a) r)
+    IsAVLT l -> Proxy (Node n a) -> IsAVLT r -> IsAVLT ('ForkTree l (Node n a) r)
 
 
 -- | Type class for automatically constructing the proof term `IsAVLT`.
@@ -68,7 +68,7 @@ instance IsAVLC 'EmptyTree where
   isAVLT = EmptyIsAVLT
 instance (IsAVLC l, IsAVLC r, BalancedHeights (Height l) (Height r) n ~ 'True) =>
   IsAVLC ('ForkTree l (Node n a) r) where
-  isAVLT = ForkIsAVLT isAVLT (undefined::Node n a) isAVLT
+  isAVLT = ForkIsAVLT isAVLT (Proxy :: Proxy (Node n a)) isAVLT
 
 
 -- | Given an `ITree`, compute the proof terms `IsBSTT` and `IsAVLT`, through
@@ -80,5 +80,5 @@ mkAVL t = AVL t isBSTT isAVLT
 
 -- | Proof term which shows that `t` is an `AlmostAVL`.
 data IsAlmostAVLT :: Tree -> Type where
-  ForkIsAlmostAVLT  :: IsAVLT l -> Node n a -> IsAVLT r -> IsAlmostAVLT ('ForkTree l (Node n a) r)
+  ForkIsAlmostAVLT  :: IsAVLT l -> Proxy (Node n a) -> IsAVLT r -> IsAlmostAVLT ('ForkTree l (Node n a) r)
 

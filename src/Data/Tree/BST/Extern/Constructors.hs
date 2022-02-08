@@ -12,7 +12,6 @@ trees and instance definition for the `Show` type class.
 -}
 
 {-# LANGUAGE DataKinds          #-}
-{-# LANGUAGE ExplicitNamespaces #-}
 {-# LANGUAGE FlexibleInstances  #-}
 {-# LANGUAGE GADTs              #-}
 {-# LANGUAGE TypeFamilies       #-}
@@ -25,10 +24,11 @@ module Data.Tree.BST.Extern.Constructors (
 ) where
 
 import           Data.Kind                (Type)
+import           Data.Proxy               (Proxy(Proxy))
 import           Data.Tree.Node           (Node)
 import           Data.Tree.BST.Invariants (LtN, GtN)
 import           Data.Tree.ITree          (ITree, Tree(EmptyTree,ForkTree))
-import           Prelude                  (Show (show), Bool(True), (++), undefined)
+import           Prelude                  (Show (show), Bool(True), (++))
 
 
 -- | Constructor of `BST` trees. Given an arbitrary `ITree`, it constructs
@@ -54,7 +54,7 @@ instance Show (BST t) where
 data IsBSTT :: Tree -> Type where
   EmptyIsBSTT :: IsBSTT 'EmptyTree
   ForkIsBSTT  :: (LtN l n ~ 'True, GtN r n ~ 'True) =>
-    IsBSTT l -> Node n a -> IsBSTT r -> IsBSTT ('ForkTree l (Node n a) r)
+    IsBSTT l -> Proxy (Node n a) -> IsBSTT r -> IsBSTT ('ForkTree l (Node n a) r)
 
 -- | Type class for automatically constructing the proof term `IsBSTT`.
 class IsBSTC (t :: Tree) where
@@ -65,7 +65,7 @@ instance IsBSTC 'EmptyTree where
   isBSTT = EmptyIsBSTT
 instance (IsBSTC l, IsBSTC r, LtN l n ~ 'True, GtN r n ~ 'True) =>
   IsBSTC ('ForkTree l (Node n a) r) where
-  isBSTT = ForkIsBSTT isBSTT (undefined::Node n a) isBSTT
+  isBSTT = ForkIsBSTT isBSTT (Proxy :: Proxy (Node n a)) isBSTT
 
 
 -- | Given an `ITree`, compute the proof term `IsBSTT`, through the

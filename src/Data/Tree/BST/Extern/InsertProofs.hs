@@ -14,7 +14,6 @@ insertion algorithm defined in "Data.Tree.BST.Extern.Insert" respects the key or
 -}
 
 {-# LANGUAGE DataKinds             #-}
-{-# LANGUAGE ExplicitNamespaces    #-}
 {-# LANGUAGE FlexibleInstances     #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE ScopedTypeVariables   #-}
@@ -38,20 +37,19 @@ import           Data.Tree.ITree                  (Tree (EmptyTree, ForkTree))
 import           Data.Tree.Node                   (Node)
 import           Data.Type.Equality               ((:~:) (Refl), gcastWith)
 import           GHC.TypeNats                     (CmpNat, Nat)
-import           Prelude                          (Bool (True), undefined,
-                                                   Ordering (EQ, GT, LT), ($))
+import           Prelude                          (Bool (True), Ordering (EQ, GT, LT), ($))
 
 
 -- | Prove that inserting a node with key 'x' and element value 'a'
 -- in a BST tree preserves the BST condition.
 class ProofIsBSTInsert (x :: Nat) (a :: Type) (t :: Tree) where
-  proofIsBSTInsert :: Node x a -> IsBSTT t -> IsBSTT (Insert x a t)
+  proofIsBSTInsert :: Proxy (Node x a) -> IsBSTT t -> IsBSTT (Insert x a t)
 instance ProofIsBSTInsert x a 'EmptyTree where
   proofIsBSTInsert node _ = ForkIsBSTT EmptyIsBSTT node EmptyIsBSTT
 instance (o ~ CmpNat x n,
   ProofIsBSTInsert' x a ('ForkTree l (Node n a1) r) o) =>
   ProofIsBSTInsert x a ('ForkTree l (Node n a1) r) where
-  proofIsBSTInsert node tIsBST = proofIsBSTInsert' node tIsBST (Proxy::Proxy o)
+  proofIsBSTInsert pNode tIsBST = proofIsBSTInsert' pNode tIsBST (Proxy::Proxy o)
 
 -- | Prove that inserting a node with key 'x' and element value 'a'
 -- in a BST tree preserves the BST condition, given that the comparison between
@@ -59,43 +57,43 @@ instance (o ~ CmpNat x n,
 -- The `BST` condition was already checked when `proofIsBSTInsert` was called before.
 -- The 'o' parameter guides the proof.
 class ProofIsBSTInsert' (x :: Nat) (a :: Type) (t :: Tree) (o :: Ordering) where
-  proofIsBSTInsert' :: Node x a -> IsBSTT t -> Proxy o -> IsBSTT (Insert' x a t o)
+  proofIsBSTInsert' :: Proxy (Node x a) -> IsBSTT t -> Proxy o -> IsBSTT (Insert' x a t o)
 instance ProofIsBSTInsert' x a ('ForkTree l (Node n a1) r) 'EQ where
-  proofIsBSTInsert' _ (ForkIsBSTT l _ r) _ = ForkIsBSTT l node r
+  proofIsBSTInsert' _ (ForkIsBSTT l _ r) _ = ForkIsBSTT l pNode r
     where
-      node = undefined::Node n a
+      pNode = Proxy :: Proxy (Node n a)
 instance (CmpNat x n ~ 'LT) =>
   ProofIsBSTInsert' x a ('ForkTree 'EmptyTree (Node n a1) r) 'LT where
-  proofIsBSTInsert' _ (ForkIsBSTT _ node' r) _ =
-    ForkIsBSTT (ForkIsBSTT EmptyIsBSTT node EmptyIsBSTT) node' r
+  proofIsBSTInsert' _ (ForkIsBSTT _ pNode' r) _ =
+    ForkIsBSTT (ForkIsBSTT EmptyIsBSTT pNode EmptyIsBSTT) pNode' r
       where
-        node = undefined::Node x a
+        pNode = Proxy ::  Proxy (Node x a)
 instance (l ~ 'ForkTree ll (Node ln lna) lr, o ~ CmpNat x ln,
   CmpNat x n ~ 'LT,
   ProofIsBSTInsert' x a l o, ProofLtNInsert' x a l n o) =>
   ProofIsBSTInsert' x a ('ForkTree ('ForkTree ll (Node ln lna) lr) (Node n a1) r) 'LT where
-  proofIsBSTInsert' _ (ForkIsBSTT l node' r) _ =
-    gcastWith (proofLtNInsert' node l (Proxy::Proxy n) po) $
-    ForkIsBSTT (proofIsBSTInsert' node l po) node' r
+  proofIsBSTInsert' _ (ForkIsBSTT l pNode' r) _ =
+    gcastWith (proofLtNInsert' pNode l (Proxy::Proxy n) po) $
+    ForkIsBSTT (proofIsBSTInsert' pNode l po) pNode' r
       where
-        po = Proxy::Proxy o
-        node = undefined::Node x a
+        po    = Proxy::Proxy o
+        pNode = Proxy :: Proxy (Node x a)
 instance (CmpNat x n ~ 'GT) =>
   ProofIsBSTInsert' x a ('ForkTree l (Node n a1) 'EmptyTree) 'GT where
-  proofIsBSTInsert' _ (ForkIsBSTT l node' _) _ =
-    ForkIsBSTT l node' (ForkIsBSTT EmptyIsBSTT node EmptyIsBSTT)
+  proofIsBSTInsert' _ (ForkIsBSTT l pNode' _) _ =
+    ForkIsBSTT l pNode' (ForkIsBSTT EmptyIsBSTT pNode EmptyIsBSTT)
       where
-        node = undefined::Node x a
+        pNode = Proxy :: Proxy (Node x a)
 instance (r ~ 'ForkTree rl (Node rn rna) rr, o ~ CmpNat x rn,
   CmpNat x n ~ 'GT,
   ProofIsBSTInsert' x a r o, ProofGtNInsert' x a r n o) =>
   ProofIsBSTInsert' x a ('ForkTree l (Node n a1) ('ForkTree rl (Node rn rna) rr)) 'GT where
-  proofIsBSTInsert' _ (ForkIsBSTT l node' r) _ =
-    gcastWith (proofGtNInsert' node r (Proxy::Proxy n) po) $
-    ForkIsBSTT l node' (proofIsBSTInsert' node r po)
+  proofIsBSTInsert' _ (ForkIsBSTT l pNode' r) _ =
+    gcastWith (proofGtNInsert' pNode r (Proxy::Proxy n) po) $
+    ForkIsBSTT l pNode' (proofIsBSTInsert' pNode r po)
       where
-        po = Proxy::Proxy o
-        node = undefined::Node x a
+        po    = Proxy::Proxy o
+        pNode = Proxy :: Proxy (Node x a)
 
 
 -- | Prove that inserting a node with key 'x' (lower than 'n') and element value 'a'
@@ -104,7 +102,7 @@ instance (r ~ 'ForkTree rl (Node rn rna) rr, o ~ CmpNat x rn,
 -- The 'o' parameter guides the proof.
 class ProofLtNInsert' (x :: Nat) (a :: Type) (t :: Tree) (n :: Nat) (o :: Ordering) where
   proofLtNInsert' :: (CmpNat x n ~ 'LT, LtN t n ~ 'True) =>
-    Node x a -> IsBSTT t -> Proxy n -> Proxy o -> LtN (Insert' x a t o) n :~: 'True
+    Proxy (Node x a) -> IsBSTT t -> Proxy n -> Proxy o -> LtN (Insert' x a t o) n :~: 'True
 instance ProofLtNInsert' x a ('ForkTree l (Node n1 a1) r) n 'EQ where
   proofLtNInsert' _ _ _ _ = Refl
 instance (CmpNat x n1 ~ 'LT) =>
@@ -115,9 +113,9 @@ instance (l ~ 'ForkTree ll (Node ln lna) lr, o ~ CmpNat x ln,
   ProofLtNInsert' x a l n o) =>
   ProofLtNInsert' x a ('ForkTree ('ForkTree ll (Node ln lna) lr) (Node n1 a1) r) n 'LT where
   proofLtNInsert' _ (ForkIsBSTT l _ _) pn _ =
-    gcastWith (proofLtNInsert' node l pn (Proxy::Proxy o)) Refl
+    gcastWith (proofLtNInsert' pNode l pn (Proxy::Proxy o)) Refl
       where
-          node = undefined::Node x a
+          pNode = Proxy :: Proxy (Node x a)
 instance (CmpNat x n1 ~ 'GT) =>
   ProofLtNInsert' x a ('ForkTree l (Node n1 a1) 'EmptyTree) n 'GT where
   proofLtNInsert' _ _ _ _ = Refl
@@ -126,9 +124,9 @@ instance (r ~ 'ForkTree rl (Node rn rna) rr, o ~ CmpNat x rn,
   ProofLtNInsert' x a r n o) =>
   ProofLtNInsert' x a ('ForkTree l (Node n1 a1) ('ForkTree rl (Node rn rna) rr)) n 'GT where
   proofLtNInsert' _ (ForkIsBSTT _ _ r) pn _ =
-    gcastWith (proofLtNInsert' node r pn (Proxy::Proxy o)) Refl
+    gcastWith (proofLtNInsert' pNode r pn (Proxy::Proxy o)) Refl
       where
-        node = undefined::Node x a
+        pNode = Proxy :: Proxy (Node x a)
 
 
 -- | Prove that inserting a node with key 'x' (greater than 'n') and element value 'a'
@@ -137,7 +135,7 @@ instance (r ~ 'ForkTree rl (Node rn rna) rr, o ~ CmpNat x rn,
 -- The 'o' parameter guides the proof.
 class ProofGtNInsert' (x :: Nat) (a :: Type) (t :: Tree) (n :: Nat) (o :: Ordering) where
   proofGtNInsert' :: (CmpNat x n ~ 'GT, GtN t n ~ 'True) =>
-    Node x a -> IsBSTT t -> Proxy n -> Proxy o -> GtN (Insert' x a t o) n :~: 'True
+     Proxy (Node x a) -> IsBSTT t -> Proxy n -> Proxy o -> GtN (Insert' x a t o) n :~: 'True
 instance ProofGtNInsert' x a ('ForkTree l (Node n1 a1) r) n 'EQ where
   proofGtNInsert' _ _ _ _ = Refl
 instance (CmpNat x n1 ~ 'LT) =>

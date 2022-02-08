@@ -14,6 +14,7 @@ implemented with the externalist approach.
 {-# LANGUAGE DataKinds             #-}
 {-# LANGUAGE GADTs                 #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE ScopedTypeVariables   #-}
 
 {-# LANGUAGE Safe                  #-}
 
@@ -24,7 +25,7 @@ module Data.Tree.AVL.Extern (
   deleteAVL
 ) where
 
-import           Data.Proxy                        (Proxy)
+import           Data.Proxy                        (Proxy (Proxy))
 import           Data.Tree.AVL.Extern.Constructors (AVL (AVL), IsAVLT (EmptyIsAVLT))
 import           Data.Tree.AVL.Extern.Delete       (Deletable (Delete, delete))
 import           Data.Tree.AVL.Extern.DeleteProofs (ProofIsAVLDelete (proofIsAVLDelete),
@@ -49,8 +50,9 @@ emptyAVL = AVL EmptyITree EmptyIsBSTT EmptyIsAVLT
 -- that the new tree remains `AVL`.
 insertAVL :: (Insertable x a t, ProofIsBSTInsert x a t, ProofIsAVLInsert x a t) =>
   Proxy x -> a -> AVL t -> AVL (Insert x a t)
-insertAVL x a (AVL t tIsBST tIsAVL) = AVL (insert node t) (proofIsBSTInsert node tIsBST) (proofIsAVLInsert node tIsAVL)
-  where node = mkNode x a
+insertAVL (px :: Proxy x) (a :: a) (AVL t tIsBST tIsAVL) = AVL (insert node t) (proofIsBSTInsert pNode tIsBST) (proofIsAVLInsert pNode tIsAVL)
+  where node  = mkNode px a
+        pNode = Proxy :: Proxy (Node x a)
 
 -- | Interface for the lookup algorithm in the externalist implementation of `AVL`.
 lookupAVL :: (t ~ 'ForkTree l (Node n a1) r, Member x t t ~ 'True, Lookupable x a t) =>

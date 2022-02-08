@@ -14,7 +14,6 @@ deletion algorithm defined in "Data.Tree.BST.Extern.Delete" respects the key ord
 -}
 
 {-# LANGUAGE DataKinds             #-}
-{-# LANGUAGE ExplicitNamespaces    #-}
 {-# LANGUAGE FlexibleInstances     #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE ScopedTypeVariables   #-}
@@ -39,8 +38,7 @@ import           Data.Tree.ITree                  (Tree (EmptyTree, ForkTree))
 import           Data.Tree.Node                   (Node)
 import           Data.Type.Equality               ((:~:) (Refl), gcastWith)
 import           GHC.TypeNats                     (CmpNat, Nat)
-import           Prelude                          (Bool (True), undefined,
-                                                   Ordering (EQ, GT, LT), ($))
+import           Prelude                          (Bool (True), Ordering (EQ, GT, LT), ($))
 
 
 -- | Prove that deleting a node with key 'x' in a `BST` tree preserves `BST` restrictions.
@@ -72,9 +70,9 @@ instance (l ~ 'ForkTree ll (Node ln la) lr, r ~ 'ForkTree rl (Node rn ra) rr,
   ProofIsBSTDelete' x ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a1) ('ForkTree rl (Node rn ra) rr)) 'EQ where
   proofIsBSTDelete' _ (ForkIsBSTT l _ r) _ =
     gcastWith (proofLtNMaxKeyDelete l (Proxy::Proxy n)) $
-    ForkIsBSTT (proofMaxKeyDeleteIsBST l) node r
+    ForkIsBSTT (proofMaxKeyDeleteIsBST l) pNode r
       where
-        node = undefined::Node (MaxKey l) (MaxValue l)
+        pNode = Proxy :: Proxy (Node (MaxKey l) (MaxValue l))
 instance ProofIsBSTDelete' x ('ForkTree 'EmptyTree (Node n a1) r) 'LT where
   proofIsBSTDelete' _ tIsBST _ = tIsBST
 instance (l ~ 'ForkTree ll (Node ln la) lr, o ~ CmpNat x ln,

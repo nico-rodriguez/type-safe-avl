@@ -14,7 +14,6 @@ deletion algorithm defined in "Data.Tree.AVL.Extern.Delete" respects the key ord
 -}
 
 {-# LANGUAGE DataKinds             #-}
-{-# LANGUAGE ExplicitNamespaces    #-}
 {-# LANGUAGE FlexibleInstances     #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE ScopedTypeVariables   #-}
@@ -46,8 +45,7 @@ import           Data.Tree.ITree                    (Tree (EmptyTree, ForkTree))
 import           Data.Tree.Node                     (Node)
 import           Data.Type.Equality                 ((:~:) (Refl), gcastWith)
 import           GHC.TypeNats                       (CmpNat, Nat)
-import           Prelude                            (Bool (True), undefined,
-                                                     Ordering (EQ, GT, LT), ($))
+import           Prelude                            (Bool (True), Ordering (EQ, GT, LT), ($))
 
 
 -- | Prove that deleting a node with key 'x'
@@ -79,9 +77,9 @@ instance (l ~ 'ForkTree ll (Node ln la) lr, r ~ 'ForkTree rl (Node rn ra) rr,
   ProofMaxKeyDeleteIsBST l, ProofIsBSTBalance ('ForkTree (MaxKeyDelete l) (Node (MaxKey l) (MaxValue l)) r)) =>
   ProofIsBSTDelete' x ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a1) ('ForkTree rl (Node rn ra) rr)) 'EQ where
   proofIsBSTDelete' _ (ForkIsBSTT lIsBST _ rIsBST) _ =
-    proofIsBSTBalance $ ForkIsBSTT (proofMaxKeyDeleteIsBST lIsBST) node rIsBST
+    proofIsBSTBalance $ ForkIsBSTT (proofMaxKeyDeleteIsBST lIsBST) pNode rIsBST
       where
-        node = undefined::Node (MaxKey l) (MaxValue l)
+        pNode = Proxy :: Proxy (Node (MaxKey l) (MaxValue l))
 instance ProofIsBSTDelete' x ('ForkTree 'EmptyTree (Node n a1) r) 'LT where
   proofIsBSTDelete' _ tIsBST _ = tIsBST
 instance (l ~ 'ForkTree ll (Node ln la) lr, o ~ CmpNat x ln,
@@ -125,10 +123,10 @@ instance (l ~ 'ForkTree ll (Node ln la) lr, r ~ 'ForkTree rl (Node rn ra) rr,
   proofLtNDelete' _ (ForkIsBSTT lIsBST _ rIsBST) pn _ =
     gcastWith (proofLtNMaxKeyDelete lIsBST pn) $
     gcastWith (proofLTMaxKey lIsBST pn) $
-    gcastWith (proofLtNBalance (ForkIsBSTT lIsBST' node' rIsBST) pn) Refl
+    gcastWith (proofLtNBalance (ForkIsBSTT lIsBST' pNode' rIsBST) pn) Refl
       where
         lIsBST' = proofMaxKeyDeleteIsBST lIsBST
-        node'   = undefined::Node (MaxKey l) (MaxValue l)
+        pNode'  = Proxy :: Proxy (Node (MaxKey l) (MaxValue l))
 instance ProofLtNDelete' x ('ForkTree 'EmptyTree (Node n1 a1) r) n 'LT where
   proofLtNDelete' _ _ _ _ = Refl
 instance (l ~ 'ForkTree ll (Node ln la) lr, o ~ CmpNat x ln,
@@ -183,10 +181,10 @@ instance (l ~ 'ForkTree ll (Node ln la) lr, r ~ 'ForkTree rl (Node rn ra) rr,
   proofGtNDelete' _ (ForkIsBSTT lIsBST _ rIsBST) pn _ =
     gcastWith (proofGtNMaxKeyDelete lIsBST pn) $
     gcastWith (proofGTMaxKey lIsBST pn) $
-    gcastWith (proofGtNBalance (ForkIsBSTT lIsBST' node' rIsBST) pn) Refl
+    gcastWith (proofGtNBalance (ForkIsBSTT lIsBST' pNode' rIsBST) pn) Refl
       where
         lIsBST' = proofMaxKeyDeleteIsBST lIsBST
-        node'   = undefined::Node (MaxKey l) (MaxValue l)
+        pNode'  = Proxy :: Proxy (Node (MaxKey l) (MaxValue l))
 instance ProofGtNDelete' x ('ForkTree 'EmptyTree (Node n1 a1) r) n 'LT where
   proofGtNDelete' _ _ _ _ = Refl
 instance (l ~ 'ForkTree ll (Node ln la) lr, o ~ CmpNat x ln,
@@ -363,10 +361,10 @@ instance (l ~ 'ForkTree ll (Node ln la) lr, r ~ 'ForkTree rl (Node rn ra) rr,
   ProofMaxKeyDeleteIsAVL l, ProofIsAVLBalance ('ForkTree (MaxKeyDelete l) (Node (MaxKey l) (MaxValue l)) r)) =>
   ProofIsAVLDelete' x ('ForkTree ('ForkTree ll (Node ln la) lr) (Node n a1) ('ForkTree rl (Node rn ra) rr)) 'EQ where
   proofIsAVLDelete' _ (ForkIsAVLT lIsAVL _ rIsAVL) _ =
-    proofIsAVLBalance (ForkIsAlmostAVLT lIsAVL' node rIsAVL)
+    proofIsAVLBalance (ForkIsAlmostAVLT lIsAVL' pNode rIsAVL)
       where
         lIsAVL' = proofMaxKeyDeleteIsAVL lIsAVL
-        node    = undefined::Node (MaxKey l) (MaxValue l)
+        pNode    = Proxy :: Proxy (Node (MaxKey l) (MaxValue l))
 instance ProofIsAVLDelete' x ('ForkTree 'EmptyTree (Node n a1) r) 'LT where
   proofIsAVLDelete' _ tIsAVL _ = tIsAVL
 instance (l ~ 'ForkTree ll (Node ln la) lr,

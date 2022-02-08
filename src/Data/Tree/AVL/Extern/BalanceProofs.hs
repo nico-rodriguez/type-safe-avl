@@ -14,7 +14,6 @@ balance algorithm defined in "Data.Tree.AVL.Extern.Balance" respects the key ord
 -}
 
 {-# LANGUAGE DataKinds             #-}
-{-# LANGUAGE ExplicitNamespaces    #-}
 {-# LANGUAGE FlexibleInstances     #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE ScopedTypeVariables   #-}

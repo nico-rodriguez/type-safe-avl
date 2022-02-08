@@ -14,6 +14,7 @@ implemented with the externalist approach.
 {-# LANGUAGE DataKinds             #-}
 {-# LANGUAGE GADTs                 #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE ScopedTypeVariables   #-}
 
 {-# LANGUAGE Safe                  #-}
 
@@ -24,7 +25,7 @@ module Data.Tree.BST.Extern (
   deleteBST
 ) where
 
-import           Data.Proxy                        (Proxy)
+import           Data.Proxy                        (Proxy (Proxy))
 import           Data.Tree.BST.Extern.Constructors (BST (BST), IsBSTT (EmptyIsBSTT))
 import           Data.Tree.BST.Extern.Delete       (Deletable (Delete, delete))
 import           Data.Tree.BST.Extern.DeleteProofs (ProofIsBSTDelete (proofIsBSTDelete))
@@ -46,8 +47,9 @@ emptyBST = BST EmptyITree EmptyIsBSTT
 -- that the new tree remains `BST`.
 insertBST :: (Insertable x a t, ProofIsBSTInsert x a t) =>
   Proxy x -> a -> BST t -> BST (Insert x a t)
-insertBST x a (BST t tIsBST) = BST (insert node t) (proofIsBSTInsert node tIsBST)
-  where node = mkNode x a
+insertBST (px :: Proxy x) (a :: a) (BST t tIsBST) = BST (insert node t) (proofIsBSTInsert pNode tIsBST)
+  where node  = mkNode px a
+        pNode = Proxy :: Proxy (Node x a)
 
 -- | Interface for the lookup algorithm in the externalist implementation of `BST`.
 lookupBST :: (t ~ 'ForkTree l (Node n a1) r, Member x t t ~ 'True, Lookupable x a t) =>
