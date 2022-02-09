@@ -151,6 +151,32 @@ The interfaces are analogous to those for AVL trees. Just replace "AVL" for "BST
 
 For more usage examples see the `Examples.hs` file for each approach.
 
+### Unsafe
+
+```haskell
+import           Data.Tree.AVL.Unsafe (deleteAVL, emptyAVL, insertAVL,
+                                       lookupAVL)
+import           Prelude              (Int, Float, Bool(True,False))
+
+
+-- | Test Balanced Binary Tree
+avle = emptyAVL
+avlt1 = insertAVL 20 'f' avle
+avlt2 = insertAVL 60 'o' avlt1
+avlt3 = insertAVL 30 'l' avlt2
+
+-- | Just 'l'
+l1 = lookupAVL 30 avlt3
+
+-- | Nothing: key 10 is not in the tree avlt8
+n = lookupAVL 10 avlt3
+
+avlt4 = deleteAVL 20 avlt3
+avlt5 = deleteAVL 60 avlt3
+-- | There's no error. Just return the same tree
+avlt6 = deleteAVL 40 avlt3
+```
+
 ### Full Extern
 
 A full externalist approach means grouping the operations and only perform the check of the invariants at the end:
