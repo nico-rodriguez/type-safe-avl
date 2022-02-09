@@ -40,7 +40,7 @@ import           Prelude       (Int, Maybe (Just, Nothing),
 
 
 -- | Nodes for unsafe `BST` trees. They only hold information
--- at the value level: some value of kind `Type` and a key
+-- at the value level: some value of type `a` and a key
 -- of type `Int`.
 data Node :: Type -> Type where
   Node :: Show a => Int -> a -> Node a
