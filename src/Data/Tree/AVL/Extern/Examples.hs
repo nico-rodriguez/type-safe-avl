@@ -17,6 +17,8 @@ import           Data.Tree.AVL.Extern (deleteAVL, emptyAVL, insertAVL,
                                        lookupAVL)
 import           Prelude              (Bool (False, True), Float, Int, String)
 
+
+-- | Proxies for the node keys
 p0 = Proxy :: Proxy 0
 p1 = Proxy :: Proxy 1
 p2 = Proxy :: Proxy 2

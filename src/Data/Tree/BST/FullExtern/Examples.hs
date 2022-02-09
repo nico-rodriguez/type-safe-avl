@@ -23,6 +23,7 @@ import           Prelude                  (Bool (False, True), Float, Int, ($))
 
 
 
+-- | Proxies for the node keys
 p0 = Proxy :: Proxy 0
 p1 = Proxy :: Proxy 1
 p2 = Proxy :: Proxy 2
@@ -35,6 +36,7 @@ p7 = Proxy :: Proxy 7
 
 emptyTree = EmptyITree
 
+-- | Insert several values in a row and check the BST invariants at the end
 bst = mkBST t
   where
     t = insert (mkNode p4 'f') $ insert (mkNode p2 (4::Int)) $
@@ -47,6 +49,7 @@ bst = mkBST t
 --             (mkNode p4 'f')
 --             EmptyITree
 
+-- | For performing a lookup, it's necessary to take the ITree 't' out of the BST constructor
 l1 = case bst of
     BST t _ -> lookup p6 t
 
@@ -54,6 +57,7 @@ l1 = case bst of
 -- err = case bst of
 --     BST t _ -> lookup p1 t
 
+-- | Delete several values in a row and check the BST invariants at the end
 bst2 = case bst of
   BST t _ -> mkBST t'
     where
