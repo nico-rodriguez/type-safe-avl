@@ -52,7 +52,7 @@ insertAVL :: (Insertable x a t, ProofIsBSTInsert x a t, ProofIsAVLInsert x a t) 
   Proxy x -> a -> AVL t -> AVL (Insert x a t)
 insertAVL (px :: Proxy x) (a :: a) (AVL t tIsBST tIsAVL) = AVL (insert node t) (proofIsBSTInsert pNode tIsBST) (proofIsAVLInsert pNode tIsAVL)
   where node  = mkNode px a
-        pNode = Proxy :: Proxy (Node x a)
+        pNode = Proxy::Proxy (Node x a)
 
 -- | Interface for the lookup algorithm in the externalist implementation of `AVL`.
 lookupAVL :: (t ~ 'ForkTree l (Node n a1) r, Member x t t ~ 'True, Lookupable x a t) =>

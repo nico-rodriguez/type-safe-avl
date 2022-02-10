@@ -61,13 +61,13 @@ class ProofIsBSTInsert' (x :: Nat) (a :: Type) (t :: Tree) (o :: Ordering) where
 instance ProofIsBSTInsert' x a ('ForkTree l (Node n a1) r) 'EQ where
   proofIsBSTInsert' _ (ForkIsBSTT l _ r) _ = ForkIsBSTT l pNode r
     where
-      pNode = Proxy :: Proxy (Node n a)
+      pNode = Proxy::Proxy (Node n a)
 instance (CmpNat x n ~ 'LT) =>
   ProofIsBSTInsert' x a ('ForkTree 'EmptyTree (Node n a1) r) 'LT where
   proofIsBSTInsert' _ (ForkIsBSTT _ pNode' r) _ =
     ForkIsBSTT (ForkIsBSTT EmptyIsBSTT pNode EmptyIsBSTT) pNode' r
       where
-        pNode = Proxy ::  Proxy (Node x a)
+        pNode = Proxy::Proxy (Node x a)
 instance (l ~ 'ForkTree ll (Node ln lna) lr, o ~ CmpNat x ln,
   CmpNat x n ~ 'LT,
   ProofIsBSTInsert' x a l o, ProofLtNInsert' x a l n o) =>
@@ -77,13 +77,13 @@ instance (l ~ 'ForkTree ll (Node ln lna) lr, o ~ CmpNat x ln,
     ForkIsBSTT (proofIsBSTInsert' pNode l po) pNode' r
       where
         po    = Proxy::Proxy o
-        pNode = Proxy :: Proxy (Node x a)
+        pNode = Proxy::Proxy (Node x a)
 instance (CmpNat x n ~ 'GT) =>
   ProofIsBSTInsert' x a ('ForkTree l (Node n a1) 'EmptyTree) 'GT where
   proofIsBSTInsert' _ (ForkIsBSTT l pNode' _) _ =
     ForkIsBSTT l pNode' (ForkIsBSTT EmptyIsBSTT pNode EmptyIsBSTT)
       where
-        pNode = Proxy :: Proxy (Node x a)
+        pNode = Proxy::Proxy (Node x a)
 instance (r ~ 'ForkTree rl (Node rn rna) rr, o ~ CmpNat x rn,
   CmpNat x n ~ 'GT,
   ProofIsBSTInsert' x a r o, ProofGtNInsert' x a r n o) =>
@@ -93,7 +93,7 @@ instance (r ~ 'ForkTree rl (Node rn rna) rr, o ~ CmpNat x rn,
     ForkIsBSTT l pNode' (proofIsBSTInsert' pNode r po)
       where
         po    = Proxy::Proxy o
-        pNode = Proxy :: Proxy (Node x a)
+        pNode = Proxy::Proxy (Node x a)
 
 
 -- | Prove that inserting a node with key 'x' (lower than 'n') and element value 'a'
@@ -115,7 +115,7 @@ instance (l ~ 'ForkTree ll (Node ln lna) lr, o ~ CmpNat x ln,
   proofLtNInsert' _ (ForkIsBSTT l _ _) pn _ =
     gcastWith (proofLtNInsert' pNode l pn (Proxy::Proxy o)) Refl
       where
-          pNode = Proxy :: Proxy (Node x a)
+          pNode = Proxy::Proxy (Node x a)
 instance (CmpNat x n1 ~ 'GT) =>
   ProofLtNInsert' x a ('ForkTree l (Node n1 a1) 'EmptyTree) n 'GT where
   proofLtNInsert' _ _ _ _ = Refl
@@ -126,7 +126,7 @@ instance (r ~ 'ForkTree rl (Node rn rna) rr, o ~ CmpNat x rn,
   proofLtNInsert' _ (ForkIsBSTT _ _ r) pn _ =
     gcastWith (proofLtNInsert' pNode r pn (Proxy::Proxy o)) Refl
       where
-        pNode = Proxy :: Proxy (Node x a)
+        pNode = Proxy::Proxy (Node x a)
 
 
 -- | Prove that inserting a node with key 'x' (greater than 'n') and element value 'a'

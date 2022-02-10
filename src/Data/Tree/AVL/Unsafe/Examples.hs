@@ -14,7 +14,7 @@ module Data.Tree.AVL.Unsafe.Examples where
 
 import           Data.Tree.AVL.Unsafe (deleteAVL, emptyAVL, insertAVL,
                                        lookupAVL)
-import           Prelude              (Int, Float, Bool(True,False))
+import           Prelude              ()
 
 
 

@@ -11,7 +11,6 @@ Type level search for a key and a value type in a type tree.
 -}
 
 {-# LANGUAGE DataKinds            #-}
-{-# LANGUAGE ExplicitNamespaces   #-}
 {-# LANGUAGE TypeFamilies         #-}
 {-# LANGUAGE TypeOperators        #-}
 {-# LANGUAGE UndecidableInstances #-}
@@ -30,7 +29,7 @@ import           Data.Type.Bool     (If)
 import           Data.Type.Equality (type (==))
 import           GHC.TypeLits       (TypeError, ErrorMessage(Text, ShowType, (:<>:)))
 import           GHC.TypeNats       (CmpNat, Nat)
-import           Prelude            (Bool (False, True), Ordering (EQ, LT))
+import           Prelude            (Bool (True), Ordering (EQ, LT))
 
 
 -- | Type family to test wether there is a node in the tree 't' with key 'x'.
@@ -44,7 +43,7 @@ type family Member (x :: Nat) (t :: Tree) (t' :: Tree) :: Bool where
         (Member x r t')
       )
     )
-  Member x 'EmptyTree t' = TypeError (Text "Key " :<>: ShowType x :<>: Text " not found in tree " :<>: ShowType t')
+  Member x 'EmptyTree t' = TypeError ('Text "Key " ':<>: 'ShowType x ':<>: 'Text " not found in tree " ':<>: 'ShowType t')
 
 -- | Type family to search for the type of the value stored with key 'x' in a tree 't'.
 -- | It assumes that 't' is a BST and that 'x' is a member of 't' in order to perform the search
@@ -58,4 +57,4 @@ type family LookupValueType (x :: Nat) (t :: Tree) (t' :: Tree) :: Type where
         (LookupValueType x r t')
       )
     )
-  LookupValueType x 'EmptyTree t' = TypeError (Text "Key " :<>: ShowType x :<>: Text " not found in tree " :<>: ShowType t')
+  LookupValueType x 'EmptyTree t' = TypeError ('Text "Key " ':<>: 'ShowType x ':<>: 'Text " not found in tree " ':<>: 'ShowType t')

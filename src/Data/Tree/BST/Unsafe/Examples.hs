@@ -14,7 +14,7 @@ module Data.Tree.BST.Unsafe.Examples where
 
 import           Data.Tree.BST.Unsafe (deleteBST, emptyBST, insertBST,
                                        lookupBST)
-import           Prelude              (Int, Float, Bool(True,False))
+import           Prelude              ()
 
 
 

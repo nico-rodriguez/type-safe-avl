@@ -66,7 +66,7 @@ class ProofIsBSTInsert' (x :: Nat) (a :: Type) (t :: Tree) (o :: Ordering) where
 instance ProofIsBSTInsert' x a ('ForkTree l (Node n a1) r) 'EQ where
   proofIsBSTInsert' _ (ForkIsBSTT lIsBST _ rIsBST) _ = ForkIsBSTT lIsBST pNode rIsBST
     where
-        pNode = Proxy :: Proxy (Node n a)
+        pNode = Proxy::Proxy (Node n a)
 instance (CmpNat x n ~ 'LT,
   ProofIsBSTBalance ('ForkTree ('ForkTree 'EmptyTree (Node x a) 'EmptyTree) (Node n a1) r)) =>
   ProofIsBSTInsert' x a ('ForkTree 'EmptyTree (Node n a1) r) 'LT where
@@ -205,7 +205,7 @@ class ProofIsAVLInsert' (x :: Nat) (a :: Type) (t :: Tree) (o :: Ordering) where
 instance ProofIsAVLInsert' x a ('ForkTree l (Node n a1) r) 'EQ where
   proofIsAVLInsert' _ (ForkIsAVLT lIsAVL _ rIsAVL) _ = ForkIsAVLT lIsAVL pNode rIsAVL
     where
-      pNode  = Proxy :: Proxy (Node n a)
+      pNode  = Proxy::Proxy (Node n a)
 instance (ProofIsAVLBalance ('ForkTree ('ForkTree 'EmptyTree (Node x a) 'EmptyTree) (Node n a1) r)) =>
   ProofIsAVLInsert' x a ('ForkTree 'EmptyTree (Node n a1) r) 'LT where
   proofIsAVLInsert' pNode (ForkIsAVLT _ pNode' rIsAVL) _ =

@@ -65,7 +65,7 @@ instance IsBSTC 'EmptyTree where
   isBSTT = EmptyIsBSTT
 instance (IsBSTC l, IsBSTC r, LtN l n ~ 'True, GtN r n ~ 'True) =>
   IsBSTC ('ForkTree l (Node n a) r) where
-  isBSTT = ForkIsBSTT isBSTT (Proxy :: Proxy (Node n a)) isBSTT
+  isBSTT = ForkIsBSTT isBSTT (Proxy::Proxy (Node n a)) isBSTT
 
 
 -- | Given an `ITree`, compute the proof term `IsBSTT`, through the

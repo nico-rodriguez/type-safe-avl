@@ -68,7 +68,7 @@ instance IsAVLC 'EmptyTree where
   isAVLT = EmptyIsAVLT
 instance (IsAVLC l, IsAVLC r, BalancedHeights (Height l) (Height r) n ~ 'True) =>
   IsAVLC ('ForkTree l (Node n a) r) where
-  isAVLT = ForkIsAVLT isAVLT (Proxy :: Proxy (Node n a)) isAVLT
+  isAVLT = ForkIsAVLT isAVLT (Proxy::Proxy (Node n a)) isAVLT
 
 
 -- | Given an `ITree`, compute the proof terms `IsBSTT` and `IsAVLT`, through
