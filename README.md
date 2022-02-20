@@ -24,7 +24,7 @@ No external Haskell libraries are needed.
 
 ## Installing
 
-If you only want to use the library, the easiest way to install it is through Hackage. The following command will download the library and install it:
+If you only want to use the library (without benchmarks), the easiest way to install it is through [Hackage](https://hackage.haskell.org/). The following command will download the library and install it:
 
 ```Shell
 cabal install --lib balanced-binary-search-tree
@@ -337,7 +337,9 @@ The source files `Benchmark.hs` performs all of the running time benchmarks defi
 
 ### Running the benchmark
 
-Given the compilation effort for running the benchmarks, they're hosted on a separate branch. In order to run the benchmarks, clone the repository and switch to the `benchmark` branch.
+Given the compilation effort for running the benchmarks, the Hackage package comes without them.
+
+In order to run the benchmarks, you should clone the repository and switch to `benchmark` branch.
 
 For running all the benchmarks, use `benchmark/avg-bench.py` script. There's a `requirements.txt` file with all the python dependencies needed to run the script.
 
