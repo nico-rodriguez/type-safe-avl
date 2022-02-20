@@ -15,7 +15,7 @@ Implementation of type-safe BST and AVL trees, following four different approach
 
 ```Shell
 ghc (>= 8.10.2)     # GHC Haskell compiler
-cabal (>=3.4.0.0)   # Haskell package manager
+cabal (>=3.0.0.0)   # Haskell package manager
 python3 (>=3.6.8)   # Python interpreter (only needed for running the benchmarks)
 Some python package manager (e.g., pip)
 ```
