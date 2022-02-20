@@ -11,7 +11,6 @@ Type level restrictions for the key ordering in type safe BST trees.
 -}
 
 {-# LANGUAGE DataKinds            #-}
-{-# LANGUAGE ExplicitNamespaces   #-}
 {-# LANGUAGE TypeFamilies         #-}
 {-# LANGUAGE TypeOperators        #-}
 {-# LANGUAGE UndecidableInstances #-}
@@ -31,7 +30,7 @@ import           GHC.TypeNats       (CmpNat, Nat)
 import           Prelude            (Bool (True), Ordering (GT, LT))
 
 
--- | Check if all elements of the tree `l` are strictly less than `x`.
+-- | Check if all elements of the tree @l@ are strictly less than @x@.
 type family LtN (l :: Tree) (x :: Nat) :: Bool where
   LtN 'EmptyTree                 _x = 'True
   LtN ('ForkTree l (Node n a) r) x =
@@ -47,7 +46,7 @@ type family LtN (l :: Tree) (x :: Nat) :: Bool where
     )
 
 
--- | Check if all elements of the tree `r` are strictly greater than `x`.
+-- | Check if all elements of the tree @r@ are strictly greater than @x@.
 type family GtN (r :: Tree) (x :: Nat) :: Bool where
   GtN 'EmptyTree                 _x = 'True
   GtN ('ForkTree l (Node n _a) r) x = 

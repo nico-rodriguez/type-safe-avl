@@ -46,7 +46,7 @@ import           Prelude                          (Bool (True), Ordering (LT, GT
 
 
 -- | This type class provides the functionality to balance
--- an `AlmostAVL` 't' (a tree that came up from an insertion or deletion
+-- an `AlmostAVL` @t@ (a tree that came up from an insertion or deletion
 -- on an `AVL`).
 -- The insertion is defined at the value level and the type level.
 class Balanceable (t :: Tree) where
@@ -59,9 +59,9 @@ instance (us ~ UnbalancedState (Height l) (Height r),
   balance t = balance' t (Proxy::Proxy us)
 
 -- | This type class provides the functionality to balance
--- an `AlmostAVL` 't'.
--- It's only used by the 'Balanceable' class and it has one extra parameter 'us',
--- which is the `UnbalancedState` of the two sub trees of 't'.
+-- an `AlmostAVL` @t@.
+-- It's only used by the 'Balanceable' class and it has one extra parameter @us@,
+-- which is the `UnbalancedState` of the two sub trees of @t@.
 class Balanceable' (t :: Tree) (us :: US) where
   type Balance' (t :: Tree) (us :: US) :: Tree
   balance' :: AlmostAVL t -> Proxy us -> AVL (Balance' t us)
@@ -84,7 +84,7 @@ instance (bs ~ BalancedState (Height rl) (Height rr),
 
 
 -- | This type class provides the functionality to apply a rotation to
--- an `AlmostAVL` tree 't'.
+-- an `AlmostAVL` tree @t@.
 -- The rotation is defined at the value level and the type level.
 class Rotateable (t :: Tree) (us :: US) (bs :: BS) where
   type Rotate (t :: Tree) (us :: US) (bs :: BS) :: Tree
@@ -147,7 +147,7 @@ instance (r ~ 'ForkTree ('ForkTree rll (Node rln rla) rlr) (Node rn ra) rr,
     ForkAVL (ForkAVL l xnode rll) rlnode (ForkAVL rlr rnode rr)
 
 
--- | Prove that rebalancing a tree 't' which verifies @LtN t n ~ 'True@ preserves the `LtN` invariant.
+-- | Prove that rebalancing a tree @t@ which verifies @LtN t n ~ 'True@ preserves the `LtN` invariant.
 class ProofLtNBalance (t :: Tree) (n :: Nat) where
   proofLtNBalance :: (LtN t n ~ 'True) =>
     AlmostAVL t -> Proxy n -> LtN (Balance t) n :~: 'True
@@ -155,9 +155,9 @@ instance (us ~ UnbalancedState (Height l) (Height r), ProofLtNBalance' ('ForkTre
   ProofLtNBalance ('ForkTree l (Node n1 a) r) n where
   proofLtNBalance pt pn = gcastWith (proofLtNBalance' pt pn (Proxy::Proxy us)) Refl
 
--- | Prove that rebalancing a tree 't' which verifies @LtN t n ~ 'True@ preserves the `LtN` invariant,
--- given the `UnbalancedState` 'us' of the tree.
--- The 'us' parameter guides the proof.
+-- | Prove that rebalancing a tree @t@ which verifies @LtN t n ~ 'True@ preserves the `LtN` invariant,
+-- given the `UnbalancedState` @us@ of the tree.
+-- The @us@ parameter guides the proof.
 class ProofLtNBalance' (t :: Tree) (n :: Nat) (us :: US) where
   proofLtNBalance' :: (LtN t n ~ 'True) =>
     AlmostAVL t -> Proxy n -> Proxy us -> LtN (Balance' t us) n :~: 'True
@@ -173,7 +173,7 @@ instance (bs ~ BalancedState (Height rl) (Height rr),
   proofLtNBalance' pt pn pus = gcastWith (proofLtNRotate pt pn pus (Proxy::Proxy bs)) Refl
 
 
--- | Prove that applying a rotation to a tree 't' which verifies @LtN t n ~ 'True@ preserves the `LtN` invariant.
+-- | Prove that applying a rotation to a tree @t@ which verifies @LtN t n ~ 'True@ preserves the `LtN` invariant.
 class ProofLtNRotate (t :: Tree) (n :: Nat) (us :: US) (bs :: BS) where
   proofLtNRotate :: (LtN t n ~ 'True) =>
     AlmostAVL t -> Proxy n -> Proxy us -> Proxy bs -> LtN (Rotate t us bs) n :~: 'True
@@ -205,7 +205,7 @@ instance (LtN l n ~ 'True, LtN rll n ~ 'True, CmpNat rln n ~ 'LT, LtN rlr n ~ 'T
   proofLtNRotate _ _ _ _ = Refl
 
 
--- | Prove that rebalancing a tree 't' which verifies @GtN t n ~ 'True@ preserves the `GtN` invariant.
+-- | Prove that rebalancing a tree @t@ which verifies @GtN t n ~ 'True@ preserves the `GtN` invariant.
 class ProofGtNBalance (t :: Tree) (n :: Nat) where
   proofGtNBalance :: (GtN t n ~ 'True) =>
     AlmostAVL t -> Proxy n -> GtN (Balance t) n :~: 'True
@@ -214,9 +214,9 @@ instance (us ~ UnbalancedState (Height l) (Height r),
   ProofGtNBalance ('ForkTree l (Node n1 a) r) n where
   proofGtNBalance t pn = gcastWith (proofGtNBalance' t pn (Proxy::Proxy us)) Refl
 
--- | Prove that rebalancing a tree 't' which verifies @GtN t n ~ 'True@ preserves the `GtN` invariant,
--- given the `UnbalancedState` 'us' of the tree.
--- The 'us' parameter guides the proof.
+-- | Prove that rebalancing a tree @t@ which verifies @GtN t n ~ 'True@ preserves the `GtN` invariant,
+-- given the `UnbalancedState` @us@ of the tree.
+-- The @us@ parameter guides the proof.
 class ProofGtNBalance' (t :: Tree) (n :: Nat) (us :: US) where
   proofGtNBalance' :: (GtN t n ~ 'True) =>
     AlmostAVL t -> Proxy n -> Proxy us -> GtN (Balance' t us) n :~: 'True
@@ -232,7 +232,7 @@ instance (bs ~ BalancedState (Height rl) (Height rr),
   proofGtNBalance' t pn pus = gcastWith (proofGtNRotate t pn pus (Proxy::Proxy bs)) Refl
 
 
--- | Prove that applying a rotation to a tree 't' which verifies @GtN t n ~ 'True@ preserves the `GtN` invariant.
+-- | Prove that applying a rotation to a tree @t@ which verifies @GtN t n ~ 'True@ preserves the `GtN` invariant.
 class ProofGtNRotate (t :: Tree) (n :: Nat) (us :: US) (bs :: BS) where
   proofGtNRotate :: (GtN t n ~ 'True) =>
     AlmostAVL t -> Proxy n -> Proxy us -> Proxy bs -> GtN (Rotate t us bs) n :~: 'True

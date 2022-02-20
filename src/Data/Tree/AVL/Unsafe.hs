@@ -39,7 +39,7 @@ import           Prelude       (Int, Maybe (Just, Nothing),
                                 compare, max, ($), (+), (-))
 
 -- | Nodes for unsafe `AVL` trees. They only hold information
--- at the value level: some value of type `a` and a key
+-- at the value level: some value of type @a@ and a key
 -- of type `Int`.
 data Node :: Type -> Type where
   Node :: Show a => Int -> a -> Node a
@@ -112,6 +112,8 @@ balancedState h1 h2 = balancedState (h1-1) (h2-1)
 balance :: AlmostAVL a -> AVL a
 balance t@(FF l _ r) = balance' t (unbalancedState (height l) (height r))
 
+-- | Balancing algorithm. It has the additional parameter of type
+-- `US`, which decides the proper rotation to be applied.
 balance' :: AlmostAVL a -> US -> AVL a
 balance' (FF l n r)             NotUnbalanced   = F l n r
 balance' t@(FF (F ll _ lr) _ _) LeftUnbalanced  =
@@ -142,6 +144,8 @@ insertAVL :: Show a => Int -> a -> AVL a -> AVL a
 insertAVL x  v  E                    = F E (Node x v) E
 insertAVL x' v' t@(F _ (Node x _) _) = insertAVL' (Node x' v') t (compare x' x)
 
+-- | Insertion algorithm. It has the additional parameter of type
+-- `Ordering`, which guides the recursion.
 insertAVL' :: Node a -> AVL a -> Ordering -> AVL a
 insertAVL' node (F l _ r) EQ = F l node r
 insertAVL' n' (F E n r) LT = balance (FF (F E n' E) n r)
@@ -159,6 +163,8 @@ lookupAVL :: Int -> AVL a -> Maybe a
 lookupAVL _ E                    = Nothing
 lookupAVL x t@(F _ (Node n _) _) = lookupAVL' x t (compare x n)
 
+-- | Lookup algorithm. It has the additional parameter of type
+-- `Ordering`, which guides the recursion.
 lookupAVL' :: Int -> AVL a -> Ordering -> Maybe a
 lookupAVL' _ E                             _  = Nothing
 lookupAVL' _ (F _ (Node _ a) _)            EQ = Just a
@@ -190,6 +196,8 @@ deleteAVL :: Int -> AVL a -> AVL a
 deleteAVL _ E                    = E
 deleteAVL x t@(F _ (Node n _) _) = deleteAVL' x t (compare x n)
 
+-- | Deletion algorithm. It has the additional parameter of type
+-- `Ordering`, which guides the recursion.
 deleteAVL' :: Int -> AVL a -> Ordering -> AVL a
 deleteAVL' _ (F E     _ E)     EQ = E
 deleteAVL' _ (F E     _ r@F{}) EQ = r

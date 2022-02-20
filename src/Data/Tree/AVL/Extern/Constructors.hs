@@ -46,7 +46,7 @@ instance Show (AVL t) where
   show (AVL t _ _) = "AVL $ " ++ show t
 
 
--- | Proof term which shows that `t` is an `AVL`.
+-- | Proof term which shows that @t@ is an `AVL`.
 -- The restrictions on the constructor `ForkIsAVLT`
 -- are verified at compile time.
 -- Given two proofs of `AVL` and an arbitrary node, it tests wether the heights of the sub trees are balanced.
@@ -78,7 +78,7 @@ mkAVL :: (IsBSTC t, IsAVLC t) => ITree t -> AVL t
 mkAVL t = AVL t isBSTT isAVLT
 
 
--- | Proof term which shows that `t` is an `AlmostAVL`.
+-- | Proof term which shows that @t@ is an @Almost AVL@.
 data IsAlmostAVLT :: Tree -> Type where
   ForkIsAlmostAVLT  :: IsAVLT l -> Proxy (Node n a) -> IsAVLT r -> IsAlmostAVLT ('ForkTree l (Node n a) r)
 

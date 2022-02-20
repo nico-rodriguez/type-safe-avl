@@ -35,12 +35,14 @@ import           GHC.TypeNats                 (CmpNat, Nat)
 import           Prelude                      (Ordering (EQ, GT, LT), Show)
 
 
--- | This type class provides the functionality to insert a node with key 'x' and value type 'a'
--- in a tree 't' without checking any structural invariant (key ordering or height balance).
+-- | This type class provides the functionality to insert a node with key @x@ and value type @a@
+-- in a tree @t@ without checking any structural invariant (key ordering or height balance).
 -- The insertion is defined at the value level and the type level, and is performed
--- as if the tree is an `AVL`; the verification of the `AVL` restrictions is performed after the insertion.
+-- as if the tree is an `Data.Tree.AVL.Extern.AVL`; the verification of the @AVL@ restrictions is performed after the insertion.
 class Insertable (x :: Nat) (a :: Type) (t :: Tree) where
   type Insert (x :: Nat) (a :: Type) (t :: Tree) :: Tree
+  -- | Insert a new node.
+  -- If the key is already present in the tree, update the value.
   insert :: Node x a -> ITree t -> ITree (Insert x a t)
 instance (Show a) =>
   Insertable x a 'EmptyTree where
@@ -52,11 +54,11 @@ instance (o ~ CmpNat x n,
   type Insert x a ('ForkTree l (Node n a1) r) = Insert' x a ('ForkTree l (Node n a1) r) (CmpNat x n)
   insert node t = insert' node t (Proxy::Proxy o)
 
--- | This type class provides the functionality to insert a node with key 'x' and value type 'a'
--- in a non empty tree 't' without checking any structural invariant (key ordering or height balance).
--- It's only used by the 'Insertable' class and it has one extra parameter 'o',
--- which is the type level comparison of 'x' with the key value of the root node.
--- The 'o' parameter guides the insertion.
+-- | This type class provides the functionality to insert a node with key @x@ and value type @a@
+-- in a non empty tree @t@ without checking any structural invariant (key ordering or height balance).
+-- It's only used by the 'Insertable' class and it has one extra parameter @o@,
+-- which is the type level comparison of @x@ with the key value of the root node.
+-- The @o@ parameter guides the insertion.
 class Insertable' (x :: Nat) (a :: Type) (t :: Tree) (o :: Ordering) where
   type Insert' (x :: Nat) (a :: Type) (t :: Tree) (o :: Ordering) :: Tree
   insert' :: Node x a -> ITree t -> Proxy o -> ITree (Insert' x a t o)

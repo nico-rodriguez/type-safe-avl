@@ -46,8 +46,8 @@ import           GHC.TypeNats                       (CmpNat, Nat)
 import           Prelude                            (Bool (True), Ordering (EQ, GT, LT), ($))
 
 
--- | Prove that inserting a node with key 'x' and element value 'a'
--- in a `BST` tree preserves `BST` condition.
+-- | Prove that inserting a node with key @x@ and element value @a@
+-- in a `Data.Tree.BST.Extern.Constructors.BST` tree preserves @BST@ condition.
 class ProofIsBSTInsert (x :: Nat) (a :: Type) (t :: Tree) where
   proofIsBSTInsert :: Proxy (Node x a) -> IsBSTT t -> IsBSTT (Insert x a t)
 instance ProofIsBSTInsert x a 'EmptyTree where
@@ -56,11 +56,11 @@ instance ProofIsBSTInsert' x a ('ForkTree l (Node n a1) r) (CmpNat x n) =>
   ProofIsBSTInsert x a ('ForkTree l (Node n a1) r) where
   proofIsBSTInsert pNode tIsBST = proofIsBSTInsert' pNode tIsBST (Proxy::Proxy (CmpNat x n))
 
--- | Prove that inserting a node with key 'x' and element value 'a'
--- in a `BST` tree preserves `BST` condition, given that the comparison between
--- 'x' and the root key of the tree equals 'o'.
--- The `BST` restrictions were already checked when `proofIsBSTInsert` was called before.
--- The 'o' parameter guides the proof.
+-- | Prove that inserting a node with key @x@ and element value @a@
+-- in a `Data.Tree.BST.Extern.Constructors.BST` tree preserves @BST@ condition, given that the comparison between
+-- @x@ and the root key of the tree equals @o@.
+-- The @BST@ restrictions were already checked when `proofIsBSTInsert` was called before.
+-- The @o@ parameter guides the proof.
 class ProofIsBSTInsert' (x :: Nat) (a :: Type) (t :: Tree) (o :: Ordering) where
   proofIsBSTInsert' :: Proxy (Node x a) -> IsBSTT t -> Proxy o -> IsBSTT (Insert' x a t o)
 instance ProofIsBSTInsert' x a ('ForkTree l (Node n a1) r) 'EQ where
@@ -95,10 +95,10 @@ instance (r ~ 'ForkTree rl (Node rn rna) rr, o ~ CmpNat x rn,
     proofIsBSTBalance $ ForkIsBSTT lIsBST pNode' (proofIsBSTInsert pNode rIsBST)
 
 
--- | Prove that inserting a node with key 'x' (lower than 'n') and element value 'a'
--- in a tree 't' which verifies @LtN t n ~ 'True@ preserves the `LtN` invariant,
--- given that the comparison between 'x' and the root key of the tree equals 'o'.
--- The 'o' parameter guides the proof.
+-- | Prove that inserting a node with key @x@ (lower than @n@) and element value @a@
+-- in a tree @t@ which verifies @LtN t n ~ 'True@ preserves the `LtN` invariant,
+-- given that the comparison between @x@ and the root key of the tree equals @o@.
+-- The @o@ parameter guides the proof.
 class ProofLtNInsert' (x :: Nat) (a :: Type) (t :: Tree) (n :: Nat) (o :: Ordering) where
   proofLtNInsert' :: (CmpNat x n ~ 'LT, LtN t n ~ 'True) =>
     Proxy (Node x a) -> IsBSTT t -> Proxy n -> Proxy o -> LtN (Insert' x a t o) n :~: 'True
@@ -140,10 +140,10 @@ instance (r ~ 'ForkTree rl (Node rn rna) rr, o ~ CmpNat x rn,
         rIsBST' = proofIsBSTInsert pNode rIsBST
 
 
--- | Prove that inserting a node with key 'x' (greater than 'n') and element value 'a'
--- in a tree 't' which verifies @GtN t n ~ 'True@ preserves the `GtN` invariant,
--- given that the comparison between 'x' and the root key of the tree equals 'o'.
--- The 'o' parameter guides the proof.
+-- | Prove that inserting a node with key @x@ (greater than @n@) and element value @a@
+-- in a tree @t@ which verifies @GtN t n ~ 'True@ preserves the `GtN` invariant,
+-- given that the comparison between @x@ and the root key of the tree equals @o@.
+-- The @o@ parameter guides the proof.
 class ProofGtNInsert' (x :: Nat) (a :: Type) (t :: Tree) (n :: Nat) (o :: Ordering) where
   proofGtNInsert' :: (CmpNat x n ~ 'GT, GtN t n ~ 'True) =>
     Proxy (Node x a) -> IsBSTT t -> Proxy n -> Proxy o -> GtN (Insert' x a t o) n :~: 'True
@@ -185,8 +185,8 @@ instance (r ~ 'ForkTree rl (Node rn rna) rr, o ~ CmpNat x rn,
         rIsBST' = proofIsBSTInsert pNode rIsBST
 
 
--- | Prove that inserting a node with key 'x' and element value 'a'
--- in an `AVL` tree preserves the `AVL` condition.
+-- | Prove that inserting a node with key @x@ and element value @a@
+-- in an `Data.Tree.AVL.Extern.Constructors.AVL` tree preserves the @AVL@ condition.
 class ProofIsAVLInsert (x :: Nat) (a :: Type) (t :: Tree) where
   proofIsAVLInsert :: Proxy (Node x a) -> IsAVLT t -> IsAVLT (Insert x a t)
 instance ProofIsAVLInsert x a 'EmptyTree where
@@ -195,11 +195,11 @@ instance (o ~ CmpNat x n, ProofIsAVLInsert' x a ('ForkTree l (Node n a1) r) o) =
   ProofIsAVLInsert x a ('ForkTree l (Node n a1) r) where
   proofIsAVLInsert pNode tIsAVL = proofIsAVLInsert' pNode tIsAVL (Proxy::Proxy o)
 
--- | Prove that inserting a node with key 'x' and element value 'a'
--- in an `AVL` tree preserves the `AVL` condition, given that the comparison between
--- 'x' and the root key of the tree equals 'o'.
--- The `AVL` condition was already checked when `proofIsBSTInsert` was called before.
--- The 'o' parameter guides the proof.
+-- | Prove that inserting a node with key @x@ and element value @a@
+-- in an `Data.Tree.BST.Extern.Constructors.BST` tree preserves the @AVL@ condition, given that the comparison between
+-- @x@ and the root key of the tree equals @o@.
+-- The @AVL@ condition was already checked when `proofIsBSTInsert` was called before.
+-- The @o@ parameter guides the proof.
 class ProofIsAVLInsert' (x :: Nat) (a :: Type) (t :: Tree) (o :: Ordering) where
   proofIsAVLInsert' :: Proxy (Node x a) -> IsAVLT t -> Proxy o -> IsAVLT (Insert' x a t o)
 instance ProofIsAVLInsert' x a ('ForkTree l (Node n a1) r) 'EQ where

@@ -49,8 +49,8 @@ import           Prelude                        (Bool (True), Ordering (LT, GT))
 
 
 -- | Prove that applying a rebalancing (a composition of rotations)
--- to a `BST` tree preserves `BST` condition.
--- The `BST` invariant was already checked since this proof is called after proofs for `Insert` or `Delete`.
+-- to a `Data.Tree.BST.Extern.Constructors.BST` tree preserves @BST@ condition.
+-- The @BST@ invariant was already checked since this proof is called after proofs for `Data.Tree.BST.Extern.Insert.insert` or `Data.Tree.BST.Extern.Delete.delete`.
 class ProofIsBSTBalance (t :: Tree) where
   proofIsBSTBalance :: IsBSTT t -> IsBSTT (Balance t)
 instance ProofIsBSTBalance 'EmptyTree where
@@ -60,9 +60,9 @@ instance (us ~ UnbalancedState (Height l) (Height r), ProofIsBSTBalance' ('ForkT
   proofIsBSTBalance tIsBST = proofIsBSTBalance' tIsBST (Proxy::Proxy us)
 
 -- | Prove that applying a rebalancing (a composition of rotations)
--- to a `BST` tree preserves `BST` condition, given the comparison 'us' of the heights of the left and right sub trees.
+-- to a `Data.Tree.BST.Extern.Constructors.BST` tree preserves @BST@ condition, given the comparison @us@ of the heights of the left and right sub trees.
 -- This is called only from `ProofIsBSTBalance`.
--- The `BST` invariant was already checked since this proof is called after proofs for `Insert` or `Delete`.
+-- The @BST@ invariant was already checked since this proof is called after proofs for `Data.Tree.BST.Extern.Insert.insert` or `Data.Tree.BST.Extern.Delete.delete`.
 class ProofIsBSTBalance' (t :: Tree) (us :: US) where
   proofIsBSTBalance' :: IsBSTT t -> Proxy us -> IsBSTT (Balance' t us)
 instance ProofIsBSTBalance' ('ForkTree l (Node n a) r) 'NotUnbalanced where
@@ -78,8 +78,8 @@ instance (bs ~ BalancedState (Height rl) (Height rr),
 
 
 -- | Prove that applying a rotation
--- to a `BST` tree preserves `BST` condition.
--- The `BST` invariant was already checked since this proof is called after proofs for `Insert` or `Delete`.
+-- to a `Data.Tree.BST.Extern.Constructors.BST` tree preserves @BST@ condition.
+-- The @BST@ invariant was already checked since this proof is called after proofs for `Data.Tree.BST.Extern.Insert.insert` or `Data.Tree.BST.Extern.Delete.delete`.
 class ProofIsBSTRotate (t :: Tree) (us :: US) (bs :: BS) where
   proofIsBSTRotate :: IsBSTT t -> Proxy us -> Proxy bs -> IsBSTT (Rotate t us bs)
 
@@ -122,7 +122,7 @@ instance (rl ~ 'ForkTree rll (Node rln rla) rlr, r ~ 'ForkTree rl (Node rn ra) r
     ForkIsBSTT (ForkIsBSTT l node rll) rlnode (ForkIsBSTT rlr rnode rr)
 
 
--- | Prove that rebalancing a tree 't' which verifies @LtN t n ~ 'True@ preserves the `LtN` invariant.
+-- | Prove that rebalancing a tree @t@ which verifies @LtN t n ~ 'True@ preserves the `LtN` invariant.
 class ProofLtNBalance (t :: Tree) (n :: Nat) where
   proofLtNBalance :: (LtN t n ~ 'True) =>
     IsBSTT t -> Proxy n -> LtN (Balance t) n :~: 'True
@@ -133,8 +133,8 @@ instance (us ~ UnbalancedState (Height l) (Height r),
   ProofLtNBalance ('ForkTree l (Node n1 a) r) n where
   proofLtNBalance tIsBST pn = gcastWith (proofLtNBalance' tIsBST pn (Proxy::Proxy us)) Refl
 
--- | Prove that rebalancing a tree 't' which verifies @LtN t n ~ 'True@ preserves the `LtN` invariant,
--- given the unbalanced state 'us' of the tree.
+-- | Prove that rebalancing a tree @t@ which verifies @LtN t n ~ 'True@ preserves the `LtN` invariant,
+-- given the unbalanced state @us@ of the tree.
 class ProofLtNBalance' (t :: Tree) (n :: Nat) (us :: US) where
   proofLtNBalance' :: (LtN t n ~ 'True) =>
     IsBSTT t -> Proxy n -> Proxy us -> LtN (Balance' t us) n :~: 'True
@@ -150,7 +150,7 @@ instance (bs ~ BalancedState (Height rl) (Height rr),
   proofLtNBalance' tIsBST pn pus = gcastWith (proofLtNRotate tIsBST pn pus (Proxy::Proxy bs)) Refl
 
 
--- | Prove that applying a rotation to a tree 't' which verifies @LtN t n ~ 'True@ preserves the `LtN` invariant.
+-- | Prove that applying a rotation to a tree @t@ which verifies @LtN t n ~ 'True@ preserves the `LtN` invariant.
 class ProofLtNRotate (t :: Tree) (n :: Nat) (us :: US) (bs :: BS) where
   proofLtNRotate :: (LtN t n ~ 'True) =>
     IsBSTT t -> Proxy n -> Proxy us -> Proxy bs -> LtN (Rotate t us bs) n :~: 'True
@@ -182,7 +182,7 @@ instance (LtN l n ~ 'True, LtN rll n ~ 'True, CmpNat rln n ~ 'LT, LtN rlr n ~ 'T
   proofLtNRotate _ _ _ _ = Refl
 
 
--- | Prove that rebalancing a tree 't' which verifies @GtN t n ~ 'True@ preserves the `GtN` invariant.
+-- | Prove that rebalancing a tree @t@ which verifies @GtN t n ~ 'True@ preserves the `GtN` invariant.
 class ProofGtNBalance (t :: Tree) (n :: Nat) where
   proofGtNBalance :: (GtN t n ~ 'True) =>
     IsBSTT t -> Proxy n -> GtN (Balance t) n :~: 'True
@@ -193,8 +193,8 @@ instance (us ~ UnbalancedState (Height l) (Height r),
   ProofGtNBalance ('ForkTree l (Node n1 a) r) n where
   proofGtNBalance tIsBST pn = gcastWith (proofGtNBalance' tIsBST pn (Proxy::Proxy us)) Refl
 
--- | Prove that rebalancing a tree 't' which verifies @GtN t n ~ 'True@ preserves the `GtN` invariant,
--- given the unbalanced state 'us' of the tree.
+-- | Prove that rebalancing a tree @t@ which verifies @GtN t n ~ 'True@ preserves the `GtN` invariant,
+-- given the unbalanced state @us@ of the tree.
 class ProofGtNBalance' (t :: Tree) (n :: Nat) (us :: US) where
   proofGtNBalance' :: (GtN t n ~ 'True) =>
     IsBSTT t -> Proxy n -> Proxy us -> GtN (Balance' t us) n :~: 'True
@@ -210,7 +210,7 @@ instance (bs ~ BalancedState (Height rl) (Height rr),
   proofGtNBalance' tIsBST pn pus = gcastWith (proofGtNRotate tIsBST pn pus (Proxy::Proxy bs)) Refl
 
 
--- | Prove that applying a rotation to a tree 't' which verifies @GtN t n ~ 'True@ preserves the `GtN` invariant.
+-- | Prove that applying a rotation to a tree @t@ which verifies @GtN t n ~ 'True@ preserves the `GtN` invariant.
 class ProofGtNRotate (t :: Tree) (n :: Nat) (us :: US) (bs :: BS) where
   proofGtNRotate :: (GtN t n ~ 'True) =>
     IsBSTT t -> Proxy n -> Proxy us -> Proxy bs -> GtN (Rotate t us bs) n :~: 'True
@@ -242,10 +242,10 @@ instance (GtN l n ~ 'True, GtN rll n ~ 'True, CmpNat rln n ~ 'GT, GtN rlr n ~ 'T
   proofGtNRotate _ _ _ _ = Refl
 
 
--- | Prove that applying a rebalancing (a composition of rotations)
--- to an `almost AVL` tree returns an `AVL` tree.
+-- | Prove that applying a rebalancing (composition of rotations)
+-- to an `Almost AVL` tree returns an `Data.Tree.AVL.Extern.Constructors.AVL` tree.
 --
--- An `almost AVL` tree is a tree @t ~ 'ForkTree l (Node n a) r@ which verifies all the following conditions:
+-- An `Almost AVL` tree is a tree @t ~ 'ForkTree l (Node n a) r@ which verifies all the following conditions:
 --
 --  * @IsAVL l ~ 'True@
 --
@@ -255,7 +255,7 @@ instance (GtN l n ~ 'True, GtN rll n ~ 'True, CmpNat rln n ~ 'GT, GtN rlr n ~ 'T
 --
 --  * @GtN r n ~ 'True@
 --
--- In other words, it's a BST tree with left and right AVL sub trees that may not be balanced at the root.
+-- In other words, it's a Data.Tree.BST.Extern.Constructors.BST tree with left and right Data.Tree.AVL.Extern.Constructors.AVL sub trees that may not be balanced at the root.
 class ProofIsAVLBalance (t :: Tree) where
   proofIsAVLBalance :: IsAlmostAVLT t -> IsAVLT (Balance t)
 instance ProofIsAVLBalance 'EmptyTree where
@@ -267,12 +267,12 @@ instance (us ~ UnbalancedState (Height l) (Height r),
   proofIsAVLBalance tIsAlmostAVL = proofIsAVLBalance' tIsAlmostAVL (Proxy::Proxy us)
 
 -- | Prove that applying a rebalancing (a composition of rotations)
--- to an `almost AVL` tree returns an `AVL`, given the comparison 'us' of the heights of the left and right sub trees.
+-- to an `Almost AVL` tree returns an `Data.Tree.AVL.Extern.Constructors.AVL`, given the comparison @us@ of the heights of the left and right sub trees.
 -- This is called only from `ProofIsAVLBalance`.
 class ProofIsAVLBalance' (t :: Tree) (us :: US) where
   proofIsAVLBalance' :: (t ~ 'ForkTree l (Node n a) r, LtN l n ~ 'True, GtN r n ~ 'True) =>
     IsAlmostAVLT t -> Proxy us -> IsAVLT (Balance' t us)
--- | NotUnbalanced implies BalancedHeights (Height l) (Height r) n ~ 'True
+-- | `NotUnbalanced` implies @BalancedHeights (Height l) (Height r) n ~ 'True@
 instance (BalancedHeights (Height l) (Height r) n ~ 'True) => ProofIsAVLBalance' ('ForkTree l (Node n a) r) 'NotUnbalanced where
   proofIsAVLBalance' (ForkIsAlmostAVLT l node r) _ = ForkIsAVLT l node r
 instance (bs ~ BalancedState (Height ll) (Height lr),
@@ -286,7 +286,7 @@ instance (bs ~ BalancedState (Height rl) (Height rr),
 
 
 -- | Prove that applying a rotation
--- to an `almost AVL` tree returns an `AVL` tree.
+-- to an `Almost AVL` tree returns an `Data.Tree.AVL.Extern.Constructors.AVL` tree.
 class ProofIsAVLRotate (t :: Tree) (us :: US) (bs :: BS) where
   proofIsAVLRotate :: (t ~ 'ForkTree l (Node n a) r, LtN l n ~ 'True, GtN r n ~ 'True) =>
     IsAlmostAVLT t -> Proxy us -> Proxy bs -> IsAVLT (Rotate t us bs)

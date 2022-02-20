@@ -43,12 +43,12 @@ instance Show (BST t) where
   show (BST t _) = "BST $ " ++ show t
 
 
--- | Proof term which shows that `t` is a `BST`.
+-- | Proof term which shows that @t@ is a `Data.Tree.BST.Extern.Constructors.BST`.
 -- The restrictions on the constructor `ForkIsBSTT`
 -- are verified at compile time.
--- Given two proofs of `BST` and an arbitrary node, it tests wether the key
+-- Given two proofs of @BST@ and an arbitrary node, it tests wether the key
 -- of the node verifies the `LtN` and `GtN` invariants.
--- Notice that this is all that's needed to assert that the new tree is a `BST`,
+-- Notice that this is all that's needed to assert that the new tree is a `Data.Tree.BST.Extern.Constructors.BST`,
 -- since, both left and right proofs are evidence of the key ordering in both
 -- left and right sub trees.
 data IsBSTT :: Tree -> Type where
@@ -69,7 +69,7 @@ instance (IsBSTC l, IsBSTC r, LtN l n ~ 'True, GtN r n ~ 'True) =>
 
 
 -- | Given an `ITree`, compute the proof term `IsBSTT`, through the
--- type class `IsBSTC`, in order to check if it is a `BST` tree.
--- This is the fully externalist constructor for `BST` trees.
+-- type class `IsBSTC`, in order to check if it is a `Data.Tree.BST.Extern.Constructors.BST` tree.
+-- This is the fully externalist constructor for `Data.Tree.BST.Extern.Constructors.BST` trees.
 mkBST :: (IsBSTC t) => ITree t -> BST t
 mkBST t = BST t isBSTT

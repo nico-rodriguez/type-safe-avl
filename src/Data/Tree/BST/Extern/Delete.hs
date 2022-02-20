@@ -37,9 +37,9 @@ import           Prelude         (Ordering (EQ, GT, LT), Show)
 
 
 -- | This type class provides the functionality to delete the node with maximum key value
--- in a tree 't' without checking any structural invariant (key ordering).
+-- in a tree @t@ without checking any structural invariant (key ordering).
 -- The deletion is defined at the value level and the type level, and is performed
--- as if the tree is a `BST`; the verification of the `BST` restrictions is performed after the deletion.
+-- as if the tree is a `Data.Tree.BST.Extern.Constructors.BST`; the verification of the @BST@ restrictions is performed after the deletion.
 class MaxKeyDeletable (t :: Tree) where
   type MaxKeyDelete (t :: Tree) :: Tree
   maxKeyDelete :: (t ~ 'ForkTree l (Node n a1) r) =>
@@ -59,9 +59,9 @@ instance (MaxKeyDeletable ('ForkTree rl (Node rn ra) rr)) =>
 
 
 -- | This type class provides the functionality to get the key, type and value of the node with maximum key value
--- in a tree 't' without checking any structural invariant (key ordering).
+-- in a tree @t@ without checking any structural invariant (key ordering).
 -- The lookup is defined at the value level and the type level, and is performed
--- as if the tree is a `BST`.
+-- as if the tree is a `Data.Tree.BST.Extern.Constructors.BST`.
 -- Since the keys are only kept at the type level, there's no value level getter of the maximum key.
 class Maxable (t :: Tree) where
   type MaxKey (t :: Tree) :: Nat
@@ -80,12 +80,14 @@ instance (Maxable ('ForkTree rl (Node rn ra) rr)) =>
 
 
 
--- | This type class provides the functionality to delete the node with key 'x'
--- in a tree 't' without checking any structural invariant (key ordering).
+-- | This type class provides the functionality to delete the node with key @x@
+-- in a tree @t@ without checking any structural invariant (key ordering).
 -- The deletion is defined at the value level and the type level, and is performed
--- as if the tree is a `BST`; the key ordering is verified after the deletion.
+-- as if the tree is a `Data.Tree.BST.Extern.Constructors.BST`; the key ordering is verified after the deletion.
 class Deletable (x :: Nat) (t :: Tree) where
   type Delete (x :: Nat) (t :: Tree) :: Tree
+  -- | Delete the node with the given key.
+  -- If the key is not in the tree, return the same tree.
   delete :: Proxy x -> ITree t -> ITree (Delete x t)
 instance Deletable x 'EmptyTree where
   type Delete x 'EmptyTree = 'EmptyTree
@@ -96,11 +98,11 @@ instance (o ~ CmpNat x n,
   type Delete x ('ForkTree l (Node n a1) r) = Delete' x ('ForkTree l (Node n a1) r) (CmpNat x n)
   delete px t = delete' px t (Proxy::Proxy o)
 
--- | This type class provides the functionality to delete a node with key 'x'
--- in a non empty tree 't' without checking any structural invariant (key ordering).
--- It's only used by the 'Deletable' type class and it has one extra parameter 'o',
--- which is the type level comparison of 'x' with the key value of the root node.
--- The 'o' parameter guides the deletion.
+-- | This type class provides the functionality to delete a node with key @x@
+-- in a non empty tree @t@ without checking any structural invariant (key ordering).
+-- It's only used by the 'Deletable' type class and it has one extra parameter @o@,
+-- which is the type level comparison of @x@ with the key value of the root node.
+-- The @o@ parameter guides the deletion.
 class Deletable' (x :: Nat) (t :: Tree) (o :: Ordering) where
   type Delete' (x :: Nat) (t :: Tree) (o :: Ordering) :: Tree
   delete' :: Proxy x -> ITree t -> Proxy o -> ITree (Delete' x t o)

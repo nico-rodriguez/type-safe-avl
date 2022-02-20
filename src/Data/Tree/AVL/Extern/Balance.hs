@@ -13,7 +13,6 @@ Implementation of the balancing algorithm over ITree trees for externalist Almos
 -}
 
 {-# LANGUAGE DataKinds             #-}
-{-# LANGUAGE ExplicitNamespaces    #-}
 {-# LANGUAGE FlexibleInstances     #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE ScopedTypeVariables   #-}
@@ -40,9 +39,9 @@ import           Prelude                  ()
 
 
 -- | This type class provides the functionality to balance
--- a tree 't' without checking any structural invariant (key ordering or height balance).
+-- a tree @t@ without checking any structural invariant (key ordering or height balance).
 -- The insertion is defined at the value level and the type level;
--- the verification of the `BST`/`AVL` restrictions is performed after the insertion.
+-- the verification of the @BST@/@AVL@ restrictions is performed after the insertion.
 class Balanceable (t :: Tree) where
   type Balance (t :: Tree) :: Tree
   balance :: ITree t -> ITree (Balance t)
@@ -56,9 +55,9 @@ instance (us ~ UnbalancedState (Height l) (Height r),
   balance t = balance' t (Proxy::Proxy us)
 
 -- | This type class provides the functionality to balance
--- a tree 't' without checking any structural invariant (key ordering or height balance).
--- It's only used by the 'Balanceable' class and it has one extra parameter 'us',
--- which is the `UnbalancedState` of the two sub trees of 't'.
+-- a tree @t@ without checking any structural invariant (key ordering or height balance).
+-- It's only used by the 'Balanceable' class and it has one extra parameter @us@,
+-- which is the `UnbalancedState` of the two sub trees of @t@.
 class Balanceable' (t :: Tree) (us :: US) where
   type Balance' (t :: Tree) (us :: US) :: Tree
   balance' :: ITree t -> Proxy us -> ITree (Balance' t us)
@@ -80,9 +79,9 @@ instance (bs ~ BalancedState (Height rl) (Height rr),
 
 
 -- | This type class provides the functionality to apply a rotation to
--- a tree 't' without checking any structural invariant (key ordering or height balance).
+-- a tree @t@ without checking any structural invariant (key ordering or height balance).
 -- The rotation is defined at the value level and the type level;
--- the verification of the `BST`/`AVL` restrictions is performed after the insertion.
+-- the verification of the @BST@/@AVL@ restrictions is performed after the insertion.
 class Rotateable (t :: Tree) (us :: US) (bs :: BS) where
   type Rotate (t :: Tree) (us :: US) (bs :: BS) :: Tree
   rotate :: ITree t -> Proxy us -> Proxy bs -> ITree (Rotate t us bs)

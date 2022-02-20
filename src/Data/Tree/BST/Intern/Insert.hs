@@ -15,7 +15,6 @@ key ordering still holds.
 -}
 
 {-# LANGUAGE DataKinds             #-}
-{-# LANGUAGE ExplicitNamespaces    #-}
 {-# LANGUAGE FlexibleInstances     #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE ScopedTypeVariables   #-}
@@ -41,8 +40,8 @@ import           Prelude                          (Bool (True), Ordering (EQ, GT
                                                    Show, ($))
 
 
--- | This type class provides the functionality to insert a node with key 'x' and value type 'a'
--- in a `BST` 't'.
+-- | This type class provides the functionality to insert a node with key @x@ and value type @a@
+-- in a `BST` @t@.
 -- The insertion is defined at the value level and the type level.
 -- The returned tree verifies the `BST` restrictions.
 class Insertable (x :: Nat) (a :: Type) (t :: Tree) where
@@ -58,11 +57,11 @@ instance (o ~ CmpNat x n,
   type Insert x a ('ForkTree l (Node n a1) r) = Insert' x a ('ForkTree l (Node n a1) r) (CmpNat x n)
   insert n t = insert' n t (Proxy::Proxy o)
 
--- | This type class provides the functionality to insert a node with key 'x' and value type 'a'
--- in a non empty `BST` 't'.
--- It's only used by the 'Insertable' class and it has one extra parameter 'o',
--- which is the type level comparison of 'x' with the key value of the root node.
--- The 'o' parameter guides the insertion.
+-- | This type class provides the functionality to insert a node with key @x@ and value type @a@
+-- in a non empty `BST` @t@.
+-- It's only used by the 'Insertable' class and it has one extra parameter @o@,
+-- which is the type level comparison of @x@ with the key value of the root node.
+-- The @o@ parameter guides the insertion.
 class Insertable' (x :: Nat) (a :: Type) (t :: Tree) (o :: Ordering) where
   type Insert' (x :: Nat) (a :: Type) (t :: Tree) (o :: Ordering) :: Tree
   insert' :: Node x a -> BST t -> Proxy o -> BST (Insert' x a t o)
@@ -110,10 +109,10 @@ instance (r ~ 'ForkTree rl (Node rn rna) rr, o ~ CmpNat x rn,
       where
         po = Proxy::Proxy o
 
--- | Prove that inserting a node with key 'x' (lower than 'n') and element value 'a'
--- in a `BST` 't' which verifies @LtN t n ~ 'True@ preserves the `LtN` invariant,
--- given that the comparison between 'x' and the root key of the tree equals 'o'.
--- The 'o' parameter guides the proof.
+-- | Prove that inserting a node with key @x@ (lower than @n@) and element value @a@
+-- in a `BST` @t@ which verifies @LtN t n ~ 'True@ preserves the `LtN` invariant,
+-- given that the comparison between @x@ and the root key of the tree equals @o@.
+-- The @o@ parameter guides the proof.
 class ProofLtNInsert' (x :: Nat) (a :: Type) (t :: Tree) (n :: Nat) (o :: Ordering) where
   proofLtNInsert' :: (CmpNat x n ~ 'LT, LtN t n ~ 'True) =>
     Node x a -> BST t -> Proxy n -> Proxy o -> LtN (Insert x a t) n :~: 'True
@@ -140,10 +139,10 @@ instance (r ~ 'ForkTree rl (Node rn rna) rr, o ~ CmpNat x rn,
     gcastWith (proofLtNInsert' node r pn (Proxy::Proxy o)) Refl
 
 
--- | Prove that inserting a node with key 'x' (greater than 'n') and element value 'a'
--- in a `BST` 't' which verifies @GtN t n ~ 'True@ preserves the `GtN` invariant,
--- given that the comparison between 'x' and the root key of the tree equals 'o'.
--- The 'o' parameter guides the proof.
+-- | Prove that inserting a node with key @x@ (greater than @n@) and element value @a@
+-- in a `BST` @t@ which verifies @GtN t n ~ 'True@ preserves the `GtN` invariant,
+-- given that the comparison between @x@ and the root key of the tree equals @o@.
+-- The @o@ parameter guides the proof.
 class ProofGtNInsert' (x :: Nat) (a :: Type) (t :: Tree) (n :: Nat) (o :: Ordering) where
   proofGtNInsert' :: (CmpNat x n ~ 'GT, GtN t n ~ 'True) =>
     Node x a -> BST t -> Proxy n -> Proxy o -> GtN (Insert x a t) n :~: 'True

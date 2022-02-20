@@ -32,8 +32,8 @@ import           GHC.TypeNats       (CmpNat, Nat)
 import           Prelude            (Bool (True), Ordering (EQ, LT))
 
 
--- | Type family to test wether there is a node in the tree 't' with key 'x'.
--- | It assumes that 't' is a BST in order to perform the search.
+-- | Type family to test wether there is a node in the tree @t@ with key @x@.
+-- | It assumes that @t@ is a BST in order to perform the search.
 type family Member (x :: Nat) (t :: Tree) (t' :: Tree) :: Bool where
   Member x ('ForkTree l (Node n _a) r) t' =
     (If (CmpNat x n == 'EQ)
@@ -45,8 +45,8 @@ type family Member (x :: Nat) (t :: Tree) (t' :: Tree) :: Bool where
     )
   Member x 'EmptyTree t' = TypeError ('Text "Key " ':<>: 'ShowType x ':<>: 'Text " not found in tree " ':<>: 'ShowType t')
 
--- | Type family to search for the type of the value stored with key 'x' in a tree 't'.
--- | It assumes that 't' is a BST and that 'x' is a member of 't' in order to perform the search
+-- | Type family to search for the type of the value stored with key @x@ in a tree @t@.
+-- | It assumes that @t@ is a BST and that @x@ is a member of @t@ in order to perform the search
 -- | (so it always return a valid type).
 type family LookupValueType (x :: Nat) (t :: Tree) (t' :: Tree) :: Type where
   LookupValueType x ('ForkTree l (Node n a) r) t' =

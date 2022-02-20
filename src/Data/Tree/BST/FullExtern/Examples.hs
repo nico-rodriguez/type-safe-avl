@@ -48,7 +48,7 @@ bst = mkBST t
 --             (mkNode p4 'f')
 --             EmptyITree
 
--- | For performing a lookup, it's necessary to take the ITree 't' out of the BST constructor
+-- | For performing a lookup, it's necessary to take the ITree @t@ out of the BST constructor
 l1 = case bst of
     BST t _ -> lookup p6 t
 

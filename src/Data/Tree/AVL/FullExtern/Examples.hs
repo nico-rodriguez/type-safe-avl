@@ -41,7 +41,7 @@ avl = mkAVL t
         insert (mkNode p5 ([1,2,3]::[Int])) $ insert (mkNode p0 (1.8::Float)) $
         insert (mkNode p7 [False]) emptyTree
 
--- | For performing a lookup, it's necessary to take the ITree 't' out of the AVL constructor
+-- | For performing a lookup, it's necessary to take the ITree @t@ out of the AVL constructor
 l1' = case avl of
     AVL t _ _ -> lookup p6 t
 

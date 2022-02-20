@@ -14,7 +14,6 @@ Since the lookup does not modify the tree, there is no need for proofs.
 -}
 
 {-# LANGUAGE DataKinds             #-}
-{-# LANGUAGE ExplicitNamespaces    #-}
 {-# LANGUAGE FlexibleInstances     #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE ScopedTypeVariables   #-}
@@ -38,10 +37,10 @@ import           Prelude                          (Bool (True),
                                                    Ordering (EQ, GT, LT))
 
 
--- | This type class provides the functionality to lookup a node with key 'x'
--- in a non empty `BST` 't'.
+-- | This type class provides the functionality to lookup a node with key @x@
+-- in a non empty `BST` @t@.
 -- The lookup is defined at the value level and the type level.
--- It's necessary to know the type 'a' of the value stored in node with key 'x'
+-- It's necessary to know the type @a@ of the value stored in node with key @x@
 -- so that the type of the value returned by 'lookup' may be specified.
 class Lookupable (x :: Nat) (a :: Type) (t :: Tree) where
   lookup :: (t ~ 'ForkTree l (Node n a1) r, Member x t t ~ 'True) =>
@@ -51,11 +50,11 @@ instance (t ~ 'ForkTree l (Node n a1) r, a ~ LookupValueType x t t, o ~ CmpNat x
   Lookupable x a ('ForkTree l (Node n a1) r) where
   lookup x t = lookup' x t (Proxy::Proxy o)
 
--- | This type class provides the functionality to lookup a node with key 'x'
--- in a non empty `BST` 't'.
--- It's only used by the 'Lookupable' class and it has one extra parameter 'o',
--- which is the type level comparison of 'x' with the key value of the root node.
--- The 'o' parameter guides the lookup.
+-- | This type class provides the functionality to lookup a node with key @x@
+-- in a non empty `BST` @t@.
+-- It's only used by the 'Lookupable' class and it has one extra parameter @o@,
+-- which is the type level comparison of @x@ with the key value of the root node.
+-- The @o@ parameter guides the lookup.
 class Lookupable' (x :: Nat) (a :: Type) (t :: Tree) (o :: Ordering) where
   lookup' :: Proxy x -> BST t -> Proxy o -> a
 instance Lookupable' x a ('ForkTree l (Node n a) r) 'EQ where

@@ -40,7 +40,7 @@ import           Prelude       (Int, Maybe (Just, Nothing),
 
 
 -- | Nodes for unsafe `BST` trees. They only hold information
--- at the value level: some value of type `a` and a key
+-- at the value level: some value of type @a@ and a key
 -- of type `Int`.
 data Node :: Type -> Type where
   Node :: Show a => Int -> a -> Node a
@@ -58,7 +58,7 @@ emptyBST = E
 
 
 -- | Entry point for inserting a new key and value.
--- | If the key is already present in the tree, update the value.
+-- If the key is already present in the tree, update the value.
 insertBST :: Show a => Int -> a -> BST a -> BST a
 insertBST x  v  E                    = F E (Node x v) E
 insertBST x' v' t@(F _ (Node x _) _) = insertBST' (Node x' v') t (compare x' x)
@@ -76,8 +76,7 @@ insertBST' n'@(Node x _) (F l n r@(F _ (Node rn _) _)) GT =
 
 
 -- | Lookup the given key in the tree.
--- | It returns `Nothing` if tree is empty
--- | or if it doesn't have the key.
+-- It returns `Nothing` if tree is empty or if it doesn't have the key.
 lookupBST :: Int -> BST a -> Maybe a
 lookupBST _ E                    = Nothing
 lookupBST x t@(F _ (Node n _) _) = lookupBST' x t (compare x n)
@@ -110,7 +109,7 @@ maxNode (F _ (Node _ _) r@F{})  = maxNode r
 
 
 -- | Delete the node with the given key.
--- | If the key is not in the tree, return the same tree.
+-- If the key is not in the tree, return the same tree.
 deleteBST :: Int -> BST a -> BST a
 deleteBST _ E                    = E
 deleteBST x t@(F _ (Node n _) _) = deleteBST' x t (compare x n)
