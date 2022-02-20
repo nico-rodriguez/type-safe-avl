@@ -188,6 +188,9 @@ avlt6 = deleteAVL 40 avlt3
 A full externalist approach means grouping the operations and only perform the check of the invariants at the end:
 
 ```haskell
+{-# LANGUAGE DataKinds          #-}
+{-# LANGUAGE TypeFamilies       #-}
+
 import           Data.Proxy               (Proxy (Proxy))
 import           Data.Tree.AVL.FullExtern (AVL (AVL), mkAVL, ITree (EmptyITree),
                                            delete, insert, lookup)
@@ -216,7 +219,7 @@ avl = mkAVL t
 
 -- | For performing a lookup, it's necessary to take the ITree 't' out of the AVL constructor
 l1' = case avl of
-    AVL t -> lookup (Proxy::Proxy 3) t
+    AVL t _ _ -> lookup (Proxy::Proxy 3) t
 
 -- | Compile time error: key 1 is not in the tree avl and left subtree at node with key 4 has height +2 greater than the right subtree
 -- avlError = mkAVL $
@@ -230,9 +233,10 @@ l1' = case avl of
 
 -- | Delete several values in a row and check the BST and AVL invariants at the end
 avlt2 = case avl of
-AVL t -> gcastWith (proofIsAVL t') $ gcastWith (proofIsBST t') $ AVL t'
-            where
-                t' = delete (Proxy::Proxy 3) $ delete (Proxy::Proxy 4) $ delete (Proxy::Proxy 5) $ t
+  AVL t _ _ -> mkAVL t'
+    where
+      t' =  delete p7 $ delete p4 $ delete p1 $ delete p0 $
+            delete p2 $ delete p6 $ delete p5 $ delete p3 t
 ```
 
 ### Extern and Intern
@@ -242,6 +246,8 @@ In the externalist and internalist approaches, the invariants are checked after 
 Some examples for the externalist approach:
 
 ```haskell
+{-# LANGUAGE DataKinds          #-}
+
 import           Data.Proxy           (Proxy (Proxy))
 import           Data.Tree.AVL.Extern (deleteAVL, emptyAVL, insertAVL,
                                        lookupAVL)
@@ -257,7 +263,7 @@ p7 = Proxy :: Proxy 7
 -- Insert value 'f' with key 4
 avlt1 = insertAVL p4 'f' emptyAVL
 -- Insert value [1,2] with key 2
-avlt2 = insertBST p2 [1,2] avlt1
+avlt2 = insertAVL p2 [1,2] avlt1
 
 -- list = [1,2]
 list = lookupAVL p2 avlt2
@@ -280,7 +286,7 @@ import Data.Tree.AVL.Intern (emptyAVL,insertAVL,lookupAVL,deleteAVL)
 
 ### Examples: BST trees
 
-The previous examples used AVL trees. For using AVL trees just replace
+The previous examples used AVL trees. For using AVL trees just replace the imported modules along with the functions:
 
 ```Shell
 mkAVL     -> mkBST
@@ -327,7 +333,7 @@ balanced-binary-search-tree
 
 ```
 
-There are benchmarks for both BST and AVL trees for each approach. For instance, in the folder `benchmark/AVL/FullExtern`
+There are benchmarks for both BST and AVL trees for each approach (clone the repository for viewing or using the benchmarks). For instance, in the folder `benchmark/AVL/FullExtern`
 there are three folders and one source file: `Insert`, `Lookup`, `Delete` and `Benchmark.hs`.
 
 Inside each folder there are different source files for benchmarking each operation under several tree sizes; they're split in different files
