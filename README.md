@@ -153,7 +153,7 @@ For the externalist and internalist approaches, the interface is the same and is
 
 The interfaces are analogous to those for AVL trees. Just replace "AVL" for "BST" in the functions names.
 
-## Examples: AVL trees
+## Examples
 
 For more usage examples see the `Examples.hs` file for each approach.
 
