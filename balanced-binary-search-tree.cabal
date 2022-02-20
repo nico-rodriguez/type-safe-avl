@@ -1,4 +1,4 @@
-cabal-version:      3.4
+cabal-version:      3.0
 name:               balanced-binary-search-tree
 version:            0.1.0.0
 synopsis:           Type safe BST and AVL trees
@@ -9,72 +9,76 @@ homepage:           https://github.com/nico-rodriguez/balanced-binary-search-tre
 bug-reports:        https://github.com/nico-rodriguez/balanced-binary-search-tree/issues
 license:            GPL-3.0-only
 license-file:       LICENSE
-author:             Nicolás Rodríguez
-maintainer:         Nicolás Rodríguez
+author:             Nicolás Rodríguez <marco.nicolas.rodriguez@protonmail.com>
+maintainer:         Nicolás Rodríguez <marco.nicolas.rodriguez@protonmail.com>
 category:           Data
+build-type:         Simple
 extra-source-files: README.md
                     CHANGELOG.md
 
 source-repository head
   type:         git
-  location:     https://github.com/nico-rodriguez/balanced-binary-search-tree
+  location:     https://github.com/nico-rodriguez/balanced-binary-search-tree.git
 
 library
-    exposed-modules:
-        Data.Tree.ITree
-        Data.Tree.Node
-        Data.Tree.BST.Extern
-        Data.Tree.BST.FullExtern
-        Data.Tree.BST.Intern
-        Data.Tree.BST.Invariants
-        Data.Tree.BST.Unsafe
-        Data.Tree.BST.Unsafe.Examples
-        Data.Tree.BST.Utils
-        Data.Tree.BST.Intern.Delete
-        Data.Tree.BST.Intern.Constructors
-        Data.Tree.BST.Intern.Insert
-        Data.Tree.BST.Intern.Lookup
-        Data.Tree.BST.Intern.Examples
-        Data.Tree.BST.Extern.Delete
-        Data.Tree.BST.Extern.Constructors
-        Data.Tree.BST.Extern.Insert
-        Data.Tree.BST.Extern.InsertProofs
-        Data.Tree.BST.Extern.Lookup
-        Data.Tree.BST.Extern.Examples
-        Data.Tree.BST.Extern.DeleteProofs
-        Data.Tree.BST.FullExtern.Examples
-        Data.Tree.AVL.Extern
-        Data.Tree.AVL.FullExtern
-        Data.Tree.AVL.Intern
-        Data.Tree.AVL.Invariants
-        Data.Tree.AVL.Unsafe
-        Data.Tree.AVL.Unsafe.Examples
-        Data.Tree.AVL.Intern.Balance
-        Data.Tree.AVL.Intern.Delete
-        Data.Tree.AVL.Intern.Constructors
-        Data.Tree.AVL.Intern.Insert
-        Data.Tree.AVL.Intern.Lookup
-        Data.Tree.AVL.Intern.Examples
-        Data.Tree.AVL.Extern.BalanceProofs
-        Data.Tree.AVL.Extern.Balance
-        Data.Tree.AVL.Extern.Delete
-        Data.Tree.AVL.Extern.Constructors
-        Data.Tree.AVL.Extern.Insert
-        Data.Tree.AVL.Extern.InsertProofs
-        Data.Tree.AVL.Extern.Examples
-        Data.Tree.AVL.Extern.DeleteProofs
-        Data.Tree.AVL.FullExtern.Examples
-
-    other-extensions:
-        DataKinds GADTs KindSignatures Safe DerivingStrategies
-        StandaloneDeriving MultiParamTypeClasses ExplicitNamespaces
-        FlexibleInstances ScopedTypeVariables TypeFamilies TypeOperators
-        UndecidableInstances Trustworthy
-
+    hs-source-dirs:   src
     build-depends:    base ^>=4.15.0.0, time ^>=1.9.3
-
-    ghc-options:      -fmax-simplifier-iterations=0
-
-    hs-source-dirs:   src, benchmark
-
     default-language: Haskell2010
+    ghc-options:      -fmax-simplifier-iterations=0
+    exposed-modules:    Data.Tree.ITree
+                        Data.Tree.Node
+                        Data.Tree.BST.Extern
+                        Data.Tree.BST.FullExtern
+                        Data.Tree.BST.Intern
+                        Data.Tree.BST.Invariants
+                        Data.Tree.BST.Unsafe
+                        Data.Tree.BST.Unsafe.Examples
+                        Data.Tree.BST.Utils
+                        Data.Tree.BST.Intern.Delete
+                        Data.Tree.BST.Intern.Constructors
+                        Data.Tree.BST.Intern.Insert
+                        Data.Tree.BST.Intern.Lookup
+                        Data.Tree.BST.Intern.Examples
+                        Data.Tree.BST.Extern.Delete
+                        Data.Tree.BST.Extern.Constructors
+                        Data.Tree.BST.Extern.Insert
+                        Data.Tree.BST.Extern.InsertProofs
+                        Data.Tree.BST.Extern.Lookup
+                        Data.Tree.BST.Extern.Examples
+                        Data.Tree.BST.Extern.DeleteProofs
+                        Data.Tree.BST.FullExtern.Examples
+                        Data.Tree.AVL.Extern
+                        Data.Tree.AVL.FullExtern
+                        Data.Tree.AVL.Intern
+                        Data.Tree.AVL.Invariants
+                        Data.Tree.AVL.Unsafe
+                        Data.Tree.AVL.Unsafe.Examples
+                        Data.Tree.AVL.Intern.Balance
+                        Data.Tree.AVL.Intern.Delete
+                        Data.Tree.AVL.Intern.Constructors
+                        Data.Tree.AVL.Intern.Insert
+                        Data.Tree.AVL.Intern.Lookup
+                        Data.Tree.AVL.Intern.Examples
+                        Data.Tree.AVL.Extern.BalanceProofs
+                        Data.Tree.AVL.Extern.Balance
+                        Data.Tree.AVL.Extern.Delete
+                        Data.Tree.AVL.Extern.Constructors
+                        Data.Tree.AVL.Extern.Insert
+                        Data.Tree.AVL.Extern.InsertProofs
+                        Data.Tree.AVL.Extern.Examples
+                        Data.Tree.AVL.Extern.DeleteProofs
+                        Data.Tree.AVL.FullExtern.Examples
+    other-extensions:   DataKinds
+                        GADTs
+                        KindSignatures
+                        Safe
+                        DerivingStrategies
+                        StandaloneDeriving
+                        MultiParamTypeClasses
+                        ExplicitNamespaces
+                        FlexibleInstances
+                        ScopedTypeVariables
+                        TypeFamilies
+                        TypeOperators
+                        UndecidableInstances
+                        Trustworthy
