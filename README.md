@@ -24,7 +24,13 @@ No external Haskell libraries are needed.
 
 ## Installing
 
-To get a running copy of the project, simply clone this repository:
+If you only want to use the library, the easiest way to install it is through Hackage. The following command will download the library and install it:
+
+```Shell
+cabal install --lib balanced-binary-search-tree
+```
+
+If you also want to see or run the benchmarks, clone the repository:
 
 ```Shell
 git clone https://github.com/nico-rodriguez/balanced-binary-search-tree.git
@@ -99,7 +105,7 @@ balanced-binary-search-tree
 
 - All four approaches, `Unsafe`, `FullExtern`, `Extern`, and `Intern`, have an `Examples.hs` with usage examples of the BST/AVL operations.
 
-- In order to use BST/AVL trees, only one of `Usafe.hs`, `FullExtern.hs`, `Extern.hs` or `Intern.hs` need to be imported. They all export the basic functionality for inserting, looking and deleting on the corresponding BST/AVL tree. See the [Interface](#interface) section for exploring the functions exported by each of them.
+- In order to use BST/AVL trees, only one of `Unsafe.hs`, `FullExtern.hs`, `Extern.hs` or `Intern.hs` need to be imported. They all export the basic functionality for inserting, looking and deleting on the corresponding BST/AVL tree. See the [Interface](#interface) section for exploring the functions exported by each of them.
 
 ## Interface
 
@@ -143,11 +149,11 @@ For the externalist and internalist approaches, the interface is the same and is
 
 - `deleteAVL :: Proxy x -> AVL t -> AVL (Delete x t)`, deletes the node with key `x` in an AVL of type `AVL t`. If the tree doesn't have a node with key `x`, it just returns the original tree.
 
-### BST trees (some function constraints omitted)
+### BST trees
 
 The interfaces are analogous to those for AVL trees. Just replace "AVL" for "BST" in the functions names.
 
-## Examples
+## Examples: AVL trees
 
 For more usage examples see the `Examples.hs` file for each approach.
 
@@ -229,7 +235,7 @@ AVL t -> gcastWith (proofIsAVL t') $ gcastWith (proofIsBST t') $ AVL t'
                 t' = delete (Proxy::Proxy 3) $ delete (Proxy::Proxy 4) $ delete (Proxy::Proxy 5) $ t
 ```
 
-### Extern and Inter
+### Extern and Intern
 
 In the externalist and internalist approaches, the invariants are checked after every operation performed over the tree.
 
@@ -272,7 +278,7 @@ import Data.Tree.AVL.Intern (emptyAVL,insertAVL,lookupAVL,deleteAVL)
 -- Instead of import Data.Tree.AVL.Extern (emptyAVL,insertAVL,lookupAVL,deleteAVL)
 ```
 
-### BST trees
+### Examples: BST trees
 
 The previous examples used AVL trees. For using AVL trees just replace
 
@@ -330,6 +336,8 @@ in order to be able to measure not only the running times, but also the compile 
 The source files `Benchmark.hs` performs all of the running time benchmarks defined inside the folders `Insert`, `Lookup` and `Delete`.
 
 ### Running the benchmark
+
+Given the compilation effort for running the benchmarks, they're hosted on a separate branch. In order to run the benchmarks, clone the repository and switch to the `benchmark` branch.
 
 For running all the benchmarks, use `benchmark/avg-bench.py` script. There's a `requirements.txt` file with all the python dependencies needed to run the script.
 
