@@ -1,6 +1,6 @@
 cabal-version:      3.0
 name:               balanced-binary-search-tree
-version:            0.1.0.0
+version:            1.0.0.0
 synopsis:           Type safe BST and AVL trees
 description:        Several implementations of binary search trees (BST) and balanced binary search trees (AVL).
                     For both of them there's one unsafe implementation and three type-safe implementations.
