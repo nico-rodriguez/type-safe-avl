@@ -15,10 +15,8 @@ information useful for compile time verification of invariants.
 
 {-# LANGUAGE DataKinds           #-}
 {-# LANGUAGE DerivingStrategies  #-}
-{-# LANGUAGE ExplicitNamespaces  #-}
 {-# LANGUAGE GADTs               #-}
 {-# LANGUAGE KindSignatures      #-}
-{-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE StandaloneDeriving  #-}
 
 {-# LANGUAGE Safe                #-}

@@ -12,7 +12,6 @@ implemented with the internalist approach.
 -}
 
 {-# LANGUAGE DataKinds          #-}
-{-# LANGUAGE ExplicitNamespaces #-}
 {-# LANGUAGE GADTs              #-}
 
 {-# LANGUAGE Safe               #-}

@@ -1,7 +1,6 @@
 {-# OPTIONS_HADDOCK hide #-}
 
 {-# LANGUAGE DataKinds          #-}
-{-# LANGUAGE ExplicitNamespaces #-}
 
 {-# LANGUAGE Safe               #-}
 

@@ -21,7 +21,7 @@ balance algorithm defined in "Data.Tree.AVL.Extern.Balance" respects the key ord
 {-# LANGUAGE TypeOperators         #-}
 {-# LANGUAGE UndecidableInstances  #-}
 
-{-# LANGUAGE Trustworthy           #-}
+{-# LANGUAGE Safe                  #-}
 
 module Data.Tree.AVL.Extern.BalanceProofs (
   ProofIsBSTBalance(proofIsBSTBalance),

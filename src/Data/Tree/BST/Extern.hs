@@ -13,7 +13,6 @@ implemented with the externalist approach.
 
 {-# LANGUAGE DataKinds             #-}
 {-# LANGUAGE GADTs                 #-}
-{-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE ScopedTypeVariables   #-}
 
 {-# LANGUAGE Safe                  #-}

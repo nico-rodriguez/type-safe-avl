@@ -12,7 +12,6 @@ trees and instance definition for the `Show` type class.
 -}
 
 {-# LANGUAGE DataKinds          #-}
-{-# LANGUAGE ExplicitNamespaces #-}
 {-# LANGUAGE GADTs              #-}
 {-# LANGUAGE TypeFamilies       #-}
 

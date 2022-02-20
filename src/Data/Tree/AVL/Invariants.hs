@@ -11,7 +11,6 @@ Type level restrictions for the key ordering in type safe AVL trees.
 -}
 
 {-# LANGUAGE DataKinds            #-}
-{-# LANGUAGE ExplicitNamespaces   #-}
 {-# LANGUAGE GADTs                #-}
 {-# LANGUAGE TypeFamilies         #-}
 {-# LANGUAGE TypeOperators        #-}
@@ -32,7 +31,7 @@ import           Data.Tree.Node  (Node)
 import           Data.Type.Bool  (If)
 import           GHC.TypeLits    (TypeError, ErrorMessage(Text, ShowType, (:<>:)))
 import           GHC.TypeNats    (type (+), type (-), type (<=?), Nat)
-import           Prelude         (Bool (False, True))
+import           Prelude         (Bool (True))
 
 
 -- | Get the maximum between two type level natural numbers.
@@ -54,9 +53,9 @@ type family Height (t :: Tree) :: Nat where
 type family BalancedHeights (h1 :: Nat) (h2 :: Nat) (k :: Nat) :: Bool where
   BalancedHeights 0   0   _k = 'True
   BalancedHeights 1   0   _k = 'True
-  BalancedHeights _h1 0    k = TypeError (Text "The left sub tree at node with key " :<>: ShowType k :<>: Text " has +2 greater height!")
+  BalancedHeights _h1 0    k = TypeError ('Text "The left sub tree at node with key " ':<>: 'ShowType k ':<>: 'Text " has +2 greater height!")
   BalancedHeights 0   1   _k = 'True
-  BalancedHeights 0   _h2  k = TypeError (Text "The right sub tree at node with key " :<>: ShowType k :<>: Text " has +2 greater height!")
+  BalancedHeights 0   _h2  k = TypeError ('Text "The right sub tree at node with key " ':<>: 'ShowType k ':<>: 'Text " has +2 greater height!")
   BalancedHeights h1  h2   k = BalancedHeights (h1-1) (h2-1) k
 
 

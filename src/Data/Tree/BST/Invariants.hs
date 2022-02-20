@@ -23,7 +23,7 @@ module Data.Tree.BST.Invariants (
 
 import           Data.Tree.ITree    (Tree (EmptyTree, ForkTree))
 import           Data.Tree.Node     (Node)
-import           Data.Type.Bool     (type (&&), If)
+import           Data.Type.Bool     (If)
 import           Data.Type.Equality (type (==))
 import           GHC.TypeLits       (TypeError, ErrorMessage(Text, ShowType, (:<>:)))
 import           GHC.TypeNats       (CmpNat, Nat)
@@ -33,16 +33,16 @@ import           Prelude            (Bool (True), Ordering (GT, LT))
 -- | Check if all elements of the tree @l@ are strictly less than @x@.
 type family LtN (l :: Tree) (x :: Nat) :: Bool where
   LtN 'EmptyTree                 _x = 'True
-  LtN ('ForkTree l (Node n a) r) x =
+  LtN ('ForkTree l (Node n _a) r) x =
     (If (CmpNat n x == 'LT)
       (If (LtN l x)
         (If (LtN r x)
           'True
-          (TypeError (Text "Key " :<>: ShowType x :<>: Text " is not strictly lesser than keys in tree " :<>: ShowType r))
+          (TypeError ('Text "Key " ':<>: 'ShowType x ':<>: 'Text " is not strictly lesser than keys in tree " ':<>: 'ShowType r))
         )
-        (TypeError (Text "Key " :<>: ShowType x :<>: Text " is not strictly lesser than keys in tree " :<>: ShowType l))
+        (TypeError ('Text "Key " ':<>: 'ShowType x ':<>: 'Text " is not strictly lesser than keys in tree " ':<>: 'ShowType l))
       )
-      (TypeError (Text "Key " :<>: ShowType x :<>: Text " is not lesser than key " :<>: ShowType n))
+      (TypeError ('Text "Key " ':<>: 'ShowType x ':<>: 'Text " is not lesser than key " ':<>: 'ShowType n))
     )
 
 
@@ -54,9 +54,9 @@ type family GtN (r :: Tree) (x :: Nat) :: Bool where
       (If (GtN l x)
         (If (GtN r x)
           'True
-          (TypeError (Text "Key " :<>: ShowType x :<>: Text " is not strictly greater than keys in tree " :<>: ShowType r))
+          (TypeError ('Text "Key " ':<>: 'ShowType x ':<>: 'Text " is not strictly greater than keys in tree " ':<>: 'ShowType r))
         )
-        (TypeError (Text "Key " :<>: ShowType x :<>: Text " is not strictly greater than keys in tree " :<>: ShowType l))
+        (TypeError ('Text "Key " ':<>: 'ShowType x ':<>: 'Text " is not strictly greater than keys in tree " ':<>: 'ShowType l))
       )
-      (TypeError (Text "Key " :<>: ShowType x :<>: Text " is not greater than key " :<>: ShowType n))
+      (TypeError ('Text "Key " ':<>: 'ShowType x ':<>: 'Text " is not greater than key " ':<>: 'ShowType n))
     )

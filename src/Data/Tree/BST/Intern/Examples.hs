@@ -2,7 +2,6 @@
 
 {-# LANGUAGE DataKinds          #-}
 {-# LANGUAGE DerivingStrategies #-}
-{-# LANGUAGE ExplicitNamespaces #-}
 
 {-# LANGUAGE Safe               #-}
 
