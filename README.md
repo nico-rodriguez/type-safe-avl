@@ -1,6 +1,8 @@
 # Type-safe BST and AVL trees
 
-Implementation of type-safe BST and AVL trees, following four different approaches: unsafe, full externalist, externalist and internalist.
+Several implementations of binary search trees (BST) and balanced binary search trees (AVL).
+Verify at compile time if the operations over BST/AVL trees preserves the order of the keys and the balance in the heights.
+For both of them there's one unsafe implementation and three type-safe implementations. The last ones differ one how the structural invariants are handled at the type level.
 
 ## Summary
 
@@ -93,19 +95,19 @@ balanced-binary-search-tree
 
 - Both `ITree.hs` and `Node.hs` are used in both BST and AVL type-safe trees.
 
-- The structure of `Data/Tree/AVL` and `Data/Tree/BST` is similar.
+- The structure of `Data/Tree/AVL/` and `Data/Tree/BST/` is similar.
 
-- `Data/Tree/{BST,AVL}/Invariants.hs` implements the BST,AVL invariants, like what it means for a tree to be BST,AVL.
+- `Data/Tree/{BST,AVL}/Invariants.hs` implements the BST/AVL invariants.
 
-- `Data/Tree/AVL/Unsafe.hs` contains an unsafe implementation of AVL trees (notice there's also an unsafe implementation of BST in the `BST` directory). The code was extracted and refactored from that in `Data/Tree/AVL/Extern/{Balance,Insert,Lookup,Delete}.hs`, 'un-lifting' the type level computations to the value level.
+- `Data/Tree/{BST,AVL}/Unsafe.hs` contains an unsafe implementation of BST/AVL trees. The code was extracted and refactored from `Data/Tree/AVL/Extern/{Balance,Insert,Lookup,Delete}.hs`, 'un-lifting' the type level computations to the value level and removing all proof functions and terms.
 
-- `FullExtern.hs` contains the implementation of the full externalist approach. It provides functionality for performing operations over trees and checking the invariants at the end.
+- `Data/Tree/{BST,AVL}/FullExtern.hs` contains the implementation of the full externalist approach. It provides functionality for performing several operations in a row over trees and checking the invariants at the end.
 
-- `Extern.hs` provides the implementation of BST/AVL trees and its operations for the externalist approach; likewise, `Intern` folder contains the implementation for the internalist approach. Notice that there isn't a `*Proofs.hs` inside `Intern`. That's because the proofs and operations in the internalist approach are implemented together (in `{Balance,Insert,Lookup,Delete}.hs`).
+- `Data/Tree/{BST,AVL}/Extern/` contains the implementation of BST/AVL trees and its operations for the externalist approach; likewise, `Data/Tree/{BST,AVL}/Intern/` folder contains the implementation for the internalist approach. Notice that there are no `*Proofs.hs` source files inside `Data/Tree/{BST,AVL}/Intern/`. That's because the proofs and operations in the internalist approach are implemented together.
 
-- All four approaches, `Unsafe`, `FullExtern`, `Extern`, and `Intern`, have an `Examples.hs` with usage examples of the BST/AVL operations.
+- All four approaches, `Data/Tree/{BST,AVL}/{Unsafe,FullExtern,Extern,Intern}/`, have an `Examples.hs` with usage examples of the BST/AVL operations.
 
-- In order to use BST/AVL trees, only one of `Unsafe.hs`, `FullExtern.hs`, `Extern.hs` or `Intern.hs` need to be imported. They all export the basic functionality for inserting, looking and deleting on the corresponding BST/AVL tree. See the [Interface](#interface) section for exploring the functions exported by each of them.
+- In order to use BST/AVL trees, only one of `Data/Tree/{BST,AVL}/{Unsafe,FullExtern,Extern,Intern}.hs` need to be imported. They all export the basic functionality for inserting, looking and deleting on the corresponding BST/AVL tree. See the [Interface](#interface) section for exploring the functions exported by each of them.
 
 ## Interface
 
@@ -119,11 +121,11 @@ For the unsafe approach, the interface is
 
 - `emptyAVL :: AVL a`, an empty ITree.
 
-- `insertAVL :: Show a => Int -> a -> AVL a -> AVL a`.
+- `insertAVL :: Show a => Int -> a -> AVL a -> AVL a`, inserts a node in a ITree. If the tree already has a node with the given key, the value is updated.
 
-- `lookupAVL :: Int -> AVL a -> Maybe a`.
+- `lookupAVL :: Int -> AVL a -> Maybe a`, returns the value stored in the node with the given key. Returns `Nothing` if the key is not found.
 
-- `deleteAVL :: Int -> AVL a -> AVL a`.
+- `deleteAVL :: Int -> AVL a -> AVL a`, delete a node with a given key. If the tree doesn't have a node with that key, it just returns the original tree.
 
 For the full externalist approach, the interface is:
 
@@ -131,7 +133,7 @@ For the full externalist approach, the interface is:
 
 - `insert :: Node x a -> ITree t -> ITree (Insert x a t)`, inserts a node in a ITree. If the tree already has a node with key `x`, the value is updated.
 
-- `lookup :: (t ~ 'ForkTree l (Node n a1) r, Member x t ~ 'True) => Proxy x -> ITree t -> a`, lookup a key in a ITree.
+- `lookup :: (t ~ 'ForkTree l (Node n a1) r, Member x t ~ 'True) => Proxy x -> ITree t -> a`, lookup a key in a ITree. The constraint `t ~ 'ForkTree l (Node n a1) r` checks at compile time if the tree is not empty; the constraint `Member x t ~ 'True` checks at compile time that the tree `t` has a node with key `x` (ensuring that the lookup will return some value).
 
 - `delete :: Proxy x -> ITree t ->  (Delete x t)`, delete a node with a given key in a ITree. If the tree doesn't have a node with key `x`, it just returns the original tree.
 
@@ -151,7 +153,7 @@ For the externalist and internalist approaches, the interface is the same and is
 
 ### BST trees
 
-The interfaces are analogous to those for AVL trees. Just replace "AVL" for "BST" in the functions names.
+The interfaces are analogous to those for AVL trees. Just replace "AVL" for "BST" in the functions and modules names.
 
 ## Examples
 
@@ -185,7 +187,7 @@ avlt6 = deleteAVL 40 avlt3
 
 ### Full Extern
 
-A full externalist approach means grouping the operations and only perform the check of the invariants at the end:
+A full externalist approach means grouping the operations over `ITree`, only constructing the BST/AVL and verifying the invariants at the end:
 
 ```haskell
 {-# LANGUAGE DataKinds          #-}
@@ -333,13 +335,13 @@ balanced-binary-search-tree
 
 ```
 
-There are benchmarks for both BST and AVL trees for each approach (clone the repository for viewing or using the benchmarks). For instance, in the folder `benchmark/AVL/FullExtern`
-there are three folders and one source file: `Insert`, `Lookup`, `Delete` and `Benchmark.hs`.
+There are benchmarks for both BST and AVL trees for each approach (clone the repository for viewing or using the benchmarks). For instance, in the folder `benchmark/AVL/FullExtern/`
+there are three folders and one source file: `Insert/`, `Lookup/`, `Delete/` and `Benchmark.hs`.
 
 Inside each folder there are different source files for benchmarking each operation under several tree sizes; they're split in different files
-in order to be able to measure not only the running times, but also the compile times.
+in order to be able to measure not only the running times but also the compile times.
 
-The source files `Benchmark.hs` performs all of the running time benchmarks defined inside the folders `Insert`, `Lookup` and `Delete`.
+The source files `Benchmark.hs` performs all of the running time benchmarks defined inside the folders `Insert/`, `Lookup/` and `Delete/`.
 
 ### Running the benchmark
 
