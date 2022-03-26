@@ -137,7 +137,7 @@ For the full externalist approach, the interface is:
 
 - `delete :: Proxy x -> ITree t ->  (Delete x t)`, delete a node with a given key in a ITree. If the tree doesn't have a node with key `x`, it just returns the original tree.
 
-- `AVL :: (IsBST t ~ 'True, IsAVL t ~ 'True) => ITree t -> AVL t`, constructor for type-safe AVL trees.
+- `AVL :: ITree t -> IsBSTT t -> IsBalancedT t -> AVL t`, constructor for type-safe AVL trees.
 
 - `mkAVL :: (IsBSTC t, IsAVLC t) => ITree t -> AVL t`, constructor for type-safe AVL from an ITree, with automatic proof term construction.
 
