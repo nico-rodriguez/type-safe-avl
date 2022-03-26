@@ -139,7 +139,7 @@ For the full externalist approach, the interface is:
 
 - `AVL :: ITree t -> IsBSTT t -> IsBalancedT t -> AVL t`, constructor for type-safe AVL trees.
 
-- `mkAVL :: (IsBSTC t, IsAVLC t) => ITree t -> AVL t`, constructor for type-safe AVL from an ITree, with automatic proof term construction.
+- `mkAVL :: (IsBSTC t, IsBalancedC t) => ITree t -> AVL t`, constructor for type-safe AVL from an ITree, with automatic proof term construction.
 
 For the externalist and internalist approaches, the interface is the same and is as follows:
 
