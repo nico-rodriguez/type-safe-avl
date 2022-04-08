@@ -1,6 +1,6 @@
 /Benchmarks
 /output_dir
-balanced-binary-search-tree.vscode.code-workspace
+type-safe-avl.vscode.code-workspace
 dist*/
 venv/
 .vscode/
