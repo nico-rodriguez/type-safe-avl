@@ -29,19 +29,19 @@ No external Haskell libraries are needed.
 If you only want to use the library (without benchmarks), the easiest way to install it is through [Hackage](https://hackage.haskell.org/). The following command will download the library and install it:
 
 ```Shell
-cabal install --lib balanced-binary-search-tree
+cabal install --lib type-safe-avl
 ```
 
 If you also want to see or run the benchmarks, clone the repository:
 
 ```Shell
-git clone https://github.com/nico-rodriguez/balanced-binary-search-tree.git
+git clone https://github.com/nico-rodriguez/type-safe-avl.git
 ```
 
 The project may be used locally (inside the folder with `cabal repl`) or it may be install for system wide use:
 
 ```Shell
-cd balanced-binary-search-tree
+cd type-safe-avl
 cabal install --lib
 ```
 
@@ -50,7 +50,7 @@ For usage examples see the [Examples](#examples) section.
 ## Project Structure
 
 ```Shell
-balanced-binary-search-tree
+type-safe-avl
 │   README.md
 └───benchmark
 |    │
@@ -311,7 +311,7 @@ It gives an error at compile time.
 ### Structure
 
 ```Shell
-balanced-binary-search-tree
+type-safe-avl
 │   README.md
 └───benchmark
      └───AVL
