@@ -39,11 +39,11 @@ type family LtN (l :: Tree) (x :: Nat) :: Bool where
             ( If
                 (LtN r x)
                 'True
-                (TypeError ('Text "Key " ':<>: 'ShowType x ':<>: 'Text " is not strictly lesser than keys in tree " ':<>: 'ShowType r))
+                (TypeError ('Text "Key " ':<>: 'ShowType x ':<>: 'Text " is not strictly smaller than keys in tree " ':<>: 'ShowType r))
             )
-            (TypeError ('Text "Key " ':<>: 'ShowType x ':<>: 'Text " is not strictly lesser than keys in tree " ':<>: 'ShowType l))
+            (TypeError ('Text "Key " ':<>: 'ShowType x ':<>: 'Text " is not strictly smaller than keys in tree " ':<>: 'ShowType l))
         )
-        (TypeError ('Text "Key " ':<>: 'ShowType x ':<>: 'Text " is not lesser than key " ':<>: 'ShowType n))
+        (TypeError ('Text "Key " ':<>: 'ShowType n ':<>: 'Text " is not smaller than key " ':<>: 'ShowType x))
     )
 
 -- | Check if all elements of the tree @r@ are strictly greater than @x@.
@@ -61,5 +61,5 @@ type family GtN (r :: Tree) (x :: Nat) :: Bool where
             )
             (TypeError ('Text "Key " ':<>: 'ShowType x ':<>: 'Text " is not strictly greater than keys in tree " ':<>: 'ShowType l))
         )
-        (TypeError ('Text "Key " ':<>: 'ShowType x ':<>: 'Text " is not greater than key " ':<>: 'ShowType n))
+        (TypeError ('Text "Key " ':<>: 'ShowType n ':<>: 'Text " is not greater than key " ':<>: 'ShowType x))
     )
