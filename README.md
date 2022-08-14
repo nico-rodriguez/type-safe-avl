@@ -1,8 +1,18 @@
 # Type-safe BST and AVL trees
 
-Several implementations of binary search trees (BST) and balanced binary search trees (AVL).
-Verify at compile time if the operations over BST/AVL trees preserves the order of the keys and the balance in the heights.
-For both of them there's one unsafe implementation and three type-safe implementations. The last ones differ one how the structural invariants are handled at the type level.
+Several implementations of type-safe binary search trees (BST) and balanced binary search trees (AVL).
+
+These differ on how the structural invariants are implemented at the type level.
+
+Each of them have their own advantages and disadvantages.
+
+This library shows different ways of implementing invariants at the type level, each of them providing different features, all of them enforced at compile time:
+
+- Data invariant verification: assert at compile time if any given tree is BST/AVL.
+
+- Program certification: verify at compile time if the implementation of the operations over BST/AVL trees preserves the order of the keys and the balance in the heights.
+
+- Type-safe data constructors: implementation of tree constructors that throw an error at compile time if the tree being constructed is not BST/AVL.
 
 ## Summary
 
